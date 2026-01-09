@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ guide.title }} - C&P Exam Prep - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Breadcrumb navigation -->
+    <nav aria-label="Breadcrumb" class="mb-6">
+        <ol class="flex items-center space-x-2 text-sm text-gray-600">
+            <li>
+                <a href="{% url 'examprep:guide_list' %}" class="hover:text-blue-600 focus:underline focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Exam Prep Guides
+                </a>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li>
+                <span class="text-gray-900">{{ guide.get_category_display }}</span>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page" class="text-gray-900 font-medium">
+                {{ guide.title }}
+            </li>
+        </ol>
+    </nav>
+
+    <!-- Page header with CTA -->
+    <header class="mb-8">
+        <div class="md:flex md:items-start md:justify-between">
+            <div class="flex-1">
+                <span class="inline-block px-3 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-full mb-3">
+                    {{ guide.get_category_display }}
+                </span>
+                <h1 class="text-3xl font-bold text-gray-900">{{ guide.title }}</h1>
+            </div>
+
+            {% if user.is_authenticated %}
+            <div class="mt-4 md:mt-0 md:ml-4">
+                {% if user_checklist %}
+                <a href="{% url 'examprep:checklist_detail' pk=user_checklist.id %}"
+                   class="inline-flex items-center px-4 py-2 border border-blue-600 text-sm font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    View Your Checklist
+                </a>
+                {% else %}
+                <a href="{% url 'examprep:checklist_create' %}?guide={{ guide.slug }}"
+                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <svg class="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Create Personal Checklist
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Table of contents for long guides -->
+    {% if guide.what_exam_measures or guide.physical_tests or guide.questions_to_expect or guide.preparation_tips or guide.day_of_guidance or guide.common_mistakes or guide.after_exam %}
+    <nav aria-labelledby="toc-heading" class="mb-8 bg-gray-50 border border-gray-200 rounded-lg p-6">
+        <h2 id="toc-heading" class="text-lg font-medium text-gray-900 mb-3">On This Page</h2>
+        <ul class="space-y-2 text-sm">
+            {% if guide.introduction %}<li><a href="#introduction" class="text-blue-600 hover:text-blue-800 focus:underline">Introduction</a></li>{% endif %}
+            {% if guide.what_exam_measures %}<li><a href="#what-measures" class="text-blue-600 hover:text-blue-800 focus:underline">What This Exam Measures</a></li>{% endif %}
+            {% if guide.physical_tests %}<li><a href="#physical-tests" class="text-blue-600 hover:text-blue-800 focus:underline">Physical Tests Performed</a></li>{% endif %}
+            {% if guide.questions_to_expect %}<li><a href="#questions" class="text-blue-600 hover:text-blue-800 focus:underline">Questions to Expect</a></li>{% endif %}
+            {% if guide.preparation_tips %}<li><a href="#preparation" class="text-blue-600 hover:text-blue-800 focus:underline">Preparation Tips</a></li>{% endif %}
+            {% if guide.day_of_guidance %}<li><a href="#day-of" class="text-blue-600 hover:text-blue-800 focus:underline">Day-of Guidance</a></li>{% endif %}
+            {% if guide.common_mistakes %}<li><a href="#mistakes" class="text-blue-600 hover:text-blue-800 focus:underline">Common Mistakes</a></li>{% endif %}
+            {% if guide.after_exam %}<li><a href="#after-exam" class="text-blue-600 hover:text-blue-800 focus:underline">After the Exam</a></li>{% endif %}
+            {% if guide.checklist_items %}<li><a href="#checklist" class="text-blue-600 hover:text-blue-800 focus:underline">Preparation Checklist</a></li>{% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+    <!-- Content sections -->
+    <article class="prose prose-blue max-w-none">
+        {% if guide.introduction %}
+        <section id="introduction" class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Introduction</h2>
+            <div class="text-gray-700 whitespace-pre-line">{{ guide.introduction }}</div>
+        </section>
+        {% endif %}
+
+        {% if guide.what_exam_measures %}
+        <section id="what-measures" class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">What This Exam Measures</h2>
+            <div class="text-gray-700 whitespace-pre-line">{{ guide.what_exam_measures }}</div>
+        </section>
+        {% endif %}
+
+        {% if guide.physical_tests %}
+        <section id="physical-tests" class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Physical Tests Performed</h2>
+            <div class="text-gray-700 whitespace-pre-line">{{ guide.physical_tests }}</div>
+        </section>
+        {% endif %}
+
+        {% if guide.questions_to_expect %}
+        <section id="questions" class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Questions to Expect</h2>
+            <div class="text-gray-700 whitespace-pre-line">{{ guide.questions_to_expect }}</div>
+        </section>
+        {% endif %}
+
+        {% if guide.preparation_tips %}
+        <section id="preparation" class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Preparation Tips</h2>
+            <div class="text-gray-700 whitespace-pre-line">{{ guide.preparation_tips }}</div>
+        </section>
+        {% endif %}
+
+        {% if guide.day_of_guidance %}
+        <section id="day-of" class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Day-of Guidance</h2>
+            <div class="text-gray-700 whitespace-pre-line">{{ guide.day_of_guidance }}</div>
+        </section>
+        {% endif %}
+
+        {% if guide.common_mistakes %}
+        <section id="mistakes" class="mb-8 bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-lg">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Common Mistakes to Avoid</h2>
+            <div class="text-gray-700 whitespace-pre-line">{{ guide.common_mistakes }}</div>
+        </section>
+        {% endif %}
+
+        {% if guide.after_exam %}
+        <section id="after-exam" class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">After the Exam</h2>
+            <div class="text-gray-700 whitespace-pre-line">{{ guide.after_exam }}</div>
+        </section>
+        {% endif %}
+
+        {% if guide.checklist_items %}
+        <section id="checklist" class="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Preparation Checklist</h2>
+            <p class="text-gray-700 mb-4">
+                {% if user.is_authenticated %}
+                <a href="{% url 'examprep:checklist_create' %}?guide={{ guide.slug }}" class="text-blue-600 hover:text-blue-800 underline focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Create a personal checklist
+                </a> to track your progress through these tasks.
+                {% else %}
+                <a href="{% url 'account_login' %}" class="text-blue-600 hover:text-blue-800 underline focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Sign in
+                </a> to create a personal checklist and track your progress.
+                {% endif %}
+            </p>
+            <ul class="space-y-2">
+                {% for item in guide.checklist_items %}
+                <li class="flex items-start">
+                    <svg class="h-5 w-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    <span class="text-gray-700">{{ item.task|default:item }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+    </article>
+
+    <!-- Bottom navigation -->
+    <nav aria-label="Guide navigation" class="mt-12 pt-8 border-t border-gray-200">
+        <a href="{% url 'examprep:guide_list' %}"
+           class="inline-flex items-center text-blue-600 hover:text-blue-800 focus:underline focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Back to All Guides
+        </a>
+    </nav>
+</div>
+{% endblock %}

@@ -1,0 +1,550 @@
+{
+  "guide_type": "condition_specific",
+  "condition": "Musculoskeletal",
+  "condition_code": "musculoskeletal",
+  "applicable_conditions": ["back", "lumbar_spine", "cervical_spine", "knee", "shoulder", "hip", "ankle", "wrist", "elbow"],
+  "title": "Musculoskeletal C&P Exam Preparation Guide",
+  "subtitle": "Back, Knee, Shoulder, Hip, and Joint Conditions",
+  "dbq_forms": [
+    "VA Form 21-0960M-12 (Shoulder)",
+    "VA Form 21-0960M-9 (Knee)",
+    "VA Form 21-0960M-14 (Hip)",
+    "VA Form 21-0960M-13 (Back/Thoracolumbar Spine)",
+    "VA Form 21-0960M-13 (Neck/Cervical Spine)"
+  ],
+  "reading_level": "8th grade",
+  "word_count": 2279,
+  "last_updated": "2026-01",
+  "sections": [
+    {
+      "section_number": 1,
+      "title": "Introduction",
+      "slug": "introduction",
+      "content": {
+        "what_exam_assesses": "Musculoskeletal C&P exams evaluate conditions affecting your bones, joints, muscles, and connective tissue. This includes injuries and conditions of your spine (neck, upper back, lower back), knees, shoulders, hips, ankles, wrists, elbows, and other joints.",
+        "why_common": "Musculoskeletal conditions are the #1 most claimed disabilities among veterans. Years of carrying heavy gear, physical training, combat stress, and repetitive movements take a toll. The VA knows this—which is why they have detailed procedures for measuring these conditions.",
+        "critical_insight": {
+          "title": "Why Accurate Pain Reporting Matters",
+          "text": "Your rating isn't based on how far you CAN move—it's based on where pain BEGINS. If you can bend your knee to 90 degrees but pain starts at 60 degrees, your rating should be based on 60 degrees. But if you push through the pain and demonstrate 90 degrees, that's what gets documented.",
+          "warning": "The single biggest mistake veterans make is pushing through pain during ROM tests."
+        },
+        "rating_factors": [
+          "Range of motion (ROM) measured in degrees",
+          "Where pain begins during movement",
+          "Functional loss (what activities you can't do)",
+          "Flare-ups (how often your condition gets worse)",
+          "Additional factors like weakness, instability, or locking"
+        ]
+      }
+    },
+    {
+      "section_number": 2,
+      "title": "What the Exam Measures",
+      "slug": "what-exam-measures",
+      "content": {
+        "rom_explanation": {
+          "title": "Range of Motion (ROM)",
+          "text": "ROM is measured in degrees using a tool called a goniometer. Each joint has a 'normal' range, and your rating depends on how much motion you've lost compared to normal.",
+          "example": {
+            "joint": "Knee Flexion",
+            "normal": "140 degrees (heel to buttock)",
+            "ratings": [
+              {"limitation": "100 degrees", "rating": "10%"},
+              {"limitation": "60 degrees", "rating": "20%"},
+              {"limitation": "30 degrees", "rating": "30%"}
+            ],
+            "principle": "The less motion you have, the higher your rating."
+          }
+        },
+        "pain_on_motion": {
+          "title": "Pain on Motion vs. Pain-Free ROM",
+          "critical_note": "This is critical. The examiner should document TWO things:",
+          "measurements": [
+            "Pain-free ROM: How far you can move WITHOUT pain",
+            "Total ROM: How far you can physically move (even with pain)"
+          ],
+          "warning": "Your rating should consider where pain begins, not just your maximum range. If you push through pain, you're giving the examiner a higher ROM number than you should."
+        },
+        "functional_loss": {
+          "title": "Functional Loss",
+          "explanation": "The VA also rates based on what you CAN'T do because of your condition:",
+          "questions": [
+            "Can you stand for extended periods?",
+            "Can you walk without assistance?",
+            "Can you lift objects? How heavy?",
+            "Does it affect your ability to work?"
+          ]
+        },
+        "flare_ups": {
+          "title": "Flare-Ups",
+          "explanation": "Many conditions have good days and bad days. Flare-ups are periods when your symptoms are significantly worse.",
+          "examiner_questions": [
+            "How often do flare-ups occur?",
+            "How long do they last?",
+            "What causes them?",
+            "How much worse is your ROM during flare-ups?"
+          ],
+          "important": "Even if you're having a 'good day' at your exam, flare-ups still count toward your rating."
+        },
+        "additional_factors": [
+          "Weakness (muscle strength testing)",
+          "Instability (joint gives way or feels loose)",
+          "Locking (joint gets stuck)",
+          "Swelling (inflammation)",
+          "Use of assistive devices (cane, brace, walker)"
+        ]
+      }
+    },
+    {
+      "section_number": 3,
+      "title": "Physical Tests",
+      "slug": "physical-tests",
+      "content": {
+        "goniometer_explanation": "The examiner uses a goniometer—a protractor-like tool that measures joint angles in degrees. You'll typically perform each movement three times for consistency.",
+        "rom_types": [
+          {
+            "type": "Active ROM",
+            "description": "You move the joint yourself"
+          },
+          {
+            "type": "Passive ROM",
+            "description": "The examiner moves your joint for you"
+          }
+        ],
+        "rom_note": "Both measurements matter. If passive ROM is greater than active ROM, it may indicate weakness or pain inhibition.",
+        "joint_tests": {
+          "back_spine": {
+            "joint_name": "Back/Spine",
+            "movements": [
+              {"movement": "Forward Flexion", "normal_range": "90°", "description": "Bend forward, reach toward toes"},
+              {"movement": "Extension", "normal_range": "30°", "description": "Lean backward"},
+              {"movement": "Left Lateral Flexion", "normal_range": "30°", "description": "Bend sideways to the left"},
+              {"movement": "Right Lateral Flexion", "normal_range": "30°", "description": "Bend sideways to the right"},
+              {"movement": "Left Rotation", "normal_range": "30°", "description": "Twist to the left"},
+              {"movement": "Right Rotation", "normal_range": "30°", "description": "Twist to the right"}
+            ]
+          },
+          "knee": {
+            "joint_name": "Knee",
+            "movements": [
+              {"movement": "Flexion", "normal_range": "140°", "description": "Bend knee, heel toward buttock"},
+              {"movement": "Extension", "normal_range": "0°", "description": "Straighten leg completely"},
+              {"movement": "Stability Tests", "normal_range": "N/A", "description": "Examiner tests ligament integrity"}
+            ]
+          },
+          "shoulder": {
+            "joint_name": "Shoulder",
+            "movements": [
+              {"movement": "Forward Flexion", "normal_range": "180°", "description": "Raise arm forward and up"},
+              {"movement": "Abduction", "normal_range": "180°", "description": "Raise arm out to the side"},
+              {"movement": "External Rotation", "normal_range": "90°", "description": "Rotate arm outward"},
+              {"movement": "Internal Rotation", "normal_range": "90°", "description": "Rotate arm inward"}
+            ]
+          },
+          "hip": {
+            "joint_name": "Hip",
+            "movements": [
+              {"movement": "Flexion", "normal_range": "125°", "description": "Bring knee toward chest"},
+              {"movement": "Extension", "normal_range": "30°", "description": "Move leg backward"},
+              {"movement": "Abduction", "normal_range": "45°", "description": "Move leg out to the side"},
+              {"movement": "Rotation", "normal_range": "60°", "description": "Rotate leg inward/outward"}
+            ]
+          }
+        },
+        "weight_bearing": {
+          "title": "Weight-Bearing vs. Non-Weight-Bearing",
+          "explanation": "The examiner should test ROM in both conditions when applicable:",
+          "conditions": [
+            "Weight-bearing: Standing (like you normally use the joint)",
+            "Non-weight-bearing: Sitting or lying down"
+          ],
+          "note": "Pain may be different in each position. Make sure both are documented."
+        },
+        "painful_motion_tip": "The examiner should note the EXACT degree where pain begins. If they don't ask, TELL THEM: 'My pain starts at about 45 degrees of flexion.'"
+      }
+    },
+    {
+      "section_number": 4,
+      "title": "Questions to Expect",
+      "slug": "questions-to-expect",
+      "content": {
+        "question_categories": [
+          {
+            "category": "Onset and History",
+            "questions": [
+              "When did your pain/symptoms start?",
+              "What caused the injury or condition?",
+              "What treatments have you tried?",
+              "Have you had surgery? Physical therapy? Injections?"
+            ]
+          },
+          {
+            "category": "Current Symptoms",
+            "questions": [
+              "Where exactly is your pain?",
+              "How would you rate your pain on a scale of 1-10?",
+              "Is the pain constant or intermittent?",
+              "What makes it worse? What makes it better?"
+            ]
+          },
+          {
+            "category": "Flare-Ups",
+            "questions": [
+              "How often do you have flare-ups?",
+              "How long do they last?",
+              "What triggers them?",
+              "How bad does it get during a flare-up?"
+            ]
+          },
+          {
+            "category": "Functional Impact",
+            "questions": [
+              "Can you work? What limitations do you have?",
+              "How long can you stand? Sit? Walk?",
+              "Can you lift objects? How heavy?",
+              "Do you use a cane, brace, or other assistive device?",
+              "Does it affect your sleep?",
+              "What daily activities are difficult or impossible?"
+            ]
+          },
+          {
+            "category": "Treatment",
+            "questions": [
+              "What medications do you take?",
+              "Do they help? Any side effects?",
+              "Have you had imaging (X-ray, MRI)?"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "section_number": 5,
+      "title": "Preparation Tips",
+      "slug": "preparation-tips",
+      "content": {
+        "two_weeks_before": {
+          "find_dbq": "Search '[joint] DBQ' (e.g., 'knee DBQ' or 'lumbar spine DBQ'). Read it carefully—this is exactly what the examiner fills out. Note the ROM measurements that correspond to different ratings.",
+          "research_rom": "Know what 'normal' is for your joint. Understand that YOUR measurement will be compared to normal. Calculate roughly where your limitation might fall.",
+          "document_symptoms": [
+            "Write down your current ROM limitations (estimate)",
+            "Note your average pain level (1-10)",
+            "List all activities that are difficult or impossible"
+          ]
+        },
+        "one_week_before": {
+          "track_flare_ups": [
+            "How many flare-ups did you have this month?",
+            "How long did each one last?",
+            "What triggered them?",
+            "How limited were you during flare-ups?"
+          ],
+          "prepare_limitations": {
+            "instruction": "Write specific statements like:",
+            "examples": [
+              "I cannot lift more than 10 pounds",
+              "I cannot stand for more than 15 minutes",
+              "I cannot walk more than one block without stopping",
+              "I cannot bend down to tie my shoes"
+            ]
+          },
+          "gather_documents": [
+            "List of medications with dosages",
+            "Recent imaging reports (if not already submitted)",
+            "Physical therapy records",
+            "Documentation of assistive devices"
+          ]
+        },
+        "day_before": {
+          "clothing": [
+            "Wear loose, comfortable clothing",
+            "Shorts for knee/hip exams",
+            "Tank top or loose shirt for shoulder exams",
+            "You may be asked to change into a gown"
+          ],
+          "medication_warning": "Take ONLY your normal prescribed dose. Do NOT take extra medication to reduce pain. The exam should reflect your typical condition."
+        }
+      }
+    },
+    {
+      "section_number": 6,
+      "title": "Day-of Guidance",
+      "slug": "day-of-guidance",
+      "content": {
+        "most_important_rule": {
+          "title": "THE MOST IMPORTANT RULE",
+          "instruction": "Stop at the point of pain.",
+          "detailed_guidance": "When the examiner asks you to bend, flex, or rotate a joint: Move until you feel pain, STOP at that point, and tell the examiner: 'This is where my pain starts.'",
+          "do_not": [
+            "Push through pain to show you can go further",
+            "Try to impress the examiner with your toughness",
+            "Let the examiner push your joint past where pain begins"
+          ]
+        },
+        "why_it_matters": {
+          "scenario": "If you can flex your knee to 90 degrees but pain begins at 60 degrees:",
+          "outcomes": [
+            {"action": "Stop at 60°", "documented": "Flexion limited to 60° due to pain", "effect": "Higher rating"},
+            {"action": "Push to 90°", "documented": "Full flexion to 90°", "effect": "Lower rating"}
+          ],
+          "key_point": "'Painful motion' is a legitimate limitation. The VA recognizes this. But you have to COMMUNICATE it."
+        },
+        "communication_examples": {
+          "during_rom_testing": [
+            "I can only bend to here before pain stops me",
+            "This is my pain-free range of motion",
+            "If I go further, the pain becomes severe",
+            "On bad days, I can't even get this far"
+          ],
+          "if_examiner_pushes_further": [
+            "That hurts—please stop",
+            "You're past my pain point",
+            "That movement causes significant pain"
+          ],
+          "about_flare_ups": [
+            "Today is actually a better day. During flare-ups, I can barely move",
+            "My ROM is about 50% worse during flare-ups",
+            "I have flare-ups 3-4 times per month lasting 2-3 days each"
+          ],
+          "about_function": [
+            "I can't stand long enough to cook dinner",
+            "I had to quit my job because I couldn't lift anymore",
+            "I need my wife to help me put on socks"
+          ]
+        },
+        "pain_scale": {
+          "levels": [
+            {"range": "1-3", "label": "Mild", "description": "Noticeable but doesn't limit activities"},
+            {"range": "4-6", "label": "Moderate", "description": "Affects activities, may need medication"},
+            {"range": "7-9", "label": "Severe", "description": "Significantly limits function, difficulty concentrating"},
+            {"range": "10", "label": "Worst", "description": "Worst imaginable pain"}
+          ]
+        }
+      }
+    },
+    {
+      "section_number": 7,
+      "title": "Common Mistakes",
+      "slug": "common-mistakes",
+      "content": {
+        "mistakes": [
+          {
+            "rank": 1,
+            "mistake": "Pushing Past Pain",
+            "severity": "critical",
+            "description": "This is the most damaging mistake veterans make. You've been trained to push through pain. In this exam, that training works against you.",
+            "what_happens": "You bend your knee until it really hurts (let's say 50°), but you keep pushing to show you can reach 90°. Examiner documents 'knee flexion to 90 degrees.' Your rating is based on 90°, not 50°.",
+            "fix": "STOP where pain begins. That's your real, functional limit."
+          },
+          {
+            "rank": 2,
+            "mistake": "Taking Extra Pain Medication",
+            "severity": "high",
+            "description": "Taking more than your normal dose masks your symptoms. The examiner sees a medicated version of your condition, not your typical experience."
+          },
+          {
+            "rank": 3,
+            "mistake": "Not Mentioning Flare-Ups",
+            "severity": "high",
+            "description": "Even if today is a good day, your worst days matter. If you don't mention flare-ups, they won't be documented."
+          },
+          {
+            "rank": 4,
+            "mistake": "Not Explaining Functional Limitations",
+            "severity": "medium",
+            "description": "The examiner can measure your ROM, but they can't know that you can't tie your shoes or that you had to stop working. TELL THEM."
+          },
+          {
+            "rank": 5,
+            "mistake": "Wearing Restrictive Clothing",
+            "severity": "low",
+            "description": "Tight jeans or restrictive shirts can limit your movement during testing, making your ROM appear better than it is. Wear loose clothing."
+          },
+          {
+            "rank": 6,
+            "mistake": "Not Documenting Painful Motion",
+            "severity": "high",
+            "description": "If the examiner doesn't ask where pain begins, volunteer the information: 'I should mention—my pain-free range is only about 45 degrees. I can push further, but that's where the pain starts.'"
+          }
+        ]
+      }
+    },
+    {
+      "section_number": 8,
+      "title": "After the Exam",
+      "slug": "after-the-exam",
+      "content": {
+        "document_immediately": {
+          "instruction": "As soon as you leave, write down:",
+          "items": [
+            "What ROM tests were performed",
+            "Your estimated measurements (if you noticed)",
+            "Where you indicated pain began",
+            "Whether the examiner pushed past your pain point",
+            "How long the exam lasted",
+            "Anything that felt rushed or incomplete"
+          ]
+        },
+        "red_flags": [
+          "Examiner didn't measure ROM (just estimated)",
+          "Examiner pushed your joint past your pain point",
+          "Pain on motion wasn't documented",
+          "Flare-ups weren't discussed",
+          "Weight-bearing vs. non-weight-bearing not tested",
+          "Exam lasted less than 15 minutes"
+        ],
+        "request_results": {
+          "instruction": "You can get a copy of your completed DBQ:",
+          "methods": [
+            "Call VA at 1-800-827-1000",
+            "Use VA.gov or eBenefits",
+            "Submit a FOIA request"
+          ],
+          "check": "Check the measurements. If your ROM is documented as higher than what you demonstrated, or if painful motion isn't noted, you have grounds to challenge."
+        },
+        "how_to_challenge": {
+          "before_rating_decision": [
+            "Call VA to report concerns",
+            "Submit a written statement describing the exam issues",
+            "Request a new exam"
+          ],
+          "after_unfavorable_rating": [
+            "File a Supplemental Claim with new evidence",
+            "Get a private medical opinion with accurate ROM measurements",
+            "Request a Higher-Level Review"
+          ]
+        },
+        "timeline": "Rating decisions typically arrive 60-90 days after your exam. Check your status regularly on VA.gov."
+      }
+    }
+  ],
+  "key_takeaways": [
+    "Stop at the pain point during ROM testing",
+    "Communicate clearly about where pain begins",
+    "Describe your worst days, not just today",
+    "Don't take extra pain medication before the exam",
+    "Document functional limitations in specific terms"
+  ],
+  "closing_message": {
+    "text": "Your body has been through a lot in service. This exam is your chance to show exactly how those injuries affect you now."
+  },
+  "preparation_checklist": [
+    {
+      "id": "msk-task-1",
+      "task": "Find and read the DBQ form for your specific joint condition",
+      "timing": "2 weeks before",
+      "category": "research",
+      "priority": "high"
+    },
+    {
+      "id": "msk-task-2",
+      "task": "Research normal ROM ranges for your joint (know what 'normal' degrees are)",
+      "timing": "2 weeks before",
+      "category": "research",
+      "priority": "high"
+    },
+    {
+      "id": "msk-task-3",
+      "task": "Understand the rating criteria (what ROM limitations equal which percentages)",
+      "timing": "2 weeks before",
+      "category": "research",
+      "priority": "medium"
+    },
+    {
+      "id": "msk-task-4",
+      "task": "Document your current symptoms and estimated ROM limitations",
+      "timing": "1 week before",
+      "category": "documentation",
+      "priority": "high"
+    },
+    {
+      "id": "msk-task-5",
+      "task": "Track and document flare-ups (frequency, duration, triggers, severity)",
+      "timing": "1 week before",
+      "category": "documentation",
+      "priority": "high"
+    },
+    {
+      "id": "msk-task-6",
+      "task": "Write specific functional limitation statements (can't lift >10 lbs, can't stand >15 min)",
+      "timing": "1 week before",
+      "category": "documentation",
+      "priority": "high"
+    },
+    {
+      "id": "msk-task-7",
+      "task": "List all daily activities that are difficult or impossible due to condition",
+      "timing": "1 week before",
+      "category": "documentation",
+      "priority": "medium"
+    },
+    {
+      "id": "msk-task-8",
+      "task": "Gather recent imaging reports (X-ray, MRI) if not already submitted",
+      "timing": "1 week before",
+      "category": "evidence",
+      "priority": "medium"
+    },
+    {
+      "id": "msk-task-9",
+      "task": "List all medications with dosages and side effects",
+      "timing": "1 week before",
+      "category": "documentation",
+      "priority": "medium"
+    },
+    {
+      "id": "msk-task-10",
+      "task": "Document any assistive devices you use (brace, cane, walker)",
+      "timing": "1 week before",
+      "category": "evidence",
+      "priority": "medium"
+    },
+    {
+      "id": "msk-task-11",
+      "task": "Prepare loose, comfortable clothing for the exam",
+      "timing": "1 day before",
+      "category": "logistics",
+      "priority": "medium"
+    },
+    {
+      "id": "msk-task-12",
+      "task": "Confirm exam date, time, and location",
+      "timing": "3 days before",
+      "category": "logistics",
+      "priority": "high"
+    },
+    {
+      "id": "msk-task-13",
+      "task": "Take ONLY normal medication dose (do NOT take extra pain meds)",
+      "timing": "day of exam",
+      "category": "critical",
+      "priority": "critical"
+    },
+    {
+      "id": "msk-task-14",
+      "task": "Practice saying 'This is where my pain starts' and 'Please stop, that hurts'",
+      "timing": "1 day before",
+      "category": "preparation",
+      "priority": "high"
+    },
+    {
+      "id": "msk-task-15",
+      "task": "Bring written notes, ID, medication list, and any assistive devices",
+      "timing": "day of exam",
+      "category": "logistics",
+      "priority": "high"
+    }
+  ],
+  "metadata": {
+    "source_forms": [
+      "VA Form 21-0960M-12 (Shoulder)",
+      "VA Form 21-0960M-9 (Knee)", 
+      "VA Form 21-0960M-14 (Hip)",
+      "VA Form 21-0960M-13 (Thoracolumbar Spine)",
+      "VA Form 21-0960M-13 (Cervical Spine)"
+    ],
+    "rating_criteria": "38 CFR § 4.71a",
+    "related_conditions": ["degenerative_disc_disease", "arthritis", "rotator_cuff", "meniscus", "sciatica", "radiculopathy"],
+    "exam_type": "musculoskeletal"
+  }
+}

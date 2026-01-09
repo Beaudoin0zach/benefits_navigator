@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Create Exam Checklist - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <!-- Breadcrumb navigation -->
+    <nav aria-label="Breadcrumb" class="mb-6">
+        <ol class="flex items-center space-x-2 text-sm text-gray-600">
+            <li>
+                <a href="{% url 'examprep:guide_list' %}" class="hover:text-blue-600 focus:underline focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Exam Prep
+                </a>
+            </li>
+            <li aria-hidden="true">
+                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                </svg>
+            </li>
+            <li>
+                <a href="{% url 'examprep:checklist_list' %}" class="hover:text-blue-600 focus:underline focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    My Checklists
+                </a>
+            </li>
+            <li aria-hidden="true">
+                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                </svg>
+            </li>
+            <li>
+                <span aria-current="page" class="font-medium text-gray-900">Create Checklist</span>
+            </li>
+        </ol>
+    </nav>
+
+    <!-- Page header -->
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Create Exam Checklist</h1>
+        <p class="mt-2 text-lg text-gray-600">
+            Prepare for your C&P exam by tracking tasks and documenting your symptoms.
+        </p>
+    </header>
+
+    {% if guide %}
+    <!-- Guide info banner -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+        <div class="flex items-start">
+            <svg class="h-5 w-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+            </svg>
+            <div>
+                <p class="text-sm text-blue-800">
+                    <strong>Based on:</strong>
+                    <a href="{% url 'examprep:guide_detail' slug=guide.slug %}" class="underline hover:text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        {{ guide.title }}
+                    </a>
+                </p>
+                <p class="text-sm text-blue-700 mt-1">
+                    This checklist will include preparation tasks from the selected guide.
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Form card -->
+    <div class="bg-white shadow-lg rounded-lg p-8">
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            <!-- Form errors -->
+            {% if form.errors %}
+            <div class="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded mb-6" role="alert" aria-live="assertive">
+                <div class="flex items-start">
+                    <svg class="h-5 w-5 text-red-400 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                    </svg>
+                    <div>
+                        <p class="font-medium">Please correct the errors below:</p>
+                        <ul class="mt-1 list-disc list-inside text-sm">
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li>{{ field.label }}: {{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Basic Information Section -->
+            <section class="mb-8">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-200">
+                    Basic Information
+                </h2>
+                <div class="space-y-6">
+                    <div>
+                        <label for="id_condition" class="block text-sm font-medium text-gray-700 mb-1">
+                            {{ form.condition.label }} <span class="text-red-500">*</span>
+                        </label>
+                        {{ form.condition }}
+                        {% if form.condition.help_text %}
+                        <p id="id_condition_help" class="mt-1 text-sm text-gray-500">{{ form.condition.help_text }}</p>
+                        {% endif %}
+                        {% if form.condition.errors %}
+                        <p class="mt-1 text-sm text-red-600" role="alert">{{ form.condition.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="id_exam_date" class="block text-sm font-medium text-gray-700 mb-1">
+                            {{ form.exam_date.label }}
+                        </label>
+                        {{ form.exam_date }}
+                        {% if form.exam_date.help_text %}
+                        <p id="id_exam_date_help" class="mt-1 text-sm text-gray-500">{{ form.exam_date.help_text }}</p>
+                        {% endif %}
+                    </div>
+
+                    {% if not guide %}
+                    <div>
+                        <label for="id_guidance" class="block text-sm font-medium text-gray-700 mb-1">
+                            {{ form.guidance.label }}
+                        </label>
+                        {{ form.guidance }}
+                        {% if form.guidance.help_text %}
+                        <p id="id_guidance_help" class="mt-1 text-sm text-gray-500">{{ form.guidance.help_text }}</p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </section>
+
+            <!-- Symptom Documentation Section -->
+            <section class="mb-8">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-200">
+                    Document Your Symptoms
+                </h2>
+                <p class="text-gray-600 mb-4">
+                    This information will help you prepare to describe your condition during the exam.
+                </p>
+                <div class="space-y-6">
+                    <div>
+                        <label for="id_symptom_notes" class="block text-sm font-medium text-gray-700 mb-1">
+                            {{ form.symptom_notes.label }}
+                        </label>
+                        {{ form.symptom_notes }}
+                        {% if form.symptom_notes.help_text %}
+                        <p id="id_symptom_notes_help" class="mt-1 text-sm text-gray-500">{{ form.symptom_notes.help_text }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="id_worst_day_description" class="block text-sm font-medium text-gray-700 mb-1">
+                            {{ form.worst_day_description.label }}
+                        </label>
+                        {{ form.worst_day_description }}
+                        {% if form.worst_day_description.help_text %}
+                        <p id="id_worst_day_description_help" class="mt-1 text-sm text-gray-500">{{ form.worst_day_description.help_text }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="id_functional_limitations" class="block text-sm font-medium text-gray-700 mb-1">
+                            {{ form.functional_limitations.label }}
+                        </label>
+                        {{ form.functional_limitations }}
+                        {% if form.functional_limitations.help_text %}
+                        <p id="id_functional_limitations_help" class="mt-1 text-sm text-gray-500">{{ form.functional_limitations.help_text }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="id_questions_for_examiner" class="block text-sm font-medium text-gray-700 mb-1">
+                            {{ form.questions_for_examiner.label }}
+                        </label>
+                        {{ form.questions_for_examiner }}
+                        {% if form.questions_for_examiner.help_text %}
+                        <p id="id_questions_for_examiner_help" class="mt-1 text-sm text-gray-500">{{ form.questions_for_examiner.help_text }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+
+            <!-- Form actions -->
+            <div class="flex flex-col sm:flex-row sm:justify-between gap-4 pt-6 border-t border-gray-200">
+                <a href="{% url 'examprep:checklist_list' %}"
+                   class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="inline-flex justify-center items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <svg class="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Create Checklist
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Help section -->
+    <aside class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6" aria-labelledby="help-heading">
+        <h2 id="help-heading" class="text-lg font-medium text-blue-900 mb-3">Tips for C&P Exam Preparation</h2>
+        <ul class="space-y-2 text-sm text-blue-800">
+            <li class="flex items-start">
+                <svg class="h-5 w-5 text-blue-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span><strong>Be Honest:</strong> Describe your condition accurately, including your worst days.</span>
+            </li>
+            <li class="flex items-start">
+                <svg class="h-5 w-5 text-blue-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span><strong>Be Specific:</strong> Include frequency, duration, and severity of symptoms.</span>
+            </li>
+            <li class="flex items-start">
+                <svg class="h-5 w-5 text-blue-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span><strong>Document Impact:</strong> Explain how your condition affects work, relationships, and daily life.</span>
+            </li>
+        </ul>
+    </aside>
+</div>
+{% endblock %}

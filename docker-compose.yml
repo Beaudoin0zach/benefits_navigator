@@ -1,0 +1,128 @@
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: benefits_nav_db
+    environment:
+      POSTGRES_DB: benefits_navigator
+      POSTGRES_USER: benefits_user
+      POSTGRES_PASSWORD: ***ROTATED_DEV_DB_PASSWORD***
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "benefits_user", "-d", "benefits_navigator"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis (for Celery broker and caching)
+  redis:
+    image: redis:7-alpine
+    container_name: benefits_nav_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # Django Web Application
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: benefits_nav_web
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+      - media_files:/app/media
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - DATABASE_URL=postgresql://benefits_user:***ROTATED_DEV_DB_PASSWORD***@db:5432/benefits_navigator
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - SECRET_KEY=***ROTATED_DEV_SECRET_KEY***
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # Celery Worker (for background tasks)
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: benefits_nav_celery
+    command: celery -A benefits_navigator worker -l info
+    volumes:
+      - .:/app
+      - media_files:/app/media
+    environment:
+      - DEBUG=True
+      - DATABASE_URL=postgresql://benefits_user:***ROTATED_DEV_DB_PASSWORD***@db:5432/benefits_navigator
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - SECRET_KEY=***ROTATED_DEV_SECRET_KEY***
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # Celery Beat (for scheduled tasks - optional for MVP)
+  celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: benefits_nav_celery_beat
+    command: celery -A benefits_navigator beat -l info
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=True
+      - DATABASE_URL=postgresql://benefits_user:***ROTATED_DEV_DB_PASSWORD***@db:5432/benefits_navigator
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - SECRET_KEY=***ROTATED_DEV_SECRET_KEY***
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # Flower (Celery monitoring dashboard)
+  flower:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: benefits_nav_flower
+    command: celery -A benefits_navigator flower --port=5555
+    ports:
+      - "5555:5555"
+    environment:
+      - DEBUG=True
+      - DATABASE_URL=postgresql://benefits_user:***ROTATED_DEV_DB_PASSWORD***@db:5432/benefits_navigator
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - SECRET_KEY=***ROTATED_DEV_SECRET_KEY***
+    depends_on:
+      - celery
+      - redis
+
+volumes:
+  postgres_data:
+  redis_data:
+  media_files:

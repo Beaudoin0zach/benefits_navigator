@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}C&P Exam Preparation Guides - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <!-- Page header -->
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">C&P Exam Preparation Guides</h1>
+        <p class="mt-2 text-lg text-gray-600">
+            Comprehensive preparation guides for Compensation & Pension (C&P) exams.
+            Learn what to expect, how to prepare, and what the examiner will evaluate.
+        </p>
+    </header>
+
+    <!-- Quick links section -->
+    <div class="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+        <h2 class="text-lg font-medium text-blue-900 mb-3">Quick Links</h2>
+        <nav aria-label="Quick navigation">
+            <ul class="space-y-2">
+                <li>
+                    <a href="{% url 'examprep:glossary_list' %}" class="text-blue-700 hover:text-blue-900 underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        VA Terminology Glossary
+                    </a>
+                    - Plain-language explanations of VA terms
+                </li>
+                {% if user.is_authenticated %}
+                <li>
+                    <a href="{% url 'examprep:checklist_list' %}" class="text-blue-700 hover:text-blue-900 underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        My Exam Checklists
+                    </a>
+                    - Track your exam preparation progress
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Guide categories -->
+    {% if guides_by_category %}
+    <div class="space-y-8">
+        {% for category, guides in guides_by_category.items %}
+        <section aria-labelledby="category-{{ forloop.counter }}">
+            <h2 id="category-{{ forloop.counter }}" class="text-2xl font-bold text-gray-900 mb-4">
+                {{ category }}
+            </h2>
+
+            <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {% for guide in guides %}
+                <article class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                        <a href="{% url 'examprep:guide_detail' slug=guide.slug %}"
+                           class="text-blue-600 hover:text-blue-800 focus:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            {{ guide.title }}
+                        </a>
+                    </h3>
+
+                    {% if guide.introduction %}
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+                        {{ guide.introduction|truncatewords:30 }}
+                    </p>
+                    {% endif %}
+
+                    <div class="flex items-center justify-between mt-4">
+                        <a href="{% url 'examprep:guide_detail' slug=guide.slug %}"
+                           class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 focus:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            Read Guide
+                            <svg class="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'examprep:checklist_create' %}?guide={{ guide.slug }}"
+                           class="text-sm text-gray-600 hover:text-gray-900 focus:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                           title="Create a personal checklist for this exam">
+                            + Create Checklist
+                        </a>
+                        {% endif %}
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <!-- Empty state -->
+    <div class="text-center py-12 bg-white shadow-md rounded-lg">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 48 48" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m-6 4h6m-6 4h6M21 12h12M21 20h12M21 28h12M9 36h24"/>
+        </svg>
+        <h2 class="mt-2 text-lg font-medium text-gray-900">No guides available yet</h2>
+        <p class="mt-1 text-sm text-gray-500">
+            Exam preparation guides are being developed. Check back soon!
+        </p>
+    </div>
+    {% endif %}
+
+    <!-- Help section -->
+    <aside class="mt-12 bg-gray-50 border border-gray-200 rounded-lg p-6" aria-labelledby="help-heading">
+        <h2 id="help-heading" class="text-lg font-medium text-gray-900 mb-3">About C&P Exams</h2>
+        <div class="space-y-3 text-sm text-gray-700">
+            <p>
+                <strong>What is a C&P Exam?</strong> A Compensation & Pension (C&P) exam is a medical evaluation
+                conducted by the VA to assess your service-connected disabilities and determine your disability rating.
+            </p>
+            <p>
+                <strong>Why Prepare?</strong> Proper preparation helps you communicate your symptoms clearly and
+                ensures the examiner has all the information needed to accurately evaluate your condition.
+            </p>
+            <p>
+                <strong>What to Expect:</strong> The examiner will ask about your symptoms, perform physical tests,
+                and document how your condition affects your daily life. Being prepared helps reduce anxiety and
+                ensures you don't forget important details.
+            </p>
+        </div>
+    </aside>
+
+    <!-- Bottom CTA for authenticated users -->
+    {% if user.is_authenticated %}
+    <div class="mt-8 text-center">
+        <a href="{% url 'examprep:checklist_create' %}"
+           class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+            </svg>
+            Create Your Exam Checklist
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

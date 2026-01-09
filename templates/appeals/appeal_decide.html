@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-2xl">
+    <!-- Breadcrumb -->
+    <nav class="mb-4 text-sm" aria-label="Breadcrumb">
+        <a href="{% url 'appeals:appeal_list' %}" class="text-blue-700 hover:underline">My Appeals</a>
+        <span class="mx-2 text-gray-400">/</span>
+        <span class="text-gray-600">Choose Appeal Type</span>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Choose Your Appeal Path</h1>
+        <p class="text-gray-600">
+            Answer these questions to find the best appeal type for your situation.
+        </p>
+    </header>
+
+    {% if show_type_selection %}
+    <!-- Show recommendation and type selection -->
+    <div class="bg-green-50 border-2 border-green-500 rounded-lg p-6 mb-6">
+        <h2 class="text-xl font-bold text-green-900 mb-2">
+            Our Recommendation: {{ recommendation.name }}
+        </h2>
+        <p class="text-green-800 mb-4">{{ recommendation.reason }}</p>
+
+        <div class="grid grid-cols-2 gap-4 mb-4">
+            <div class="bg-white rounded p-3">
+                <span class="text-sm text-gray-500">VA Form</span>
+                <p class="font-semibold text-gray-900">{{ recommendation.form }}</p>
+            </div>
+            <div class="bg-white rounded p-3">
+                <span class="text-sm text-gray-500">Average Time</span>
+                <p class="font-semibold text-gray-900">{{ recommendation.time }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Type Selection Form -->
+    <form method="post" action="{% url 'appeals:appeal_set_type' appeal.pk %}" class="bg-white rounded-lg shadow-md border p-6">
+        {% csrf_token %}
+
+        <h3 class="font-bold text-gray-900 mb-4">Select Your Appeal Type</h3>
+
+        <div class="space-y-3 mb-6">
+            {% for choice in type_form.appeal_type %}
+            <label class="flex items-start gap-3 p-4 rounded border cursor-pointer hover:bg-gray-50
+                {% if recommendation.type in choice.choice_label|lower %}border-green-500 bg-green-50{% else %}border-gray-200{% endif %}">
+                {{ choice.tag }}
+                <div>
+                    <span class="font-medium text-gray-900">{{ choice.choice_label }}</span>
+                </div>
+            </label>
+            {% endfor %}
+        </div>
+
+        <button type="submit"
+                class="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 px-4 rounded transition">
+            Continue with Selected Type
+        </button>
+    </form>
+
+    {% else %}
+    <!-- Decision Tree Questions -->
+    <form method="post" class="bg-white rounded-lg shadow-md border p-6">
+        {% csrf_token %}
+
+        <!-- Question 1 -->
+        <div class="mb-8">
+            <label for="id_has_new_evidence" class="block text-lg font-semibold text-gray-900 mb-2">
+                1. {{ form.has_new_evidence.label }}
+            </label>
+            <p class="text-gray-600 text-sm mb-3">{{ form.has_new_evidence.help_text }}</p>
+            {{ form.has_new_evidence }}
+        </div>
+
+        <!-- Question 2 -->
+        <div class="mb-8">
+            <label for="id_believes_va_error" class="block text-lg font-semibold text-gray-900 mb-2">
+                2. {{ form.believes_va_error.label }}
+            </label>
+            <p class="text-gray-600 text-sm mb-3">{{ form.believes_va_error.help_text }}</p>
+            {{ form.believes_va_error }}
+        </div>
+
+        <!-- Question 3 -->
+        <div class="mb-8">
+            <label for="id_wants_hearing" class="block text-lg font-semibold text-gray-900 mb-2">
+                3. {{ form.wants_hearing.label }}
+            </label>
+            <p class="text-gray-600 text-sm mb-3">{{ form.wants_hearing.help_text }}</p>
+            {{ form.wants_hearing }}
+        </div>
+
+        <button type="submit"
+                class="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 px-4 rounded transition">
+            Get Recommendation
+        </button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

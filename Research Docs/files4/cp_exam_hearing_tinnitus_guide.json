@@ -1,0 +1,417 @@
+{
+  "guide_type": "condition_specific",
+  "condition": "Hearing Loss and Tinnitus",
+  "condition_code": "hearing_tinnitus",
+  "applicable_conditions": ["hearing_loss", "tinnitus", "bilateral_hearing_loss", "sensorineural_hearing_loss"],
+  "title": "Tinnitus and Hearing Loss C&P Exam Preparation Guide",
+  "dbq_forms": ["VA Form 21-0960N-1 (Hearing Loss and Tinnitus)"],
+  "reading_level": "8th grade",
+  "word_count": 1719,
+  "last_updated": "2026-01",
+  "sections": [
+    {
+      "section_number": 1,
+      "title": "Introduction",
+      "slug": "introduction",
+      "content": {
+        "why_common": {
+          "explanation": "Tinnitus (ringing in the ears) and hearing loss are among the most claimed disabilities by veterans—and for good reason. Military service often means exposure to loud noise.",
+          "common_exposures": [
+            "Gunfire and weapons training",
+            "Aircraft and helicopter noise",
+            "Explosions and ordnance",
+            "Heavy machinery and vehicles",
+            "Ship engine rooms",
+            "Combat operations"
+          ],
+          "note": "Even a single loud blast can cause permanent hearing damage. Years of exposure without proper protection makes these conditions almost inevitable for many veterans."
+        },
+        "how_exam_works": "Unlike other C&P exams, hearing exams are highly objective. You'll sit in a soundproof booth, wear headphones, and listen for tones. A machine measures exactly what you can and cannot hear. There's no physical manipulation, no pain, and no subjective interpretation.",
+        "rating_info": {
+          "hearing_loss": "Your rating (0% to 100%) is based on a mathematical formula using pure tone threshold averages (how loud sounds must be for you to hear them) and speech recognition scores (how well you understand spoken words).",
+          "tinnitus": "The maximum rating is 10%—regardless of severity. However, tinnitus is one of the easiest conditions to service-connect because it's subjective (only you can hear it). If you had noise exposure in service and now have ringing in your ears, you'll likely be granted service connection.",
+          "important_note": "Even a 10% tinnitus rating adds to your combined rating and can help you reach higher compensation brackets."
+        }
+      }
+    },
+    {
+      "section_number": 2,
+      "title": "What the Exam Measures",
+      "slug": "what-exam-measures",
+      "content": {
+        "hearing_loss_testing": {
+          "pure_tone_audiometry": {
+            "description": "You'll hear a series of beeps (tones) at different frequencies and volumes.",
+            "frequencies_tested": ["500 Hz", "1000 Hz", "2000 Hz", "3000 Hz", "4000 Hz"],
+            "measurement": "Volume measured in decibels (dB)—higher numbers mean louder sounds needed",
+            "result": "The softest sound you can hear at each frequency is recorded. These numbers are averaged to calculate your 'pure tone threshold average.'"
+          },
+          "speech_recognition": {
+            "description": "You'll hear recorded words through headphones and repeat them back. This measures how well you understand speech, not just hear sounds.",
+            "test_used": "Maryland CNC (Consonant-Nucleus-Consonant) word list",
+            "example_scores": "Right ear: 92% speech recognition, Left ear: 76% speech recognition"
+          }
+        },
+        "tinnitus_evaluation": {
+          "description": "Tinnitus is subjective—only you can hear it. The examiner documents:",
+          "factors_documented": [
+            "Frequency: Is it constant (24/7) or intermittent (comes and goes)?",
+            "Character: Ringing, buzzing, hissing, roaring, clicking?",
+            "Location: One ear, both ears, or inside your head?",
+            "Severity: How much does it affect your life?"
+          ],
+          "types": {
+            "recurrent": "Happens regularly but not constantly",
+            "persistent": "Present all or most of the time"
+          },
+          "note": "Both qualify for the 10% rating if service-connected."
+        },
+        "dbq_includes": [
+          "Audiometric test results (the actual numbers)",
+          "Speech recognition percentages",
+          "Tinnitus description and frequency",
+          "Impact on daily activities",
+          "Nexus opinion (connection to service)"
+        ]
+      }
+    },
+    {
+      "section_number": 3,
+      "title": "Physical Tests",
+      "slug": "physical-tests",
+      "content": {
+        "procedure_steps": [
+          {
+            "step": 1,
+            "name": "Otoscope Exam",
+            "description": "The examiner looks in your ears with a lighted scope to check for wax buildup, infections, or damage. This takes about 30 seconds per ear."
+          },
+          {
+            "step": 2,
+            "name": "Enter the Booth",
+            "description": "You'll sit in a small, soundproof booth. It's quiet inside—that's intentional. The door closes to block outside noise."
+          },
+          {
+            "step": 3,
+            "name": "Headphones On",
+            "description": "You'll wear headphones. The examiner controls the test from outside the booth and can see you through a window."
+          },
+          {
+            "step": 4,
+            "name": "Pure Tone Test",
+            "description": "You'll hear beeps (tones) at different pitches and volumes. Raise your hand OR press a button when you hear a tone. The tones start loud and get softer until you can't hear them. Each ear is tested separately."
+          },
+          {
+            "step": 5,
+            "name": "Speech Recognition Test",
+            "description": "You'll hear recorded words through the headphones. Repeat each word out loud exactly as you hear it. Some words will be easy; others may be hard to understand. Don't guess—say what you actually hear."
+          }
+        ],
+        "what_to_expect": {
+          "total_time": "20-30 minutes",
+          "pain_level": "No pain or discomfort",
+          "note": "You may hear nothing at some frequencies (that's normal for hearing loss)"
+        }
+      }
+    },
+    {
+      "section_number": 4,
+      "title": "Questions to Expect",
+      "slug": "questions-to-expect",
+      "content": {
+        "question_categories": [
+          {
+            "category": "Onset and Cause",
+            "questions": [
+              "When did you first notice hearing loss or tinnitus?",
+              "Was there a specific event (explosion, gunfire, aircraft)?",
+              "What was your military job? What noise were you exposed to?"
+            ]
+          },
+          {
+            "category": "Current Symptoms",
+            "questions": [
+              "Do you have ringing in your ears? How often?",
+              "Is it constant or does it come and go?",
+              "What does it sound like (ringing, buzzing, hissing)?",
+              "Which ear(s) are affected?"
+            ]
+          },
+          {
+            "category": "Impact on Life",
+            "questions": [
+              "Does tinnitus affect your sleep?",
+              "Does it affect your concentration at work?",
+              "Do you have trouble hearing conversations?",
+              "Do you need the TV or radio turned up loud?",
+              "Do you use hearing aids?"
+            ]
+          },
+          {
+            "category": "Medical History",
+            "questions": [
+              "Have you had ear infections or surgeries?",
+              "Have you had any ear injuries?",
+              "Do you have any other ear conditions?"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "section_number": 5,
+      "title": "Preparation Tips",
+      "slug": "preparation-tips",
+      "content": {
+        "two_weeks_before": {
+          "document_noise_exposure": {
+            "instruction": "Write down every type of loud noise you experienced in service:",
+            "examples": [
+              "Weapons (rifle range, machine guns, artillery)",
+              "Vehicles (tanks, helicopters, aircraft, ships)",
+              "Equipment (generators, machinery, tools)",
+              "Combat (explosions, IEDs, firefights)"
+            ]
+          },
+          "review_service_records": [
+            "Look for audiograms from entrance and exit physicals",
+            "Find your MOS/rating (military job) documentation",
+            "Note any hearing conservation program records"
+          ]
+        },
+        "one_week_before": {
+          "document_tinnitus": {
+            "instruction": "Document your tinnitus in detail:",
+            "details_to_note": [
+              "Frequency: Constant? Or how many times per day/week?",
+              "Sound type: Ringing, buzzing, hissing, whooshing, roaring?",
+              "Location: Left ear, right ear, both, or center of head?",
+              "Volume: Soft background noise or loud and intrusive?",
+              "Impact: Sleep problems, concentration issues, mood effects?"
+            ]
+          },
+          "document_hearing_loss": [
+            "Situations where you struggle to hear",
+            "Do people complain you don't hear them?",
+            "Do you ask people to repeat themselves often?"
+          ]
+        },
+        "day_before": {
+          "protect_hearing": [
+            "Avoid loud environments (concerts, power tools, loud music)",
+            "Get a normal night's sleep",
+            "Don't use earplugs during the exam (you need to hear the tones)"
+          ]
+        }
+      }
+    },
+    {
+      "section_number": 6,
+      "title": "Day-of Guidance",
+      "slug": "day-of-guidance",
+      "content": {
+        "golden_rule": {
+          "title": "The Golden Rule: Don't Guess",
+          "instruction": "During the hearing test, only raise your hand when you actually hear a tone. This is critical.",
+          "do": [
+            "Wait until you're certain you hear something",
+            "Raise your hand even for very faint tones",
+            "Accept that you may hear nothing at some frequencies"
+          ],
+          "dont": [
+            "Guess when you think a tone should come",
+            "Raise your hand because you 'might' have heard something",
+            "Try to perform better than you actually can"
+          ],
+          "why_it_matters": "If you guess correctly, your hearing appears better than it is. The test measures your true hearing ability—let it."
+        },
+        "describing_tinnitus": {
+          "instruction": "Be specific and honest. Examples:",
+          "example_statements": [
+            "I hear constant ringing in both ears, 24 hours a day, 7 days a week",
+            "The buzzing is loud enough that it interferes with conversations",
+            "I can't fall asleep without a fan or white noise because the ringing is so loud in silence",
+            "I have trouble concentrating at work because of the ringing",
+            "The tinnitus makes me irritable and affects my mood"
+          ]
+        },
+        "explain_impact": {
+          "instruction": "Don't just describe symptoms—explain how they affect your life:",
+          "examples": [
+            "I have to ask my wife to repeat herself multiple times",
+            "I can't hear my grandchildren when they talk to me",
+            "I've avoided social situations because I can't follow conversations",
+            "I haven't slept through the night in years because of the ringing"
+          ]
+        }
+      }
+    },
+    {
+      "section_number": 7,
+      "title": "Common Mistakes",
+      "slug": "common-mistakes",
+      "content": {
+        "mistakes": [
+          {
+            "rank": 1,
+            "mistake": "Guessing During the Hearing Test",
+            "severity": "critical",
+            "description": "This is the #1 mistake. Veterans sometimes raise their hand when they think a tone 'should' be playing. Every false positive makes your hearing appear better than it is.",
+            "fix": "Only respond when you're certain. It's okay to miss tones—that's what hearing loss looks like on a test."
+          },
+          {
+            "rank": 2,
+            "mistake": "Downplaying Tinnitus",
+            "severity": "high",
+            "description": "Many veterans have lived with ringing for so long they consider it 'normal.' Don't minimize it.",
+            "wrong": "It's just a little ringing, I'm used to it",
+            "right": "I have constant ringing that affects my sleep and concentration"
+          },
+          {
+            "rank": 3,
+            "mistake": "Not Explaining Impact",
+            "severity": "high",
+            "description": "The examiner can measure your hearing, but they can't know how it affects your life unless you tell them. Explain the real-world consequences."
+          },
+          {
+            "rank": 4,
+            "mistake": "Assuming the Examiner Knows Your Job",
+            "severity": "medium",
+            "description": "Don't assume the examiner understands that your MOS involved noise exposure. Explain it: 'I was an artillery gunner—I fired howitzers daily for 3 years' or 'I worked on the flight deck of an aircraft carrier.'"
+          },
+          {
+            "rank": 5,
+            "mistake": "Not Documenting Noise Exposure",
+            "severity": "medium",
+            "description": "If your service records don't clearly show noise exposure, your own statement matters. Write it down before the exam."
+          }
+        ]
+      }
+    },
+    {
+      "section_number": 8,
+      "title": "After the Exam",
+      "slug": "after-the-exam",
+      "content": {
+        "request_results": {
+          "instruction": "You can get a copy of your audiogram:",
+          "methods": [
+            "Call the VA at 1-800-827-1000",
+            "Use VA.gov or eBenefits",
+            "Submit a FOIA request"
+          ],
+          "note": "Review the numbers. If they don't match your experience, you may have grounds to challenge."
+        },
+        "document_exam": {
+          "instruction": "Write down immediately:",
+          "items": [
+            "How long the exam lasted",
+            "Whether the booth was truly quiet",
+            "Whether the equipment seemed to work properly",
+            "What you told the examiner about tinnitus impact",
+            "Anything that seemed incomplete"
+          ]
+        },
+        "red_flags": [
+          "The booth wasn't soundproof (you heard outside noise)",
+          "Equipment seemed to malfunction",
+          "Examiner didn't ask about tinnitus impact on daily life",
+          "Exam was rushed (less than 15 minutes)",
+          "Examiner didn't take a noise exposure history"
+        ],
+        "timeline": "Rating decisions typically arrive 60-90 days after your exam. Hearing claims are often processed faster because the results are objective."
+      }
+    }
+  ],
+  "closing_message": {
+    "text": "Your hearing damage happened in service to your country. Whether it's the constant ringing that keeps you awake or the conversations you can no longer follow, these are real injuries that deserve recognition.",
+    "encouragement": "Be honest. Don't guess. Let the test show your true hearing—and make sure the examiner understands how it affects your life."
+  },
+  "preparation_checklist": [
+    {
+      "id": "hearing-task-1",
+      "task": "Document all military noise exposure events (weapons, vehicles, aircraft, combat)",
+      "timing": "2 weeks before",
+      "category": "documentation",
+      "priority": "high"
+    },
+    {
+      "id": "hearing-task-2",
+      "task": "Review service records for entrance/exit audiograms and MOS documentation",
+      "timing": "2 weeks before",
+      "category": "records",
+      "priority": "high"
+    },
+    {
+      "id": "hearing-task-3",
+      "task": "Write detailed tinnitus description (frequency, sound type, location, volume)",
+      "timing": "1 week before",
+      "category": "documentation",
+      "priority": "high"
+    },
+    {
+      "id": "hearing-task-4",
+      "task": "Document tinnitus impact on sleep, concentration, work, and mood",
+      "timing": "1 week before",
+      "category": "documentation",
+      "priority": "high"
+    },
+    {
+      "id": "hearing-task-5",
+      "task": "List situations where hearing loss affects daily life (conversations, TV volume, etc.)",
+      "timing": "1 week before",
+      "category": "documentation",
+      "priority": "medium"
+    },
+    {
+      "id": "hearing-task-6",
+      "task": "Confirm exam date, time, and location",
+      "timing": "3 days before",
+      "category": "logistics",
+      "priority": "high"
+    },
+    {
+      "id": "hearing-task-7",
+      "task": "Avoid loud noise exposure (concerts, power tools, loud music)",
+      "timing": "24 hours before",
+      "category": "preparation",
+      "priority": "medium"
+    },
+    {
+      "id": "hearing-task-8",
+      "task": "Get normal sleep the night before",
+      "timing": "night before",
+      "category": "self-care",
+      "priority": "medium"
+    },
+    {
+      "id": "hearing-task-9",
+      "task": "Bring written notes about noise exposure history and tinnitus symptoms",
+      "timing": "day of exam",
+      "category": "logistics",
+      "priority": "high"
+    },
+    {
+      "id": "hearing-task-10",
+      "task": "Remember: Only raise hand when you ACTUALLY hear a tone—don't guess",
+      "timing": "during exam",
+      "category": "critical",
+      "priority": "critical"
+    }
+  ],
+  "key_facts": {
+    "tinnitus_max_rating": "10%",
+    "tinnitus_service_connection": "Relatively easy to establish with noise exposure history",
+    "hearing_loss_rating_basis": "Pure tone threshold averages + speech recognition scores",
+    "test_frequencies": ["500 Hz", "1000 Hz", "2000 Hz", "3000 Hz", "4000 Hz"],
+    "speech_test": "Maryland CNC word list",
+    "exam_duration": "20-30 minutes",
+    "rating_timeline": "60-90 days (often faster for hearing claims)"
+  },
+  "metadata": {
+    "source_forms": ["VA Form 21-0960N-1"],
+    "rating_criteria": "38 CFR § 4.85, 38 CFR § 4.86",
+    "related_conditions": ["meniere's_disease", "acoustic_trauma", "noise_induced_hearing_loss"],
+    "exam_type": "audiological"
+  }
+}

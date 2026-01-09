@@ -1,0 +1,25 @@
+<li id="task-item-{{ task_id|slice:"5:" }}"
+    hx-target="this"
+    hx-swap="outerHTML">
+    <form hx-post="{% url 'examprep:checklist_toggle_task' pk=checklist.id %}"
+          hx-trigger="change"
+          class="flex items-start p-3 rounded-lg hover:bg-gray-50 transition-colors">
+        {% csrf_token %}
+        <input type="hidden" name="task_id" value="{{ task_id }}">
+        <input type="checkbox"
+               id="{{ task_id }}"
+               name="completed"
+               {% if completed %}checked{% endif %}
+               class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-0.5">
+        <label for="{{ task_id }}"
+               class="ml-3 text-gray-700 {% if completed %}line-through text-gray-500{% endif %}">
+            {{ task_text }}
+        </label>
+        <span class="htmx-indicator ml-auto">
+            <svg class="animate-spin h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+        </span>
+    </form>
+</li>

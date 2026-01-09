@@ -1,0 +1,40 @@
+<div id="document-list">
+    {% if documents %}
+    <ul class="divide-y">
+        {% for doc in documents %}
+        <li class="py-3 flex justify-between items-center">
+            <div>
+                <p class="font-medium text-gray-900">{{ doc.title }}</p>
+                <p class="text-sm text-gray-500">
+                    {{ doc.get_document_type_display }}
+                    {% if doc.is_submitted %}
+                    <span class="ml-2 text-green-600">Submitted</span>
+                    {% endif %}
+                </p>
+            </div>
+            <div class="flex items-center gap-3">
+                {% if doc.file %}
+                <a href="{{ doc.file.url }}" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">
+                    View
+                </a>
+                {% endif %}
+                <form method="post" action="{% url 'appeals:appeal_delete_document' appeal.pk doc.pk %}"
+                      hx-post="{% url 'appeals:appeal_delete_document' appeal.pk doc.pk %}"
+                      hx-target="#document-list"
+                      hx-swap="outerHTML"
+                      hx-confirm="Delete this document?">
+                    {% csrf_token %}
+                    <button type="submit" class="text-red-600 hover:text-red-800 text-sm">
+                        Delete
+                    </button>
+                </form>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="text-gray-500 text-sm py-4">
+        No documents added yet. Add your VA decision letter and any supporting evidence.
+    </p>
+    {% endif %}
+</div>
