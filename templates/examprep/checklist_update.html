@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit {{ checklist.condition }} Checklist - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <!-- Breadcrumb navigation -->
+    <nav aria-label="Breadcrumb" class="mb-6">
+        <ol class="flex items-center space-x-2 text-sm text-gray-600">
+            <li>
+                <a href="{% url 'examprep:guide_list' %}" class="hover:text-blue-600 focus:underline focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Exam Prep
+                </a>
+            </li>
+            <li aria-hidden="true">
+                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                </svg>
+            </li>
+            <li>
+                <a href="{% url 'examprep:checklist_list' %}" class="hover:text-blue-600 focus:underline focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    My Checklists
+                </a>
+            </li>
+            <li aria-hidden="true">
+                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                </svg>
+            </li>
+            <li>
+                <a href="{% url 'examprep:checklist_detail' pk=checklist.id %}" class="hover:text-blue-600 focus:underline focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    {{ checklist.condition }}
+                </a>
+            </li>
+            <li aria-hidden="true">
+                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                </svg>
+            </li>
+            <li>
+                <span aria-current="page" class="font-medium text-gray-900">Edit</span>
+            </li>
+        </ol>
+    </nav>
+
+    <!-- Page header -->
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Edit Checklist</h1>
+        <p class="mt-2 text-lg text-gray-600">
+            Update your preparation notes for {{ checklist.condition }}.
+        </p>
+    </header>
+
+    <!-- Form card -->
+    <div class="bg-white shadow-lg rounded-lg p-8">
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            <!-- Form errors -->
+            {% if form.errors %}
+            <div class="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded mb-6" role="alert" aria-live="assertive">
+                <div class="flex items-start">
+                    <svg class="h-5 w-5 text-red-400 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                    </svg>
+                    <div>
+                        <p class="font-medium">Please correct the errors below:</p>
+                        <ul class="mt-1 list-disc list-inside text-sm">
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li>{{ field.label }}: {{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Basic Information Section -->
+            <section class="mb-8">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-200">
+                    Basic Information
+                </h2>
+                <div class="space-y-6">
+                    <div>
+                        <label for="id_condition" class="block text-sm font-medium text-gray-700 mb-1">
+                            {{ form.condition.label }} <span class="text-red-500">*</span>
+                        </label>
+                        {{ form.condition }}
+                        {% if form.condition.help_text %}
+                        <p id="id_condition_help" class="mt-1 text-sm text-gray-500">{{ form.condition.help_text }}</p>
+                        {% endif %}
+                        {% if form.condition.errors %}
+                        <p class="mt-1 text-sm text-red-600" role="alert">{{ form.condition.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="id_exam_date" class="block text-sm font-medium text-gray-700 mb-1">
+                            {{ form.exam_date.label }}
+                        </label>
+                        {{ form.exam_date }}
+                        {% if form.exam_date.help_text %}
+                        <p id="id_exam_date_help" class="mt-1 text-sm text-gray-500">{{ form.exam_date.help_text }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="id_guidance" class="block text-sm font-medium text-gray-700 mb-1">
+                            {{ form.guidance.label }}
+                        </label>
+                        {{ form.guidance }}
+                        {% if form.guidance.help_text %}
+                        <p id="id_guidance_help" class="mt-1 text-sm text-gray-500">{{ form.guidance.help_text }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+
+            <!-- Symptom Documentation Section -->
+            <section class="mb-8">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-200">
+                    Document Your Symptoms
+                </h2>
+                <p class="text-gray-600 mb-4">
+                    Use these notes to prepare what you'll share during your exam.
+                </p>
+                <div class="space-y-6">
+                    <div>
+                        <label for="id_symptom_notes" class="block text-sm font-medium text-gray-700 mb-1">
+                            {{ form.symptom_notes.label }}
+                        </label>
+                        {{ form.symptom_notes }}
+                        {% if form.symptom_notes.help_text %}
+                        <p id="id_symptom_notes_help" class="mt-1 text-sm text-gray-500">{{ form.symptom_notes.help_text }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="id_worst_day_description" class="block text-sm font-medium text-gray-700 mb-1">
+                            {{ form.worst_day_description.label }}
+                        </label>
+                        {{ form.worst_day_description }}
+                        {% if form.worst_day_description.help_text %}
+                        <p id="id_worst_day_description_help" class="mt-1 text-sm text-gray-500">{{ form.worst_day_description.help_text }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="id_functional_limitations" class="block text-sm font-medium text-gray-700 mb-1">
+                            {{ form.functional_limitations.label }}
+                        </label>
+                        {{ form.functional_limitations }}
+                        {% if form.functional_limitations.help_text %}
+                        <p id="id_functional_limitations_help" class="mt-1 text-sm text-gray-500">{{ form.functional_limitations.help_text }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="id_questions_for_examiner" class="block text-sm font-medium text-gray-700 mb-1">
+                            {{ form.questions_for_examiner.label }}
+                        </label>
+                        {{ form.questions_for_examiner }}
+                        {% if form.questions_for_examiner.help_text %}
+                        <p id="id_questions_for_examiner_help" class="mt-1 text-sm text-gray-500">{{ form.questions_for_examiner.help_text }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+
+            <!-- Form actions -->
+            <div class="flex flex-col sm:flex-row sm:justify-between gap-4 pt-6 border-t border-gray-200">
+                <a href="{% url 'examprep:checklist_detail' pk=checklist.id %}"
+                   class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="inline-flex justify-center items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <svg class="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Danger zone -->
+    <div class="mt-8 bg-red-50 border border-red-200 rounded-lg p-6">
+        <h2 class="text-lg font-medium text-red-900 mb-3">Danger Zone</h2>
+        <p class="text-sm text-red-700 mb-4">
+            Deleting this checklist will permanently remove all your notes and progress. This cannot be undone.
+        </p>
+        <a href="{% url 'examprep:checklist_delete' pk=checklist.id %}"
+           class="inline-flex items-center px-4 py-2 border border-red-300 shadow-sm text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+            <svg class="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+            Delete Checklist
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-2xl">
+    <nav class="mb-4 text-sm" aria-label="Breadcrumb">
+        <a href="{% url 'appeals:appeal_detail' appeal.pk %}" class="text-blue-700 hover:underline">
+            {{ appeal.get_appeal_type_display|default:"Appeal" }}
+        </a>
+        <span class="mx-2 text-gray-400">/</span>
+        <span class="text-gray-600">Add Document</span>
+    </nav>
+
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Add Document</h1>
+        <p class="text-gray-600">Upload or track documents for your appeal.</p>
+    </header>
+
+    <form method="post" enctype="multipart/form-data" class="bg-white rounded-lg shadow-md border p-6">
+        {% csrf_token %}
+
+        <div class="mb-6">
+            <label for="id_document_type" class="block font-semibold text-gray-900 mb-2">
+                Document Type *
+            </label>
+            {{ form.document_type }}
+        </div>
+
+        <div class="mb-6">
+            <label for="id_title" class="block font-semibold text-gray-900 mb-2">
+                Title *
+            </label>
+            {{ form.title }}
+        </div>
+
+        <div class="mb-6">
+            <label for="id_file" class="block font-semibold text-gray-900 mb-2">
+                File (Optional)
+            </label>
+            {{ form.file }}
+            <p class="text-sm text-gray-500 mt-1">
+                PDF, JPG, PNG, or TIFF. Max 50MB.
+            </p>
+        </div>
+
+        <div class="mb-6">
+            <label for="id_notes" class="block font-semibold text-gray-900 mb-2">
+                Notes
+            </label>
+            {{ form.notes }}
+        </div>
+
+        <div class="flex gap-4">
+            <button type="submit"
+                    class="flex-1 bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 px-4 rounded transition">
+                Add Document
+            </button>
+            <a href="{% url 'appeals:appeal_detail' appeal.pk %}"
+               class="px-4 py-3 text-gray-600 hover:text-gray-900 font-medium">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

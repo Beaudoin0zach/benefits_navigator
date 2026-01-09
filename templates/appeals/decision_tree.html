@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-2xl">
+    <!-- Page Header -->
+    <header class="mb-8 text-center">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Find Your Appeal Path</h1>
+        <p class="text-lg text-gray-600">
+            Answer 3 questions to find the best appeal option for your situation.
+        </p>
+    </header>
+
+    {% if show_result and recommendation %}
+    <!-- Recommendation Result -->
+    <section class="mb-8" aria-live="polite">
+        <div class="bg-green-50 border-2 border-green-500 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-bold text-green-900 mb-2">
+                Our Recommendation: {{ recommendation.name }}
+            </h2>
+            <p class="text-green-800 mb-4">{{ recommendation.reason }}</p>
+
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="bg-white rounded p-3">
+                    <span class="text-sm text-gray-500">VA Form</span>
+                    <p class="font-semibold text-gray-900">{{ recommendation.form }}</p>
+                </div>
+                <div class="bg-white rounded p-3">
+                    <span class="text-sm text-gray-500">Average Time</span>
+                    <p class="font-semibold text-gray-900">{{ recommendation.time }}</p>
+                </div>
+            </div>
+
+            {% if user.is_authenticated %}
+            <form method="post" action="{% url 'appeals:decision_tree' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="hidden" name="start_appeal" value="1">
+                <button type="submit"
+                        class="w-full bg-green-700 hover:bg-green-800 text-white font-semibold py-3 px-4 rounded transition">
+                    Start This Appeal
+                </button>
+            </form>
+            {% else %}
+            <div class="bg-white rounded p-4 border">
+                <p class="text-gray-700 mb-3">Create a free account to start tracking your appeal.</p>
+                <a href="{% url 'account_signup' %}?next={% url 'appeals:decision_tree' %}"
+                   class="inline-block bg-green-700 hover:bg-green-800 text-white font-semibold py-2 px-4 rounded transition">
+                    Create Account & Start Appeal
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Try Again -->
+        <div class="text-center">
+            <a href="{% url 'appeals:decision_tree' %}" class="text-blue-700 hover:text-blue-900">
+                &larr; Start Over
+            </a>
+        </div>
+    </section>
+
+    {% else %}
+    <!-- Decision Tree Questions -->
+    <form method="post" class="bg-white rounded-lg shadow-md border p-6">
+        {% csrf_token %}
+
+        <!-- Question 1: New Evidence -->
+        <div class="mb-8">
+            <label for="id_has_new_evidence" class="block text-lg font-semibold text-gray-900 mb-2">
+                1. {{ form.has_new_evidence.label }}
+            </label>
+            <p class="text-gray-600 text-sm mb-3" id="evidence-help">
+                {{ form.has_new_evidence.help_text }}
+            </p>
+            {{ form.has_new_evidence }}
+            {% if form.has_new_evidence.errors %}
+            <p class="error-message mt-1">{{ form.has_new_evidence.errors.0 }}</p>
+            {% endif %}
+
+            <!-- Examples -->
+            <details class="mt-3 text-sm">
+                <summary class="text-blue-700 cursor-pointer hover:text-blue-900">
+                    What counts as "new evidence"?
+                </summary>
+                <div class="mt-2 p-3 bg-gray-50 rounded">
+                    <p class="font-medium mb-2">Examples of new evidence:</p>
+                    <ul class="list-disc list-inside space-y-1 text-gray-700">
+                        <li>A nexus letter from a doctor</li>
+                        <li>New medical records or test results</li>
+                        <li>Buddy statements from people who witnessed your condition</li>
+                        <li>Treatment records the VA didn't have</li>
+                        <li>A private DBQ (Disability Benefits Questionnaire)</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+
+        <!-- Question 2: VA Error -->
+        <div class="mb-8">
+            <label for="id_believes_va_error" class="block text-lg font-semibold text-gray-900 mb-2">
+                2. {{ form.believes_va_error.label }}
+            </label>
+            <p class="text-gray-600 text-sm mb-3" id="error-help">
+                {{ form.believes_va_error.help_text }}
+            </p>
+            {{ form.believes_va_error }}
+            {% if form.believes_va_error.errors %}
+            <p class="error-message mt-1">{{ form.believes_va_error.errors.0 }}</p>
+            {% endif %}
+
+            <!-- Examples -->
+            <details class="mt-3 text-sm">
+                <summary class="text-blue-700 cursor-pointer hover:text-blue-900">
+                    What counts as a "VA error"?
+                </summary>
+                <div class="mt-2 p-3 bg-gray-50 rounded">
+                    <p class="font-medium mb-2">Examples of VA errors:</p>
+                    <ul class="list-disc list-inside space-y-1 text-gray-700">
+                        <li>Ignored a nexus letter or medical opinion in your file</li>
+                        <li>Miscalculated your combined rating</li>
+                        <li>Used the wrong diagnostic code</li>
+                        <li>Didn't consider flare-ups or functional limitations</li>
+                        <li>C&P exam was too short or didn't test everything</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+
+        <!-- Question 3: Hearing -->
+        <div class="mb-8">
+            <label for="id_wants_hearing" class="block text-lg font-semibold text-gray-900 mb-2">
+                3. {{ form.wants_hearing.label }}
+            </label>
+            <p class="text-gray-600 text-sm mb-3" id="hearing-help">
+                {{ form.wants_hearing.help_text }}
+            </p>
+            {{ form.wants_hearing }}
+            {% if form.wants_hearing.errors %}
+            <p class="error-message mt-1">{{ form.wants_hearing.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Submit -->
+        <button type="submit"
+                class="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 px-4 rounded transition">
+            Get My Recommendation
+        </button>
+    </form>
+
+    <!-- Disclaimer -->
+    <p class="mt-6 text-sm text-gray-500 text-center">
+        This tool provides general guidance. For complex cases, consider consulting a
+        <a href="https://www.va.gov/vso/" class="text-blue-700 hover:underline" target="_blank" rel="noopener">
+            Veterans Service Organization (VSO)
+        </a>
+        - their help is free.
+    </p>
+    {% endif %}
+</div>
+{% endblock %}

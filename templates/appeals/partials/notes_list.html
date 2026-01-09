@@ -1,0 +1,27 @@
+<div id="notes-list">
+    {% if notes %}
+    <ul class="space-y-4">
+        {% for note in notes %}
+        <li class="{% if note.is_important %}bg-yellow-50 border-l-4 border-yellow-400{% else %}bg-gray-50{% endif %} p-3 rounded">
+            <div class="flex justify-between items-start mb-1">
+                <span class="text-xs font-medium px-2 py-1 rounded
+                    {% if note.note_type == 'status' %}bg-blue-100 text-blue-700
+                    {% elif note.note_type == 'reminder' %}bg-yellow-100 text-yellow-700
+                    {% elif note.note_type == 'va_communication' %}bg-purple-100 text-purple-700
+                    {% else %}bg-gray-200 text-gray-700{% endif %}">
+                    {{ note.get_note_type_display }}
+                </span>
+                <span class="text-xs text-gray-500">
+                    {{ note.created_at|date:"M d, Y" }}
+                </span>
+            </div>
+            <p class="text-gray-700 text-sm">{{ note.content }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="text-gray-500 text-sm py-4">
+        No notes yet. Add notes to track your progress and communications.
+    </p>
+    {% endif %}
+</div>

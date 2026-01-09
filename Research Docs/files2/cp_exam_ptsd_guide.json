@@ -1,0 +1,434 @@
+{
+  "guide_type": "condition_specific",
+  "condition": "PTSD",
+  "condition_code": "ptsd",
+  "title": "PTSD C&P Exam Preparation Guide",
+  "dbq_form": "VA Form 21-0960P-3",
+  "reading_level": "8th grade",
+  "word_count": 1890,
+  "last_updated": "2026-01",
+  "sections": [
+    {
+      "section_number": 1,
+      "title": "Introduction",
+      "slug": "introduction",
+      "content": {
+        "overview": "A PTSD C&P exam is different from other disability exams. There are no X-rays, no blood tests, and no physical measurements. Instead, you'll have a conversation with a mental health professional about your experiences and how they affect your life today.",
+        "acknowledgments": {
+          "difficulty": "We know this is hard. Talking about trauma isn't easy. Many veterans have spent years trying NOT to think about certain things, and now you're being asked to discuss them with a stranger. That takes real courage.",
+          "stigma": "Mental health stigma is real. The military taught you to be strong, to push through, to never show weakness. But seeking help for PTSD isn't weakness—it's taking care of an injury you received in service, just like any physical wound.",
+          "reassurance": "It's okay to not be okay. This exam is your opportunity to show the real impact of what you've been through. You don't have to be 'fixed' or 'better' to deserve benefits. You just have to be honest."
+        },
+        "what_exam_determines": "The examiner evaluates how severe your PTSD symptoms are and how much they interfere with your work and daily life. This determines your disability rating, which can range from 0% to 100%."
+      }
+    },
+    {
+      "section_number": 2,
+      "title": "What the Exam Measures",
+      "slug": "what-exam-measures",
+      "content": {
+        "dbq_explanation": "The examiner uses VA Form 21-0960P-3 (Review PTSD DBQ).",
+        "dbq_documents": [
+          "Diagnosis confirmation: Do you meet the criteria for PTSD?",
+          "Stressor verification: What traumatic event(s) caused your PTSD?",
+          "Symptom categories: Which symptoms do you experience and how often?",
+          "Functional impairment: How does PTSD affect your ability to work and live?"
+        ],
+        "dsm5_criteria": {
+          "title": "DSM-5 Diagnostic Criteria",
+          "explanation": "The examiner checks whether your symptoms fit the medical definition of PTSD, which includes:",
+          "criteria": [
+            "Exposure to trauma (combat, assault, accidents, death)",
+            "Intrusion symptoms (nightmares, flashbacks, unwanted memories)",
+            "Avoidance (avoiding reminders, not talking about it)",
+            "Negative changes in mood/thinking (guilt, detachment, loss of interest)",
+            "Hyperarousal (being on edge, angry outbursts, sleep problems)"
+          ]
+        },
+        "rating_levels": [
+          {
+            "percentage": 0,
+            "description": "Diagnosis confirmed, but symptoms controlled by medication"
+          },
+          {
+            "percentage": 10,
+            "description": "Mild symptoms that decrease work efficiency only during stress"
+          },
+          {
+            "percentage": 30,
+            "description": "Occasional decrease in work efficiency with intermittent inability to perform tasks"
+          },
+          {
+            "percentage": 50,
+            "description": "Reduced reliability and productivity; difficulty with work relationships"
+          },
+          {
+            "percentage": 70,
+            "description": "Deficiencies in most areas: work, family, judgment, thinking, mood"
+          },
+          {
+            "percentage": 100,
+            "description": "Total occupational and social impairment"
+          }
+        ],
+        "key_insight": "The rating isn't just about having symptoms—it's about how those symptoms affect your functioning. A veteran with 'mild' nightmares who can't hold a job may rate higher than one with severe nightmares who works full-time."
+      }
+    },
+    {
+      "section_number": 3,
+      "title": "What the Examiner Observes",
+      "slug": "examiner-observations",
+      "content": {
+        "overview": "While there are no physical tests, the examiner will note observations about:",
+        "observation_areas": [
+          {
+            "area": "Appearance and demeanor",
+            "details": "Are you well-groomed or showing signs of self-neglect? Do you appear anxious, agitated, or withdrawn?"
+          },
+          {
+            "area": "Affect and mood",
+            "details": "How do you express emotion during the conversation? Do you seem flat, irritable, tearful, or anxious?"
+          },
+          {
+            "area": "Thought processes",
+            "details": "Are your thoughts organized and logical? Do you have difficulty staying on topic?"
+          },
+          {
+            "area": "Memory and concentration",
+            "details": "Can you recall dates and details? Do you lose track of questions or need them repeated?"
+          }
+        ],
+        "important_note": "These observations happen throughout the entire exam, not in a specific 'test' section. Just be yourself—don't try to perform or hide how you're feeling."
+      }
+    },
+    {
+      "section_number": 4,
+      "title": "Questions to Expect",
+      "slug": "questions-to-expect",
+      "content": {
+        "stressor_questions": {
+          "title": "About Your Stressor Event(s)",
+          "questions": [
+            "What happened during the traumatic event?",
+            "When and where did it occur?",
+            "How did it affect you at the time?"
+          ],
+          "note": "You don't need to provide every detail of your trauma. Give enough information to establish what happened, but you can say 'I'd rather not go into more detail' if needed."
+        },
+        "symptom_categories": [
+          {
+            "category": "Intrusion symptoms",
+            "questions": [
+              "How often do you have nightmares? What are they about?",
+              "Do you experience flashbacks? How often and what triggers them?",
+              "Do unwanted memories come up during the day?"
+            ]
+          },
+          {
+            "category": "Avoidance",
+            "questions": [
+              "What places, people, or situations do you avoid?",
+              "Do you avoid talking or thinking about your experiences?"
+            ]
+          },
+          {
+            "category": "Mood and thinking changes",
+            "questions": [
+              "Do you feel detached from family or friends?",
+              "Have you lost interest in activities you used to enjoy?",
+              "Do you experience guilt, shame, or blame yourself?",
+              "Do you have difficulty feeling positive emotions?"
+            ]
+          },
+          {
+            "category": "Hyperarousal",
+            "questions": [
+              "How is your sleep? How many hours per night?",
+              "Do you startle easily?",
+              "Are you always on guard or watching for danger?",
+              "Do you have angry outbursts? How often?",
+              "Can you concentrate on tasks like reading or watching TV?"
+            ]
+          }
+        ],
+        "safety_questions": {
+          "title": "Standard Safety Questions",
+          "explanation": "The examiner will ask about suicidal thoughts. This is standard protocol for every PTSD exam—it's not because of something you said. Answer honestly. If you have had suicidal thoughts, say so. If you haven't, that's fine too."
+        },
+        "functioning_questions": {
+          "title": "Work and Social Functioning",
+          "questions": [
+            "Are you currently working? If not, why?",
+            "How many jobs have you had since leaving service?",
+            "How do you get along with coworkers and supervisors?",
+            "Do you have close relationships? How is your marriage/family?",
+            "What do you do for social activities?"
+          ]
+        }
+      }
+    },
+    {
+      "section_number": 5,
+      "title": "Preparation Tips",
+      "slug": "preparation-tips",
+      "content": {
+        "two_weeks_before": {
+          "review_records": [
+            "Read your service treatment records for any mental health notes",
+            "Find documentation of your stressor event (if available)",
+            "Review any private treatment records you've submitted"
+          ],
+          "find_dbq": "Search 'VA PTSD DBQ' to see the exact form. Note what symptoms and impairment levels are listed. Understand what criteria correspond to different ratings."
+        },
+        "one_week_before": {
+          "document_symptoms": {
+            "instruction": "Create a written list of every PTSD symptom you experience. For each one, note:",
+            "details": [
+              "How often it happens (daily, weekly, monthly)",
+              "How severe it is (mild, moderate, severe)",
+              "A specific recent example"
+            ]
+          },
+          "prepare_examples": {
+            "instruction": "Instead of 'I have nightmares,' prepare:",
+            "example": "I have combat nightmares 4-5 nights per week. Last Tuesday, I woke up at 3 AM in a cold sweat, punching the air. My wife had to sleep in another room."
+          },
+          "document_impact": [
+            "How has PTSD affected your work? (jobs lost, demotions, conflicts)",
+            "How has it affected relationships? (divorces, isolation, family strain)",
+            "How has it affected daily activities? (can't go to stores, don't leave house)"
+          ]
+        },
+        "support_options": {
+          "bring_someone": "You can bring a spouse, friend, or VSO representative for support. They can wait in the waiting room or, with the examiner's permission, may join you.",
+          "buddy_statements": "If family members or friends have witnessed your symptoms, their written statements can support your claim. Bring copies."
+        }
+      }
+    },
+    {
+      "section_number": 6,
+      "title": "Day-of Guidance",
+      "slug": "day-of-guidance",
+      "content": {
+        "emotional_permission": "If you cry, get angry, or need to pause—that's okay. You're discussing trauma. The examiner expects emotional responses and it actually helps document the severity of your condition.",
+        "communication_guidelines": {
+          "be_honest": "Don't minimize symptoms to appear strong, and don't exaggerate to seem worse. Inconsistencies hurt your credibility.",
+          "describe_worst_days": "The exam captures a moment in time. Make sure to explain: 'Today is actually a better day. On my worst days, I can't get out of bed.'",
+          "memory_gaps": "If you don't remember, say so. Memory problems are a PTSD symptom. Saying 'I don't remember' is better than guessing.",
+          "take_breaks": "If you need a moment to collect yourself, ask for one. Say: 'I need a minute' or 'Can we take a short break?'"
+        },
+        "example_statements": [
+          {
+            "instead_of": "I have nightmares sometimes",
+            "say": "I have nightmares 4-5 times per week"
+          },
+          {
+            "instead_of": "I don't like crowds",
+            "say": "I avoid grocery stores, malls, and restaurants because I get panic attacks"
+          },
+          {
+            "instead_of": "I have trouble at work",
+            "say": "I've been fired from 3 jobs in 2 years because of angry outbursts"
+          },
+          {
+            "instead_of": "My marriage is struggling",
+            "say": "My wife and I sleep in separate rooms and we've discussed divorce twice"
+          }
+        ],
+        "what_not_to_do": [
+          "Don't take anti-anxiety medication above your normal dose",
+          "Don't drink alcohol before the exam",
+          "Don't bring weapons or anything that could seem threatening",
+          "Don't get confrontational with the examiner"
+        ]
+      }
+    },
+    {
+      "section_number": 7,
+      "title": "Common Mistakes",
+      "slug": "common-mistakes",
+      "content": {
+        "mistakes": [
+          {
+            "mistake": "Downplaying Symptoms",
+            "description": "'I'm handling it' or 'It's not that bad' will be written in your exam notes and hurt your rating. Military culture taught you to minimize—this exam requires the opposite."
+          },
+          {
+            "mistake": "Not Mentioning All Symptoms",
+            "description": "Many veterans don't mention certain symptoms due to shame or embarrassment: sexual dysfunction, relationship problems, alcohol/substance use to cope, thoughts of self-harm. These symptoms matter for your rating. Find a way to mention them."
+          },
+          {
+            "mistake": "Not Explaining Full Impact",
+            "description": "The examiner needs to understand HOW symptoms affect your life. It's not just 'I have nightmares'—it's 'I average 3 hours of sleep and I'm exhausted every day.' It's not just 'I'm irritable'—it's 'I've lost two jobs because I yelled at my supervisor.'"
+          },
+          {
+            "mistake": "Forgetting Medication Side Effects",
+            "description": "If your PTSD medication causes weight gain, sexual dysfunction, fatigue, or other problems—mention it. These impact your quality of life."
+          },
+          {
+            "mistake": "Assuming the Examiner Understands",
+            "description": "Contract examiners may not have military experience. Don't use acronyms without explaining them. Don't assume they understand what combat, deployment, or military sexual trauma involves."
+          },
+          {
+            "mistake": "Not Preparing Specific Examples",
+            "description": "Vague answers get vague ratings. Prepare 2-3 specific, recent examples for your major symptoms before the exam."
+          }
+        ]
+      }
+    },
+    {
+      "section_number": 8,
+      "title": "After the Exam",
+      "slug": "after-the-exam",
+      "content": {
+        "document_immediately": {
+          "instruction": "Within an hour of leaving, write down:",
+          "items": [
+            "How long the exam lasted",
+            "What questions were asked",
+            "What you told them about your symptoms",
+            "How the examiner behaved (attentive, rushed, dismissive?)",
+            "Anything you forgot to mention"
+          ]
+        },
+        "inadequate_exam_signs": [
+          "Exam lasted less than 30 minutes",
+          "Examiner didn't ask about all symptom categories",
+          "Examiner seemed to have already made up their mind",
+          "You weren't asked about work or social functioning",
+          "Examiner didn't review your stressor evidence"
+        ],
+        "how_to_challenge": {
+          "before_rating_decision": [
+            "Call the VA at 1-800-827-1000 to report concerns",
+            "Submit a written statement about exam inadequacy",
+            "Request a new exam with a different examiner"
+          ],
+          "after_unfavorable_decision": [
+            "File a Supplemental Claim with additional evidence",
+            "Request a Higher-Level Review",
+            "Get a private psychologist's opinion (nexus letter)"
+          ]
+        },
+        "timeline": "Rating decisions typically come 60-90 days after your exam. Mental health claims sometimes take longer due to complexity. Check VA.gov for status updates."
+      }
+    }
+  ],
+  "closing_message": {
+    "text": "PTSD is a legitimate injury from your service. You're not weak for having it, and you're not 'gaming the system' by seeking the benefits you've earned. Be honest, be thorough, and let the examiner see how this condition really affects your life.",
+    "encouragement": "You survived what caused your PTSD. You can get through this exam."
+  },
+  "preparation_checklist": [
+    {
+      "id": "ptsd-task-1",
+      "task": "Find and read PTSD DBQ form (VA Form 21-0960P-3)",
+      "timing": "2 weeks before",
+      "category": "research",
+      "priority": "high"
+    },
+    {
+      "id": "ptsd-task-2",
+      "task": "Review your service treatment records for mental health notes",
+      "timing": "2 weeks before",
+      "category": "records",
+      "priority": "high"
+    },
+    {
+      "id": "ptsd-task-3",
+      "task": "Locate documentation of your stressor event(s)",
+      "timing": "2 weeks before",
+      "category": "records",
+      "priority": "high"
+    },
+    {
+      "id": "ptsd-task-4",
+      "task": "Write down ALL PTSD symptoms you experience",
+      "timing": "1 week before",
+      "category": "documentation",
+      "priority": "high"
+    },
+    {
+      "id": "ptsd-task-5",
+      "task": "Document frequency of each symptom (daily/weekly/monthly)",
+      "timing": "1 week before",
+      "category": "documentation",
+      "priority": "high"
+    },
+    {
+      "id": "ptsd-task-6",
+      "task": "Prepare 2-3 specific recent examples of symptom episodes",
+      "timing": "1 week before",
+      "category": "documentation",
+      "priority": "high"
+    },
+    {
+      "id": "ptsd-task-7",
+      "task": "Document impact on work (jobs lost, conflicts, demotions)",
+      "timing": "1 week before",
+      "category": "documentation",
+      "priority": "medium"
+    },
+    {
+      "id": "ptsd-task-8",
+      "task": "Document impact on relationships (divorce, isolation, family strain)",
+      "timing": "1 week before",
+      "category": "documentation",
+      "priority": "medium"
+    },
+    {
+      "id": "ptsd-task-9",
+      "task": "List all current medications with dosages and side effects",
+      "timing": "1 week before",
+      "category": "documentation",
+      "priority": "medium"
+    },
+    {
+      "id": "ptsd-task-10",
+      "task": "Gather buddy statements from family/friends who've witnessed symptoms",
+      "timing": "1 week before",
+      "category": "evidence",
+      "priority": "medium"
+    },
+    {
+      "id": "ptsd-task-11",
+      "task": "Decide if you want a support person at the exam",
+      "timing": "3 days before",
+      "category": "logistics",
+      "priority": "low"
+    },
+    {
+      "id": "ptsd-task-12",
+      "task": "Confirm exam date, time, and location",
+      "timing": "3 days before",
+      "category": "logistics",
+      "priority": "high"
+    },
+    {
+      "id": "ptsd-task-13",
+      "task": "Prepare what to bring: ID, notes, medication list, buddy statements",
+      "timing": "1 day before",
+      "category": "logistics",
+      "priority": "high"
+    },
+    {
+      "id": "ptsd-task-14",
+      "task": "Get normal sleep (don't stay up preparing)",
+      "timing": "night before",
+      "category": "self-care",
+      "priority": "medium"
+    },
+    {
+      "id": "ptsd-task-15",
+      "task": "Take only your normal medication doses",
+      "timing": "day of exam",
+      "category": "self-care",
+      "priority": "high"
+    }
+  ],
+  "metadata": {
+    "source_forms": ["VA Form 21-0960P-3"],
+    "rating_criteria": "38 CFR § 4.130",
+    "related_conditions": ["anxiety", "depression", "mst", "tbi"],
+    "exam_type": "mental_health"
+  }
+}

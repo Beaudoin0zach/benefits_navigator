@@ -1,0 +1,121 @@
+{
+  "guide_type": "appeal_guidance",
+  "appeal_type": "supplemental",
+  "title": "Supplemental Claim Guide",
+  "va_form_number": "VA Form 20-0995",
+  "average_processing_days": 93,
+  "reading_level": "8th grade",
+  "last_updated": "2026-01",
+
+  "when_to_use": "File a Supplemental Claim when you have NEW and RELEVANT evidence that the VA has not seen before.\n\nGood situations for a Supplemental Claim:\n- You obtained a nexus letter from a doctor\n- You have new medical records or test results\n- You got buddy statements from people who witnessed your condition\n- You found treatment records the VA didn't have\n- You obtained a private DBQ (Disability Benefits Questionnaire)\n- Your condition has worsened and you have documentation\n\nThe key requirement: You MUST have new evidence. Without it, your Supplemental Claim will be denied.",
+
+  "when_not_to_use": "Do NOT file a Supplemental Claim if:\n\n- You don't have any new evidence (use Higher-Level Review instead)\n- You believe the VA made an error with evidence they already had (use Higher-Level Review)\n- You want to present your case in person to a judge (use Board Appeal with Hearing)\n- Your only 'new evidence' is a statement saying you disagree (that's not enough)\n\nFiling a Supplemental Claim without new evidence wastes time and may reset certain deadlines.",
+
+  "overview": "A Supplemental Claim lets you reopen a denied claim by submitting new and relevant evidence. It's the fastest appeal option when you have additional documentation the VA hasn't reviewed.\n\nWith approximately 50% of Supplemental Claims succeeding, this is often the best path when you can strengthen your case with new evidence. The average processing time is about 93 days - much faster than Board Appeals.\n\nThe VA will review your original claim file PLUS your new evidence and make a new decision. If approved, your effective date can go back to your original Intent to File date.",
+
+  "requirements": "To file a Supplemental Claim, you need:\n\n**Required:**\n- VA Form 20-0995 (Decision Review Request: Supplemental Claim)\n- New and relevant evidence the VA has not previously considered\n- Filed within the appeal period (generally 1 year from decision, but some exceptions apply)\n\n**What counts as 'new and relevant' evidence:**\n- Medical records dated after your original claim\n- A nexus letter connecting your condition to service\n- Buddy statements with specific details\n- Private DBQ completed by your doctor\n- Service records you didn't submit before\n- Updated diagnosis or treatment records\n\n**What does NOT count:**\n- A letter saying you disagree with the decision\n- The same evidence resubmitted\n- General statements without specific medical support",
+
+  "step_by_step": "**Step 1: Review Your Decision Letter**\nRead why the VA denied your claim. Identify exactly what evidence was missing. This tells you what new evidence you need.\n\n**Step 2: Gather New Evidence**\nObtain the specific evidence that addresses the denial reason:\n- If denied for no nexus: Get a nexus letter from a doctor\n- If denied for no current diagnosis: Get updated medical records\n- If denied for no in-service event: Get buddy statements or find service records\n\n**Step 3: Complete VA Form 20-0995**\nFill out the form completely:\n- Check the box for 'Supplemental Claim'\n- List all conditions you're appealing\n- Identify the new evidence you're submitting\n\n**Step 4: Submit Everything Together**\nSubmit your form AND your new evidence at the same time:\n- Online at VA.gov (fastest)\n- By mail to your regional office\n- In person at a VA regional office\n- Through your VSO\n\n**Step 5: Wait for Decision**\nThe VA will review your original file plus new evidence. Average wait is ~93 days. You can check status at VA.gov.",
+
+  "evidence_guidance": "**Strong Evidence for Supplemental Claims:**\n\n**Nexus Letters** (Most Important)\n- Must be from a qualified medical professional\n- Must use the phrase 'at least as likely as not' (50% or greater probability)\n- Should reference your service records and current diagnosis\n- Should explain the medical reasoning\n\n**Medical Records**\n- Current treatment records showing ongoing condition\n- Diagnostic tests (MRI, X-ray, bloodwork)\n- Specialist evaluations\n- Records showing worsening condition\n\n**Buddy Statements**\n- Specific dates and events\n- First-hand observations\n- Details about how condition affects daily life\n- From people who knew you in service or currently\n\n**Private DBQs**\n- Completed by your own doctor\n- Uses the same form C&P examiners use\n- Provides objective measurements\n\n**Weak Evidence (Avoid):**\n- Vague statements without specifics\n- Self-diagnosis without medical support\n- Generic templates without personal details\n- Evidence that doesn't address the denial reason",
+
+  "common_mistakes": "**Mistake 1: Filing Without New Evidence**\nThe #1 reason Supplemental Claims fail. 'New evidence' must be something the VA hasn't seen. Resubmitting the same records or writing a letter disagreeing isn't enough.\n\n**Mistake 2: Evidence That Doesn't Address the Denial**\nIf you were denied for lack of nexus, submitting more treatment records won't help - you need a nexus letter. Match your evidence to the specific denial reason.\n\n**Mistake 3: Weak Nexus Letters**\nA letter that says 'could be related to service' or 'possibly connected' isn't strong enough. The language must be 'at least as likely as not' (50%+ probability).\n\n**Mistake 4: Missing the Deadline**\nYou generally have 1 year from your decision date. After that, you may lose the ability to preserve your original effective date.\n\n**Mistake 5: Not Including All Evidence**\nSubmit everything at once. If you submit the form and say 'evidence coming later,' your claim may be decided before it arrives.\n\n**Mistake 6: Vague Buddy Statements**\n'He had back pain in the Army' isn't helpful. 'I witnessed SGT Smith injure his back on March 15, 2012, while lifting equipment during deployment to Afghanistan' is much better.",
+
+  "after_submission": "**What Happens After You Submit:**\n\n**Week 1-2: Claim Received**\nYou'll get confirmation that VA received your Supplemental Claim. Status shows 'Claim Received' or 'Initial Review.'\n\n**Week 2-8: Evidence Review**\nVA reviews your original file plus new evidence. They may:\n- Request additional records\n- Schedule a new C&P exam (if needed)\n- Send your claim for a medical opinion\n\n**Week 8-12: Rating Decision**\nA rating specialist reviews everything and makes a decision.\n\n**Average Timeline: ~93 days**\n\n**Possible Outcomes:**\n- **Granted:** Your appeal succeeded. You'll receive a new rating and back pay.\n- **Partially Granted:** Some issues approved, others denied. Review carefully.\n- **Denied:** Your appeal was not approved. You can file another Supplemental Claim with different evidence, request Higher-Level Review, or file a Board Appeal.\n\n**If Denied Again:**\nDon't give up. Review the new denial letter, identify what's still missing, and consider your options. Many veterans succeed on subsequent appeals.",
+
+  "tips": "**Pro Tips for Supplemental Claims:**\n\n1. **Get a Strong Nexus Letter First**\nThis is often the missing piece. A good nexus letter from a qualified doctor can turn a denied claim into an approval.\n\n2. **Read the Denial Letter Carefully**\nThe VA tells you exactly why they denied your claim. Your new evidence should directly address those specific reasons.\n\n3. **Use a VSO**\nVeterans Service Organizations provide free help. They can review your case, help gather evidence, and ensure your form is complete.\n\n4. **Consider a Private DBQ**\nIf your C&P exam was inadequate, get your own doctor to complete a DBQ. It uses the same form and can provide better documentation.\n\n5. **Be Specific in Buddy Statements**\nDates, locations, and specific incidents matter. 'I saw him get hurt' is weak. 'I witnessed the injury on [date] at [location] when [specific event]' is strong.\n\n6. **Submit Everything Together**\nDon't file the form and promise evidence later. Have everything ready and submit as a complete package.\n\n7. **Keep Copies of Everything**\nMake copies of all evidence before submitting. You may need to reference it later.\n\n8. **Track Your Claim**\nCheck status regularly at VA.gov. If it's been over 93 days with no movement, contact VA or your VSO.",
+
+  "checklist_items": [
+    {
+      "id": "supp-1",
+      "task": "Review your VA decision letter and identify the specific denial reasons",
+      "timing": "First step",
+      "category": "preparation",
+      "priority": "critical"
+    },
+    {
+      "id": "supp-2",
+      "task": "List what NEW evidence you have that addresses each denial reason",
+      "timing": "First step",
+      "category": "preparation",
+      "priority": "critical"
+    },
+    {
+      "id": "supp-3",
+      "task": "Obtain a nexus letter if you were denied for lack of service connection",
+      "timing": "Before filing",
+      "category": "evidence",
+      "priority": "high"
+    },
+    {
+      "id": "supp-4",
+      "task": "Gather new medical records or treatment documentation",
+      "timing": "Before filing",
+      "category": "evidence",
+      "priority": "high"
+    },
+    {
+      "id": "supp-5",
+      "task": "Get buddy statements with specific dates, locations, and observations",
+      "timing": "Before filing",
+      "category": "evidence",
+      "priority": "medium"
+    },
+    {
+      "id": "supp-6",
+      "task": "Consider getting a private DBQ from your doctor",
+      "timing": "Before filing",
+      "category": "evidence",
+      "priority": "medium"
+    },
+    {
+      "id": "supp-7",
+      "task": "Download and complete VA Form 20-0995",
+      "timing": "When evidence is ready",
+      "category": "form",
+      "priority": "high"
+    },
+    {
+      "id": "supp-8",
+      "task": "Make copies of all evidence for your records",
+      "timing": "Before submission",
+      "category": "preparation",
+      "priority": "medium"
+    },
+    {
+      "id": "supp-9",
+      "task": "Submit form AND all new evidence together",
+      "timing": "Submission",
+      "category": "submission",
+      "priority": "critical"
+    },
+    {
+      "id": "supp-10",
+      "task": "Save your confirmation number and submission date",
+      "timing": "After submission",
+      "category": "tracking",
+      "priority": "high"
+    },
+    {
+      "id": "supp-11",
+      "task": "Set reminder to check claim status in 60 days",
+      "timing": "After submission",
+      "category": "tracking",
+      "priority": "medium"
+    }
+  ],
+
+  "key_facts": {
+    "success_rate": "~50%",
+    "requires_new_evidence": true,
+    "allows_hearing": false,
+    "preserves_effective_date": true,
+    "can_file_multiple": true
+  },
+
+  "metadata": {
+    "source_form": "VA Form 20-0995",
+    "cfr_reference": "38 CFR § 3.2501",
+    "related_appeals": ["hlr", "board"]
+  }
+}

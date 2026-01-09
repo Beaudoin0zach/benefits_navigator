@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ checklist.condition }} - Exam Checklist - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Breadcrumb navigation -->
+    <nav aria-label="Breadcrumb" class="mb-6">
+        <ol class="flex items-center space-x-2 text-sm text-gray-600">
+            <li>
+                <a href="{% url 'examprep:guide_list' %}" class="hover:text-blue-600 focus:underline focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Exam Prep
+                </a>
+            </li>
+            <li aria-hidden="true">
+                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                </svg>
+            </li>
+            <li>
+                <a href="{% url 'examprep:checklist_list' %}" class="hover:text-blue-600 focus:underline focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    My Checklists
+                </a>
+            </li>
+            <li aria-hidden="true">
+                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                </svg>
+            </li>
+            <li>
+                <span aria-current="page" class="font-medium text-gray-900">{{ checklist.condition }}</span>
+            </li>
+        </ol>
+    </nav>
+
+    <!-- Page header -->
+    <header class="mb-8">
+        <div class="md:flex md:items-start md:justify-between">
+            <div class="flex-1 min-w-0">
+                <h1 class="text-3xl font-bold text-gray-900">{{ checklist.condition }}</h1>
+                <p class="mt-2 text-lg text-gray-600">C&P Exam Preparation Checklist</p>
+
+                {% if checklist.exam_date %}
+                <div class="mt-3 flex items-center text-gray-600">
+                    <svg class="h-5 w-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <time datetime="{{ checklist.exam_date|date:'Y-m-d' }}">
+                        {{ checklist.exam_date|date:"F j, Y" }}
+                    </time>
+                    {% if checklist.days_until_exam is not None %}
+                        {% if checklist.days_until_exam > 0 %}
+                        <span class="ml-2 px-2.5 py-0.5 rounded-full text-sm font-medium {% if checklist.days_until_exam <= 7 %}bg-red-100 text-red-800{% else %}bg-blue-100 text-blue-800{% endif %}">
+                            {{ checklist.days_until_exam }} day{{ checklist.days_until_exam|pluralize }} away
+                        </span>
+                        {% elif checklist.days_until_exam == 0 %}
+                        <span class="ml-2 px-2.5 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                            Today!
+                        </span>
+                        {% else %}
+                        <span class="ml-2 px-2.5 py-0.5 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                            {{ checklist.days_until_exam|slice:"1:" }} day{{ checklist.days_until_exam|slice:"1:"|pluralize }} ago
+                        </span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="mt-4 md:mt-0 md:ml-4 flex flex-wrap gap-2">
+                <a href="{% url 'examprep:checklist_update' pk=checklist.id %}"
+                   class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <svg class="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    Edit
+                </a>
+                <a href="{% url 'examprep:checklist_delete' pk=checklist.id %}"
+                   class="inline-flex items-center px-4 py-2 border border-red-300 shadow-sm text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                    <svg class="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                    Delete
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress overview -->
+    <div class="bg-white shadow-md rounded-lg p-6 mb-8">
+        <div class="flex items-center justify-between mb-2">
+            <h2 class="text-lg font-semibold text-gray-900">Preparation Progress</h2>
+            <span class="text-2xl font-bold text-blue-600">{{ checklist.completion_percentage }}%</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-3">
+            <div class="bg-blue-600 h-3 rounded-full transition-all duration-300"
+                 style="width: {{ checklist.completion_percentage }}%"
+                 role="progressbar"
+                 aria-valuenow="{{ checklist.completion_percentage }}"
+                 aria-valuemin="0"
+                 aria-valuemax="100"
+                 aria-label="Preparation progress"></div>
+        </div>
+        {% if checklist.guidance %}
+        <p class="text-sm text-gray-600 mt-3">
+            Based on:
+            <a href="{% url 'examprep:guide_detail' slug=checklist.guidance.slug %}"
+               class="text-blue-600 hover:text-blue-800 underline focus:outline-none focus:ring-2 focus:ring-blue-500">
+                {{ checklist.guidance.title }}
+            </a>
+        </p>
+        {% endif %}
+    </div>
+
+    <div class="grid gap-8 lg:grid-cols-2">
+        <!-- Preparation Tasks -->
+        {% if checklist.guidance and checklist.guidance.checklist_items %}
+        <section class="bg-white shadow-md rounded-lg p-6" aria-labelledby="tasks-heading">
+            <h2 id="tasks-heading" class="text-xl font-semibold text-gray-900 mb-4">Preparation Tasks</h2>
+            <p class="text-sm text-gray-600 mb-4">Check off tasks as you complete them to track your progress.</p>
+
+            <ul class="space-y-3" id="task-list" role="list" aria-label="Preparation tasks">
+                {% for task in checklist.guidance.checklist_items %}
+                <li id="task-item-{{ forloop.counter }}"
+                    hx-target="this"
+                    hx-swap="outerHTML">
+                    <form hx-post="{% url 'examprep:checklist_toggle_task' pk=checklist.id %}"
+                          hx-trigger="change"
+                          class="flex items-start p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                        {% csrf_token %}
+                        <input type="hidden" name="task_id" value="task_{{ forloop.counter }}">
+                        <input type="checkbox"
+                               id="task_{{ forloop.counter }}"
+                               name="completed"
+                               {% if "task_"|add:forloop.counter|stringformat:"s" in checklist.tasks_completed %}checked{% endif %}
+                               class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-0.5">
+                        <label for="task_{{ forloop.counter }}"
+                               class="ml-3 text-gray-700 {% if "task_"|add:forloop.counter|stringformat:"s" in checklist.tasks_completed %}line-through text-gray-500{% endif %}">
+                            {{ task }}
+                        </label>
+                        <span class="htmx-indicator ml-auto">
+                            <svg class="animate-spin h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                        </span>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+
+        <!-- Symptom Notes -->
+        <section class="bg-white shadow-md rounded-lg p-6" aria-labelledby="notes-heading">
+            <h2 id="notes-heading" class="text-xl font-semibold text-gray-900 mb-4">Your Notes</h2>
+
+            {% if checklist.symptom_notes %}
+            <div class="mb-6">
+                <h3 class="text-sm font-medium text-gray-700 mb-2">Symptom Notes</h3>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <p class="text-gray-700 whitespace-pre-line">{{ checklist.symptom_notes }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if checklist.worst_day_description %}
+            <div class="mb-6">
+                <h3 class="text-sm font-medium text-gray-700 mb-2">Worst Day Description</h3>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <p class="text-gray-700 whitespace-pre-line">{{ checklist.worst_day_description }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if checklist.functional_limitations %}
+            <div class="mb-6">
+                <h3 class="text-sm font-medium text-gray-700 mb-2">Functional Limitations</h3>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <p class="text-gray-700 whitespace-pre-line">{{ checklist.functional_limitations }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if checklist.questions_for_examiner %}
+            <div class="mb-6">
+                <h3 class="text-sm font-medium text-gray-700 mb-2">Questions for Examiner</h3>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <p class="text-gray-700 whitespace-pre-line">{{ checklist.questions_for_examiner }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if not checklist.symptom_notes and not checklist.worst_day_description and not checklist.functional_limitations and not checklist.questions_for_examiner %}
+            <div class="text-center py-6">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <p class="mt-2 text-gray-500">No notes added yet.</p>
+                <a href="{% url 'examprep:checklist_update' pk=checklist.id %}"
+                   class="mt-3 inline-flex items-center text-sm text-blue-600 hover:text-blue-800 focus:underline focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Add notes to help you prepare
+                    <svg class="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+            {% endif %}
+
+            {% if checklist.symptom_notes or checklist.worst_day_description or checklist.functional_limitations or checklist.questions_for_examiner %}
+            <div class="pt-4 border-t border-gray-200">
+                <a href="{% url 'examprep:checklist_update' pk=checklist.id %}"
+                   class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 focus:underline focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    Edit notes
+                </a>
+            </div>
+            {% endif %}
+        </section>
+    </div>
+
+    <!-- Post-Exam Section (if exam completed) -->
+    {% if checklist.exam_completed %}
+    <section class="bg-green-50 border border-green-200 rounded-lg p-6 mt-8" aria-labelledby="post-exam-heading">
+        <h2 id="post-exam-heading" class="text-xl font-semibold text-green-900 mb-4 flex items-center">
+            <svg class="h-6 w-6 mr-2" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            Exam Completed
+        </h2>
+        {% if checklist.exam_notes %}
+        <div>
+            <h3 class="text-sm font-medium text-green-800 mb-2">Post-Exam Notes</h3>
+            <p class="text-green-900 whitespace-pre-line">{{ checklist.exam_notes }}</p>
+        </div>
+        {% else %}
+        <p class="text-green-800">Your exam is marked as complete. You can edit this checklist to add notes about how the exam went.</p>
+        {% endif %}
+    </section>
+    {% endif %}
+
+    <!-- Back link -->
+    <nav class="mt-8">
+        <a href="{% url 'examprep:checklist_list' %}"
+           class="inline-flex items-center text-blue-600 hover:text-blue-800 focus:underline focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Back to My Checklists
+        </a>
+    </nav>
+</div>
+{% endblock %}

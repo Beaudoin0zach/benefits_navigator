@@ -1,0 +1,394 @@
+{
+  "glossary_type": "va_terminology",
+  "title": "VA Terminology Glossary",
+  "subtitle": "Plain-Language Definitions for Veterans",
+  "total_terms": 30,
+  "reading_level": "8th grade",
+  "last_updated": "2026-01",
+  "categories": [
+    {
+      "category_id": "claims_foundation",
+      "category_name": "Claims Foundation",
+      "description": "Core concepts for understanding VA disability claims"
+    },
+    {
+      "category_id": "exams_evidence",
+      "category_name": "Exams and Evidence",
+      "description": "Terms related to C&P exams and supporting documentation"
+    },
+    {
+      "category_id": "ratings_math",
+      "category_name": "Ratings and Math",
+      "description": "Understanding disability percentages and VA calculations"
+    },
+    {
+      "category_id": "claims_process",
+      "category_name": "Claims Process",
+      "description": "Procedural terms for filing and tracking claims"
+    },
+    {
+      "category_id": "forms_filings",
+      "category_name": "Forms and Filings",
+      "description": "Official VA forms and appeal options"
+    }
+  ],
+  "terms": [
+    {
+      "id": "service-connection",
+      "term": "Service Connection",
+      "slug": "service-connection",
+      "category_id": "claims_foundation",
+      "plain_language": "Proving your disability is directly linked to something that happened during your military service.",
+      "context": "This is THE foundation of any VA disability claim. Without establishing service connection, you cannot receive disability compensation. The VA must agree that your current condition was caused by, or made worse by, your time in the military.",
+      "example": "If you injured your back lifting equipment in basic training, that back pain is 'service-connected' because it happened during military service.",
+      "related_terms": ["nexus", "direct-service-connection", "secondary-service-connection"],
+      "importance": "critical"
+    },
+    {
+      "id": "nexus",
+      "term": "Nexus",
+      "slug": "nexus",
+      "category_id": "claims_foundation",
+      "plain_language": "The medical link or bridge connecting your current disability to your military service.",
+      "context": "'Nexus' is Latin for 'connection.' In VA claims, it's the crucial medical evidence showing that what happened in service CAUSED your current condition. Without a nexus, your claim will likely be denied even if you have both a current diagnosis and an in-service event documented.",
+      "example": "A doctor writes, 'It is at least as likely as not that the veteran's current knee arthritis is caused by the documented knee injury during his 2008 deployment.' That statement IS the nexus.",
+      "related_terms": ["nexus-letter", "service-connection", "cp-exam"],
+      "importance": "critical"
+    },
+    {
+      "id": "nexus-letter",
+      "term": "Nexus Letter",
+      "slug": "nexus-letter",
+      "category_id": "claims_foundation",
+      "plain_language": "A letter from a doctor stating that your current medical condition was caused by, or is connected to, your military service.",
+      "context": "This is often the most important piece of evidence in a VA claim. The letter must come from a qualified medical professional and should use specific language like 'at least as likely as not' (meaning 50% or greater probability). Private doctors can write nexus letters if your C&P exam doesn't provide a favorable opinion.",
+      "example": "A veteran with hearing loss gets a letter from an audiologist stating: 'Based on the veteran's military occupational specialty as an artillery gunner and current audiological findings, it is at least as likely as not that his bilateral hearing loss is related to noise exposure during military service.'",
+      "related_terms": ["nexus", "cp-exam", "lay-evidence"],
+      "importance": "critical"
+    },
+    {
+      "id": "direct-service-connection",
+      "term": "Direct Service Connection",
+      "slug": "direct-service-connection",
+      "category_id": "claims_foundation",
+      "plain_language": "Your disability was directly caused by something that happened during your military service.",
+      "context": "This is the most straightforward type of service connection. You show: (1) something happened in service (injury, illness, exposure), (2) you have a current diagnosis, and (3) a medical link between the two.",
+      "example": "You broke your ankle during a training exercise in 2015. Today you have chronic ankle pain and arthritis. The break caused the arthritis—that's direct service connection.",
+      "related_terms": ["service-connection", "secondary-service-connection", "nexus"],
+      "importance": "high"
+    },
+    {
+      "id": "secondary-service-connection",
+      "term": "Secondary Service Connection",
+      "slug": "secondary-service-connection",
+      "category_id": "claims_foundation",
+      "plain_language": "A new disability that was caused by, or made worse by, a condition you're already service-connected for.",
+      "context": "This is how many veterans increase their ratings over time. One service-connected condition often leads to others. You don't need to prove the secondary condition happened in service—just that your existing service-connected condition caused it.",
+      "example": "You're service-connected for a knee injury. Years of limping has now caused hip problems. Your hip condition is 'secondary' to your knee. Or, your PTSD medication causes erectile dysfunction—that ED is secondary to your PTSD.",
+      "related_terms": ["service-connection", "direct-service-connection", "aggravation"],
+      "importance": "high"
+    },
+    {
+      "id": "aggravation",
+      "term": "Aggravation",
+      "slug": "aggravation",
+      "category_id": "claims_foundation",
+      "plain_language": "When military service made a pre-existing condition worse than it would have been naturally.",
+      "context": "Even if you had a condition BEFORE joining the military, you may still be service-connected if your service made it significantly worse. The VA rates you based on how much worse the condition became due to service.",
+      "example": "You had mild asthma before enlisting. Exposure to burn pits during deployment made your asthma severe and permanent. You can be service-connected for the 'aggravation' of your asthma beyond its natural progression.",
+      "related_terms": ["service-connection", "secondary-service-connection"],
+      "importance": "medium"
+    },
+    {
+      "id": "presumptive-condition",
+      "term": "Presumptive Condition",
+      "slug": "presumptive-condition",
+      "category_id": "claims_foundation",
+      "plain_language": "A condition the VA automatically assumes is connected to your service if you meet certain criteria—no nexus letter needed.",
+      "context": "For certain conditions and certain veterans, the VA skips the 'prove it's connected' step. If you served in specific locations, time periods, or jobs, and you develop certain conditions, the VA presumes they're service-connected. This makes claims much easier to win.",
+      "example": "If you served in Vietnam and have Type 2 diabetes, the VA presumes Agent Orange exposure caused it. If you served in the Gulf War and have chronic fatigue syndrome, the VA presumes it's related to your service. No nexus letter required.",
+      "related_terms": ["service-connection", "pact-act"],
+      "importance": "high"
+    },
+    {
+      "id": "cp-exam",
+      "term": "C&P Exam",
+      "slug": "cp-exam",
+      "category_id": "exams_evidence",
+      "plain_language": "Compensation and Pension exam—a medical evaluation the VA orders to assess your claimed disability and its connection to service.",
+      "context": "After you file a claim, the VA will likely schedule you for a C&P exam. This exam determines your diagnosis, severity, and whether there's a connection to service. The examiner fills out a standardized form (DBQ) that rating specialists use to decide your case. About 93% of these exams are conducted by contractors (VES, LHI, QTC), not VA employees.",
+      "example": "You file a claim for your back. Three weeks later, you get a letter scheduling you for a 'spinal exam' at a VES clinic. That's your C&P exam.",
+      "related_terms": ["dbq", "nexus", "va-rating"],
+      "importance": "critical"
+    },
+    {
+      "id": "dbq",
+      "term": "DBQ (Disability Benefits Questionnaire)",
+      "slug": "dbq",
+      "category_id": "exams_evidence",
+      "plain_language": "The standardized medical form an examiner fills out during your C&P exam—one exists for each type of condition.",
+      "context": "DBQs are the actual forms that determine your rating. Each condition has its own DBQ with specific questions and measurements. You can look up DBQs online to see exactly what the examiner will evaluate. This helps you prepare and ensures nothing is missed.",
+      "example": "For a knee claim, the examiner uses the 'Knee and Lower Leg Conditions DBQ' which includes range of motion measurements, stability tests, and questions about functional impact.",
+      "related_terms": ["cp-exam", "rom", "va-rating"],
+      "importance": "high"
+    },
+    {
+      "id": "rom",
+      "term": "Range of Motion (ROM)",
+      "slug": "rom",
+      "category_id": "exams_evidence",
+      "plain_language": "How far you can move a joint, measured in degrees using a tool called a goniometer.",
+      "context": "ROM is the primary measurement for musculoskeletal (joint and spine) claims. The VA compares your ROM to 'normal' ranges to determine your rating percentage. Where your pain begins during movement matters as much as your maximum range.",
+      "example": "Normal knee flexion is 140 degrees. If your knee only bends to 60 degrees due to pain, that limitation is documented and affects your rating. A knee limited to 60 degrees rates at 20%, while full ROM (140 degrees) rates at 0%.",
+      "related_terms": ["functional-limitation", "flare-up", "dbq"],
+      "importance": "high"
+    },
+    {
+      "id": "functional-limitation",
+      "term": "Functional Limitation",
+      "slug": "functional-limitation",
+      "category_id": "exams_evidence",
+      "plain_language": "What you can't do—or can only do with difficulty—because of your disability.",
+      "context": "The VA doesn't just rate based on test measurements. They also consider how your condition limits real-life activities. Documenting functional limitations can support a higher rating, especially when your ROM numbers don't tell the whole story.",
+      "example": "'I cannot stand for more than 10 minutes,' 'I can't lift my grandchildren,' or 'I had to quit my construction job because I can't climb ladders anymore.'",
+      "related_terms": ["rom", "flare-up", "dbq"],
+      "importance": "medium"
+    },
+    {
+      "id": "flare-up",
+      "term": "Flare-up",
+      "slug": "flare-up",
+      "category_id": "exams_evidence",
+      "plain_language": "Periods when your symptoms become significantly worse than usual.",
+      "context": "Many conditions have good days and bad days. Flare-ups are the bad days—times when symptoms spike. The VA should consider your functioning during flare-ups, not just how you present on exam day. If you don't mention flare-ups, they won't be documented.",
+      "example": "'My back pain is usually a 4/10, but during flare-ups it's an 8/10 and I can barely get out of bed. I have flare-ups about 4 times per month, lasting 2-3 days each.'",
+      "related_terms": ["rom", "functional-limitation", "cp-exam"],
+      "importance": "high"
+    },
+    {
+      "id": "str",
+      "term": "Service Treatment Records (STR)",
+      "slug": "str",
+      "category_id": "exams_evidence",
+      "plain_language": "Your military medical records from during your time in service.",
+      "context": "These records document injuries, illnesses, and treatments that occurred while you were serving. They're critical evidence for proving something happened in service. The VA requests these automatically, but sometimes records are incomplete or lost—especially for older veterans.",
+      "example": "Your STRs might show you visited sick call for knee pain in 2009, were prescribed Motrin, and were put on light duty. This documents an in-service event for your current knee claim.",
+      "related_terms": ["lay-evidence", "buddy-statement", "service-connection"],
+      "importance": "high"
+    },
+    {
+      "id": "lay-evidence",
+      "term": "Lay Evidence",
+      "slug": "lay-evidence",
+      "category_id": "exams_evidence",
+      "plain_language": "Non-medical evidence—statements from you, family, friends, or coworkers describing your symptoms and limitations.",
+      "context": "You don't need a doctor to prove everything. Your own observations about your symptoms are evidence. So are statements from people who've witnessed your condition. Lay evidence can fill gaps when medical records are incomplete.",
+      "example": "Your statement describing daily pain levels, sleep problems, and activities you can no longer do is lay evidence. It's your firsthand account of living with your condition.",
+      "related_terms": ["buddy-statement", "str", "nexus-letter"],
+      "importance": "medium"
+    },
+    {
+      "id": "buddy-statement",
+      "term": "Buddy Statement",
+      "slug": "buddy-statement",
+      "category_id": "exams_evidence",
+      "plain_language": "A written statement from someone who witnessed your injury, illness, or ongoing symptoms—like a fellow service member, family member, or friend.",
+      "context": "Buddy statements support your claim with third-party observations. A fellow service member can confirm an in-service event. A spouse can describe how your PTSD affects your daily life. These statements carry real weight with the VA.",
+      "example": "'I served with SGT Smith in Afghanistan in 2012. I witnessed him injure his back when our vehicle hit an IED. He complained of back pain for the rest of the deployment and was often unable to carry his full combat load.'",
+      "related_terms": ["lay-evidence", "str", "service-connection"],
+      "importance": "medium"
+    },
+    {
+      "id": "va-rating",
+      "term": "VA Rating",
+      "slug": "va-rating",
+      "category_id": "ratings_math",
+      "plain_language": "A percentage (0% to 100%) representing how much your disability affects your ability to work and function—determines your monthly payment.",
+      "context": "Each service-connected condition gets a rating. Higher percentages mean more compensation. Ratings go in increments: 0%, 10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%. A 100% rating doesn't mean you're '100% disabled'—it means your disability severely impacts your ability to work.",
+      "example": "A veteran with PTSD rated at 70% and a knee rated at 20% doesn't have a '90% rating.' VA math works differently (see Combined Rating).",
+      "related_terms": ["combined-rating", "bilateral-factor", "dbq"],
+      "importance": "critical"
+    },
+    {
+      "id": "combined-rating",
+      "term": "Combined Rating",
+      "slug": "combined-rating",
+      "category_id": "ratings_math",
+      "plain_language": "Your total disability percentage when you have multiple service-connected conditions—calculated using 'VA math,' not simple addition.",
+      "context": "The VA uses a specific formula that never lets you exceed 100%. Each new rating is applied to your remaining 'healthy' percentage, not added directly. This is why 50% + 30% doesn't equal 80%—it equals 65%.",
+      "example": "If you have one condition at 50% and another at 30%: Start at 50% disabled (50% 'healthy'). Apply 30% to the remaining 50% = 15%. Total: 50% + 15% = 65% combined. The VA then rounds to the nearest 10%, so you'd be rated at 70%.",
+      "related_terms": ["va-rating", "bilateral-factor"],
+      "importance": "high"
+    },
+    {
+      "id": "bilateral-factor",
+      "term": "Bilateral Factor",
+      "slug": "bilateral-factor",
+      "category_id": "ratings_math",
+      "plain_language": "A small bonus added to your combined rating when you have the same type of disability affecting both sides of your body (both knees, both arms, etc.).",
+      "context": "The VA recognizes that having matching disabilities on both sides creates extra difficulty. The bilateral factor adds approximately 10% to the combined value of bilateral conditions before factoring them into your total rating.",
+      "example": "If you have 10% for your left knee and 10% for your right knee, the bilateral factor adds a small percentage before combining with your other ratings. It's not huge, but it can push you into the next rating bracket.",
+      "related_terms": ["combined-rating", "va-rating"],
+      "importance": "low"
+    },
+    {
+      "id": "itf",
+      "term": "ITF (Intent to File)",
+      "slug": "itf",
+      "category_id": "claims_process",
+      "plain_language": "A form that 'saves your spot in line'—it locks in your effective date up to one year before you submit your full claim.",
+      "context": "Filing an ITF (VA Form 21-0966) immediately is one of the smartest things a veteran can do. It gives you up to 12 months to gather evidence and complete your claim while protecting an earlier start date for back pay.",
+      "example": "You file an ITF on January 15, 2026, then submit your complete claim on October 15, 2026. If approved, your benefits and back pay start from January 15, 2026—not October.",
+      "related_terms": ["effective-date", "va-form-21-526ez"],
+      "va_form": "VA Form 21-0966",
+      "importance": "critical"
+    },
+    {
+      "id": "effective-date",
+      "term": "Effective Date",
+      "slug": "effective-date",
+      "category_id": "claims_process",
+      "plain_language": "The date your disability benefits officially begin—this determines how much back pay you receive.",
+      "context": "Your effective date is usually the later of: (1) the date you filed your claim (or ITF), or (2) the date your disability began. Earlier effective dates mean more back pay. This is why filing an ITF immediately is so important.",
+      "example": "You file a claim on March 1, 2026 and get approved on September 1, 2026. Your effective date is March 1, 2026, so you'll receive 6 months of back pay in your first check.",
+      "related_terms": ["itf", "va-form-21-526ez"],
+      "importance": "high"
+    },
+    {
+      "id": "development",
+      "term": "Development (Claims Context)",
+      "slug": "development",
+      "category_id": "claims_process",
+      "plain_language": "When the VA is gathering evidence for your claim—requesting records, scheduling exams, getting opinions.",
+      "context": "After you file, your claim goes into 'development.' This means the VA is actively working on it: pulling military records, requesting medical records, scheduling C&P exams. This phase can take weeks to months depending on complexity.",
+      "example": "Your claim status shows 'Gathering of Evidence' or 'Preparation for Decision.' This is the development phase.",
+      "related_terms": ["duty-to-assist", "cp-exam"],
+      "importance": "low"
+    },
+    {
+      "id": "duty-to-assist",
+      "term": "Duty to Assist",
+      "slug": "duty-to-assist",
+      "category_id": "claims_process",
+      "plain_language": "The VA's legal obligation to help you gather evidence for your claim—they can't just deny you without trying.",
+      "context": "The VA must make reasonable efforts to obtain evidence that supports your claim. This includes requesting federal records (military, VA medical), scheduling C&P exams, and notifying you of what evidence you need. However, 'duty to assist' has limits—the VA won't build your entire case for you.",
+      "example": "If you tell the VA you received treatment at a VA hospital, they MUST request those records before deciding your claim. If they don't, you have grounds to appeal.",
+      "related_terms": ["development", "remand"],
+      "importance": "medium"
+    },
+    {
+      "id": "vso",
+      "term": "VSO (Veterans Service Organization)",
+      "slug": "vso",
+      "category_id": "claims_process",
+      "plain_language": "Free organizations that help veterans file claims and navigate the VA system—like the American Legion, VFW, DAV, or county veteran service officers.",
+      "context": "VSOs provide free assistance with claims, appeals, and benefits questions. They can access your VA file, help you gather evidence, and represent you in hearings. Most veterans who use VSOs have higher success rates than those who go alone.",
+      "example": "You walk into your county's veteran services office and meet with an accredited VSO representative. They review your case, help you file claims, and track your progress—all at no cost.",
+      "related_terms": ["va-form-21-526ez", "bva"],
+      "importance": "high"
+    },
+    {
+      "id": "fdc",
+      "term": "Fully Developed Claim (FDC)",
+      "slug": "fdc",
+      "category_id": "claims_process",
+      "plain_language": "A claim where you've already gathered and submitted all the evidence—no waiting for the VA to develop it.",
+      "context": "FDCs are processed faster because the VA doesn't need to request records or schedule exams (though they still might). You're certifying that you've submitted everything relevant. The tradeoff is that you're responsible for ensuring nothing is missing.",
+      "example": "Instead of filing a basic claim and letting the VA gather evidence over 6 months, you submit your claim with your STRs, private medical records, nexus letter, buddy statements, and DBQ already attached. Decision comes in 2-3 months.",
+      "related_terms": ["va-form-21-526ez", "development"],
+      "importance": "medium"
+    },
+    {
+      "id": "va-form-21-526ez",
+      "term": "VA Form 21-526EZ",
+      "slug": "va-form-21-526ez",
+      "category_id": "forms_filings",
+      "plain_language": "The main form to file an initial disability compensation claim or add new conditions to an existing claim.",
+      "context": "This is THE form for claiming service-connected disability benefits. You can file it online at VA.gov, through a VSO, or by mail. It asks about your conditions, treatment history, and military service.",
+      "example": "You've never filed a VA claim before. You complete VA Form 21-526EZ listing your back pain, tinnitus, and PTSD. This starts your claim process.",
+      "related_terms": ["itf", "effective-date", "service-connection"],
+      "va_form": "VA Form 21-526EZ",
+      "importance": "critical"
+    },
+    {
+      "id": "va-form-20-0995",
+      "term": "VA Form 20-0995 (Supplemental Claim)",
+      "slug": "va-form-20-0995",
+      "category_id": "forms_filings",
+      "plain_language": "The form to reopen a denied claim by submitting new and relevant evidence the VA hasn't seen before.",
+      "context": "If your claim was denied, you don't have to give up. A Supplemental Claim lets you submit new evidence—a new nexus letter, additional medical records, or buddy statements—and have the VA reconsider. You MUST have new evidence to file this form.",
+      "example": "Your knee claim was denied because the C&P examiner said it wasn't service-connected. You get a private nexus letter from an orthopedic surgeon and file a Supplemental Claim. The VA must reconsider with this new evidence.",
+      "related_terms": ["va-form-20-0996", "va-form-10182", "nexus-letter"],
+      "va_form": "VA Form 20-0995",
+      "importance": "high"
+    },
+    {
+      "id": "va-form-20-0996",
+      "term": "VA Form 20-0996 (Higher-Level Review)",
+      "slug": "va-form-20-0996",
+      "category_id": "forms_filings",
+      "plain_language": "The form to request a senior VA employee review your denied claim—no new evidence allowed, just a fresh look.",
+      "context": "If you believe the VA made an error based on the evidence they already had, request a Higher-Level Review. A more experienced reviewer examines the same evidence and may find mistakes. You can request an informal conference (phone call) to explain your case.",
+      "example": "The C&P examiner noted painful motion at 40 degrees, but the rating specialist ignored it and based your rating on full ROM. You file for Higher-Level Review and request an informal conference to point out this error.",
+      "related_terms": ["va-form-20-0995", "va-form-10182", "remand"],
+      "va_form": "VA Form 20-0996",
+      "importance": "high"
+    },
+    {
+      "id": "va-form-10182",
+      "term": "VA Form 10182 (Notice of Disagreement / Board Appeal)",
+      "slug": "va-form-10182",
+      "category_id": "forms_filings",
+      "plain_language": "The form to appeal your claim to the Board of Veterans' Appeals—a higher authority than the regional office.",
+      "context": "This takes your case out of the regional office and sends it to judges in Washington, D.C. You can choose three lanes: Direct Review (no new evidence, no hearing), Evidence Submission (add new evidence), or Hearing Request (present your case to a judge). This is a longer process but often successful.",
+      "example": "Both your Supplemental Claim and Higher-Level Review were denied. You file VA Form 10182 requesting a Board hearing. A Veterans Law Judge will review your entire case.",
+      "related_terms": ["bva", "remand", "va-form-20-0995"],
+      "va_form": "VA Form 10182",
+      "importance": "high"
+    },
+    {
+      "id": "bva",
+      "term": "BVA (Board of Veterans' Appeals)",
+      "slug": "bva",
+      "category_id": "forms_filings",
+      "plain_language": "The VA's appeals court in Washington, D.C.—judges review cases that weren't resolved at the regional office level.",
+      "context": "The BVA is staffed by Veterans Law Judges who review appeals. They can grant your claim, deny it, or remand it (send it back for more work). BVA decisions carry more weight than regional office decisions. Wait times can be 1-2+ years.",
+      "example": "After exhausting your options at the regional level, your case goes to the BVA. A Veterans Law Judge reviews your entire file and issues a decision.",
+      "related_terms": ["va-form-10182", "remand"],
+      "importance": "medium"
+    },
+    {
+      "id": "remand",
+      "term": "Remand",
+      "slug": "remand",
+      "category_id": "forms_filings",
+      "plain_language": "When the Board sends your case back to the regional office to fix something—they didn't deny you, but they can't decide yet.",
+      "context": "A remand means the Board found problems with how your claim was handled: maybe the C&P exam was inadequate, records weren't obtained, or a medical opinion is needed. The regional office must address these issues, then your case goes back to the Board. Remands extend your wait but often lead to approvals.",
+      "example": "The Board finds your C&P exam was too short and didn't address flare-ups. They remand your case for a new exam. After the new exam, your claim goes back to the Board for a final decision.",
+      "related_terms": ["bva", "duty-to-assist", "cp-exam"],
+      "importance": "medium"
+    }
+  ],
+  "quick_reference": [
+    {"term": "Service Connection", "one_liner": "Proving your disability links to military service"},
+    {"term": "Nexus", "one_liner": "The medical link between service and current condition"},
+    {"term": "Nexus Letter", "one_liner": "Doctor's letter establishing that link"},
+    {"term": "C&P Exam", "one_liner": "VA-ordered medical evaluation for your claim"},
+    {"term": "DBQ", "one_liner": "Standardized form examiner fills out"},
+    {"term": "ROM", "one_liner": "How far a joint moves, measured in degrees"},
+    {"term": "Effective Date", "one_liner": "When your benefits begin (back pay start)"},
+    {"term": "ITF", "one_liner": "Form that locks in your effective date early"},
+    {"term": "Presumptive", "one_liner": "Conditions automatically assumed service-connected"},
+    {"term": "Secondary", "one_liner": "New condition caused by existing service-connected one"},
+    {"term": "Combined Rating", "one_liner": "Total rating using VA math (not simple addition)"},
+    {"term": "Supplemental Claim", "one_liner": "Reopening denied claim with new evidence"},
+    {"term": "Higher-Level Review", "one_liner": "Senior reviewer checks for errors"},
+    {"term": "BVA", "one_liner": "Appeals court for VA claims"},
+    {"term": "Remand", "one_liner": "Case sent back to fix problems"}
+  ],
+  "metadata": {
+    "source_regulations": "38 CFR",
+    "applicable_to": ["disability_compensation", "appeals", "claims"],
+    "version": "1.0"
+  }
+}

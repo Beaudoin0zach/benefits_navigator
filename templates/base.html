@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ SITE_DESCRIPTION }}">
+    <title>{% block title %}{{ SITE_NAME }}{% endblock %}</title>
+
+    <!-- Tailwind CSS via CDN (for MVP - move to build process later) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- HTMX for dynamic interactions -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+    <!-- Custom styles -->
+    <style>
+        /* High contrast focus indicators for accessibility */
+        *:focus {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+        }
+
+        /* Skip to main content link - visible only on focus */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #2563eb;
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            z-index: 100;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Ensure sufficient color contrast */
+        body {
+            color: #1f2937;
+            background: #ffffff;
+        }
+
+        /* Loading spinner for async operations */
+        .htmx-indicator {
+            display: none;
+        }
+
+        .htmx-request .htmx-indicator {
+            display: inline-block;
+        }
+
+        /* Accessible form error styling */
+        .field-error {
+            border-color: #dc2626;
+            border-width: 2px;
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-weight: 500;
+        }
+
+        /* Success message styling */
+        .success-message {
+            color: #059669;
+            font-weight: 500;
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="min-h-screen flex flex-col bg-gray-50">
+    <!-- Skip to main content link for screen readers and keyboard users -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Header with navigation -->
+    <header role="banner" class="bg-blue-900 text-white shadow-md">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+                    </svg>
+                    <h1 class="text-2xl font-bold">
+                        <a href="/" class="hover:underline focus:underline">{{ SITE_NAME }}</a>
+                    </h1>
+                </div>
+
+                <nav role="navigation" aria-label="Main navigation">
+                    <ul class="flex space-x-6">
+                        <li>
+                            <a href="/claims/" class="hover:underline focus:underline"
+                               {% if request.resolver_match.app_name == 'claims' %}aria-current="page"{% endif %}>
+                                Claims Assistant
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/exam-prep/" class="hover:underline focus:underline"
+                               {% if request.resolver_match.app_name == 'examprep' %}aria-current="page"{% endif %}>
+                                C&P Exam Prep
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/appeals/" class="hover:underline focus:underline"
+                               {% if request.resolver_match.app_name == 'appeals' %}aria-current="page"{% endif %}>
+                                Appeals Guidance
+                            </a>
+                        </li>
+                        {% if user.is_authenticated %}
+                        <li>
+                            <a href="/dashboard/" class="hover:underline focus:underline"
+                               {% if request.resolver_match.url_name == 'dashboard' %}aria-current="page"{% endif %}>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/accounts/logout/" class="hover:underline focus:underline">
+                                Logout
+                            </a>
+                        </li>
+                        {% else %}
+                        <li>
+                            <a href="/accounts/login/" class="hover:underline focus:underline">
+                                Login
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/accounts/signup/" class="bg-white text-blue-900 px-4 py-2 rounded hover:bg-gray-100 focus:bg-gray-100">
+                                Sign Up
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main content area -->
+    <main id="main-content" role="main" class="flex-grow container mx-auto px-4 py-8">
+        <!-- Messages (Success/Error/Info) with ARIA live region -->
+        {% if messages %}
+        <div role="status" aria-live="polite" aria-atomic="true" class="mb-6">
+            {% for message in messages %}
+            <div class="{% if message.tags == 'error' %}bg-red-100 border-red-500 text-red-900{% elif message.tags == 'success' %}bg-green-100 border-green-500 text-green-900{% else %}bg-blue-100 border-blue-500 text-blue-900{% endif %} border-l-4 p-4 mb-4 rounded" role="alert">
+                <p class="font-medium">
+                    {% if message.tags == 'error' %}
+                        <span class="sr-only">Error: </span>
+                    {% elif message.tags == 'success' %}
+                        <span class="sr-only">Success: </span>
+                    {% endif %}
+                    {{ message }}
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Page content -->
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer role="contentinfo" class="bg-gray-800 text-white mt-12">
+        <div class="container mx-auto px-4 py-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h2 class="font-bold text-lg mb-3">{{ SITE_NAME }}</h2>
+                    <p class="text-gray-300">{{ SITE_DESCRIPTION }}</p>
+                </div>
+                <div>
+                    <h2 class="font-bold text-lg mb-3">Quick Links</h2>
+                    <nav aria-label="Footer navigation">
+                        <ul class="space-y-2">
+                            <li><a href="/about/" class="text-gray-300 hover:text-white focus:text-white hover:underline focus:underline">About Us</a></li>
+                            <li><a href="/privacy/" class="text-gray-300 hover:text-white focus:text-white hover:underline focus:underline">Privacy Policy</a></li>
+                            <li><a href="/terms/" class="text-gray-300 hover:text-white focus:text-white hover:underline focus:underline">Terms of Service</a></li>
+                            <li><a href="/contact/" class="text-gray-300 hover:text-white focus:text-white hover:underline focus:underline">Contact Support</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div>
+                    <h2 class="font-bold text-lg mb-3">Disclaimer</h2>
+                    <p class="text-gray-300 text-sm">
+                        This service is not affiliated with the U.S. Department of Veterans Affairs.
+                        Information provided is for guidance only and should not be considered legal advice.
+                    </p>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; {% now "Y" %} {{ SITE_NAME }}. All rights reserved.</p>
+                <p class="mt-2 text-sm">Support: <a href="mailto:{{ SUPPORT_EMAIL }}" class="hover:text-white focus:text-white hover:underline focus:underline">{{ SUPPORT_EMAIL }}</a></p>
+            </div>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,308 @@
+{
+  "guide_type": "general",
+  "title": "C&P Exam Preparation Guide: What Every Veteran Needs to Know",
+  "reading_level": "8th grade",
+  "word_count": 1539,
+  "last_updated": "2026-01",
+  "sections": [
+    {
+      "section_number": 1,
+      "title": "Introduction",
+      "slug": "introduction",
+      "content": {
+        "overview": "A C&P (Compensation and Pension) exam is a medical evaluation that helps the VA understand how your condition affects you today. Think of it as a snapshot of your current health that connects back to your military service.",
+        "key_facts": [
+          {
+            "question": "Who does the exam?",
+            "answer": "About 93% of C&P exams are done by contract companies like VES (Veterans Evaluation Services), LHI, or QTC—not VA doctors. Your examiner might be a doctor, nurse practitioner, or physician assistant. They're trained to evaluate veterans, but they may not specialize in your specific condition."
+          },
+          {
+            "question": "How long does it take?",
+            "answer": "Most exams last 15 to 30 minutes. Some complex conditions or multiple claims may take longer. The exam feels short because the examiner has a specific checklist to complete."
+          },
+          {
+            "question": "Why does this matter?",
+            "answer": "Your C&P exam is one of the most important steps in your claim. The examiner fills out a form that rating specialists use to decide your disability percentage. A thorough exam can mean the difference between a 10% rating and a 70% rating—and thousands of dollars in benefits."
+          }
+        ]
+      }
+    },
+    {
+      "section_number": 2,
+      "title": "What the Exam Measures",
+      "slug": "what-exam-measures",
+      "content": {
+        "dbq_explanation": "The examiner uses a standardized form called a DBQ (Disability Benefits Questionnaire). Each condition has its own DBQ with specific questions and measurements.",
+        "important_points": [
+          "The examiner fills out the form based on what they observe and what you tell them",
+          "The examiner does NOT decide your rating—they collect information",
+          "A rating specialist at the VA reviews the DBQ later and makes the final decision"
+        ],
+        "what_raters_look_for": [
+          {
+            "factor": "Diagnosis",
+            "description": "Do you have the claimed condition?"
+          },
+          {
+            "factor": "Severity",
+            "description": "How bad are your symptoms?"
+          },
+          {
+            "factor": "Functional impact",
+            "description": "How does this affect your daily life and work?"
+          },
+          {
+            "factor": "Service connection",
+            "description": "Is there evidence linking this to your military service?"
+          }
+        ],
+        "veteran_role": "Your job during the exam is to make sure the examiner captures the full picture of how your condition affects you."
+      }
+    },
+    {
+      "section_number": 3,
+      "title": "Physical Tests",
+      "slug": "physical-tests",
+      "content": {
+        "overview": "If your condition involves physical symptoms, the examiner will likely do hands-on tests. The specific tests depend on your condition.",
+        "common_tests": [
+          {
+            "name": "Range of Motion (ROM)",
+            "description": "The examiner measures how far you can move a joint. They'll ask you to bend, twist, or stretch while they use a tool called a goniometer. You'll often do each movement three times to check for consistency."
+          },
+          {
+            "name": "Functional Assessments",
+            "description": "These test how your condition affects real activities—like gripping, walking, or bending down."
+          }
+        ],
+        "critical_pain_guidance": {
+          "title": "Communicate Your Pain",
+          "instruction": "Stop when it hurts. If the examiner moves your arm or leg and you feel pain, say so immediately. Don't let them push past your pain point. The measurement should capture where pain begins, not how far you can force yourself to go.",
+          "example_phrases": [
+            "That's where my pain starts",
+            "I can't go further without significant pain",
+            "On bad days, I can't even get this far"
+          ]
+        }
+      }
+    },
+    {
+      "section_number": 4,
+      "title": "Questions to Expect",
+      "slug": "questions-to-expect",
+      "content": {
+        "overview": "The examiner will ask questions about your medical history and current symptoms. Be ready to answer:",
+        "question_categories": [
+          {
+            "category": "Medical History",
+            "questions": [
+              "When did this condition start?",
+              "What happened during service that caused or worsened it?",
+              "What treatments have you tried?"
+            ]
+          },
+          {
+            "category": "Symptom Details",
+            "questions": [
+              "How often do you experience symptoms? (daily, weekly, monthly)",
+              "How severe are they on a scale of 1-10?",
+              "How long do flare-ups last?"
+            ]
+          },
+          {
+            "category": "Daily Life Impact",
+            "questions": [
+              "Can you work? If not, why specifically?",
+              "What daily activities are difficult or impossible?",
+              "How does this affect your sleep, relationships, or mental health?"
+            ]
+          }
+        ],
+        "sample_questions": [
+          "Describe your worst day with this condition.",
+          "What medications do you take and do they help?",
+          "How many times per week do you experience [symptom]?",
+          "Can you stand/sit/walk for how long before symptoms start?"
+        ],
+        "tip": "Answer with specifics, not generalities. Instead of 'my back hurts a lot,' say 'my back pain is a 7 out of 10 most mornings, and I can only sit for about 20 minutes before I have to stand up.'"
+      }
+    },
+    {
+      "section_number": 5,
+      "title": "Preparation Tips",
+      "slug": "preparation-tips",
+      "content": {
+        "one_week_before": {
+          "review_records": [
+            "Read through your service treatment records",
+            "Look at any private medical records you've submitted",
+            "Know your diagnosis and treatment history"
+          ],
+          "find_your_dbq": [
+            "Search '[your condition] DBQ' online",
+            "Read it so you know exactly what the examiner will measure",
+            "Note the criteria for different rating levels"
+          ],
+          "document_symptoms": [
+            "Write down every symptom you experience",
+            "Note how often each happens (times per day/week/month)",
+            "Include severity levels and how long they last"
+          ]
+        },
+        "worst_days_focus": {
+          "explanation": "The VA rates you based on your overall condition, including your worst days—not just how you feel right now.",
+          "think_about": [
+            "What happens during a flare-up?",
+            "What can't you do on bad days?",
+            "How many bad days do you have per month?"
+          ]
+        },
+        "what_to_bring": [
+          "Photo ID (required)",
+          "Written notes about your symptoms (you can read from them)",
+          "Medication list with dosages",
+          "Any assistive devices you use (brace, cane, etc.)",
+          "Buddy statements or supporting documents (copies, not originals)"
+        ],
+        "day_before": [
+          "Get normal sleep (don't stay up studying)",
+          "Don't drink excessive alcohol",
+          "Eat normally",
+          "Arrive 15 minutes early"
+        ]
+      }
+    },
+    {
+      "section_number": 6,
+      "title": "Day-of Guidance",
+      "slug": "day-of-guidance",
+      "content": {
+        "donts": [
+          {
+            "item": "Don't take extra pain medication",
+            "reason": "Taking more than your normal dose masks your symptoms. The examiner needs to see your typical condition, not a medicated version."
+          },
+          {
+            "item": "Don't push through pain",
+            "reason": "Military training taught you to tough it out. This exam is the one time you should NOT do that. Stop at the pain point."
+          },
+          {
+            "item": "Don't assume the examiner reviewed your file",
+            "reason": "Many examiners haven't read your full history. Be ready to explain everything."
+          },
+          {
+            "item": "Don't downplay symptoms",
+            "reason": "Saying 'it's not that bad' or 'I manage' hurts your claim. Describe the real impact."
+          },
+          {
+            "item": "Don't exaggerate",
+            "reason": "Inconsistencies hurt your credibility. Be honest and accurate."
+          }
+        ],
+        "dos": [
+          {
+            "item": "Describe your worst days",
+            "example": "On my worst days, I can't get out of bed until noon because of the pain."
+          },
+          {
+            "item": "Give specific examples",
+            "example": "Last week I couldn't pick up my grandson because my shoulder gave out."
+          },
+          {
+            "item": "Explain functional limitations",
+            "example": "I can't drive more than 30 minutes or I have to take breaks every hour at work."
+          },
+          {
+            "item": "Be honest and consistent",
+            "note": "Your statements should match your medical records and previous claims."
+          },
+          {
+            "item": "Take your time",
+            "note": "Don't rush answers. Pause and think if you need to."
+          }
+        ]
+      }
+    },
+    {
+      "section_number": 7,
+      "title": "Common Mistakes",
+      "slug": "common-mistakes",
+      "content": {
+        "mistakes": [
+          {
+            "mistake": "Minimizing Symptoms",
+            "description": "Many veterans downplay their conditions. Phrases like 'I just deal with it' or 'other people have it worse' can seriously hurt your rating. The examiner writes down what you say—if you minimize, your rating reflects that."
+          },
+          {
+            "mistake": "Allowing ROM Past Pain Point",
+            "description": "When the examiner measures range of motion, some veterans let them push their limb further than comfortable. Your measurement should be where pain begins. Speak up."
+          },
+          {
+            "mistake": "Not Explaining Full Impact",
+            "description": "The examiner asks about daily life for a reason. Don't just say you have pain—explain that you can't play with your kids, can't stand long enough to cook dinner, or had to quit your job."
+          },
+          {
+            "mistake": "Assuming the Examiner Knows Your History",
+            "description": "Treat every exam like the examiner knows nothing about you. Explain your condition from the beginning, even if you've said it before."
+          },
+          {
+            "mistake": "Not Bringing Documentation",
+            "description": "Your memory might fail you under stress. Written notes, medication lists, and supporting documents help you stay accurate and complete."
+          }
+        ]
+      }
+    },
+    {
+      "section_number": 8,
+      "title": "After the Exam",
+      "slug": "after-the-exam",
+      "content": {
+        "document_immediately": {
+          "instruction": "As soon as you leave, write down:",
+          "items": [
+            "What questions were asked",
+            "What tests were performed",
+            "How long the exam lasted",
+            "Anything that felt rushed or incomplete",
+            "Anything you forgot to mention"
+          ]
+        },
+        "request_results": {
+          "instruction": "You can request a copy of your completed DBQ:",
+          "methods": [
+            "Call the VA at 1-800-827-1000",
+            "Use eBenefits or VA.gov",
+            "Submit a FOIA (Freedom of Information Act) request"
+          ],
+          "note": "Review the DBQ carefully. If information is wrong or missing, you can challenge it."
+        },
+        "if_exam_felt_wrong": {
+          "warning_signs": [
+            "Exam was very short (under 10 minutes)",
+            "Tests weren't performed",
+            "Examiner seemed dismissive"
+          ],
+          "before_rating_decision": [
+            "File a formal complaint with the VA",
+            "Request a new exam with a different examiner",
+            "Submit a statement explaining what happened"
+          ],
+          "after_rating_decision": [
+            "File a Supplemental Claim with new evidence",
+            "Request a Higher-Level Review",
+            "Appeal to the Board of Veterans Appeals"
+          ]
+        },
+        "timeline": "Most rating decisions come within 60-90 days after your exam, but it can take longer for complex claims. Check your status on VA.gov regularly."
+      }
+    }
+  ],
+  "closing_message": {
+    "text": "You've earned these benefits through your service. The C&P exam is your opportunity to show how your military service affects your life today. Be prepared, be honest, and be thorough.",
+    "encouragement": "You've got this."
+  },
+  "metadata": {
+    "source_note": "Information based on current VA C&P exam procedures.",
+    "related_content": "For condition-specific guidance, see individual condition guides."
+  }
+}

@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- Breadcrumb -->
+    <nav class="mb-4 text-sm" aria-label="Breadcrumb">
+        <a href="{% url 'appeals:home' %}" class="text-blue-700 hover:underline">Appeals Guide</a>
+        <span class="mx-2 text-gray-400">/</span>
+        <span class="text-gray-600">{{ guidance.title }}</span>
+    </nav>
+
+    <!-- Header -->
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ guidance.title }}</h1>
+        <div class="flex flex-wrap gap-4 text-sm">
+            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">
+                {{ guidance.va_form_number }}
+            </span>
+            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full">
+                ~{{ guidance.average_processing_days }} days average
+            </span>
+        </div>
+    </header>
+
+    <div class="grid lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-8">
+            <!-- Overview -->
+            <section class="bg-white rounded-lg shadow border p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">Overview</h2>
+                <div class="prose max-w-none text-gray-700">
+                    {{ guidance.overview|linebreaks }}
+                </div>
+            </section>
+
+            <!-- When to Use -->
+            <section class="bg-green-50 rounded-lg border border-green-200 p-6">
+                <h2 class="text-xl font-bold text-green-900 mb-4">When to Use This Appeal</h2>
+                <div class="prose max-w-none text-green-800">
+                    {{ guidance.when_to_use|linebreaks }}
+                </div>
+            </section>
+
+            <!-- When NOT to Use -->
+            <section class="bg-red-50 rounded-lg border border-red-200 p-6">
+                <h2 class="text-xl font-bold text-red-900 mb-4">When NOT to Use This Appeal</h2>
+                <div class="prose max-w-none text-red-800">
+                    {{ guidance.when_not_to_use|linebreaks }}
+                </div>
+            </section>
+
+            <!-- Requirements -->
+            <section class="bg-white rounded-lg shadow border p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">What You Need</h2>
+                <div class="prose max-w-none text-gray-700">
+                    {{ guidance.requirements|linebreaks }}
+                </div>
+            </section>
+
+            <!-- Step by Step -->
+            <section class="bg-white rounded-lg shadow border p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">Step-by-Step Process</h2>
+                <div class="prose max-w-none text-gray-700">
+                    {{ guidance.step_by_step|linebreaks }}
+                </div>
+            </section>
+
+            <!-- Evidence Guidance -->
+            {% if guidance.evidence_guidance %}
+            <section class="bg-white rounded-lg shadow border p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">Evidence Guidance</h2>
+                <div class="prose max-w-none text-gray-700">
+                    {{ guidance.evidence_guidance|linebreaks }}
+                </div>
+            </section>
+            {% endif %}
+
+            <!-- Common Mistakes -->
+            <section class="bg-yellow-50 rounded-lg border border-yellow-200 p-6">
+                <h2 class="text-xl font-bold text-yellow-900 mb-4">Common Mistakes to Avoid</h2>
+                <div class="prose max-w-none text-yellow-800">
+                    {{ guidance.common_mistakes|linebreaks }}
+                </div>
+            </section>
+
+            <!-- After Submission -->
+            <section class="bg-white rounded-lg shadow border p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">What to Expect After Submission</h2>
+                <div class="prose max-w-none text-gray-700">
+                    {{ guidance.after_submission|linebreaks }}
+                </div>
+            </section>
+
+            <!-- Tips -->
+            <section class="bg-blue-50 rounded-lg border border-blue-200 p-6">
+                <h2 class="text-xl font-bold text-blue-900 mb-4">Tips for Success</h2>
+                <div class="prose max-w-none text-blue-800">
+                    {{ guidance.tips|linebreaks }}
+                </div>
+            </section>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Quick Facts -->
+            <section class="bg-white rounded-lg shadow border p-6 sticky top-4">
+                <h3 class="font-bold text-gray-900 mb-4">Quick Facts</h3>
+                <dl class="space-y-4">
+                    <div>
+                        <dt class="text-sm text-gray-500">VA Form</dt>
+                        <dd class="font-semibold text-gray-900">{{ guidance.va_form_number }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm text-gray-500">Average Processing</dt>
+                        <dd class="font-semibold text-gray-900">~{{ guidance.average_processing_days }} days</dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm text-gray-500">Appeal Type</dt>
+                        <dd class="font-semibold text-gray-900">{{ guidance.get_appeal_type_display }}</dd>
+                    </div>
+                </dl>
+
+                <hr class="my-4">
+
+                {% if user.is_authenticated %}
+                <a href="{% url 'appeals:appeal_start' %}"
+                   class="block w-full text-center bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded transition">
+                    Start This Appeal
+                </a>
+                {% else %}
+                <a href="{% url 'account_signup' %}?next={% url 'appeals:appeal_start' %}"
+                   class="block w-full text-center bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded transition">
+                    Create Account to Start
+                </a>
+                {% endif %}
+
+                <a href="{% url 'appeals:decision_tree' %}"
+                   class="block w-full text-center mt-3 text-blue-700 hover:text-blue-900 text-sm">
+                    Not sure? Use the Decision Tree
+                </a>
+            </section>
+
+            <!-- Preparation Checklist Preview -->
+            {% if guidance.checklist_items %}
+            <section class="bg-white rounded-lg shadow border p-6">
+                <h3 class="font-bold text-gray-900 mb-4">Preparation Checklist</h3>
+                <ul class="space-y-2">
+                    {% for item in guidance.checklist_items|slice:":5" %}
+                    <li class="flex items-start gap-2 text-sm text-gray-700">
+                        <span class="text-gray-400">&#9744;</span>
+                        {{ item.task }}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% if guidance.checklist_items|length > 5 %}
+                <p class="mt-3 text-sm text-gray-500">
+                    + {{ guidance.checklist_items|length|add:"-5" }} more items...
+                </p>
+                {% endif %}
+            </section>
+            {% endif %}
+
+            <!-- VSO Help -->
+            <section class="bg-gray-50 rounded-lg border p-6">
+                <h3 class="font-bold text-gray-900 mb-2">Free Help Available</h3>
+                <p class="text-gray-600 text-sm mb-3">
+                    Veterans Service Organizations can help you file this appeal for free.
+                </p>
+                <a href="https://www.va.gov/vso/" target="_blank" rel="noopener"
+                   class="text-blue-700 hover:text-blue-900 text-sm font-medium">
+                    Find a VSO Near You &rarr;
+                </a>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ SITE_NAME }} - VA Claims, Exam Prep & Appeals{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <!-- Hero Section -->
+    <section class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            VA Benefits Navigator
+        </h1>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            Your comprehensive guide to navigating VA disability claims, C&P exams, and appeals.
+            Built by veterans, for veterans.
+        </p>
+    </section>
+
+    <!-- Feature Cards -->
+    <div class="grid gap-8 md:grid-cols-3 mb-16">
+        <!-- Claims Assistant -->
+        <article class="bg-white shadow-lg rounded-lg p-8 hover:shadow-xl transition-shadow border-t-4 border-blue-600">
+            <div class="flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-6 mx-auto">
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-4 text-center">
+                Claims Preparation
+            </h2>
+            <p class="text-gray-600 mb-6">
+                Upload and analyze your medical records, service records, and other documents with AI-powered insights to strengthen your VA claim.
+            </p>
+            <div class="space-y-3 mb-6 text-sm text-gray-700">
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>OCR text extraction from PDFs and images</span>
+                </div>
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>AI-powered document analysis</span>
+                </div>
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>Identify missing evidence</span>
+                </div>
+            </div>
+            <a href="{% url 'claims:document_list' %}"
+               class="block w-full text-center px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Upload Documents
+            </a>
+        </article>
+
+        <!-- C&P Exam Prep -->
+        <article class="bg-white shadow-lg rounded-lg p-8 hover:shadow-xl transition-shadow border-t-4 border-green-600">
+            <div class="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-6 mx-auto">
+                <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-4 text-center">
+                C&P Exam Preparation
+            </h2>
+            <p class="text-gray-600 mb-6">
+                Comprehensive guides for your Compensation & Pension exams. Learn what to expect, how to prepare, and what the examiner evaluates.
+            </p>
+            <div class="space-y-3 mb-6 text-sm text-gray-700">
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>Condition-specific exam guides</span>
+                </div>
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>Interactive preparation checklists</span>
+                </div>
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>VA terminology glossary</span>
+                </div>
+            </div>
+            <a href="{% url 'examprep:guide_list' %}"
+               class="block w-full text-center px-6 py-3 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                Browse Exam Guides
+            </a>
+        </article>
+
+        <!-- Appeals Guidance -->
+        <article class="bg-white shadow-lg rounded-lg p-8 hover:shadow-xl transition-shadow border-t-4 border-purple-600">
+            <div class="flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mb-6 mx-auto">
+                <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-4 text-center">
+                Appeals Process
+            </h2>
+            <p class="text-gray-600 mb-6">
+                Navigate the appeals process with confidence. Understand your options for supplemental claims, higher-level reviews, and Board appeals.
+            </p>
+            <div class="space-y-3 mb-6 text-sm text-gray-700">
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>Decision letter analysis</span>
+                </div>
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>Appeals lane comparison</span>
+                </div>
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span>Step-by-step guidance</span>
+                </div>
+            </div>
+            <div class="block w-full text-center px-6 py-3 bg-gray-300 text-gray-600 font-medium rounded-md cursor-not-allowed"
+                 aria-disabled="true"
+                 title="Coming soon">
+                Coming Soon
+            </div>
+        </article>
+    </div>
+
+    <!-- Quick Links Section -->
+    <section class="bg-blue-50 border border-blue-200 rounded-lg p-8 mb-16">
+        <h2 class="text-2xl font-bold text-blue-900 mb-6 text-center">Quick Access</h2>
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <a href="{% url 'examprep:glossary_list' %}"
+               class="flex items-center p-4 bg-white rounded-lg hover:shadow-md transition-shadow focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <svg class="w-6 h-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+                <span class="font-medium text-gray-900">VA Glossary</span>
+            </a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'examprep:checklist_list' %}"
+               class="flex items-center p-4 bg-white rounded-lg hover:shadow-md transition-shadow focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <svg class="w-6 h-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                <span class="font-medium text-gray-900">My Checklists</span>
+            </a>
+
+            <a href="{% url 'claims:document_list' %}"
+               class="flex items-center p-4 bg-white rounded-lg hover:shadow-md transition-shadow focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <svg class="w-6 h-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                </svg>
+                <span class="font-medium text-gray-900">My Documents</span>
+            </a>
+            {% else %}
+            <a href="{% url 'account_login' %}"
+               class="flex items-center p-4 bg-white rounded-lg hover:shadow-md transition-shadow focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <svg class="w-6 h-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                </svg>
+                <span class="font-medium text-gray-900">Sign In</span>
+            </a>
+            {% endif %}
+
+            <a href="/admin/"
+               class="flex items-center p-4 bg-white rounded-lg hover:shadow-md transition-shadow focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <svg class="w-6 h-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span class="font-medium text-gray-900">Admin Panel</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="text-center mb-16" aria-labelledby="about-heading">
+        <h2 id="about-heading" class="text-2xl font-bold text-gray-900 mb-4">About VA Benefits Navigator</h2>
+        <p class="text-gray-600 max-w-3xl mx-auto">
+            This tool is designed to help veterans navigate the complex VA disability claims process.
+            From initial claim preparation to C&P exams and appeals, we provide accessible,
+            evidence-based guidance every step of the way.
+        </p>
+    </section>
+</div>
+{% endblock %}
