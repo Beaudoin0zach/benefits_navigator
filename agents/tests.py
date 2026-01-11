@@ -63,12 +63,13 @@ class TestAgentInteractionModel(TestCase):
         self.assertEqual(interaction.agent_type, "decision_analyzer")
 
     def test_interaction_str_representation(self):
-        """AgentInteraction string includes type and user."""
+        """AgentInteraction string includes display name and user."""
         interaction = AgentInteraction.objects.create(
             user=self.user,
             agent_type="evidence_gap",
         )
-        self.assertIn("evidence_gap", str(interaction))
+        # Model uses get_agent_type_display() which returns "Evidence Gap Analyzer"
+        self.assertIn("Evidence Gap Analyzer", str(interaction))
 
     def test_interaction_agent_type_choices(self):
         """AgentInteraction accepts valid agent type choices."""
@@ -377,16 +378,17 @@ class TestPersonalStatementModel(TestCase):
         self.assertIn("Back Pain", str(statement))
 
     def test_statement_generated_text(self):
-        """PersonalStatement stores generated text."""
+        """PersonalStatement stores generated text and computes word count."""
+        generated_text = "During my service in Iraq from 2003-2004, I experienced many traumatic events."
         statement = PersonalStatement.objects.create(
             interaction=self.interaction,
             user=self.user,
             condition="PTSD",
-            generated_statement="During my service in Iraq from 2003-2004...",
-            word_count=500,
+            generated_statement=generated_text,
         )
         self.assertIn("During my service", statement.generated_statement)
-        self.assertEqual(statement.word_count, 500)
+        # word_count is auto-computed from generated_statement
+        self.assertEqual(statement.word_count, len(generated_text.split()))
 
     def test_statement_finalization(self):
         """PersonalStatement can be finalized."""
@@ -408,11 +410,16 @@ class TestPersonalStatementModel(TestCase):
     def test_statement_type_choices(self):
         """PersonalStatement accepts valid type choices."""
         valid_types = ['initial', 'increase', 'secondary', 'appeal']
-        for stype in valid_types:
-            statement = PersonalStatement.objects.create(
-                interaction=self.interaction,
+        for i, stype in enumerate(valid_types):
+            # Each statement needs a unique interaction (OneToOne relationship)
+            interaction = AgentInteraction.objects.create(
                 user=self.user,
-                condition="Test",
+                agent_type="statement_generator",
+            )
+            statement = PersonalStatement.objects.create(
+                interaction=interaction,
+                user=self.user,
+                condition=f"Test {i}",
                 statement_type=stype,
             )
             self.assertEqual(statement.statement_type, stype)
@@ -441,24 +448,54 @@ class TestM21ManualSectionModel(TestCase):
         self.assertEqual(section.reference, "M21-1.V.ii.2.A")
 
     def test_section_str_representation(self):
-        """M21ManualSection string is the reference."""
+        """M21ManualSection string includes reference and title."""
         section = M21ManualSection.objects.create(
+            part="V",
+            part_number=5,
+            subpart="ii",
+            chapter="2",
+            section="B",
             reference="M21-1.V.ii.2.B",
             title="Evidence Requirements",
+            content="Evidence requirements content...",
         )
-        self.assertEqual(str(section), "M21-1.V.ii.2.B")
+        self.assertIn("M21-1.V.ii.2.B", str(section))
 
     def test_section_unique_reference(self):
         """M21ManualSection reference must be unique."""
-        M21ManualSection.objects.create(reference="M21-1.Test", title="Test 1")
+        M21ManualSection.objects.create(
+            part="V",
+            part_number=5,
+            subpart="ii",
+            chapter="1",
+            section="A",
+            reference="M21-1.Test",
+            title="Test 1",
+            content="Test content",
+        )
         with self.assertRaises(Exception):
-            M21ManualSection.objects.create(reference="M21-1.Test", title="Test 2")
+            M21ManualSection.objects.create(
+                part="V",
+                part_number=5,
+                subpart="ii",
+                chapter="1",
+                section="B",
+                reference="M21-1.Test",
+                title="Test 2",
+                content="Test content 2",
+            )
 
     def test_section_topics_json(self):
         """M21ManualSection stores topics as JSON."""
         section = M21ManualSection.objects.create(
-            reference="M21-1.V.ii.2.A",
+            part="V",
+            part_number=5,
+            subpart="ii",
+            chapter="2",
+            section="A",
+            reference="M21-1.V.ii.2.A.topics",
             title="Service Connection",
+            content="Service connection content...",
             topics=[
                 {"code": "V.ii.2.A.1", "title": "In-Service Event"},
                 {"code": "V.ii.2.A.2", "title": "Current Disability"},
@@ -479,27 +516,27 @@ class TestM21ScrapeJobModel(TestCase):
         """M21ScrapeJob can be created."""
         job = M21ScrapeJob.objects.create(
             status="pending",
-            article_ids=["KA-12345", "KA-67890"],
+            target_parts=["V", "VI"],
         )
         self.assertEqual(job.status, "pending")
 
     def test_scrape_job_str_representation(self):
-        """M21ScrapeJob string includes ID and status."""
+        """M21ScrapeJob string includes status."""
         job = M21ScrapeJob.objects.create(
             status="running",
         )
-        self.assertIn("running", str(job))
+        self.assertIn("running", str(job).lower())
 
     def test_scrape_job_progress_tracking(self):
         """M21ScrapeJob tracks progress."""
         job = M21ScrapeJob.objects.create(
             status="running",
-            article_ids=["KA-1", "KA-2", "KA-3", "KA-4", "KA-5"],
-            articles_processed=2,
-            articles_succeeded=1,
-            articles_failed=1,
+            total_sections=5,
+            sections_completed=2,
+            sections_failed=1,
         )
-        self.assertEqual(job.articles_processed, 2)
+        self.assertEqual(job.sections_completed, 2)
+        self.assertEqual(job.sections_failed, 1)
         # Progress would be 2/5 = 40%
 
 
@@ -513,7 +550,7 @@ class TestAgentHomeView:
 
     def test_agents_home_loads(self, client):
         """Agents home page loads."""
-        response = client.get(reverse('agents:agents_home'))
+        response = client.get(reverse('agents:home'))
         assert response.status_code == 200
 
 
@@ -523,17 +560,17 @@ class TestAgentHistoryView:
 
     def test_history_requires_login(self, client):
         """Agent history requires authentication."""
-        response = client.get(reverse('agents:agent_history'))
+        response = client.get(reverse('agents:history'))
         assert response.status_code == 302
 
     def test_history_loads(self, authenticated_client):
         """Agent history loads for authenticated user."""
-        response = authenticated_client.get(reverse('agents:agent_history'))
+        response = authenticated_client.get(reverse('agents:history'))
         assert response.status_code == 200
 
     def test_history_shows_user_interactions(self, authenticated_client, agent_interaction):
         """Agent history shows user's interactions."""
-        response = authenticated_client.get(reverse('agents:agent_history'))
+        response = authenticated_client.get(reverse('agents:history'))
         assert response.status_code == 200
         assert 'interactions' in response.context
 
@@ -589,12 +626,12 @@ class TestEvidenceGapViews:
 
     def test_gap_analyzer_requires_login(self, client):
         """Evidence gap analyzer requires authentication."""
-        response = client.get(reverse('agents:evidence_gap_analyzer'))
+        response = client.get(reverse('agents:evidence_gap'))
         assert response.status_code == 302
 
     def test_gap_analyzer_loads(self, authenticated_client):
         """Evidence gap analyzer page loads."""
-        response = authenticated_client.get(reverse('agents:evidence_gap_analyzer'))
+        response = authenticated_client.get(reverse('agents:evidence_gap'))
         assert response.status_code == 200
 
 
@@ -624,17 +661,17 @@ class TestStatementGeneratorViews:
 class TestDecisionLetterAnalyzerService(TestCase):
     """Tests for the DecisionLetterAnalyzer service."""
 
-    @patch('agents.services.decision_analyzer.openai')
+    @patch('agents.services.OpenAI')
     def test_analyzer_initialization(self, mock_openai):
         """DecisionLetterAnalyzer can be initialized."""
-        from agents.services.decision_analyzer import DecisionLetterAnalyzer
+        from agents.services import DecisionLetterAnalyzer
         analyzer = DecisionLetterAnalyzer()
         self.assertIsNotNone(analyzer)
 
-    @patch('agents.services.decision_analyzer.openai')
+    @patch('agents.services.OpenAI')
     def test_analyzer_analyze_mocked(self, mock_openai):
         """DecisionLetterAnalyzer analyzes text with mocked OpenAI."""
-        from agents.services.decision_analyzer import DecisionLetterAnalyzer
+        from agents.services import DecisionLetterAnalyzer
 
         # Mock response
         mock_response = MagicMock()
@@ -659,10 +696,10 @@ class TestDecisionLetterAnalyzerService(TestCase):
 class TestEvidenceGapAnalyzerService(TestCase):
     """Tests for the EvidenceGapAnalyzer service."""
 
-    @patch('agents.services.evidence_gap_analyzer.openai')
+    @patch('agents.services.OpenAI')
     def test_gap_analyzer_initialization(self, mock_openai):
         """EvidenceGapAnalyzer can be initialized."""
-        from agents.services.evidence_gap_analyzer import EvidenceGapAnalyzer
+        from agents.services import EvidenceGapAnalyzer
         analyzer = EvidenceGapAnalyzer()
         self.assertIsNotNone(analyzer)
 
@@ -670,10 +707,10 @@ class TestEvidenceGapAnalyzerService(TestCase):
 class TestPersonalStatementGeneratorService(TestCase):
     """Tests for the PersonalStatementGenerator service."""
 
-    @patch('agents.services.statement_generator.openai')
+    @patch('agents.services.OpenAI')
     def test_generator_initialization(self, mock_openai):
         """PersonalStatementGenerator can be initialized."""
-        from agents.services.statement_generator import PersonalStatementGenerator
+        from agents.services import PersonalStatementGenerator
         generator = PersonalStatementGenerator()
         self.assertIsNotNone(generator)
 
@@ -698,10 +735,10 @@ class TestDenialDecoderService(TestCase):
             content="Service connection requirements...",
         )
 
-    @patch('agents.services.denial_decoder.openai')
+    @patch('agents.services.OpenAI')
     def test_decoder_initialization(self, mock_openai):
         """DenialDecoderService can be initialized."""
-        from agents.services.denial_decoder import DenialDecoderService
+        from agents.services import DenialDecoderService
         service = DenialDecoderService()
         self.assertIsNotNone(service)
 
@@ -716,14 +753,18 @@ class TestEvidenceChecklistGenerator(TestCase):
     def setUp(self):
         self.m21_section = M21ManualSection.objects.create(
             part="V",
-            reference="M21-1.V.ii.2.A",
+            part_number=5,
+            subpart="ii",
+            chapter="2",
+            section="A",
+            reference="M21-1.V.ii.2.A.ecg",
             title="Service Connection",
             content="Requirements for service connection...",
         )
 
     def test_generator_initialization(self):
         """EvidenceChecklistGenerator can be initialized."""
-        from agents.services.evidence_checklist_generator import EvidenceChecklistGenerator
+        from agents.services import EvidenceChecklistGenerator
         generator = EvidenceChecklistGenerator()
         self.assertIsNotNone(generator)
 
@@ -740,14 +781,20 @@ class TestM21ReferenceData(TestCase):
         self.section1 = M21ManualSection.objects.create(
             part="V",
             part_number=5,
-            reference="M21-1.V.ii.2.A",
+            subpart="ii",
+            chapter="2",
+            section="A",
+            reference="M21-1.V.ii.2.A.ref",
             title="Service Connection",
             content="Service connection requirements for disabilities.",
         )
         self.section2 = M21ManualSection.objects.create(
             part="V",
             part_number=5,
-            reference="M21-1.V.ii.2.B",
+            subpart="ii",
+            chapter="2",
+            section="B",
+            reference="M21-1.V.ii.2.B.ref",
             title="Evidence Requirements",
             content="Evidence requirements for claims.",
         )
@@ -760,12 +807,13 @@ class TestM21ReferenceData(TestCase):
         self.assertGreater(len(results), 0)
 
     def test_get_m21_section_from_db(self):
-        """get_m21_section_from_db retrieves specific section."""
+        """get_m21_section_from_db retrieves specific section as dict."""
         from agents.reference_data import get_m21_section_from_db
 
-        section = get_m21_section_from_db("M21-1.V.ii.2.A")
+        section = get_m21_section_from_db("M21-1.V.ii.2.A.ref")
         if section:  # May return None if not found by exact match
-            self.assertEqual(section.title, "Service Connection")
+            # Returns a dict, not a model object
+            self.assertEqual(section['title'], "Service Connection")
 
     def test_get_m21_sections_by_part(self):
         """get_m21_sections_by_part retrieves sections in a part."""
@@ -779,8 +827,8 @@ class TestM21ReferenceData(TestCase):
         from agents.reference_data import get_m21_stats
 
         stats = get_m21_stats()
-        self.assertIn('total_sections', stats)
-        self.assertEqual(stats['total_sections'], 2)
+        self.assertIn('total', stats)
+        self.assertEqual(stats['total'], 2)
 
 
 # =============================================================================
