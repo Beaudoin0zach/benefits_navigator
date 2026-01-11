@@ -142,7 +142,7 @@
                 <span class="text-sm font-medium text-gray-900">New Checklist</span>
             </a>
 
-            <a href="{% url 'appeals:appeal_create' %}"
+            <a href="{% url 'appeals:appeal_start' %}"
                class="flex flex-col items-center p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow focus:outline-none focus:ring-2 focus:ring-purple-500">
                 <svg class="w-8 h-8 text-purple-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -267,7 +267,7 @@
         <div class="p-6 border-b border-gray-200">
             <div class="flex items-center justify-between">
                 <h2 id="appeals-heading" class="text-lg font-bold text-gray-900">My Appeals</h2>
-                <a href="{% url 'appeals:my_appeals' %}" class="text-sm text-blue-600 hover:text-blue-800">View all</a>
+                <a href="{% url 'appeals:appeal_list' %}" class="text-sm text-blue-600 hover:text-blue-800">View all</a>
             </div>
         </div>
         <div class="p-6">

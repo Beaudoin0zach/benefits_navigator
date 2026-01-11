@@ -624,7 +624,7 @@ class TestRatingCalculatorViews:
     def test_calculate_htmx_endpoint(self, client):
         """Calculate HTMX endpoint returns results."""
         response = client.post(
-            reverse('examprep:calculate_rating_htmx'),
+            reverse('examprep:calculate_rating'),
             {
                 'ratings': json.dumps([
                     {"percentage": 50, "description": "PTSD", "is_bilateral": False},
@@ -641,7 +641,7 @@ class TestRatingCalculatorViews:
     def test_calculate_htmx_empty_ratings(self, client):
         """Calculate HTMX handles empty ratings."""
         response = client.post(
-            reverse('examprep:calculate_rating_htmx'),
+            reverse('examprep:calculate_rating'),
             {
                 'ratings': '[]',
                 'has_spouse': 'false',

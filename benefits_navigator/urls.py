@@ -12,9 +12,6 @@ from accounts.views import (
     RateLimitedLoginView,
     RateLimitedSignupView,
     RateLimitedPasswordResetView,
-    data_export,
-    account_deletion,
-    privacy_settings,
 )
 
 urlpatterns = [
@@ -32,10 +29,8 @@ urlpatterns = [
     path('accounts/signup/', RateLimitedSignupView.as_view(), name='account_signup'),
     path('accounts/password/reset/', RateLimitedPasswordResetView.as_view(), name='account_reset_password'),
 
-    # Privacy / Data management
-    path('accounts/privacy/', privacy_settings, name='privacy_settings'),
-    path('accounts/export/', data_export, name='data_export'),
-    path('accounts/delete/', account_deletion, name='account_deletion'),
+    # Accounts app URLs (privacy, export, deletion)
+    path('accounts/', include('accounts.urls', namespace='accounts')),
 
     # Authentication (django-allauth) - remaining URLs
     path('accounts/', include('allauth.urls')),
