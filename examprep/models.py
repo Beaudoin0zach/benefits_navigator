@@ -237,7 +237,9 @@ class ExamChecklist(TimeStampedModel):
 
     @property
     def is_upcoming(self):
-        """Check if exam is upcoming (within 30 days)"""
+        """Check if exam is upcoming (within 30 days) and not yet completed"""
+        if self.exam_completed:
+            return False
         if self.exam_date:
             from datetime import date, timedelta
             today = date.today()
@@ -263,3 +265,251 @@ class ExamChecklist(TimeStampedModel):
             completed = len(self.tasks_completed)
             return int((completed / total_tasks) * 100)
         return 0
+
+
+class SavedRatingCalculation(TimeStampedModel):
+    """
+    User's saved VA disability rating calculation.
+    Allows veterans to save and compare different scenarios.
+    """
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='rating_calculations'
+    )
+    name = models.CharField(
+        'Calculation Name',
+        max_length=100,
+        help_text='e.g., "Current Rating" or "If I add sleep apnea"'
+    )
+
+    # Individual ratings stored as JSON
+    # Format: [{"percentage": 50, "description": "PTSD", "is_bilateral": false}, ...]
+    ratings = models.JSONField(
+        'Disability Ratings',
+        default=list,
+        help_text='List of individual disability ratings'
+    )
+
+    # Calculated results
+    combined_raw = models.FloatField('Combined (raw)', default=0)
+    combined_rounded = models.IntegerField('Combined (rounded)', default=0)
+    bilateral_factor = models.FloatField('Bilateral Factor', default=0)
+
+    # Dependent info for compensation estimate
+    has_spouse = models.BooleanField('Has Spouse', default=False)
+    children_under_18 = models.IntegerField('Children Under 18', default=0)
+    dependent_parents = models.IntegerField('Dependent Parents', default=0)
+
+    # Estimated compensation
+    estimated_monthly = models.FloatField('Estimated Monthly', default=0)
+
+    # Notes
+    notes = models.TextField('Notes', blank=True)
+
+    class Meta:
+        verbose_name = 'Saved Rating Calculation'
+        verbose_name_plural = 'Saved Rating Calculations'
+        ordering = ['-updated_at']
+
+    def __str__(self):
+        return f"{self.name} - {self.combined_rounded}% ({self.user.email})"
+
+    def recalculate(self):
+        """Recalculate combined rating from stored ratings"""
+        from .va_math import (
+            DisabilityRating,
+            calculate_combined_rating,
+            estimate_monthly_compensation
+        )
+
+        if not self.ratings:
+            self.combined_raw = 0
+            self.combined_rounded = 0
+            self.bilateral_factor = 0
+            self.estimated_monthly = 0
+            return
+
+        # Convert JSON to DisabilityRating objects
+        rating_objects = [
+            DisabilityRating(
+                percentage=r.get('percentage', 0),
+                description=r.get('description', ''),
+                is_bilateral=r.get('is_bilateral', False)
+            )
+            for r in self.ratings
+        ]
+
+        # Calculate combined rating
+        result = calculate_combined_rating(rating_objects)
+
+        self.combined_raw = result.combined_raw
+        self.combined_rounded = result.combined_rounded
+        self.bilateral_factor = result.bilateral_factor_applied
+
+        # Estimate monthly compensation
+        self.estimated_monthly = estimate_monthly_compensation(
+            self.combined_rounded,
+            spouse=self.has_spouse,
+            children_under_18=self.children_under_18,
+            dependent_parents=self.dependent_parents
+        )
+
+
+class EvidenceChecklist(TimeStampedModel):
+    """
+    Personalized evidence checklist for a specific condition claim.
+    Generated from M21 requirements to help veterans gather the right evidence.
+    """
+
+    CLAIM_TYPE_CHOICES = [
+        ('initial', 'Initial Claim'),
+        ('increase', 'Rating Increase'),
+        ('secondary', 'Secondary Condition'),
+        ('appeal', 'Appeal / Supplemental Claim'),
+    ]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='evidence_checklists'
+    )
+
+    # What condition this checklist is for
+    condition = models.CharField(
+        'Condition',
+        max_length=200,
+        help_text='Medical condition this evidence is for'
+    )
+    claim_type = models.CharField(
+        'Claim Type',
+        max_length=20,
+        choices=CLAIM_TYPE_CHOICES,
+        default='initial'
+    )
+
+    # For secondary claims
+    primary_condition = models.CharField(
+        'Primary Condition',
+        max_length=200,
+        blank=True,
+        help_text='For secondary claims: the primary service-connected condition'
+    )
+
+    # M21 sections used to generate this checklist
+    m21_sections_used = models.JSONField(
+        'M21 Sections Used',
+        default=list,
+        blank=True,
+        help_text='M21 section references used in generation'
+    )
+
+    # The checklist items
+    # Format: [
+    #     {
+    #         "id": "nexus_letter",
+    #         "category": "Medical Evidence",
+    #         "title": "Nexus Letter / IMO",
+    #         "description": "Medical opinion linking condition to service",
+    #         "priority": "critical",
+    #         "m21_reference": "M21-1.V.ii.2.A",
+    #         "tips": ["Ask treating doctor", "Include rationale"],
+    #         "completed": false,
+    #         "completed_at": null,
+    #         "notes": ""
+    #     }
+    # ]
+    checklist_items = models.JSONField(
+        'Checklist Items',
+        default=list,
+        help_text='Evidence items with completion status'
+    )
+
+    # Progress tracking (cached, updated on toggle)
+    completion_percentage = models.IntegerField(
+        'Completion %',
+        default=0
+    )
+
+    # Link to denial analysis (if generated from denial decoder)
+    from_denial_analysis = models.ForeignKey(
+        'agents.DecisionLetterAnalysis',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='generated_checklists',
+        help_text='If generated from a denial analysis'
+    )
+
+    # User notes
+    notes = models.TextField(
+        'Notes',
+        blank=True,
+        help_text='User notes about this evidence gathering'
+    )
+
+    class Meta:
+        verbose_name = 'Evidence Checklist'
+        verbose_name_plural = 'Evidence Checklists'
+        ordering = ['-updated_at']
+
+    def __str__(self):
+        return f"Evidence for {self.condition} ({self.get_claim_type_display()}) - {self.user.email}"
+
+    def update_completion(self):
+        """Recalculate completion percentage."""
+        if not self.checklist_items:
+            self.completion_percentage = 0
+        else:
+            completed = sum(1 for item in self.checklist_items if item.get('completed'))
+            self.completion_percentage = int((completed / len(self.checklist_items)) * 100)
+        self.save(update_fields=['completion_percentage', 'updated_at'])
+
+    def toggle_item(self, item_id: str) -> bool:
+        """
+        Toggle completion status of an item.
+        Returns new completion status.
+        """
+        from django.utils import timezone
+
+        for item in self.checklist_items:
+            if item.get('id') == item_id:
+                item['completed'] = not item.get('completed', False)
+                item['completed_at'] = timezone.now().isoformat() if item['completed'] else None
+                self.save(update_fields=['checklist_items', 'updated_at'])
+                self.update_completion()
+                return item['completed']
+        return False
+
+    @property
+    def total_items(self):
+        """Total number of checklist items."""
+        return len(self.checklist_items) if self.checklist_items else 0
+
+    @property
+    def completed_items(self):
+        """Number of completed items."""
+        if not self.checklist_items:
+            return 0
+        return sum(1 for item in self.checklist_items if item.get('completed'))
+
+    @property
+    def critical_items_remaining(self):
+        """Number of incomplete critical items."""
+        if not self.checklist_items:
+            return 0
+        return sum(
+            1 for item in self.checklist_items
+            if item.get('priority') == 'critical' and not item.get('completed')
+        )
+
+    def get_items_by_category(self):
+        """Group items by category."""
+        categories = {}
+        for item in self.checklist_items or []:
+            category = item.get('category', 'Other')
+            if category not in categories:
+                categories[category] = []
+            categories[category].append(item)
+        return categories

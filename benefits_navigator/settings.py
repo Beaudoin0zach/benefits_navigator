@@ -19,7 +19,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY', default='django-insecure-dev-key-change-in-production')
+# In production, this MUST be set via environment variable
+SECRET_KEY = env('SECRET_KEY')
+if not SECRET_KEY or SECRET_KEY.startswith('django-insecure'):
+    import warnings
+    if not env.bool('DEBUG', default=False):
+        raise ValueError("SECRET_KEY must be set in production!")
+    warnings.warn("Using insecure SECRET_KEY - set SECRET_KEY in .env for production")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
@@ -55,6 +61,7 @@ INSTALLED_APPS = [
     'claims.apps.ClaimsConfig',
     'appeals.apps.AppealsConfig',
     'examprep.apps.ExamprepConfig',
+    'agents.apps.AgentsConfig',
 ]
 
 MIDDLEWARE = [
@@ -68,6 +75,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_htmx.middleware.HtmxMiddleware',  # HTMX support
     'allauth.account.middleware.AccountMiddleware',  # Django-allauth
+    'core.middleware.AuditMiddleware',  # Audit logging for sensitive operations
+    'core.middleware.SecurityHeadersMiddleware',  # Additional security headers
+    'csp.middleware.CSPMiddleware',  # Content Security Policy
 ]
 
 ROOT_URLCONF = 'benefits_navigator.urls'
@@ -191,12 +201,34 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 # ==============================================================================
 # SECURITY SETTINGS
 # ==============================================================================
+# Always enabled
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME type sniffing
+SECURE_BROWSER_XSS_FILTER = True  # Enable XSS filter
+X_FRAME_OPTIONS = 'DENY'  # Prevent clickjacking
+SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+
+# Content Security Policy
+# Restricts what resources can be loaded
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_STYLE_SRC = ("'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com")
+CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com", "https://unpkg.com")
+CSP_IMG_SRC = ("'self'", "data:", "https:")
+CSP_FONT_SRC = ("'self'", "https://fonts.gstatic.com")
+CSP_CONNECT_SRC = ("'self'",)
+CSP_FRAME_ANCESTORS = ("'none'",)
+CSP_FORM_ACTION = ("'self'",)
+
+# Production-only settings
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SECURE_HSTS_SECONDS = 31536000  # 1 year
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+    # Stricter CSP in production
+    CSP_SCRIPT_SRC = ("'self'", "https://cdn.tailwindcss.com", "https://unpkg.com")
+    CSP_STYLE_SRC = ("'self'", "https://cdn.tailwindcss.com")
 
 # ==============================================================================
 # DJANGO-ALLAUTH CONFIGURATION
@@ -205,7 +237,8 @@ SITE_ID = 1
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_EMAIL_VERIFICATION = 'optional'  # Change to 'mandatory' for production
+# Email verification: 'mandatory' in production, 'optional' in development
+ACCOUNT_EMAIL_VERIFICATION = 'optional' if DEBUG else 'mandatory'
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/dashboard/'

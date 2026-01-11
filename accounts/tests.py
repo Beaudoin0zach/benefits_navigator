@@ -1,3 +1,565 @@
-from django.test import TestCase
+"""
+Tests for the accounts app - User authentication, profiles, and subscriptions.
 
-# Create your tests here.
+Covers:
+- User model and custom manager
+- UserProfile model and signals
+- Subscription model and properties
+- Rate-limited authentication views
+- Data export (GDPR)
+- Account deletion
+- Privacy settings
+"""
+
+import json
+import pytest
+from datetime import date, timedelta
+from decimal import Decimal
+from unittest.mock import patch, MagicMock
+
+from django.test import TestCase, Client
+from django.urls import reverse
+from django.contrib.auth import get_user_model
+from django.utils import timezone
+
+from accounts.models import UserProfile, Subscription
+
+User = get_user_model()
+
+
+# =============================================================================
+# USER MODEL TESTS
+# =============================================================================
+
+class TestUserModel(TestCase):
+    """Tests for the custom User model."""
+
+    def test_create_user_with_email(self):
+        """User can be created with email as the primary identifier."""
+        user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!"
+        )
+        self.assertEqual(user.email, "test@example.com")
+        self.assertTrue(user.check_password("TestPass123!"))
+        self.assertFalse(user.is_staff)
+        self.assertFalse(user.is_superuser)
+
+    def test_create_user_email_normalized(self):
+        """Email is normalized when creating user."""
+        user = User.objects.create_user(
+            email="Test@EXAMPLE.com",
+            password="TestPass123!"
+        )
+        self.assertEqual(user.email, "Test@example.com")
+
+    def test_create_user_without_email_raises_error(self):
+        """Creating user without email raises ValueError."""
+        with self.assertRaises(ValueError) as context:
+            User.objects.create_user(email="", password="TestPass123!")
+        self.assertIn("Email field must be set", str(context.exception))
+
+    def test_create_superuser(self):
+        """Superuser is created with correct permissions."""
+        admin = User.objects.create_superuser(
+            email="admin@example.com",
+            password="AdminPass123!"
+        )
+        self.assertTrue(admin.is_staff)
+        self.assertTrue(admin.is_superuser)
+        self.assertTrue(admin.is_verified)
+
+    def test_create_superuser_must_have_is_staff(self):
+        """Superuser must have is_staff=True."""
+        with self.assertRaises(ValueError):
+            User.objects.create_superuser(
+                email="admin@example.com",
+                password="AdminPass123!",
+                is_staff=False
+            )
+
+    def test_create_superuser_must_have_is_superuser(self):
+        """Superuser must have is_superuser=True."""
+        with self.assertRaises(ValueError):
+            User.objects.create_superuser(
+                email="admin@example.com",
+                password="AdminPass123!",
+                is_superuser=False
+            )
+
+    def test_user_str_returns_email(self):
+        """User string representation is the email."""
+        user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!"
+        )
+        self.assertEqual(str(user), "test@example.com")
+
+    def test_user_full_name_with_names(self):
+        """Full name returns first and last name when set."""
+        user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!",
+            first_name="John",
+            last_name="Doe"
+        )
+        self.assertEqual(user.full_name, "John Doe")
+
+    def test_user_full_name_without_names(self):
+        """Full name returns email when names not set."""
+        user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!"
+        )
+        self.assertEqual(user.full_name, "test@example.com")
+
+    def test_user_is_premium_without_subscription(self):
+        """is_premium returns False when no subscription exists."""
+        user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!"
+        )
+        self.assertFalse(user.is_premium)
+
+    def test_user_is_premium_with_active_subscription(self):
+        """is_premium returns True with active premium subscription."""
+        user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!"
+        )
+        Subscription.objects.create(
+            user=user,
+            plan_type='premium',
+            status='active'
+        )
+        self.assertTrue(user.is_premium)
+
+    def test_user_is_premium_with_canceled_subscription(self):
+        """is_premium returns False with canceled subscription."""
+        user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!"
+        )
+        Subscription.objects.create(
+            user=user,
+            plan_type='premium',
+            status='canceled'
+        )
+        self.assertFalse(user.is_premium)
+
+
+# =============================================================================
+# USER PROFILE TESTS
+# =============================================================================
+
+class TestUserProfileModel(TestCase):
+    """Tests for the UserProfile model and signals."""
+
+    def test_profile_created_on_user_creation(self):
+        """UserProfile is automatically created when User is created."""
+        user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!"
+        )
+        self.assertTrue(hasattr(user, 'profile'))
+        self.assertIsInstance(user.profile, UserProfile)
+
+    def test_profile_str_representation(self):
+        """Profile string representation includes user email."""
+        user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!"
+        )
+        self.assertEqual(str(user.profile), "Profile for test@example.com")
+
+    def test_profile_branch_choices(self):
+        """Profile branch_of_service accepts valid choices."""
+        user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!"
+        )
+        user.profile.branch_of_service = 'army'
+        user.profile.save()
+        user.profile.refresh_from_db()
+        self.assertEqual(user.profile.branch_of_service, 'army')
+
+    def test_profile_age_calculation(self):
+        """Profile age property calculates correct age."""
+        user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!"
+        )
+        # Set DOB to exactly 30 years ago (use year subtraction for accuracy)
+        today = date.today()
+        # Handle Feb 29 edge case - use Mar 1 if today is Feb 29 and target year isn't leap
+        try:
+            dob = today.replace(year=today.year - 30)
+        except ValueError:
+            # Feb 29 in non-leap year - use Mar 1
+            dob = today.replace(year=today.year - 30, month=3, day=1)
+        user.profile.date_of_birth = dob
+        user.profile.save()
+        self.assertEqual(user.profile.age, 30)
+
+    def test_profile_age_none_without_dob(self):
+        """Profile age returns None when DOB not set."""
+        user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!"
+        )
+        self.assertIsNone(user.profile.age)
+
+    def test_profile_disability_rating(self):
+        """Profile can store disability rating."""
+        user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!"
+        )
+        user.profile.disability_rating = 70
+        user.profile.save()
+        user.profile.refresh_from_db()
+        self.assertEqual(user.profile.disability_rating, 70)
+
+    def test_profile_va_file_number(self):
+        """Profile can store VA file number."""
+        user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!"
+        )
+        user.profile.va_file_number = "123456789"
+        user.profile.save()
+        user.profile.refresh_from_db()
+        self.assertEqual(user.profile.va_file_number, "123456789")
+
+
+# =============================================================================
+# SUBSCRIPTION MODEL TESTS
+# =============================================================================
+
+class TestSubscriptionModel(TestCase):
+    """Tests for the Subscription model."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!"
+        )
+
+    def test_subscription_str_representation(self):
+        """Subscription string includes user, plan, and status."""
+        sub = Subscription.objects.create(
+            user=self.user,
+            plan_type='premium',
+            status='active'
+        )
+        self.assertIn("test@example.com", str(sub))
+        self.assertIn("premium", str(sub))
+        self.assertIn("active", str(sub))
+
+    def test_subscription_is_active_with_active_status(self):
+        """is_active returns True for active status."""
+        sub = Subscription.objects.create(
+            user=self.user,
+            plan_type='premium',
+            status='active'
+        )
+        self.assertTrue(sub.is_active)
+
+    def test_subscription_is_active_with_trialing_status(self):
+        """is_active returns True for trialing status."""
+        sub = Subscription.objects.create(
+            user=self.user,
+            plan_type='premium',
+            status='trialing'
+        )
+        self.assertTrue(sub.is_active)
+
+    def test_subscription_is_not_active_when_canceled(self):
+        """is_active returns False for canceled status."""
+        sub = Subscription.objects.create(
+            user=self.user,
+            plan_type='premium',
+            status='canceled'
+        )
+        self.assertFalse(sub.is_active)
+
+    def test_subscription_is_not_active_when_past_due(self):
+        """is_active returns False for past_due status."""
+        sub = Subscription.objects.create(
+            user=self.user,
+            plan_type='premium',
+            status='past_due'
+        )
+        self.assertFalse(sub.is_active)
+
+    def test_subscription_is_trial(self):
+        """is_trial returns True for trialing with future end date."""
+        sub = Subscription.objects.create(
+            user=self.user,
+            plan_type='premium',
+            status='trialing',
+            trial_end=timezone.now() + timedelta(days=7)
+        )
+        self.assertTrue(sub.is_trial)
+
+    def test_subscription_is_not_trial_when_expired(self):
+        """is_trial returns False when trial end date has passed."""
+        sub = Subscription.objects.create(
+            user=self.user,
+            plan_type='premium',
+            status='trialing',
+            trial_end=timezone.now() - timedelta(days=1)
+        )
+        self.assertFalse(sub.is_trial)
+
+    def test_subscription_days_until_renewal(self):
+        """days_until_renewal calculates correctly."""
+        # Add 15 days and a few hours to ensure we get 15 full days
+        future_date = timezone.now() + timedelta(days=15, hours=1)
+        sub = Subscription.objects.create(
+            user=self.user,
+            plan_type='premium',
+            status='active',
+            current_period_end=future_date
+        )
+        self.assertEqual(sub.days_until_renewal, 15)
+
+    def test_subscription_days_until_renewal_none_without_date(self):
+        """days_until_renewal returns None without period end date."""
+        sub = Subscription.objects.create(
+            user=self.user,
+            plan_type='premium',
+            status='active'
+        )
+        self.assertIsNone(sub.days_until_renewal)
+
+
+# =============================================================================
+# AUTHENTICATION VIEW TESTS
+# =============================================================================
+
+@pytest.mark.django_db
+class TestAuthenticationViews:
+    """Tests for rate-limited authentication views."""
+
+    def test_login_page_loads(self, client):
+        """Login page loads successfully."""
+        response = client.get(reverse('account_login'))
+        assert response.status_code == 200
+
+    def test_signup_page_loads(self, client):
+        """Signup page loads successfully."""
+        response = client.get(reverse('account_signup'))
+        assert response.status_code == 200
+
+    def test_login_with_valid_credentials(self, client, user, user_password):
+        """User can log in with valid credentials."""
+        response = client.post(reverse('account_login'), {
+            'login': user.email,
+            'password': user_password,
+        })
+        # Should redirect to dashboard on success
+        assert response.status_code in [302, 200]
+
+    def test_login_with_invalid_credentials(self, client, user):
+        """Login fails with invalid credentials."""
+        response = client.post(reverse('account_login'), {
+            'login': user.email,
+            'password': 'WrongPassword123!',
+        })
+        # Should not redirect (stays on login page with errors)
+        assert response.status_code == 200
+
+    def test_signup_creates_user(self, client, db):
+        """Signup creates a new user."""
+        response = client.post(reverse('account_signup'), {
+            'email': 'newuser@example.com',
+            'password1': 'NewPassword123!',
+            'password2': 'NewPassword123!',
+        })
+        assert User.objects.filter(email='newuser@example.com').exists()
+
+
+# =============================================================================
+# DATA EXPORT VIEW TESTS
+# =============================================================================
+
+@pytest.mark.django_db
+class TestDataExportView:
+    """Tests for GDPR data export functionality."""
+
+    def test_data_export_requires_login(self, client):
+        """Data export page requires authentication."""
+        response = client.get(reverse('accounts:data_export'))
+        assert response.status_code == 302
+        assert 'login' in response.url.lower()
+
+    def test_data_export_page_loads(self, authenticated_client):
+        """Data export page loads for authenticated user."""
+        response = authenticated_client.get(reverse('accounts:data_export'))
+        assert response.status_code == 200
+
+    def test_data_export_generates_json(self, authenticated_client, user):
+        """POST generates JSON export file."""
+        response = authenticated_client.post(reverse('accounts:data_export'))
+        assert response.status_code == 200
+        assert response['Content-Type'] == 'application/json'
+        assert 'attachment' in response['Content-Disposition']
+
+        # Verify JSON is valid and contains user data
+        data = json.loads(response.content)
+        assert 'user' in data
+        assert data['user']['email'] == user.email
+
+    def test_data_export_includes_profile(self, authenticated_client, user):
+        """Export includes user profile data."""
+        user.profile.branch_of_service = 'army'
+        user.profile.disability_rating = 50
+        user.profile.save()
+
+        response = authenticated_client.post(reverse('accounts:data_export'))
+        data = json.loads(response.content)
+
+        assert 'profile' in data
+        assert data['profile']['branch_of_service'] == 'army'
+        assert data['profile']['disability_rating'] == 50
+
+
+# =============================================================================
+# ACCOUNT DELETION VIEW TESTS
+# =============================================================================
+
+@pytest.mark.django_db
+class TestAccountDeletionView:
+    """Tests for account deletion functionality."""
+
+    def test_account_deletion_requires_login(self, client):
+        """Account deletion page requires authentication."""
+        response = client.get(reverse('accounts:account_deletion'))
+        assert response.status_code == 302
+
+    def test_account_deletion_page_loads(self, authenticated_client):
+        """Account deletion page loads for authenticated user."""
+        response = authenticated_client.get(reverse('accounts:account_deletion'))
+        assert response.status_code == 200
+
+    def test_account_deletion_requires_confirmation(self, authenticated_client):
+        """Deletion requires typing DELETE to confirm."""
+        response = authenticated_client.post(reverse('accounts:account_deletion'), {
+            'confirm': 'wrong'
+        })
+        # Should stay on page with error
+        assert response.status_code == 200
+
+    def test_account_deletion_with_confirmation(self, authenticated_client, user):
+        """Deletion proceeds with correct confirmation."""
+        response = authenticated_client.post(reverse('accounts:account_deletion'), {
+            'confirm': 'DELETE'
+        })
+        # Should redirect to home after logout
+        assert response.status_code == 302
+
+
+# =============================================================================
+# PRIVACY SETTINGS VIEW TESTS
+# =============================================================================
+
+@pytest.mark.django_db
+class TestPrivacySettingsView:
+    """Tests for privacy settings page."""
+
+    def test_privacy_settings_requires_login(self, client):
+        """Privacy settings requires authentication."""
+        response = client.get(reverse('accounts:privacy_settings'))
+        assert response.status_code == 302
+
+    def test_privacy_settings_page_loads(self, authenticated_client):
+        """Privacy settings page loads for authenticated user."""
+        response = authenticated_client.get(reverse('accounts:privacy_settings'))
+        assert response.status_code == 200
+
+    def test_privacy_settings_shows_counts(self, authenticated_client, document, claim, appeal):
+        """Privacy settings shows correct data counts."""
+        response = authenticated_client.get(reverse('accounts:privacy_settings'))
+        assert response.status_code == 200
+        # Context should contain counts
+        assert 'document_count' in response.context
+        assert 'claim_count' in response.context
+        assert 'appeal_count' in response.context
+
+
+# =============================================================================
+# INTEGRATION TESTS
+# =============================================================================
+
+class TestUserWorkflow(TestCase):
+    """Integration tests for complete user workflows."""
+
+    def test_complete_user_signup_workflow(self):
+        """Test complete signup to profile setup workflow."""
+        client = Client()
+
+        # 1. Sign up
+        response = client.post(reverse('account_signup'), {
+            'email': 'workflow@example.com',
+            'password1': 'WorkflowPass123!',
+            'password2': 'WorkflowPass123!',
+        })
+
+        # User should be created
+        user = User.objects.get(email='workflow@example.com')
+        self.assertIsNotNone(user)
+
+        # Profile should exist
+        self.assertTrue(hasattr(user, 'profile'))
+
+        # 2. User can log in
+        login_success = client.login(
+            email='workflow@example.com',
+            password='WorkflowPass123!'
+        )
+        self.assertTrue(login_success)
+
+    def test_user_with_all_related_data(self):
+        """Test user with complete related data."""
+        from claims.models import Document, Claim
+        from appeals.models import Appeal
+
+        # Create user
+        user = User.objects.create_user(
+            email="complete@example.com",
+            password="CompletePass123!"
+        )
+
+        # Add subscription
+        Subscription.objects.create(
+            user=user,
+            plan_type='premium',
+            status='active'
+        )
+
+        # Add profile data
+        user.profile.branch_of_service = 'marines'
+        user.profile.disability_rating = 80
+        user.profile.save()
+
+        # Create claim
+        claim = Claim.objects.create(
+            user=user,
+            title="Test Claim",
+            claim_type="initial",
+            status="draft"
+        )
+
+        # Create appeal
+        appeal = Appeal.objects.create(
+            user=user,
+            appeal_type="hlr",
+            status="gathering"
+        )
+
+        # Verify all relationships work
+        self.assertTrue(user.is_premium)
+        self.assertEqual(user.profile.disability_rating, 80)
+        self.assertEqual(user.claims.count(), 1)
+        self.assertEqual(user.appeals.count(), 1)

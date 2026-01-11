@@ -3,6 +3,7 @@ Core models - Base models and utilities shared across all apps
 """
 
 from django.db import models
+from django.conf import settings
 from django.utils import timezone
 
 
@@ -19,12 +20,29 @@ class TimeStampedModel(models.Model):
         ordering = ['-created_at']
 
 
+class SoftDeleteManager(models.Manager):
+    """Manager that excludes soft-deleted objects by default."""
+
+    def get_queryset(self):
+        return super().get_queryset().filter(is_deleted=False)
+
+
+class AllObjectsManager(models.Manager):
+    """Manager that includes all objects, even soft-deleted ones."""
+    pass
+
+
 class SoftDeleteModel(models.Model):
     """
     Abstract base model that implements soft deletion
     """
     is_deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True, blank=True)
+
+    # Default manager excludes soft-deleted objects
+    objects = SoftDeleteManager()
+    # Access all objects including soft-deleted
+    all_objects = AllObjectsManager()
 
     class Meta:
         abstract = True
@@ -44,3 +62,507 @@ class SoftDeleteModel(models.Model):
         self.is_deleted = False
         self.deleted_at = None
         self.save()
+
+
+# =============================================================================
+# JOURNEY MODELS
+# =============================================================================
+
+class JourneyStage(models.Model):
+    """
+    Defines stages in the VA claims journey.
+    Pre-populated via fixture or migration.
+    """
+
+    ICON_CHOICES = [
+        ('document', 'Document'),
+        ('clipboard', 'Clipboard'),
+        ('calendar', 'Calendar'),
+        ('check', 'Check'),
+        ('clock', 'Clock'),
+        ('mail', 'Mail'),
+        ('flag', 'Flag'),
+        ('alert', 'Alert'),
+    ]
+
+    COLOR_CHOICES = [
+        ('blue', 'Blue'),
+        ('green', 'Green'),
+        ('yellow', 'Yellow'),
+        ('red', 'Red'),
+        ('purple', 'Purple'),
+        ('gray', 'Gray'),
+    ]
+
+    code = models.CharField(
+        'Stage Code',
+        max_length=30,
+        unique=True,
+        help_text='Unique identifier (e.g., claim_filed, exam_scheduled)'
+    )
+    name = models.CharField('Stage Name', max_length=100)
+    description = models.TextField('Description', blank=True)
+    order = models.IntegerField(
+        'Display Order',
+        default=0,
+        help_text='Order in the journey timeline'
+    )
+    typical_duration_days = models.IntegerField(
+        'Typical Duration (days)',
+        null=True,
+        blank=True,
+        help_text='Expected time at this stage'
+    )
+    icon = models.CharField(
+        'Icon',
+        max_length=50,
+        choices=ICON_CHOICES,
+        default='document'
+    )
+    color = models.CharField(
+        'Color',
+        max_length=20,
+        choices=COLOR_CHOICES,
+        default='blue'
+    )
+
+    class Meta:
+        verbose_name = 'Journey Stage'
+        verbose_name_plural = 'Journey Stages'
+        ordering = ['order']
+
+    def __str__(self):
+        return self.name
+
+
+class UserJourneyEvent(TimeStampedModel):
+    """
+    Tracks a user's events/milestones in their claims journey.
+    Can be auto-generated from system events or manually added.
+    """
+
+    EVENT_TYPE_CHOICES = [
+        ('auto', 'Automatic (System)'),
+        ('manual', 'Manual (User)'),
+        ('system', 'System Notification'),
+    ]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='journey_events'
+    )
+    stage = models.ForeignKey(
+        JourneyStage,
+        on_delete=models.PROTECT,
+        related_name='events'
+    )
+    event_type = models.CharField(
+        'Event Type',
+        max_length=20,
+        choices=EVENT_TYPE_CHOICES,
+        default='manual'
+    )
+
+    # Optional links to specific claims/appeals
+    claim = models.ForeignKey(
+        'claims.Claim',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='journey_events'
+    )
+    appeal = models.ForeignKey(
+        'appeals.Appeal',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='journey_events'
+    )
+
+    # Event details
+    title = models.CharField('Event Title', max_length=200)
+    description = models.TextField('Description', blank=True)
+    event_date = models.DateField('Event Date')
+    is_completed = models.BooleanField('Completed', default=False)
+
+    # Optional metadata
+    metadata = models.JSONField(
+        'Metadata',
+        default=dict,
+        blank=True,
+        help_text='Additional event data'
+    )
+
+    class Meta:
+        verbose_name = 'Journey Event'
+        verbose_name_plural = 'Journey Events'
+        ordering = ['-event_date', '-created_at']
+
+    def __str__(self):
+        return f"{self.title} - {self.event_date}"
+
+    @property
+    def is_future(self):
+        """Check if event is in the future."""
+        from datetime import date
+        return self.event_date > date.today()
+
+    @property
+    def is_overdue(self):
+        """Check if incomplete event is past due."""
+        from datetime import date
+        return not self.is_completed and self.event_date < date.today()
+
+
+class JourneyMilestone(TimeStampedModel):
+    """
+    Major milestones in a user's VA benefits journey.
+    Different from events - these are significant achievements.
+    """
+
+    MILESTONE_TYPE_CHOICES = [
+        ('claim_filed', 'Claim Filed'),
+        ('exam_scheduled', 'C&P Exam Scheduled'),
+        ('exam_completed', 'C&P Exam Completed'),
+        ('decision_received', 'Decision Received'),
+        ('rating_assigned', 'Rating Assigned'),
+        ('appeal_filed', 'Appeal Filed'),
+        ('appeal_won', 'Appeal Won'),
+        ('increase_granted', 'Increase Granted'),
+        ('100_percent', '100% Rating Achieved'),
+        ('tdiu_granted', 'TDIU Granted'),
+        ('custom', 'Custom Milestone'),
+    ]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='journey_milestones'
+    )
+    milestone_type = models.CharField(
+        'Milestone Type',
+        max_length=30,
+        choices=MILESTONE_TYPE_CHOICES
+    )
+    title = models.CharField('Title', max_length=200)
+    date = models.DateField('Date')
+    details = models.JSONField(
+        'Details',
+        default=dict,
+        blank=True,
+        help_text='Additional milestone data (e.g., rating percentage)'
+    )
+    notes = models.TextField('Notes', blank=True)
+
+    class Meta:
+        verbose_name = 'Journey Milestone'
+        verbose_name_plural = 'Journey Milestones'
+        ordering = ['-date']
+
+    def __str__(self):
+        return f"{self.title} - {self.date}"
+
+
+class Deadline(TimeStampedModel):
+    """
+    Tracks important deadlines for a user's claims/appeals.
+    """
+
+    PRIORITY_CHOICES = [
+        ('critical', 'Critical'),
+        ('high', 'High'),
+        ('medium', 'Medium'),
+        ('low', 'Low'),
+    ]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='deadlines'
+    )
+
+    # What this deadline is for
+    title = models.CharField('Title', max_length=200)
+    description = models.TextField('Description', blank=True)
+    deadline_date = models.DateField('Deadline Date')
+    priority = models.CharField(
+        'Priority',
+        max_length=20,
+        choices=PRIORITY_CHOICES,
+        default='medium'
+    )
+
+    # Optional links
+    claim = models.ForeignKey(
+        'claims.Claim',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='deadlines'
+    )
+    appeal = models.ForeignKey(
+        'appeals.Appeal',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='deadlines'
+    )
+
+    # Status tracking
+    is_completed = models.BooleanField('Completed', default=False)
+    completed_at = models.DateTimeField('Completed At', null=True, blank=True)
+    reminder_sent = models.BooleanField('Reminder Sent', default=False)
+
+    class Meta:
+        verbose_name = 'Deadline'
+        verbose_name_plural = 'Deadlines'
+        ordering = ['deadline_date']
+
+    def __str__(self):
+        return f"{self.title} - {self.deadline_date}"
+
+    @property
+    def days_remaining(self):
+        """Calculate days until deadline."""
+        from datetime import date
+        if self.is_completed:
+            return None
+        delta = self.deadline_date - date.today()
+        return delta.days
+
+    @property
+    def is_overdue(self):
+        """Check if deadline has passed."""
+        from datetime import date
+        return not self.is_completed and self.deadline_date < date.today()
+
+    @property
+    def urgency_class(self):
+        """Return CSS class based on urgency."""
+        days = self.days_remaining
+        if days is None:
+            return 'completed'
+        if days < 0:
+            return 'overdue'
+        if days <= 7:
+            return 'urgent'
+        if days <= 30:
+            return 'soon'
+        return 'normal'
+
+    def mark_complete(self):
+        """Mark deadline as completed."""
+        self.is_completed = True
+        self.completed_at = timezone.now()
+        self.save(update_fields=['is_completed', 'completed_at', 'updated_at'])
+
+
+# =============================================================================
+# AUDIT LOGGING
+# =============================================================================
+
+class AuditLog(models.Model):
+    """
+    Audit trail for security-sensitive operations.
+    Logs user actions, document access, and system events.
+    """
+
+    ACTION_CHOICES = [
+        # Authentication
+        ('login', 'Login'),
+        ('logout', 'Logout'),
+        ('login_failed', 'Login Failed'),
+        ('password_change', 'Password Change'),
+        ('password_reset', 'Password Reset'),
+
+        # Document operations
+        ('document_upload', 'Document Upload'),
+        ('document_view', 'Document View'),
+        ('document_download', 'Document Download'),
+        ('document_delete', 'Document Delete'),
+
+        # PII access
+        ('pii_view', 'PII View'),
+        ('pii_export', 'PII Export'),
+
+        # AI analysis
+        ('ai_analysis', 'AI Analysis'),
+        ('denial_decode', 'Denial Decode'),
+
+        # Profile changes
+        ('profile_update', 'Profile Update'),
+        ('account_delete', 'Account Delete Request'),
+
+        # Admin actions
+        ('admin_action', 'Admin Action'),
+
+        # Other
+        ('other', 'Other'),
+    ]
+
+    timestamp = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    # User info (preserved even if user deleted)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='audit_logs'
+    )
+    user_email = models.EmailField(
+        'User Email',
+        blank=True,
+        help_text='Preserved email if user deleted'
+    )
+
+    # Action details
+    action = models.CharField(
+        'Action',
+        max_length=30,
+        choices=ACTION_CHOICES,
+        db_index=True
+    )
+
+    # Request info
+    ip_address = models.GenericIPAddressField('IP Address', null=True, blank=True)
+    user_agent = models.TextField('User Agent', blank=True)
+    request_path = models.CharField('Request Path', max_length=500, blank=True)
+    request_method = models.CharField('Request Method', max_length=10, blank=True)
+
+    # Resource being accessed
+    resource_type = models.CharField(
+        'Resource Type',
+        max_length=50,
+        blank=True,
+        help_text='e.g., Document, Appeal, Claim'
+    )
+    resource_id = models.IntegerField('Resource ID', null=True, blank=True)
+
+    # Additional details (JSON)
+    details = models.JSONField(
+        'Details',
+        default=dict,
+        blank=True,
+        help_text='Additional action-specific data'
+    )
+
+    # Outcome
+    success = models.BooleanField('Success', default=True)
+    error_message = models.TextField('Error Message', blank=True)
+
+    class Meta:
+        verbose_name = 'Audit Log'
+        verbose_name_plural = 'Audit Logs'
+        ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['user', 'timestamp']),
+            models.Index(fields=['action', 'timestamp']),
+            models.Index(fields=['resource_type', 'resource_id']),
+        ]
+
+    def __str__(self):
+        return f"{self.action} by {self.user_email or 'anonymous'} at {self.timestamp}"
+
+    def save(self, *args, **kwargs):
+        # Preserve user email
+        if self.user and not self.user_email:
+            self.user_email = self.user.email
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def log(
+        cls,
+        action: str,
+        request=None,
+        user=None,
+        resource_type: str = '',
+        resource_id: int = None,
+        details: dict = None,
+        success: bool = True,
+        error_message: str = '',
+    ):
+        """
+        Convenience method to create audit log entries.
+
+        Args:
+            action: Action code (from ACTION_CHOICES)
+            request: Django request object (optional)
+            user: User instance (optional, will try to get from request)
+            resource_type: Type of resource accessed
+            resource_id: ID of resource accessed
+            details: Additional details dict
+            success: Whether action succeeded
+            error_message: Error message if failed
+        """
+        log_entry = cls(
+            action=action,
+            resource_type=resource_type,
+            resource_id=resource_id,
+            details=details or {},
+            success=success,
+            error_message=error_message,
+        )
+
+        if request:
+            # Get user from request if not provided
+            if user is None and hasattr(request, 'user') and request.user.is_authenticated:
+                user = request.user
+
+            # Extract request info
+            log_entry.ip_address = cls._get_client_ip(request)
+            log_entry.user_agent = request.META.get('HTTP_USER_AGENT', '')[:500]
+            log_entry.request_path = request.path[:500]
+            log_entry.request_method = request.method
+
+        if user:
+            log_entry.user = user
+            log_entry.user_email = user.email
+
+        log_entry.save()
+        return log_entry
+
+    @staticmethod
+    def _get_client_ip(request):
+        """Extract client IP from request, handling proxies."""
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0].strip()
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
+
+
+class DataRetentionPolicy(models.Model):
+    """
+    Defines data retention policies for different data types.
+    """
+
+    DATA_TYPE_CHOICES = [
+        ('audit_logs', 'Audit Logs'),
+        ('documents', 'Documents'),
+        ('analyses', 'AI Analyses'),
+        ('session_data', 'Session Data'),
+    ]
+
+    data_type = models.CharField(
+        'Data Type',
+        max_length=30,
+        choices=DATA_TYPE_CHOICES,
+        unique=True
+    )
+    retention_days = models.IntegerField(
+        'Retention Days',
+        help_text='Number of days to retain data (0 = indefinite)'
+    )
+    description = models.TextField('Description', blank=True)
+    is_active = models.BooleanField('Active', default=True)
+    last_cleanup = models.DateTimeField('Last Cleanup', null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Data Retention Policy'
+        verbose_name_plural = 'Data Retention Policies'
+
+    def __str__(self):
+        return f"{self.get_data_type_display()} - {self.retention_days} days"
