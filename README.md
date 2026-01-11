@@ -4,11 +4,20 @@ AI-powered assistance platform for VA disability claims and appeals.
 
 ## Overview
 
-VA Benefits Navigator helps veterans navigate the complex VA benefits system through three core features:
+VA Benefits Navigator helps veterans navigate the complex VA benefits system through five core features:
 
 1. **Claims Preparation Assistant** - Upload documents for AI-powered analysis and evidence gap identification
-2. **C&P Exam Preparation** - Comprehensive guidance for Compensation & Pension exams
+2. **C&P Exam Preparation** - Comprehensive guidance for Compensation & Pension exams with condition-specific guides
 3. **Appeals Process Guidance** - Step-by-step workflow for VA appeals (HLR, Supplemental, Board)
+4. **Journey Dashboard** - Track your claims journey with timeline, milestones, and deadlines
+5. **VA Rating Calculator** - Accurate combined rating calculations using VA Math (38 CFR 4.25)
+
+## Current Status
+
+- **188 tests passing** across all apps
+- Security middleware enabled (Audit logging, Security headers, CSP)
+- Data retention policies implemented
+- Soft-delete with recovery support
 
 ## Tech Stack
 
@@ -23,26 +32,33 @@ VA Benefits Navigator helps veterans navigate the complex VA benefits system thr
 ```
 benefits-navigator/
 ├── benefits_navigator/       # Main Django project
-│   ├── settings.py          # Django settings
+│   ├── settings.py          # Django settings (middleware, CSP, etc.)
 │   ├── celery.py            # Celery configuration
 │   └── urls.py              # Root URL configuration
 ├── accounts/                 # User authentication and profiles
 │   ├── models.py            # User, UserProfile, Subscription
-│   └── admin.py
+│   └── tests.py             # 28 tests
 ├── claims/                   # Document upload and AI analysis
-│   ├── models.py            # Document, Claim
-│   └── admin.py
-├── appeals/                  # Appeals workflow (Viewflow integration)
-│   ├── models.py            # Appeal
-│   └── admin.py
+│   ├── models.py            # Document, Claim (with soft-delete)
+│   ├── tasks.py             # Celery tasks (OCR, cleanup, denial decoder)
+│   ├── forms.py             # File validation with magic bytes & page count
+│   └── tests.py             # 55 tests
+├── appeals/                  # Appeals workflow
+│   ├── models.py            # Appeal, AppealGuidance, AppealNote
+│   └── tests.py             # 57 tests
 ├── examprep/                 # C&P exam preparation
-│   ├── models.py            # ExamGuidance, ExamChecklist
-│   └── admin.py
+│   ├── models.py            # ExamGuidance, ExamChecklist, EvidenceChecklist
+│   ├── va_math.py           # VA combined rating calculator
+│   └── tests.py             # 49 tests
 ├── core/                     # Shared utilities and base models
-│   ├── models.py            # TimeStampedModel, SoftDeleteModel
-│   └── context_processors.py
-├── templates/                # Django templates
-├── static/                   # Static files (CSS, JS)
+│   ├── models.py            # TimeStampedModel, SoftDeleteModel, AuditLog
+│   ├── middleware.py        # AuditMiddleware, SecurityHeadersMiddleware
+│   ├── journey.py           # TimelineBuilder for journey dashboard
+│   ├── tasks.py             # Data retention enforcement
+│   └── tests.py             # Core model tests
+├── agents/                   # AI agents (M21 scraper, etc.)
+├── templates/                # Django templates (HTMX-powered)
+├── static/                   # Static files (Tailwind CSS)
 ├── media/                    # User uploads
 ├── docker-compose.yml        # Docker services configuration
 ├── Dockerfile                # Django app container
