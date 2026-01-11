@@ -64,7 +64,7 @@ All notable changes to VA Benefits Navigator are documented here.
 - Fixed `test_complete_hlr_workflow` to use correct `timeline_notes` related_name
 - Fixed accounts date calculation tests (age, subscription renewal)
 - Fixed examprep guidance str representation test
-- **All 188 tests now pass**
+- **All 360 tests now pass** (303 main + 57 agents)
 
 ---
 

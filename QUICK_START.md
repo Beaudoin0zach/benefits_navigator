@@ -4,7 +4,7 @@
 
 ✅ **Complete Django Project Structure** with 5 modular apps (accounts, claims, appeals, examprep, core)
 ✅ **Docker Compose Setup** for local development (PostgreSQL, Redis, Celery)
-✅ **188 Tests Passing** across all apps
+✅ **360 Tests Passing** across all apps
 ✅ **Security Middleware** enabled (Audit logging, Security headers, CSP)
 ✅ **Data Retention Policies** with soft-delete and recovery support
 ✅ **Journey Dashboard** for tracking claims and appeals timeline
@@ -107,7 +107,7 @@ docker-compose exec web python manage.py migrate
 # Django shell
 docker-compose exec web python manage.py shell_plus
 
-# Run tests (188 tests)
+# Run tests (360 tests)
 docker-compose exec web pytest
 ```
 
