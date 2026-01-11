@@ -1,7 +1,7 @@
 # VA Benefits Navigator - Project Status
 
 **Last Updated:** 2026-01-11 (Critical Bug Fixes & Test Improvements)
-**Current Phase:** Phase 3+ - Core Features Complete, All 188 Tests Passing
+**Current Phase:** Phase 3+ - Core Features Complete, All 360 Tests Passing
 
 ## Overview
 
@@ -221,11 +221,13 @@ Test: 70% with spouse → $1,862.28/month ✓
 
 ## Test Coverage
 
-**188 tests passing** across all apps:
+**360 tests passing** across all apps:
 - accounts: 28 tests
 - claims: 55 tests
 - appeals: 57 tests
 - examprep: 49 tests
+- core: 114 tests
+- agents: 57 tests
 
 ## Known Issues
 
@@ -280,7 +282,7 @@ See `TODO.md` for comprehensive task list. Key items:
    - Fixed appeal str representation test
    - Fixed timeline_notes related_name
    - Fixed date calculation tests (age, subscription renewal)
-   - All 188 tests now pass
+   - All 360 tests now pass (303 main + 57 agents)
 
 6. **Navigation**
    - Added "My Journey" link for authenticated users
