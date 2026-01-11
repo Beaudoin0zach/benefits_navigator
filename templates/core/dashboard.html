@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load supportive_tags %}
 
 {% block title %}My Dashboard - {{ SITE_NAME }}{% endblock %}
 
@@ -9,6 +10,11 @@
         <h1 class="text-3xl font-bold text-gray-900 mb-2">My Dashboard</h1>
         <p class="text-gray-600">Welcome back, {{ user.email }}. Here's an overview of your VA benefits journey.</p>
     </header>
+
+    <!-- Supportive Message -->
+    <div class="mb-6">
+        {% supportive_message "dashboard_welcome" %}
+    </div>
 
     <!-- Stats Overview -->
     <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8" aria-label="Statistics overview">

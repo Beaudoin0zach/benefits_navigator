@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+
+{% block title %}Secondary Conditions Hub - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Secondary Conditions Hub</h1>
+        <p class="text-gray-600 text-lg">
+            Discover which conditions may be claimed as secondary to your service-connected disabilities.
+        </p>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="grid grid-cols-3 gap-4 mb-8">
+        <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <p class="text-3xl font-bold text-blue-600">{{ stats.primary_conditions }}</p>
+            <p class="text-sm text-blue-800">Primary Conditions</p>
+        </div>
+        <div class="bg-green-50 rounded-lg p-4 text-center">
+            <p class="text-3xl font-bold text-green-600">{{ stats.secondary_relationships }}</p>
+            <p class="text-sm text-green-800">Secondary Relationships</p>
+        </div>
+        <div class="bg-purple-50 rounded-lg p-4 text-center">
+            <p class="text-3xl font-bold text-purple-600">{{ stats.categories }}</p>
+            <p class="text-sm text-purple-800">Categories</p>
+        </div>
+    </div>
+
+    <!-- What is Secondary Service Connection -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+        <h2 class="font-bold text-blue-900 text-lg mb-3">What is Secondary Service Connection?</h2>
+        <p class="text-blue-800 mb-3">
+            Under <strong>38 CFR 3.310</strong>, you can receive VA disability compensation for conditions that are:
+        </p>
+        <ul class="list-disc list-inside text-blue-700 space-y-2 mb-4">
+            <li><strong>Caused by</strong> a service-connected disability (proximately due to)</li>
+            <li><strong>Aggravated by</strong> a service-connected disability (made permanently worse)</li>
+        </ul>
+        <p class="text-sm text-blue-600">
+            Example: If you have service-connected PTSD and develop sleep apnea, research shows PTSD can cause
+            sleep apnea - making it potentially claimable as a secondary condition.
+        </p>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="bg-white shadow-md rounded-lg p-6 mb-8">
+        <div class="grid md:grid-cols-2 gap-4">
+            <!-- Search -->
+            <div>
+                <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search Conditions</label>
+                <form method="get" class="relative">
+                    <input type="text" name="q" id="search" value="{{ query }}"
+                           placeholder="Search by condition name..."
+                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                    <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </form>
+            </div>
+
+            <!-- Category Filter -->
+            <div>
+                <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Filter by Category</label>
+                <div class="flex flex-wrap gap-2">
+                    <a href="{% url 'examprep:secondary_conditions_hub' %}"
+                       class="px-3 py-1.5 rounded-full text-sm {% if not current_category %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+                        All
+                    </a>
+                    {% for cat in categories %}
+                    <a href="?category={{ cat }}"
+                       class="px-3 py-1.5 rounded-full text-sm {% if current_category == cat %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+                        {{ cat }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Results Info -->
+    {% if query %}
+    <div class="mb-4 flex items-center justify-between">
+        <p class="text-gray-600">
+            Showing results for "<strong>{{ query }}</strong>" ({{ conditions|length }} found)
+        </p>
+        <a href="{% url 'examprep:secondary_conditions_hub' %}" class="text-blue-600 hover:text-blue-800 text-sm">
+            Clear search
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Conditions Grid -->
+    <div class="grid md:grid-cols-2 gap-6 mb-8">
+        {% for condition in conditions %}
+        <div class="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+            <div class="p-6">
+                <div class="flex items-start justify-between mb-3">
+                    <div>
+                        <span class="inline-block px-2 py-1 text-xs font-medium rounded-full
+                            {% if condition.category == 'Mental Health' %}bg-purple-100 text-purple-800
+                            {% elif condition.category == 'Neurological' %}bg-blue-100 text-blue-800
+                            {% elif condition.category == 'Musculoskeletal' %}bg-orange-100 text-orange-800
+                            {% elif condition.category == 'Cardiovascular' %}bg-red-100 text-red-800
+                            {% elif condition.category == 'Respiratory' %}bg-teal-100 text-teal-800
+                            {% elif condition.category == 'Endocrine' %}bg-yellow-100 text-yellow-800
+                            {% else %}bg-gray-100 text-gray-800{% endif %}">
+                            {{ condition.category }}
+                        </span>
+                    </div>
+                    <span class="text-sm text-gray-500">
+                        {{ condition.secondary_conditions|length }} secondary conditions
+                    </span>
+                </div>
+
+                <h3 class="text-xl font-bold text-gray-900 mb-2">{{ condition.condition }}</h3>
+                <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ condition.description }}</p>
+
+                <!-- Preview of secondary conditions -->
+                <div class="mb-4">
+                    <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Common Secondary Conditions:</p>
+                    <div class="flex flex-wrap gap-1">
+                        {% for secondary in condition.secondary_conditions|slice:":4" %}
+                        <span class="inline-block px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded">
+                            {{ secondary.condition }}
+                        </span>
+                        {% endfor %}
+                        {% if condition.secondary_conditions|length > 4 %}
+                        <span class="inline-block px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded">
+                            +{{ condition.secondary_conditions|length|add:"-4" }} more
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <a href="{% url 'examprep:secondary_condition_detail' condition_slug=condition.condition|slugify %}"
+                   class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm">
+                    View All Secondary Conditions
+                    <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="md:col-span-2 text-center py-12 bg-gray-50 rounded-lg">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No conditions found</h3>
+            <p class="mt-1 text-sm text-gray-500">Try a different search term or category.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- How to File Secondary Claim -->
+    <div class="bg-white shadow-md rounded-lg p-6 mb-8">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">How to File a Secondary Service Connection Claim</h2>
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="text-center">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <span class="text-blue-600 font-bold text-xl">1</span>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-2">Gather Evidence</h3>
+                <p class="text-sm text-gray-600">
+                    Get a medical opinion (nexus letter) linking your secondary condition to your primary
+                    service-connected disability.
+                </p>
+            </div>
+            <div class="text-center">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <span class="text-blue-600 font-bold text-xl">2</span>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-2">File Your Claim</h3>
+                <p class="text-sm text-gray-600">
+                    Submit VA Form 21-526EZ for a new claim or supplemental claim. Clearly state the
+                    condition is secondary to your existing disability.
+                </p>
+            </div>
+            <div class="text-center">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <span class="text-blue-600 font-bold text-xl">3</span>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-2">Attend Your Exam</h3>
+                <p class="text-sm text-gray-600">
+                    Be prepared to explain how your primary condition caused or aggravated the secondary
+                    condition. Bring supporting documentation.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Tools -->
+    <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
+        <h3 class="font-bold text-gray-900 mb-4">Related Tools</h3>
+        <div class="grid md:grid-cols-3 gap-4">
+            <a href="{% url 'examprep:evidence_checklist_create' %}" class="block p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-500 transition-colors">
+                <h4 class="font-medium text-gray-900">Evidence Checklist</h4>
+                <p class="text-sm text-gray-500">Build a personalized evidence checklist for your secondary claim</p>
+            </a>
+            <a href="{% url 'examprep:rating_calculator' %}" class="block p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-500 transition-colors">
+                <h4 class="font-medium text-gray-900">Rating Calculator</h4>
+                <p class="text-sm text-gray-500">Calculate your combined rating including secondary conditions</p>
+            </a>
+            <a href="{% url 'examprep:guide_list' %}" class="block p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-500 transition-colors">
+                <h4 class="font-medium text-gray-900">Exam Prep Guides</h4>
+                <p class="text-sm text-gray-500">Prepare for your C&P exam for secondary conditions</p>
+            </a>
+        </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="mt-8 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <h3 class="font-bold text-yellow-900 mb-2">Important Disclaimer</h3>
+        <p class="text-sm text-yellow-800">
+            This information is for educational purposes only and does not guarantee approval of any claim.
+            Secondary service connection requires medical evidence establishing a link between conditions.
+            Each case is decided individually based on the evidence. Consult with a Veterans Service
+            Organization (VSO) or VA-accredited attorney for personalized guidance.
+        </p>
+    </div>
+</div>
+{% endblock %}

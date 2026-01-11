@@ -234,6 +234,98 @@ class Subscription(TimeStampedModel):
         return None
 
 
+class NotificationPreferences(TimeStampedModel):
+    """
+    User notification preferences for email reminders and alerts.
+    """
+
+    REMINDER_TIMING_CHOICES = [
+        (30, '30 days before'),
+        (14, '14 days before'),
+        (7, '7 days before'),
+        (3, '3 days before'),
+        (1, '1 day before'),
+    ]
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='notification_preferences'
+    )
+
+    # Email notification toggles
+    email_enabled = models.BooleanField(
+        'Enable email notifications',
+        default=True,
+        help_text='Master switch for all email notifications'
+    )
+    deadline_reminders = models.BooleanField(
+        'Deadline reminders',
+        default=True,
+        help_text='Receive reminders about upcoming deadlines'
+    )
+    exam_reminders = models.BooleanField(
+        'C&P exam reminders',
+        default=True,
+        help_text='Receive reminders about upcoming C&P exams'
+    )
+    claim_updates = models.BooleanField(
+        'Claim status updates',
+        default=True,
+        help_text='Receive updates about claim status changes'
+    )
+    weekly_summary = models.BooleanField(
+        'Weekly summary',
+        default=False,
+        help_text='Receive a weekly summary of your claims journey'
+    )
+
+    # Timing preferences
+    deadline_reminder_days = models.IntegerField(
+        'Remind me before deadline',
+        choices=REMINDER_TIMING_CHOICES,
+        default=7,
+        help_text='How many days before a deadline to send reminder'
+    )
+    exam_reminder_days = models.IntegerField(
+        'Remind me before exam',
+        choices=REMINDER_TIMING_CHOICES,
+        default=7,
+        help_text='How many days before a C&P exam to send reminder'
+    )
+
+    # Tracking
+    last_email_sent = models.DateTimeField(
+        'Last email sent',
+        null=True,
+        blank=True
+    )
+    emails_sent_count = models.IntegerField(
+        'Total emails sent',
+        default=0
+    )
+
+    class Meta:
+        verbose_name = 'Notification Preferences'
+        verbose_name_plural = 'Notification Preferences'
+
+    def __str__(self):
+        status = 'enabled' if self.email_enabled else 'disabled'
+        return f"Notifications for {self.user.email} ({status})"
+
+    def should_send_deadline_reminder(self, days_until_deadline: int) -> bool:
+        """Check if a deadline reminder should be sent based on user preferences."""
+        if not self.email_enabled or not self.deadline_reminders:
+            return False
+        return days_until_deadline <= self.deadline_reminder_days
+
+    def should_send_exam_reminder(self, days_until_exam: int) -> bool:
+        """Check if an exam reminder should be sent based on user preferences."""
+        if not self.email_enabled or not self.exam_reminders:
+            return False
+        return days_until_exam <= self.exam_reminder_days
+
+
 # Signal to create user profile automatically when user is created
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -243,6 +335,7 @@ def create_user_profile(sender, instance, created, **kwargs):
     """Create a UserProfile when a new User is created"""
     if created:
         UserProfile.objects.create(user=instance)
+        NotificationPreferences.objects.create(user=instance)
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):

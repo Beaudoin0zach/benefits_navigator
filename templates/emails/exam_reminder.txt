@@ -1,0 +1,64 @@
+{% if urgency == 'tomorrow' %}YOUR C&P EXAM IS TOMORROW{% elif urgency == 'critical' %}URGENT: EXAM IN {{ days_until }} DAYS{% endif %}
+
+{{ site_name }} - C&P Exam Reminder
+================================================================================
+
+Hi{{ user.first_name|default:"" }},
+
+{% if urgency == 'tomorrow' %}
+Your {{ exam.condition }} C&P exam is TOMORROW!
+
+Here's what you need to remember:
+- Take your regular medications (no extra pain meds)
+- Bring your written notes and documentation
+- Arrive 15 minutes early
+- Describe your WORST days, not just how you feel today
+- Don't minimize your symptoms to appear "strong"
+{% elif urgency == 'critical' %}
+Your {{ exam.condition }} C&P exam is in {{ days_until }} days.
+
+Time to finalize your preparation and review your notes.
+{% elif urgency == 'upcoming' %}
+Your {{ exam.condition }} C&P exam is coming up in {{ days_until }} days.
+
+This is a good time to review your preparation and make sure you're ready.
+{% else %}
+This is a reminder about your upcoming {{ exam.condition }} C&P exam.
+{% endif %}
+
+EXAM DETAILS
+--------------------------------------------------------------------------------
+Condition: {{ exam.condition }}
+Exam Date: {{ exam.exam_date|date:"F j, Y" }}
+Days Until Exam: {{ days_until }}
+Preparation Progress: {{ completion_percentage }}%
+
+{% if completion_percentage < 50 %}
+TIP: Your preparation is less than 50% complete. Consider reviewing your
+checklist to make sure you're ready for the exam.
+{% elif completion_percentage < 100 %}
+You're making good progress! Review any remaining preparation tasks before
+your exam.
+{% else %}
+Great job! Your preparation is complete. Review your notes before the exam.
+{% endif %}
+
+KEY REMINDERS FOR YOUR EXAM
+--------------------------------------------------------------------------------
+1. Describe your WORST days, not just today
+2. Don't push through pain during physical tests
+3. Bring written notes - you can reference them
+4. Explain functional limitations in detail
+5. Mention ALL symptoms, even minor ones
+
+VIEW YOUR EXAM PREP
+--------------------------------------------------------------------------------
+Review your preparation checklist:
+{{ site_url }}/exam-prep/my-checklists/{{ exam.id }}/
+
+--------------------------------------------------------------------------------
+You're receiving this because you have exam reminders enabled.
+To update your notification preferences, visit: {{ site_url }}/account/notifications/
+
+{{ site_name }}
+Helping veterans navigate the VA claims process.

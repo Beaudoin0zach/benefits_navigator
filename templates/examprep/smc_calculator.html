@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+
+{% block title %}SMC Eligibility Calculator - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+        <nav class="text-sm mb-4">
+            <a href="{% url 'examprep:rating_calculator' %}" class="text-blue-600 hover:text-blue-800">Rating Calculator</a>
+            <span class="text-gray-400 mx-2">/</span>
+            <span class="text-gray-600">SMC Calculator</span>
+        </nav>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Special Monthly Compensation (SMC) Calculator</h1>
+        <p class="text-gray-600">
+            Check if you may be eligible for Special Monthly Compensation, additional payments
+            for veterans with severe disabilities beyond the standard rating schedule.
+        </p>
+    </div>
+
+    <!-- What is SMC -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
+        <h2 class="font-bold text-blue-900 mb-2">What is Special Monthly Compensation?</h2>
+        <p class="text-sm text-blue-800 mb-2">
+            SMC provides additional compensation beyond the standard disability rating for veterans with:
+        </p>
+        <ul class="text-sm text-blue-700 list-disc list-inside space-y-1">
+            <li>Loss or loss of use of specific body parts (hands, feet, eyes, creative organs)</li>
+            <li>Need for regular aid and attendance of another person</li>
+            <li>Being substantially confined to their home (housebound)</li>
+            <li>Multiple disabilities each rated at 100%</li>
+        </ul>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-8">
+        <!-- Left Column: Input Form -->
+        <div>
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">Enter Your Conditions</h2>
+                <p class="text-sm text-gray-600 mb-4">
+                    Add your service-connected disabilities and indicate any special circumstances.
+                </p>
+
+                <!-- Conditions Container -->
+                <div id="conditions-container" class="space-y-4 mb-6">
+                    <!-- Condition rows will be added here by JavaScript -->
+                </div>
+
+                <!-- Add Condition Button -->
+                <button type="button"
+                        onclick="addCondition()"
+                        class="w-full py-2 px-4 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-500 hover:text-blue-500 transition-colors">
+                    + Add Condition
+                </button>
+
+                <!-- Global Questions -->
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <h3 class="font-bold text-gray-900 mb-3">Additional Circumstances</h3>
+                    <div class="space-y-3">
+                        <label class="flex items-start">
+                            <input type="checkbox" id="needs-aid-attendance" onchange="calculate()"
+                                   class="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                            <span class="ml-2">
+                                <span class="text-gray-700 font-medium">Need aid and attendance</span>
+                                <span class="block text-sm text-gray-500">
+                                    You require the regular assistance of another person for daily activities
+                                </span>
+                            </span>
+                        </label>
+                        <label class="flex items-start">
+                            <input type="checkbox" id="is-housebound" onchange="calculate()"
+                                   class="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                            <span class="ml-2">
+                                <span class="text-gray-700 font-medium">Housebound</span>
+                                <span class="block text-sm text-gray-500">
+                                    You are substantially confined to your home due to service-connected disabilities
+                                </span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Calculate Button -->
+                <button type="button"
+                        onclick="calculate()"
+                        class="w-full mt-6 py-3 px-4 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Check SMC Eligibility
+                </button>
+            </div>
+
+            <!-- Link to TDIU Calculator -->
+            <div class="mt-4 bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <p class="text-gray-700 mb-2">
+                    <strong>Can't work due to your disabilities?</strong>
+                </p>
+                <a href="{% url 'examprep:tdiu_calculator' %}" class="text-blue-600 hover:text-blue-800 font-medium">
+                    Check TDIU Eligibility &rarr;
+                </a>
+            </div>
+        </div>
+
+        <!-- Right Column: Results -->
+        <div>
+            <div id="results-container" class="bg-white shadow-md rounded-lg p-6 sticky top-4">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">SMC Eligibility</h2>
+                <div id="smc-result">
+                    <div class="text-center py-8 text-gray-500">
+                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                        <p>Add conditions and click "Check SMC Eligibility"</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SMC Levels Reference -->
+            <div class="mt-4 bg-white shadow-md rounded-lg p-6">
+                <h3 class="font-bold text-gray-900 mb-3">SMC Levels Reference</h3>
+                <p class="text-xs text-gray-500 mb-3">2024 monthly rates (in addition to base compensation)</p>
+                <div class="space-y-3">
+                    {% for level in smc_levels_info %}
+                    <div class="border-b border-gray-100 pb-3 last:border-0">
+                        <div class="flex justify-between items-start">
+                            <span class="font-medium text-gray-900">{{ level.name }}</span>
+                            <span class="text-green-600 font-medium text-sm">{{ level.rate }}</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">{{ level.title }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="mt-8 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <h3 class="font-bold text-yellow-900 mb-2">Important Disclaimer</h3>
+        <p class="text-sm text-yellow-800">
+            This calculator provides general guidance only. SMC eligibility is complex and determined
+            by the VA based on medical evidence and specific criteria. The rates shown are approximate
+            and may not reflect your actual entitlement. Consult with a Veterans Service Organization (VSO)
+            or VA-accredited attorney for personalized advice.
+        </p>
+    </div>
+</div>
+
+<script>
+let conditionCount = 0;
+
+// Rating percentages for dropdown
+const ratingOptions = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+
+// Body parts for loss of use
+const bodyParts = [
+    {value: '', label: 'Select body part...'},
+    {value: 'left_hand', label: 'Left Hand'},
+    {value: 'right_hand', label: 'Right Hand'},
+    {value: 'left_foot', label: 'Left Foot'},
+    {value: 'right_foot', label: 'Right Foot'},
+    {value: 'left_arm', label: 'Left Arm'},
+    {value: 'right_arm', label: 'Right Arm'},
+    {value: 'left_leg', label: 'Left Leg'},
+    {value: 'right_leg', label: 'Right Leg'},
+    {value: 'left_eye', label: 'Left Eye'},
+    {value: 'right_eye', label: 'Right Eye'},
+    {value: 'creative_organ', label: 'Creative Organ'},
+    {value: 'buttock', label: 'Buttock'},
+];
+
+function addCondition() {
+    conditionCount++;
+    const container = document.getElementById('conditions-container');
+
+    const row = document.createElement('div');
+    row.className = 'condition-row p-4 bg-gray-50 rounded-lg';
+    row.id = `condition-${conditionCount}`;
+
+    row.innerHTML = `
+        <div class="flex justify-between items-start mb-3">
+            <input type="text" name="name" placeholder="Condition name (e.g., PTSD, Knee injury)"
+                   onchange="calculate()"
+                   class="flex-1 px-3 py-2 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
+                   aria-label="Condition name">
+            <button type="button" onclick="removeCondition(${conditionCount})"
+                    class="ml-2 p-2 text-red-600 hover:bg-red-100 rounded"
+                    aria-label="Remove this condition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <div class="grid grid-cols-2 gap-3 mb-3">
+            <div>
+                <label class="block text-sm text-gray-600 mb-1">Rating</label>
+                <select name="rating" onchange="calculate()"
+                        class="w-full px-2 py-2 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500">
+                    ${ratingOptions.map(r => `<option value="${r}">${r}%</option>`).join('')}
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm text-gray-600 mb-1">Affected Body Part</label>
+                <select name="body_part" onchange="calculate()"
+                        class="w-full px-2 py-2 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500">
+                    ${bodyParts.map(p => `<option value="${p.value}">${p.label}</option>`).join('')}
+                </select>
+            </div>
+        </div>
+        <div class="space-y-2">
+            <label class="flex items-center">
+                <input type="checkbox" name="loss_of_use" onchange="calculate()"
+                       class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">Loss of use (functional loss even if not amputated)</span>
+            </label>
+            <label class="flex items-center">
+                <input type="checkbox" name="anatomical_loss" onchange="calculate()"
+                       class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">Anatomical loss (amputation or physical absence)</span>
+            </label>
+        </div>
+    `;
+
+    container.appendChild(row);
+    calculate();
+}
+
+function removeCondition(id) {
+    const row = document.getElementById(`condition-${id}`);
+    if (row) {
+        row.remove();
+        calculate();
+    }
+}
+
+function getConditionsData() {
+    const conditions = [];
+    document.querySelectorAll('.condition-row').forEach(row => {
+        const name = row.querySelector('input[name="name"]').value;
+        const rating = parseInt(row.querySelector('select[name="rating"]').value);
+        const bodyPart = row.querySelector('select[name="body_part"]').value;
+        const lossOfUse = row.querySelector('input[name="loss_of_use"]').checked;
+        const anatomicalLoss = row.querySelector('input[name="anatomical_loss"]').checked;
+
+        conditions.push({
+            name: name || 'Unnamed condition',
+            rating: rating,
+            body_part: bodyPart,
+            loss_of_use: lossOfUse,
+            anatomical_loss: anatomicalLoss,
+            requires_aid_attendance: document.getElementById('needs-aid-attendance').checked,
+            is_housebound: document.getElementById('is-housebound').checked,
+        });
+    });
+    return conditions;
+}
+
+function calculate() {
+    const conditions = getConditionsData();
+
+    const formData = new FormData();
+    formData.append('conditions', JSON.stringify(conditions));
+
+    fetch('{% url "examprep:calculate_smc" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    })
+    .then(response => response.text())
+    .then(html => {
+        document.getElementById('smc-result').innerHTML = html;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+// Add initial condition row on page load
+document.addEventListener('DOMContentLoaded', function() {
+    addCondition();
+});
+</script>
+{% endblock %}

@@ -41,4 +41,17 @@ urlpatterns = [
     path('evidence-checklist/<int:pk>/toggle/', views.evidence_checklist_toggle, name='evidence_checklist_toggle'),
     path('evidence-checklist/<int:pk>/delete/', views.evidence_checklist_delete, name='evidence_checklist_delete'),
     path('evidence-checklist/from-denial/<int:analysis_id>/', views.evidence_checklist_from_denial, name='evidence_checklist_from_denial'),
+
+    # SMC Calculator
+    path('smc-calculator/', views.smc_calculator, name='smc_calculator'),
+    path('smc-calculator/calculate/', views.calculate_smc_htmx, name='calculate_smc'),
+
+    # TDIU Calculator
+    path('tdiu-calculator/', views.tdiu_calculator, name='tdiu_calculator'),
+    path('tdiu-calculator/calculate/', views.calculate_tdiu_htmx, name='calculate_tdiu'),
+
+    # Secondary Conditions Hub
+    path('secondary-conditions/', views.secondary_conditions_hub, name='secondary_conditions_hub'),
+    path('secondary-conditions/search/', views.secondary_conditions_search, name='secondary_conditions_search'),
+    path('secondary-conditions/<slug:condition_slug>/', views.secondary_condition_detail, name='secondary_condition_detail'),
 ]
