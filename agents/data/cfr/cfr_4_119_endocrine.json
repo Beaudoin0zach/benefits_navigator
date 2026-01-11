@@ -1,0 +1,89 @@
+{
+  "cfr_reference": "38 CFR 4.119",
+  "title": "Schedule of Ratings - Endocrine System",
+  "description": "Rating criteria for diabetes, thyroid, and other endocrine conditions",
+  "last_updated": "2024",
+
+  "diabetes_mellitus": {
+    "diagnostic_code": "7913",
+    "name": "Diabetes mellitus",
+    "levels": [
+      {"rating": 10, "criteria": "Manageable by restricted diet only"},
+      {"rating": 20, "criteria": "Requiring insulin and restricted diet, or; oral hypoglycemic agent and restricted diet"},
+      {"rating": 40, "criteria": "Requiring insulin, restricted diet, and regulation of activities"},
+      {"rating": 60, "criteria": "Requiring insulin, restricted diet, and regulation of activities with episodes of ketoacidosis or hypoglycemic reactions requiring one or two hospitalizations per year or twice a month visits to a diabetic care provider, plus complications that would not be compensable if separately evaluated"},
+      {"rating": 100, "criteria": "Requiring more than one daily injection of insulin, restricted diet, and regulation of activities (avoidance of strenuous occupational and recreational activities) with episodes of ketoacidosis or hypoglycemic reactions requiring at least three hospitalizations per year or weekly visits to a diabetic care provider, plus either progressive loss of weight and strength or complications that would be compensable if separately evaluated"}
+    ],
+    "key_definitions": {
+      "regulation_of_activities": {
+        "definition": "Avoidance of strenuous occupational and recreational activities",
+        "critical_requirement": "MUST be medically required (physician's order)",
+        "common_mistake": "Self-imposed restrictions do NOT count"
+      }
+    },
+    "presumptive_connection": {
+      "agent_orange": "Type 2 diabetes is presumptive for Agent Orange exposure"
+    },
+    "common_complications": [
+      {"condition": "Diabetic peripheral neuropathy", "diagnostic_codes": "8520-8730"},
+      {"condition": "Diabetic retinopathy", "diagnostic_code": "6006"},
+      {"condition": "Diabetic nephropathy", "diagnostic_code": "7541"},
+      {"condition": "Erectile dysfunction", "diagnostic_code": "7522"},
+      {"condition": "Hypertension", "diagnostic_code": "7101"},
+      {"condition": "Coronary artery disease", "diagnostic_code": "7005"}
+    ],
+    "complications_note": "Compensable complications are rated separately. Non-compensable complications support higher diabetes rating."
+  },
+
+  "thyroid_conditions": {
+    "7900": {
+      "name": "Hyperthyroidism, including toxic diffuse goiter (Graves' disease), toxic multinodular goiter, and toxic adenoma of thyroid",
+      "levels": [
+        {"rating": 10, "criteria": "Tachycardia, tremor, and increased pulse pressure or blood pressure, which may be intermittent, and continuous medication required for control"},
+        {"rating": 30, "criteria": "Tachycardia, tremor, and increased pulse pressure or blood pressure, which may be intermittent, and continuous medication required for control, and emotional instability, fatigability, and significant weight loss"},
+        {"rating": 60, "criteria": "Emotional instability, tachycardia, fatigability, and increased pulse pressure or blood pressure, and weight loss and cachexia"},
+        {"rating": 100, "criteria": "Thyroid enlargement, tachycardia (more than 100 beats per minute), eye involvement, muscular weakness, loss of weight, and sympathetic nervous system, cardiovascular, or gastrointestinal symptoms, and emotional instability, weight loss, cachexia, and delirium"}
+      ],
+      "note": "If disease results in cardiac arrhythmia or heart disease, evaluate under the appropriate cardiac diagnostic code"
+    },
+    "7903": {
+      "name": "Hypothyroidism",
+      "levels": [
+        {"rating": 0, "criteria": "Hypothyroidism manifested by fatigability, constipation, and mental sluggishness when continuous medication is required for control"},
+        {"rating": 10, "criteria": "Fatigability, constipation, and mental sluggishness"},
+        {"rating": 30, "criteria": "Fatigability, constipation, and mental sluggishness and muscular weakness, mental disturbance, and weight gain"},
+        {"rating": 60, "criteria": "Muscular weakness, mental disturbance, and weight gain and cold intolerance, cardiovascular involvement, and bradycardia (less than 60 beats per minute)"},
+        {"rating": 100, "criteria": "Cold intolerance, muscular weakness, cardiovascular involvement, mental disturbance (dementia, slowing of thought, depression), bradycardia (less than 60 beats per minute), and sleepiness"}
+      ]
+    }
+  },
+
+  "other_endocrine": {
+    "7907": {
+      "name": "Cushing's syndrome",
+      "levels": [
+        {"rating": 10, "criteria": "Requiring medication for control"},
+        {"rating": 30, "criteria": "With characteristics of disfigurement (moon facies, buffalo hump) and striae"},
+        {"rating": 60, "criteria": "With characteristics of disfigurement and one of the following: proximal muscle wasting, psychiatric disturbance, or cardiomegaly"},
+        {"rating": 100, "criteria": "As active, progressive disease including all characteristics and two of the following: proximal muscle wasting, psychiatric disturbance, or cardiomegaly, or complications of treatment"}
+      ]
+    },
+    "7909": {
+      "name": "Diabetes insipidus",
+      "levels": [
+        {"rating": 10, "criteria": "With polyuria, polydipsia, dehydration, increased specific gravity of urine, requiring continuous hormonal therapy"},
+        {"rating": 20, "criteria": "With polyuria, polydipsia, dehydration, increased specific gravity of urine, and one or two hospitalizations per year or twice a month visits to a physician for stabilization"},
+        {"rating": 40, "criteria": "With polyuria, polydipsia, dehydration, increased specific gravity of urine, and more than two hospitalizations per year, or monthly visits to a physician for stabilization, or marked reduction in body weight"},
+        {"rating": 60, "criteria": "Requiring hormone supplementation and severe symptoms that are poorly controlled despite hormone therapy, and frequent hospitalizations or complete incapacity"}
+      ]
+    }
+  },
+
+  "important_rules": [
+    "Diabetes Type 2 is Agent Orange presumptive",
+    "Regulation of activities must be medically prescribed to count for 40% rating",
+    "Diabetic complications are rated separately if compensable",
+    "Non-compensable complications support higher diabetes base rating",
+    "Thyroid conditions affecting heart may be rated under cardiac codes instead"
+  ]
+}

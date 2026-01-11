@@ -1,0 +1,340 @@
+{% extends 'base.html' %}
+
+{% block title %}VA Disability Rating Calculator - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">VA Disability Rating Calculator</h1>
+        <p class="text-gray-600">
+            Calculate your combined VA disability rating using the official VA Math formula.
+            This calculator uses the exact same "whole person" method the VA uses.
+        </p>
+    </div>
+
+    <!-- How VA Math Works -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
+        <h2 class="font-bold text-blue-900 mb-2">How VA Math Works</h2>
+        <p class="text-sm text-blue-800 mb-2">
+            The VA doesn't add ratings together. Instead, each rating is applied to your remaining "healthy" percentage:
+        </p>
+        <div class="text-sm text-blue-700 font-mono bg-blue-100 p-2 rounded">
+            Example: 50% + 30% = 65% (not 80%)<br>
+            50% disabled leaves 50% healthy<br>
+            30% of remaining 50% = 15%<br>
+            Total: 50% + 15% = 65% &rarr; rounds to 70%
+        </div>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-8">
+        <!-- Left Column: Input Form -->
+        <div>
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">Enter Your Ratings</h2>
+
+                <!-- Ratings Container -->
+                <div id="ratings-container" class="space-y-3 mb-6">
+                    <!-- Rating rows will be added here by JavaScript -->
+                </div>
+
+                <!-- Add Rating Button -->
+                <button type="button"
+                        onclick="addRating()"
+                        class="w-full py-2 px-4 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-500 hover:text-blue-500 transition-colors">
+                    + Add Disability Rating
+                </button>
+
+                <!-- Dependents Section -->
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <h3 class="font-bold text-gray-900 mb-3">Dependents (for compensation estimate)</h3>
+                    <div class="space-y-3">
+                        <label class="flex items-center">
+                            <input type="checkbox" id="has-spouse" onchange="calculate()"
+                                   class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                            <span class="ml-2 text-gray-700">Spouse</span>
+                        </label>
+                        <div class="flex items-center gap-3">
+                            <label for="children" class="text-gray-700">Children under 18:</label>
+                            <input type="number" id="children" min="0" max="20" value="0" onchange="calculate()"
+                                   class="w-20 px-2 py-1 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <label for="parents" class="text-gray-700">Dependent parents:</label>
+                            <input type="number" id="parents" min="0" max="2" value="0" onchange="calculate()"
+                                   class="w-20 px-2 py-1 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculate Button -->
+                <button type="button"
+                        onclick="calculate()"
+                        class="w-full mt-6 py-3 px-4 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Calculate Combined Rating
+                </button>
+            </div>
+
+            {% if user.is_authenticated %}
+            <!-- Save Calculation -->
+            <div class="mt-4 bg-white shadow-md rounded-lg p-6">
+                <h3 class="font-bold text-gray-900 mb-3">Save This Calculation</h3>
+                <div class="space-y-3">
+                    <input type="text" id="calc-name" placeholder="e.g., Current Rating, With Sleep Apnea"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                    <textarea id="calc-notes" rows="2" placeholder="Optional notes..."
+                              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"></textarea>
+                    <button type="button" onclick="saveCalculation()"
+                            class="w-full py-2 px-4 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700">
+                        Save Calculation
+                    </button>
+                </div>
+                <div id="save-result" class="mt-3"></div>
+            </div>
+
+            {% if saved_calculations %}
+            <!-- Saved Calculations -->
+            <div class="mt-4 bg-white shadow-md rounded-lg p-6">
+                <h3 class="font-bold text-gray-900 mb-3">Your Saved Calculations</h3>
+                <div class="space-y-2">
+                    {% for calc in saved_calculations %}
+                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                        <div>
+                            <span class="font-medium">{{ calc.name }}</span>
+                            <span class="text-sm text-gray-500 ml-2">{{ calc.combined_rounded }}%</span>
+                        </div>
+                        <button onclick="loadCalculation({{ calc.pk }})"
+                                class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                            Load
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+                <a href="{% url 'examprep:saved_calculations' %}" class="block mt-3 text-blue-600 hover:text-blue-800 text-sm">
+                    View all saved calculations &rarr;
+                </a>
+            </div>
+            {% endif %}
+            {% else %}
+            <div class="mt-4 bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+                <p class="text-gray-600 mb-2">Want to save your calculations?</p>
+                <a href="{% url 'account_login' %}?next={{ request.path }}" class="text-blue-600 hover:text-blue-800 font-medium">
+                    Log in or sign up
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Right Column: Results -->
+        <div>
+            <div id="results-container" class="bg-white shadow-md rounded-lg p-6 sticky top-4">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">Your Combined Rating</h2>
+                <div id="rating-result">
+                    <div class="text-center py-8 text-gray-500">
+                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                        <p>Add disability ratings and click Calculate</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2024 Compensation Table -->
+            <div class="mt-4 bg-white shadow-md rounded-lg p-6">
+                <h3 class="font-bold text-gray-900 mb-3">2024 VA Compensation Rates</h3>
+                <p class="text-xs text-gray-500 mb-3">Monthly rates for veterans without dependents (effective Dec 1, 2023)</p>
+                <div class="grid grid-cols-2 gap-2 text-sm">
+                    {% for rating, amount in compensation_rates.items %}
+                    <div class="flex justify-between px-2 py-1 {% if forloop.counter|divisibleby:2 %}bg-gray-50{% endif %} rounded">
+                        <span class="font-medium">{{ rating }}%</span>
+                        <span class="text-gray-600">${{ amount|floatformat:2 }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="mt-8 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <h3 class="font-bold text-yellow-900 mb-2">Important Disclaimer</h3>
+        <p class="text-sm text-yellow-800">
+            This calculator provides estimates only. Your actual VA combined rating may differ based on:
+            special monthly compensation (SMC), effective dates, rating decisions, and other factors.
+            This tool is for educational purposes and does not constitute legal or medical advice.
+            Always verify your official rating with the VA.
+        </p>
+    </div>
+</div>
+
+<script>
+let ratingCount = 0;
+
+// Rating percentages for dropdown
+const ratingOptions = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+
+function addRating(percentage = '', description = '', isBilateral = false) {
+    ratingCount++;
+    const container = document.getElementById('ratings-container');
+
+    const row = document.createElement('div');
+    row.className = 'rating-row flex flex-wrap gap-2 items-center p-3 bg-gray-50 rounded-lg';
+    row.id = `rating-${ratingCount}`;
+
+    row.innerHTML = `
+        <select name="percentage" onchange="calculate()"
+                class="w-24 px-2 py-2 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
+                aria-label="Disability percentage">
+            <option value="">%</option>
+            ${ratingOptions.map(r => `<option value="${r}" ${percentage == r ? 'selected' : ''}>${r}%</option>`).join('')}
+        </select>
+        <input type="text" name="description" value="${description}" placeholder="Condition (e.g., PTSD, Knee)"
+               onchange="calculate()"
+               class="flex-1 min-w-[150px] px-3 py-2 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
+               aria-label="Condition description">
+        <label class="flex items-center whitespace-nowrap">
+            <input type="checkbox" name="bilateral" ${isBilateral ? 'checked' : ''} onchange="calculate()"
+                   class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                   aria-label="Bilateral condition">
+            <span class="ml-1 text-sm text-gray-600" title="Check if affects both arms, both legs, or paired body parts">Bilateral</span>
+        </label>
+        <button type="button" onclick="removeRating(${ratingCount})"
+                class="p-2 text-red-600 hover:bg-red-100 rounded"
+                aria-label="Remove this rating">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    `;
+
+    container.appendChild(row);
+}
+
+function removeRating(id) {
+    const row = document.getElementById(`rating-${id}`);
+    if (row) {
+        row.remove();
+        calculate();
+    }
+}
+
+function getRatingsData() {
+    const ratings = [];
+    document.querySelectorAll('.rating-row').forEach(row => {
+        const percentage = row.querySelector('select[name="percentage"]').value;
+        const description = row.querySelector('input[name="description"]').value;
+        const isBilateral = row.querySelector('input[name="bilateral"]').checked;
+
+        if (percentage) {
+            ratings.push({
+                percentage: parseInt(percentage),
+                description: description,
+                is_bilateral: isBilateral
+            });
+        }
+    });
+    return ratings;
+}
+
+function calculate() {
+    const ratings = getRatingsData();
+    const hasSpouse = document.getElementById('has-spouse').checked;
+    const children = document.getElementById('children').value;
+    const parents = document.getElementById('parents').value;
+
+    // Make HTMX-style request
+    const formData = new FormData();
+    formData.append('ratings', JSON.stringify(ratings));
+    formData.append('has_spouse', hasSpouse);
+    formData.append('children_under_18', children);
+    formData.append('dependent_parents', parents);
+
+    fetch('{% url "examprep:calculate_rating" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    })
+    .then(response => response.text())
+    .then(html => {
+        document.getElementById('rating-result').innerHTML = html;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function saveCalculation() {
+    const name = document.getElementById('calc-name').value || 'My Calculation';
+    const notes = document.getElementById('calc-notes').value;
+    const ratings = getRatingsData();
+    const hasSpouse = document.getElementById('has-spouse').checked;
+    const children = document.getElementById('children').value;
+    const parents = document.getElementById('parents').value;
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('notes', notes);
+    formData.append('ratings', JSON.stringify(ratings));
+    formData.append('has_spouse', hasSpouse);
+    formData.append('children_under_18', children);
+    formData.append('dependent_parents', parents);
+
+    fetch('{% url "examprep:save_calculation" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'HX-Request': 'true'
+        }
+    })
+    .then(response => response.text())
+    .then(html => {
+        document.getElementById('save-result').innerHTML = html;
+        // Clear inputs
+        document.getElementById('calc-name').value = '';
+        document.getElementById('calc-notes').value = '';
+    })
+    .catch(error => {
+        document.getElementById('save-result').innerHTML = '<p class="text-red-600">Error saving calculation</p>';
+    });
+}
+
+function loadCalculation(id) {
+    fetch(`/exam-prep/rating-calculator/saved/${id}/load/`, {
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'HX-Request': 'true'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Clear existing ratings
+        document.getElementById('ratings-container').innerHTML = '';
+        ratingCount = 0;
+
+        // Add each rating
+        data.ratings.forEach(r => {
+            addRating(r.percentage, r.description, r.is_bilateral);
+        });
+
+        // Set dependents
+        document.getElementById('has-spouse').checked = data.has_spouse;
+        document.getElementById('children').value = data.children_under_18;
+        document.getElementById('parents').value = data.dependent_parents;
+
+        // Recalculate
+        calculate();
+    })
+    .catch(error => {
+        console.error('Error loading calculation:', error);
+    });
+}
+
+// Add initial rating row on page load
+document.addEventListener('DOMContentLoaded', function() {
+    addRating();
+});
+</script>
+{% endblock %}

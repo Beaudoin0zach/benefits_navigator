@@ -1,0 +1,143 @@
+{
+  "dbq_name": "Sleep Apnea",
+  "dbq_type": "examination",
+  "condition": "Sleep Apnea",
+  "category": "respiratory",
+  "diagnostic_codes": ["6847"],
+  "cfr_reference": "38 CFR 4.97",
+  "last_updated": "2024-07-19",
+  "version": "v24_1",
+
+  "rating_criteria": {
+    "description": "Sleep apnea is rated based on treatment requirements and severity of symptoms",
+    "diagnostic_code": "6847",
+    "levels": [
+      {
+        "rating": 0,
+        "criteria": "Asymptomatic but with documented sleep disorder breathing",
+        "keywords": ["asymptomatic", "documented", "no treatment"]
+      },
+      {
+        "rating": 30,
+        "criteria": "Persistent day-time hypersomnolence",
+        "keywords": ["hypersomnolence", "daytime sleepiness", "persistent"]
+      },
+      {
+        "rating": 50,
+        "criteria": "Requires use of breathing assistance device such as continuous airway pressure (CPAP) machine",
+        "keywords": ["CPAP", "breathing device", "PAP", "BiPAP"]
+      },
+      {
+        "rating": 100,
+        "criteria": "Chronic respiratory failure with carbon dioxide retention or cor pulmonale, or requires tracheostomy",
+        "keywords": ["respiratory failure", "CO2 retention", "cor pulmonale", "tracheostomy"]
+      }
+    ]
+  },
+
+  "diagnostic_types": [
+    {"type": "Obstructive Sleep Apnea (OSA)", "description": "Most common type; airway becomes blocked during sleep"},
+    {"type": "Central Sleep Apnea", "description": "Brain doesn't properly control breathing during sleep"},
+    {"type": "Mixed/Complex Sleep Apnea", "description": "Combination of obstructive and central"}
+  ],
+
+  "diagnosis_requirements": {
+    "sleep_study_required": true,
+    "description": "The diagnosis of sleep apnea MUST be confirmed by a sleep study (polysomnography)",
+    "acceptable_studies": [
+      "In-lab polysomnography (PSG)",
+      "Home sleep apnea test (HSAT)",
+      "Split-night study"
+    ],
+    "key_metrics": [
+      "Apnea-Hypopnea Index (AHI)",
+      "Respiratory Disturbance Index (RDI)",
+      "Oxygen desaturation levels"
+    ]
+  },
+
+  "common_symptoms": [
+    "Persistent daytime hypersomnolence (excessive daytime sleepiness)",
+    "Loud snoring",
+    "Witnessed breathing pauses during sleep",
+    "Gasping or choking during sleep",
+    "Morning headaches",
+    "Difficulty concentrating",
+    "Irritability",
+    "Dry mouth upon waking",
+    "Frequent nighttime urination"
+  ],
+
+  "exam_sections": [
+    "Diagnosis",
+    "Medical History",
+    "Findings, Signs and Symptoms",
+    "Other Pertinent Physical Findings",
+    "Diagnostic Testing",
+    "Functional Impact"
+  ],
+
+  "key_evidence_needed": {
+    "for_service_connection": [
+      "Sleep study confirming diagnosis",
+      "Evidence of in-service symptoms or diagnosis",
+      "Nexus letter linking current condition to service",
+      "Buddy statements about snoring/breathing issues in service"
+    ],
+    "for_50_percent_rating": [
+      "Current prescription for CPAP/PAP device",
+      "Evidence of regular CPAP use",
+      "Sleep study results",
+      "Medical records showing ongoing treatment"
+    ],
+    "common_secondary_conditions": [
+      "PTSD (bidirectional relationship)",
+      "Obesity/weight gain from medications",
+      "Rhinitis/sinusitis",
+      "Hypertension",
+      "Depression"
+    ]
+  },
+
+  "tips_for_veterans": [
+    "ALWAYS bring your sleep study results to the exam",
+    "Bring proof of CPAP prescription and usage",
+    "Document how sleep apnea affects your daily life and work",
+    "Mention daytime sleepiness and how severe it is",
+    "Report if you've ever fallen asleep while driving or at work",
+    "Describe impact on concentration and memory",
+    "Mention if sleep apnea affects your relationships",
+    "If secondary to another condition (like PTSD), bring documentation",
+    "Keep CPAP compliance records if available",
+    "Document all medications taken for sleep"
+  ],
+
+  "common_mistakes": [
+    "Not having a sleep study on record",
+    "Not bringing CPAP prescription documentation",
+    "Failing to describe functional impact",
+    "Not mentioning daytime sleepiness symptoms",
+    "Forgetting to document CPAP use/compliance",
+    "Not connecting sleep apnea to potential secondary conditions"
+  ],
+
+  "secondary_service_connection": {
+    "description": "Sleep apnea can be secondary to or aggravated by other service-connected conditions",
+    "common_primaries": [
+      {"condition": "PTSD", "connection": "Research shows strong bidirectional relationship; PTSD can cause or worsen sleep apnea"},
+      {"condition": "Sinusitis/Rhinitis", "connection": "Nasal obstruction can contribute to OSA"},
+      {"condition": "Weight gain from medications", "connection": "Psychiatric medications often cause weight gain, which is a major risk factor for OSA"},
+      {"condition": "Traumatic brain injury (TBI)", "connection": "TBI can affect breathing control centers"}
+    ],
+    "nexus_language": "The veteran's sleep apnea is at least as likely as not (50% or greater probability) caused by OR aggravated by [service-connected condition]"
+  },
+
+  "important_notes": [
+    "Sleep study is REQUIRED for diagnosis - clinical diagnosis alone is insufficient",
+    "CPAP use gets you 50% rating - this is the most common rating",
+    "Hypersomnolence without CPAP gets 30% rating",
+    "100% rating requires severe complications (respiratory failure, tracheostomy)",
+    "Sleep apnea is increasingly being service-connected secondary to PTSD",
+    "Weight gain from service-connected medications can support secondary connection"
+  ]
+}

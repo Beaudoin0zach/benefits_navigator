@@ -1,0 +1,38 @@
+{
+  "_comment": "High-priority M21-1 sections for veterans claims assistance",
+  "_parts_included": "Parts III (Evidence), IV (Medical Exams), V (Ratings), VI (Notices), VIII (Special Claims)",
+
+  "III.ii.2.B": {
+    "article_id": "554400000014119",
+    "title": "Procedures for Obtaining Service Treatment Records (STRs)",
+    "priority": "high",
+    "reason": "Essential for evidence development"
+  },
+
+  "IV.i.1.A": {
+    "article_id": "554400000180494",
+    "title": "Duty to Assist With Providing a Medical Examination or Opinion",
+    "priority": "high",
+    "reason": "C&P exam requirements"
+  },
+
+  "V.ii.4.A": {
+    "article_id": "554400000180492",
+    "title": "Effective Dates for Benefits",
+    "priority": "high",
+    "reason": "Critical for maximizing back pay"
+  },
+
+  "VIII.i.1.A": {
+    "article_id": "554400000177422",
+    "title": "Claims Based on Herbicide Exposure",
+    "priority": "high",
+    "reason": "Common special claim type (Agent Orange)"
+  },
+
+  "_note": "You can manually add more article IDs here by:",
+  "_step_1": "1. Visit the M21-1 page on KnowVA",
+  "_step_2": "2. Right-click a blue link and copy the URL",
+  "_step_3": "3. Extract the number between /content/ and the next /",
+  "_step_4": "4. Add it to this file with the same format as above"
+}

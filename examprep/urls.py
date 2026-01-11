@@ -25,4 +25,20 @@ urlpatterns = [
 
     # HTMX endpoints for interactive features
     path('my-checklists/<int:pk>/toggle-task/', views.checklist_toggle_task, name='checklist_toggle_task'),
+
+    # Rating Calculator
+    path('rating-calculator/', views.rating_calculator, name='rating_calculator'),
+    path('rating-calculator/calculate/', views.calculate_rating_htmx, name='calculate_rating'),
+    path('rating-calculator/save/', views.save_calculation, name='save_calculation'),
+    path('rating-calculator/saved/', views.saved_calculations, name='saved_calculations'),
+    path('rating-calculator/saved/<int:pk>/delete/', views.delete_calculation, name='delete_calculation'),
+    path('rating-calculator/saved/<int:pk>/load/', views.load_calculation, name='load_calculation'),
+
+    # Evidence Checklists
+    path('evidence-checklist/', views.evidence_checklist_list, name='evidence_checklist_list'),
+    path('evidence-checklist/new/', views.evidence_checklist_create, name='evidence_checklist_create'),
+    path('evidence-checklist/<int:pk>/', views.evidence_checklist_detail, name='evidence_checklist_detail'),
+    path('evidence-checklist/<int:pk>/toggle/', views.evidence_checklist_toggle, name='evidence_checklist_toggle'),
+    path('evidence-checklist/<int:pk>/delete/', views.evidence_checklist_delete, name='evidence_checklist_delete'),
+    path('evidence-checklist/from-denial/<int:analysis_id>/', views.evidence_checklist_from_denial, name='evidence_checklist_from_denial'),
 ]

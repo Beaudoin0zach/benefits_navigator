@@ -1,0 +1,188 @@
+{
+  "dbq_name": "Shoulder and Arm Conditions",
+  "dbq_type": "examination",
+  "condition": "Shoulder and Arm",
+  "category": "musculoskeletal",
+  "diagnostic_codes": ["5003", "5010", "5051", "5200", "5201", "5202", "5203"],
+  "cfr_reference": "38 CFR 4.71a",
+  "last_updated": "2025-04-15",
+  "version": "v25_3",
+
+  "rating_criteria": {
+    "description": "Shoulder ratings differ based on whether the condition affects the MAJOR (dominant) or MINOR (non-dominant) arm",
+
+    "limitation_of_motion": {
+      "diagnostic_code": "5201",
+      "description": "Limitation of motion of arm",
+      "major_arm": [
+        {"rating": 20, "criteria": "Arm limited to shoulder level (90 degrees)", "keywords": ["shoulder level", "90 degrees"]},
+        {"rating": 30, "criteria": "Arm limited to midway between side and shoulder level (45 degrees)", "keywords": ["midway", "45 degrees"]},
+        {"rating": 40, "criteria": "Arm limited to 25 degrees from side", "keywords": ["25 degrees from side"]}
+      ],
+      "minor_arm": [
+        {"rating": 20, "criteria": "Arm limited to shoulder level (90 degrees)", "keywords": ["shoulder level"]},
+        {"rating": 20, "criteria": "Arm limited to midway between side and shoulder level (45 degrees)", "keywords": ["midway"]},
+        {"rating": 30, "criteria": "Arm limited to 25 degrees from side", "keywords": ["25 degrees"]}
+      ]
+    },
+
+    "ankylosis_scapulohumeral": {
+      "diagnostic_code": "5200",
+      "description": "Ankylosis of scapulohumeral articulation (scapula and humerus move as one piece)",
+      "major_arm": [
+        {"rating": 30, "criteria": "Favorable (abduction to 60 degrees, can reach mouth and head)", "keywords": ["favorable ankylosis"]},
+        {"rating": 40, "criteria": "Intermediate (between favorable and unfavorable)", "keywords": ["intermediate ankylosis"]},
+        {"rating": 50, "criteria": "Unfavorable (abduction limited to 25 degrees from side)", "keywords": ["unfavorable ankylosis"]}
+      ],
+      "minor_arm": [
+        {"rating": 20, "criteria": "Favorable (abduction to 60 degrees, can reach mouth and head)", "keywords": ["favorable"]},
+        {"rating": 30, "criteria": "Intermediate (between favorable and unfavorable)", "keywords": ["intermediate"]},
+        {"rating": 40, "criteria": "Unfavorable (abduction limited to 25 degrees from side)", "keywords": ["unfavorable"]}
+      ]
+    },
+
+    "humerus_impairment": {
+      "diagnostic_code": "5202",
+      "description": "Other impairment of humerus",
+      "major_arm": [
+        {"rating": 20, "criteria": "Malunion with moderate deformity OR recurrent dislocation at scapulohumeral joint with infrequent episodes and guarding of movement only at shoulder level", "keywords": ["malunion moderate", "infrequent dislocation"]},
+        {"rating": 30, "criteria": "Malunion with marked deformity OR recurrent dislocation with frequent episodes and guarding of all arm movements", "keywords": ["malunion marked", "frequent dislocation"]},
+        {"rating": 50, "criteria": "Fibrous union of humerus", "keywords": ["fibrous union"]},
+        {"rating": 60, "criteria": "Nonunion (false flail joint)", "keywords": ["nonunion", "false flail"]},
+        {"rating": 80, "criteria": "Loss of head of humerus (flail shoulder)", "keywords": ["flail shoulder", "loss of head"]}
+      ],
+      "minor_arm": [
+        {"rating": 20, "criteria": "Malunion with moderate or marked deformity OR recurrent dislocation with infrequent or frequent episodes", "keywords": ["malunion", "dislocation"]},
+        {"rating": 40, "criteria": "Fibrous union of humerus", "keywords": ["fibrous union"]},
+        {"rating": 50, "criteria": "Nonunion (false flail joint)", "keywords": ["nonunion"]},
+        {"rating": 70, "criteria": "Loss of head of humerus (flail shoulder)", "keywords": ["flail shoulder"]}
+      ]
+    },
+
+    "clavicle_scapula": {
+      "diagnostic_code": "5203",
+      "description": "Impairment of clavicle or scapula",
+      "major_arm": [
+        {"rating": 10, "criteria": "Malunion OR nonunion without loose movement", "keywords": ["malunion", "nonunion no loose movement"]},
+        {"rating": 20, "criteria": "Nonunion with loose movement OR dislocation", "keywords": ["nonunion loose movement", "dislocation"]}
+      ],
+      "minor_arm": [
+        {"rating": 10, "criteria": "Malunion OR nonunion without loose movement", "keywords": ["malunion", "nonunion"]},
+        {"rating": 20, "criteria": "Nonunion with loose movement OR dislocation", "keywords": ["loose movement", "dislocation"]}
+      ]
+    },
+
+    "shoulder_replacement": {
+      "diagnostic_code": "5051",
+      "major_arm": [
+        {"rating": 100, "criteria": "For 1 year following implantation of prosthesis", "keywords": ["1 year", "replacement"]},
+        {"rating": 60, "criteria": "With chronic residuals consisting of severe painful motion or weakness", "keywords": ["severe residuals"]},
+        {"rating": 50, "criteria": "With intermediate degrees of residual weakness, pain, or limitation of motion (minimum rating)", "keywords": ["intermediate residuals"]}
+      ],
+      "minor_arm": [
+        {"rating": 100, "criteria": "For 1 year following implantation of prosthesis", "keywords": ["1 year"]},
+        {"rating": 50, "criteria": "With chronic residuals consisting of severe painful motion or weakness", "keywords": ["severe"]},
+        {"rating": 40, "criteria": "With intermediate degrees of residual weakness, pain, or limitation of motion (minimum rating)", "keywords": ["intermediate"]}
+      ]
+    }
+  },
+
+  "normal_rom": {
+    "flexion": 180,
+    "abduction": 180,
+    "internal_rotation": 90,
+    "external_rotation": 90
+  },
+
+  "common_diagnoses": [
+    "Shoulder strain",
+    "Shoulder impingement syndrome",
+    "Bicipital tendonitis",
+    "Bicipital tendon tear",
+    "Rotator cuff tendonitis",
+    "Rotator cuff tear",
+    "Labral tear (including SLAP)",
+    "Subacromial/subdeltoid bursitis",
+    "Glenohumeral joint osteoarthritis",
+    "Acromioclavicular joint osteoarthritis",
+    "Ankylosis of glenohumeral articulations",
+    "Glenohumeral joint instability",
+    "Glenohumeral joint dislocation/recurrent dislocation",
+    "Shoulder joint replacement",
+    "Acromioclavicular joint separation",
+    "Degenerative arthritis",
+    "Post-traumatic arthritis"
+  ],
+
+  "exam_sections": [
+    "Dominant Hand Determination",
+    "Diagnosis",
+    "Medical History",
+    "Range of Motion (ROM) and Functional Limitation",
+    "Muscle Atrophy",
+    "Ankylosis",
+    "Rotator Cuff Conditions",
+    "Shoulder Instability, Dislocation or Labral Pathology",
+    "Clavicle, Scapula, AC Joint and Sternoclavicular Joint Conditions",
+    "Conditions or Impairments of the Humerus",
+    "Surgical Procedures",
+    "Other Pertinent Findings",
+    "Assistive Devices",
+    "Remaining Effective Function",
+    "Diagnostic Testing",
+    "Functional Impact"
+  ],
+
+  "special_tests": {
+    "rotator_cuff": [
+      {"name": "Hawkins Impingement Test", "positive_indicates": "Rotator cuff tendinopathy or tear"},
+      {"name": "Empty Can Test", "positive_indicates": "Supraspinatus tendinopathy or tear"},
+      {"name": "External Rotation/Infraspinatus Strength Test", "positive_indicates": "Infraspinatus tendinopathy or tear"},
+      {"name": "Lift-off Subscapularis Test", "positive_indicates": "Subscapularis tendinopathy or tear"}
+    ],
+    "instability": [
+      {"name": "Crank Apprehension and Relocation Test", "positive_indicates": "Shoulder instability"}
+    ],
+    "ac_joint": [
+      {"name": "Cross-body Adduction Test", "positive_indicates": "Acromioclavicular joint pathology"}
+    ]
+  },
+
+  "dominant_hand_impact": {
+    "description": "Ratings are HIGHER for major (dominant) arm conditions",
+    "note": "Ambidextrous veterans - the affected arm is considered the major arm",
+    "example": "Arm limited to 25 degrees: Major arm = 40%, Minor arm = 30%"
+  },
+
+  "tips_for_veterans": [
+    "CONFIRM which is your dominant hand at the start of exam",
+    "Describe your WORST days, not average days",
+    "Report ALL symptoms: pain, weakness, instability, grinding/popping",
+    "Mention if shoulder dislocates or feels like it will",
+    "Describe activities you can no longer do (reaching overhead, lifting)",
+    "If you have rotator cuff issues, describe how they affect function",
+    "Document any history of shoulder dislocations",
+    "Report sleep problems due to shoulder pain",
+    "Mention if you cannot raise arm above shoulder level",
+    "Don't push through pain during ROM testing",
+    "Ask examiner to test both active AND passive motion"
+  ],
+
+  "common_mistakes": [
+    "Not confirming dominant hand",
+    "Minimizing symptoms during examination",
+    "Forgetting to mention instability or dislocation episodes",
+    "Not describing impact on overhead activities",
+    "Failing to mention rotator cuff symptoms",
+    "Not documenting how condition affects work and daily life"
+  ],
+
+  "important_notes": [
+    "Dominant vs non-dominant arm significantly affects rating percentage",
+    "ROM measurements must include flexion, abduction, and rotation",
+    "Painful motion warrants consideration of functional loss",
+    "Instability/dislocation may warrant separate rating from arthritis",
+    "Examiner must estimate ROM during flare-ups",
+    "Rotator cuff conditions are very common in veterans"
+  ]
+}

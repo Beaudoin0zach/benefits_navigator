@@ -1,0 +1,441 @@
+{
+  "parts": [
+    {
+      "part": "I",
+      "part_number": 1,
+      "title": "Claimants' Rights and Claims Processing Centers and Programs",
+      "subparts": [
+        {
+          "subpart": "i",
+          "chapters": [
+            {
+              "chapter": "1",
+              "sections": [
+                {
+                  "section": "A",
+                  "title": "Description and General Information on Duty to Notify and Duty to Assist",
+                  "reference": "M21-1.I.i.1.A",
+                  "topic_count": 22
+                },
+                {
+                  "section": "B",
+                  "title": "General Information on Due Process",
+                  "reference": "M21-1.I.i.1.B",
+                  "topic_count": 5
+                }
+              ]
+            },
+            {
+              "chapter": "2",
+              "sections": [
+                {
+                  "section": "A",
+                  "title": "General Information on Power of Attorney (POA)",
+                  "reference": "M21-1.I.i.2.A",
+                  "topic_count": 26
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "part": "II",
+      "part_number": 2,
+      "title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+      "subparts": [
+        {
+          "subpart": "iii",
+          "chapters": [
+            {
+              "chapter": "1",
+              "sections": [
+                {
+                  "section": "A",
+                  "title": "Applications for Benefits",
+                  "reference": "M21-1.II.iii.1.A",
+                  "topic_count": 20
+                },
+                {
+                  "section": "B",
+                  "title": "Screening Applications for Benefit Eligibility",
+                  "reference": "M21-1.II.iii.1.B",
+                  "topic_count": 7
+                },
+                {
+                  "section": "C",
+                  "title": "Screening Applications for Substantial Completeness and Notification Requirements",
+                  "reference": "M21-1.II.iii.1.C",
+                  "topic_count": 10
+                }
+              ]
+            },
+            {
+              "chapter": "2",
+              "sections": [
+                {
+                  "section": "A",
+                  "title": "Intent to File (ITF)",
+                  "reference": "M21-1.II.iii.2.A",
+                  "topic_count": 29
+                },
+                {
+                  "section": "B",
+                  "title": "Supplemental Claims",
+                  "reference": "M21-1.II.iii.2.B",
+                  "topic_count": 5
+                },
+                {
+                  "section": "C",
+                  "title": "Claims for Increase",
+                  "reference": "M21-1.II.iii.2.C",
+                  "topic_count": 7
+                },
+                {
+                  "section": "D",
+                  "title": "Claims Based on Reports of Examination or Hospitalization",
+                  "reference": "M21-1.II.iii.2.D",
+                  "topic_count": 5
+                },
+                {
+                  "section": "E",
+                  "title": "Incorrectly Established Claims",
+                  "reference": "M21-1.II.iii.2.E",
+                  "topic_count": 9
+                },
+                {
+                  "section": "F",
+                  "title": "Withdrawal of Initial Claims",
+                  "reference": "M21-1.II.iii.2.F",
+                  "topic_count": 12
+                },
+                {
+                  "section": "G",
+                  "title": "Requests for Application and Claims Solicitation",
+                  "reference": "M21-1.II.iii.2.G",
+                  "topic_count": 6
+                }
+              ]
+            },
+            {
+              "chapter": "3",
+              "sections": [
+                {
+                  "section": "A",
+                  "title": "Claims Establishment",
+                  "reference": "M21-1.II.iii.3.A",
+                  "topic_count": 11
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "part": "IV",
+      "part_number": 4,
+      "title": "Examinations",
+      "subparts": [
+        {
+          "subpart": "i",
+          "chapters": [
+            {
+              "chapter": "2",
+              "sections": [
+                {
+                  "section": "F",
+                  "title": "Failure to Report and Rescheduling Examinations",
+                  "reference": "M21-1.IV.i.2.F",
+                  "topic_count": 9
+                }
+              ]
+            },
+            {
+              "chapter": "3",
+              "sections": [
+                {
+                  "section": "A",
+                  "title": "General Criteria for Sufficiency of Examination Reports",
+                  "reference": "M21-1.IV.i.3.A",
+                  "topic_count": 17
+                },
+                {
+                  "section": "B",
+                  "title": "Examination Sufficiency for Specific Disabilities",
+                  "reference": "M21-1.IV.i.3.B",
+                  "topic_count": 14
+                },
+                {
+                  "section": "C",
+                  "title": "Insufficient Examinations",
+                  "reference": "M21-1.IV.i.3.C",
+                  "topic_count": 9
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "part": "V",
+      "part_number": 5,
+      "title": "The Rating Process",
+      "subparts": [
+        {
+          "subpart": "i",
+          "chapters": [
+            {
+              "chapter": "1",
+              "sections": [
+                {
+                  "section": "A",
+                  "title": "General Information on the Rating Activity",
+                  "reference": "M21-1.V.i.1.A",
+                  "topic_count": 4
+                },
+                {
+                  "section": "B",
+                  "title": "Referrals to the Rating Activity",
+                  "reference": "M21-1.V.i.1.B",
+                  "topic_count": 1
+                },
+                {
+                  "section": "C",
+                  "title": "Pre-Rating Review of Claims by the Rating Activity",
+                  "reference": "M21-1.V.i.1.C",
+                  "topic_count": 5
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "subpart": "ii",
+          "chapters": [
+            {
+              "chapter": "1",
+              "sections": [
+                {
+                  "section": "A",
+                  "title": "Principles of Reviewing and Weighing Evidence",
+                  "reference": "M21-1.V.ii.1.A",
+                  "topic_count": 42
+                },
+                {
+                  "section": "B",
+                  "title": "Reviewing Testimony and Lay Evidence",
+                  "reference": "M21-1.V.ii.1.B",
+                  "topic_count": 5
+                }
+              ]
+            },
+            {
+              "chapter": "2",
+              "sections": [
+                {
+                  "section": "A",
+                  "title": "Direct Service Connection (SC) and Service Incurrence of an Injury",
+                  "reference": "M21-1.V.ii.2.A",
+                  "topic_count": 19
+                },
+                {
+                  "section": "B",
+                  "title": "Presumptive Service Connection (SC)",
+                  "reference": "M21-1.V.ii.2.B",
+                  "topic_count": 7
+                },
+                {
+                  "section": "C",
+                  "title": "In-Service Aggravation of a Pre-Service Disability",
+                  "reference": "M21-1.V.ii.2.C",
+                  "topic_count": 16
+                },
+                {
+                  "section": "D",
+                  "title": "Secondary Service Connection (SC) and Aggravation of Non-Service-Connected (NSC) Disabilities",
+                  "reference": "M21-1.V.ii.2.D",
+                  "topic_count": 7
+                },
+                {
+                  "section": "E",
+                  "title": "Service Connection (SC) for Congenital, Developmental, or Hereditary Disorders",
+                  "reference": "M21-1.V.ii.2.E",
+                  "topic_count": 6
+                }
+              ]
+            },
+            {
+              "chapter": "3",
+              "sections": [
+                {
+                  "section": "A",
+                  "title": "Determining the Issues",
+                  "reference": "M21-1.V.ii.3.A",
+                  "topic_count": 13
+                },
+                {
+                  "section": "B",
+                  "title": "Making Partial Rating Decisions",
+                  "reference": "M21-1.V.ii.3.B",
+                  "topic_count": 8
+                },
+                {
+                  "section": "C",
+                  "title": "Reviewing Diagnoses",
+                  "reference": "M21-1.V.ii.3.C",
+                  "topic_count": 18
+                },
+                {
+                  "section": "D",
+                  "title": "Evaluating Disabilities",
+                  "reference": "M21-1.V.ii.3.D",
+                  "topic_count": 39
+                }
+              ]
+            },
+            {
+              "chapter": "4",
+              "sections": [
+                {
+                  "section": "A",
+                  "title": "Effective Dates",
+                  "reference": "M21-1.V.ii.4.A",
+                  "topic_count": 53
+                },
+                {
+                  "section": "B",
+                  "title": "Historical Guidance on the Assignment of Effective Dates",
+                  "reference": "M21-1.V.ii.4.B",
+                  "topic_count": 6
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "subpart": "iii",
+          "chapters": [
+            {
+              "chapter": "1",
+              "sections": [
+                {
+                  "section": "A",
+                  "title": "Painful Motion and Functional Loss",
+                  "reference": "M21-1.V.iii.1.A",
+                  "topic_count": 35
+                },
+                {
+                  "section": "B",
+                  "title": "Musculoskeletal Disabilities of the Extremities and Spine",
+                  "reference": "M21-1.V.iii.1.B",
+                  "topic_count": 37
+                },
+                {
+                  "section": "C",
+                  "title": "Arthritis",
+                  "reference": "M21-1.V.iii.1.C",
+                  "topic_count": 20
+                },
+                {
+                  "section": "D",
+                  "title": "Osteomyelitis",
+                  "reference": "M21-1.V.iii.1.D",
+                  "topic_count": 16
+                },
+                {
+                  "section": "E",
+                  "title": "Muscle Injuries",
+                  "reference": "M21-1.V.iii.1.E",
+                  "topic_count": 15
+                },
+                {
+                  "section": "F",
+                  "title": "Other Musculoskeletal Considerations",
+                  "reference": "M21-1.V.iii.1.F",
+                  "topic_count": 9
+                }
+              ]
+            },
+            {
+              "chapter": "2",
+              "sections": [
+                {
+                  "section": "A",
+                  "title": "Conditions of the Eyes",
+                  "reference": "M21-1.V.iii.2.A",
+                  "topic_count": 23
+                },
+                {
+                  "section": "B",
+                  "title": "Conditions of the Auditory System",
+                  "reference": "M21-1.V.iii.2.B",
+                  "topic_count": 30
+                }
+              ]
+            },
+            {
+              "chapter": "4",
+              "sections": [
+                {
+                  "section": "B",
+                  "title": "Tuberculosis",
+                  "reference": "M21-1.V.iii.4.B",
+                  "topic_count": 16
+                }
+              ]
+            },
+            {
+              "chapter": "8",
+              "sections": [
+                {
+                  "section": "B",
+                  "title": "Disabilities of the Breast",
+                  "reference": "M21-1.V.iii.8.B",
+                  "topic_count": 5
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "subpart": "iv",
+          "chapters": [
+            {
+              "chapter": "1",
+              "sections": [
+                {
+                  "section": "B",
+                  "title": "Codesheet Section",
+                  "reference": "M21-1.V.iv.1.B",
+                  "topic_count": 23
+                },
+                {
+                  "section": "C",
+                  "title": "Coded Conclusion",
+                  "reference": "M21-1.V.iv.1.C",
+                  "topic_count": 30
+                },
+                {
+                  "section": "D",
+                  "title": "Finalizing the Rating Decision",
+                  "reference": "M21-1.V.iv.1.D",
+                  "topic_count": 7
+                },
+                {
+                  "section": "E",
+                  "title": "Reviewing the Rating Decision",
+                  "reference": "M21-1.V.iv.1.E",
+                  "topic_count": 7
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "total_sections": 48
+}

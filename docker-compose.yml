@@ -43,6 +43,8 @@ services:
       - media_files:/app/media
     ports:
       - "8000:8000"
+    env_file:
+      - .env
     environment:
       - DEBUG=True
       - DATABASE_URL=postgresql://benefits_user:***ROTATED_DEV_DB_PASSWORD***@db:5432/benefits_navigator
@@ -67,6 +69,8 @@ services:
     volumes:
       - .:/app
       - media_files:/app/media
+    env_file:
+      - .env
     environment:
       - DEBUG=True
       - DATABASE_URL=postgresql://benefits_user:***ROTATED_DEV_DB_PASSWORD***@db:5432/benefits_navigator

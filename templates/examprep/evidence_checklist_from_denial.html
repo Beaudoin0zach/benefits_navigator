@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Evidence Checklists from Denial - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <!-- Header -->
+    <header class="mb-8">
+        <nav class="text-sm mb-4">
+            <a href="{% url 'examprep:evidence_checklist_list' %}" class="text-blue-600 hover:text-blue-800">Evidence Checklists</a>
+            <span class="mx-2 text-gray-400">/</span>
+            <span class="text-gray-600">From Denial Analysis</span>
+        </nav>
+        <h1 class="text-3xl font-bold text-gray-900">Generate Evidence Checklists</h1>
+        <p class="text-gray-600 mt-1">
+            Create personalized checklists for each denied condition
+        </p>
+    </header>
+
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+        <div class="flex items-start">
+            <svg class="h-5 w-5 text-blue-600 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+            </svg>
+            <div>
+                <p class="text-sm text-blue-800">
+                    Each checklist will include evidence specific to why VA denied your claim.
+                    Click on a condition to create its checklist.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+            <h2 class="text-lg font-medium text-gray-900">
+                Denied Conditions ({{ denied_conditions|length }})
+            </h2>
+        </div>
+
+        <div class="divide-y divide-gray-200">
+            {% for denial in denied_conditions %}
+            <div class="p-6">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <h3 class="text-lg font-medium text-gray-900">{{ denial.condition }}</h3>
+                        {% if denial.reason %}
+                        <p class="text-sm text-gray-500 mt-1">{{ denial.reason|truncatewords:30 }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="ml-4">
+                        {% if denial.has_checklist %}
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                            <svg class="mr-1.5 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            Checklist Created
+                        </span>
+                        {% else %}
+                        <a href="{% url 'examprep:evidence_checklist_create' %}?from_denial={{ analysis.pk }}&condition={{ denial.condition|urlencode }}"
+                           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                            <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Create Checklist
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="p-12 text-center">
+                <p class="text-gray-500">No denied conditions found.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="mt-6 flex items-center justify-between">
+        <a href="{% url 'claims:denial_decoder_result' analysis.document_id %}"
+           class="text-gray-600 hover:text-gray-800">
+            &larr; Back to Denial Analysis
+        </a>
+        <a href="{% url 'examprep:evidence_checklist_list' %}"
+           class="text-blue-600 hover:text-blue-800">
+            View All Checklists &rarr;
+        </a>
+    </div>
+</div>
+{% endblock %}

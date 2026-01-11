@@ -1,0 +1,166 @@
+{
+  "dbq_name": "PTSD Review",
+  "dbq_type": "review",
+  "condition": "Post Traumatic Stress Disorder (PTSD)",
+  "category": "mental_health",
+  "diagnostic_codes": ["9411"],
+  "cfr_reference": "38 CFR 4.130",
+  "last_updated": "2024-09-05",
+  "version": "v24_2",
+
+  "rating_criteria": {
+    "description": "Mental health conditions are rated based on occupational and social impairment",
+    "levels": [
+      {
+        "rating": 0,
+        "criteria": "A mental condition has been formally diagnosed, but symptoms are not severe enough either to interfere with occupational and social functioning or to require continuous medication",
+        "keywords": ["diagnosed", "not severe enough", "no interference"]
+      },
+      {
+        "rating": 10,
+        "criteria": "Occupational and social impairment due to mild or transient symptoms which decrease work efficiency and ability to perform occupational tasks only during periods of significant stress, or symptoms controlled by medication",
+        "keywords": ["mild", "transient", "significant stress only", "controlled by medication"]
+      },
+      {
+        "rating": 30,
+        "criteria": "Occupational and social impairment with occasional decrease in work efficiency and intermittent periods of inability to perform occupational tasks, although generally functioning satisfactorily, with normal routine behavior, self-care and conversation",
+        "keywords": ["occasional decrease", "intermittent inability", "generally functioning", "normal routine"]
+      },
+      {
+        "rating": 50,
+        "criteria": "Occupational and social impairment with reduced reliability and productivity",
+        "keywords": ["reduced reliability", "reduced productivity"]
+      },
+      {
+        "rating": 70,
+        "criteria": "Occupational and social impairment with deficiencies in most areas, such as work, school, family relations, judgment, thinking and/or mood",
+        "keywords": ["deficiencies in most areas", "work", "family relations", "judgment", "thinking", "mood"]
+      },
+      {
+        "rating": 100,
+        "criteria": "Total occupational and social impairment",
+        "keywords": ["total impairment", "unable to work", "complete disability"]
+      }
+    ]
+  },
+
+  "symptoms_checklist": {
+    "description": "Symptoms documented by examiner that support rating level",
+    "symptoms": [
+      {"symptom": "Depressed mood", "typical_rating": "30+"},
+      {"symptom": "Anxiety", "typical_rating": "30+"},
+      {"symptom": "Suspiciousness", "typical_rating": "30+"},
+      {"symptom": "Panic attacks that occur weekly or less often", "typical_rating": "30"},
+      {"symptom": "Panic attacks more than once a week", "typical_rating": "50+"},
+      {"symptom": "Near-continuous panic or depression affecting the ability to function independently, appropriately and effectively", "typical_rating": "70+"},
+      {"symptom": "Chronic sleep impairment", "typical_rating": "30+"},
+      {"symptom": "Mild memory loss, such as forgetting names, directions or recent events", "typical_rating": "30"},
+      {"symptom": "Impairment of short and long term memory, for example, retention of only highly learned material, while forgetting to complete tasks", "typical_rating": "50+"},
+      {"symptom": "Memory loss for names of close relatives, own occupation, or own name", "typical_rating": "100"},
+      {"symptom": "Flattened affect", "typical_rating": "50+"},
+      {"symptom": "Circumstantial, circumlocutory or stereotyped speech", "typical_rating": "50+"},
+      {"symptom": "Speech intermittently illogical, obscure, or irrelevant", "typical_rating": "70+"},
+      {"symptom": "Difficulty in understanding complex commands", "typical_rating": "50+"},
+      {"symptom": "Impaired judgment", "typical_rating": "50+"},
+      {"symptom": "Impaired abstract thinking", "typical_rating": "50+"},
+      {"symptom": "Gross impairment in thought processes or communication", "typical_rating": "100"},
+      {"symptom": "Disturbances of motivation and mood", "typical_rating": "50+"},
+      {"symptom": "Difficulty in establishing and maintaining effective work and social relationships", "typical_rating": "50"},
+      {"symptom": "Difficulty adapting to stressful circumstances, including work or a work like setting", "typical_rating": "70"},
+      {"symptom": "Inability to establish and maintain effective relationships", "typical_rating": "70+"},
+      {"symptom": "Suicidal ideation", "typical_rating": "70+"},
+      {"symptom": "Obsessional rituals which interfere with routine activities", "typical_rating": "70+"},
+      {"symptom": "Impaired impulse control, such as unprovoked irritability with periods of violence", "typical_rating": "70+"},
+      {"symptom": "Spatial disorientation", "typical_rating": "70+"},
+      {"symptom": "Persistent delusions or hallucinations", "typical_rating": "100"},
+      {"symptom": "Grossly inappropriate behavior", "typical_rating": "100"},
+      {"symptom": "Persistent danger of hurting self or others", "typical_rating": "100"},
+      {"symptom": "Neglect of personal appearance and hygiene", "typical_rating": "70+"},
+      {"symptom": "Intermittent inability to perform activities of daily living, including maintenance of minimal personal hygiene", "typical_rating": "100"},
+      {"symptom": "Disorientation to time or place", "typical_rating": "100"}
+    ]
+  },
+
+  "diagnostic_criteria": {
+    "standard": "DSM-5",
+    "criteria": [
+      {
+        "criterion": "A",
+        "name": "Stressor/Trauma Exposure",
+        "description": "Exposure to actual or threatened death, serious injury, or sexual violation",
+        "requirements": ["Directly experiencing", "Witnessing in person", "Learning about close family/friend", "Repeated exposure to aversive details"]
+      },
+      {
+        "criterion": "B",
+        "name": "Intrusion Symptoms",
+        "description": "Presence of one or more intrusion symptoms",
+        "requirements": ["Recurrent intrusive memories", "Recurrent distressing dreams", "Dissociative reactions (flashbacks)", "Psychological distress at cues", "Physiological reactions to cues"]
+      },
+      {
+        "criterion": "C",
+        "name": "Avoidance",
+        "description": "Persistent avoidance of stimuli",
+        "requirements": ["Avoidance of memories/thoughts/feelings", "Avoidance of external reminders"]
+      },
+      {
+        "criterion": "D",
+        "name": "Negative Alterations in Cognition/Mood",
+        "description": "Two or more negative alterations",
+        "requirements": ["Inability to remember trauma", "Negative beliefs about self/others/world", "Distorted blame", "Persistent negative emotions", "Diminished interest", "Detachment", "Inability to experience positive emotions"]
+      },
+      {
+        "criterion": "E",
+        "name": "Arousal/Reactivity",
+        "description": "Two or more alterations in arousal",
+        "requirements": ["Irritable behavior/angry outbursts", "Reckless/self-destructive behavior", "Hypervigilance", "Exaggerated startle", "Concentration problems", "Sleep disturbance"]
+      },
+      {
+        "criterion": "F",
+        "name": "Duration",
+        "description": "Duration more than 1 month"
+      },
+      {
+        "criterion": "G",
+        "name": "Functional Impairment",
+        "description": "Causes clinically significant distress or impairment"
+      },
+      {
+        "criterion": "H",
+        "name": "Exclusion",
+        "description": "Not attributable to substance or medical condition"
+      }
+    ]
+  },
+
+  "exam_sections": [
+    "Diagnostic Summary",
+    "Current Diagnoses",
+    "Differentiation of Symptoms",
+    "Occupational and Social Impairment",
+    "Evidence Review",
+    "Recent History",
+    "PTSD Diagnostic Criteria",
+    "Symptoms Checklist",
+    "Behavioral Observations",
+    "Competency Assessment"
+  ],
+
+  "tips_for_veterans": [
+    "Document frequency and severity of ALL symptoms, not just the most severe",
+    "Describe how symptoms affect work, relationships, and daily life",
+    "Mention sleep problems, nightmares, and their frequency",
+    "Describe avoidance behaviors in detail",
+    "Explain triggers and how you respond to them",
+    "Be honest about suicidal thoughts if present - this is critical for accurate rating",
+    "Describe your worst days, not just average days",
+    "Mention any hospitalizations or emergency mental health treatment"
+  ],
+
+  "common_mistakes": [
+    "Minimizing symptoms to appear 'strong'",
+    "Not mentioning all symptoms due to stigma",
+    "Forgetting to describe impact on relationships and work",
+    "Not providing specific examples of functional limitations",
+    "Assuming examiner reviewed your file - explain everything"
+  ]
+}

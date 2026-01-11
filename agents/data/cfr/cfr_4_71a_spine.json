@@ -1,0 +1,156 @@
+{
+  "cfr_reference": "38 CFR 4.71a",
+  "title": "Schedule of Ratings - Musculoskeletal System - Spine",
+  "description": "General Rating Formula for Diseases and Injuries of the Spine",
+  "last_updated": "2024",
+
+  "spinal_segments": {
+    "cervical": {
+      "description": "Neck - 7 vertebrae (C1-C7)",
+      "normal_rom": {
+        "flexion": 45,
+        "extension": 45,
+        "left_lateral_flexion": 45,
+        "right_lateral_flexion": 45,
+        "left_rotation": 80,
+        "right_rotation": 80,
+        "combined": 340
+      }
+    },
+    "thoracolumbar": {
+      "description": "Thoracic (upper back) and Lumbar (lower back) - rated together",
+      "normal_rom": {
+        "flexion": 90,
+        "extension": 30,
+        "left_lateral_flexion": 30,
+        "right_lateral_flexion": 30,
+        "left_rotation": 30,
+        "right_rotation": 30,
+        "combined": 240
+      }
+    }
+  },
+
+  "general_rating_formula": {
+    "name": "General Rating Formula for Diseases and Injuries of the Spine",
+    "note": "With or without symptoms such as pain (whether or not it radiates), stiffness, or aching in the area of the spine affected by residuals of injury or disease",
+    "cervical_spine": [
+      {
+        "rating": 10,
+        "criteria": "Forward flexion of the cervical spine greater than 30 degrees but not greater than 40 degrees; or, combined range of motion of the cervical spine greater than 170 degrees but not greater than 335 degrees; or, muscle spasm, guarding, or localized tenderness not resulting in abnormal gait or abnormal spinal contour; or, vertebral body fracture with loss of 50 percent or more of the height"
+      },
+      {
+        "rating": 20,
+        "criteria": "Forward flexion of the cervical spine greater than 15 degrees but not greater than 30 degrees; or, the combined range of motion of the cervical spine not greater than 170 degrees; or, muscle spasm or guarding severe enough to result in an abnormal gait or abnormal spinal contour such as scoliosis, reversed lordosis, or abnormal kyphosis"
+      },
+      {
+        "rating": 30,
+        "criteria": "Forward flexion of the cervical spine 15 degrees or less; or, favorable ankylosis of the entire cervical spine"
+      },
+      {
+        "rating": 40,
+        "criteria": "Unfavorable ankylosis of the entire cervical spine"
+      },
+      {
+        "rating": 100,
+        "criteria": "Unfavorable ankylosis of the entire spine"
+      }
+    ],
+    "thoracolumbar_spine": [
+      {
+        "rating": 10,
+        "criteria": "Forward flexion of the thoracolumbar spine greater than 60 degrees but not greater than 85 degrees; or, combined range of motion of the thoracolumbar spine greater than 120 degrees but not greater than 235 degrees; or, muscle spasm, guarding, or localized tenderness not resulting in abnormal gait or abnormal spinal contour; or, vertebral body fracture with loss of 50 percent or more of the height"
+      },
+      {
+        "rating": 20,
+        "criteria": "Forward flexion of the thoracolumbar spine greater than 30 degrees but not greater than 60 degrees; or, the combined range of motion of the thoracolumbar spine not greater than 120 degrees; or, muscle spasm or guarding severe enough to result in an abnormal gait or abnormal spinal contour such as scoliosis, reversed lordosis, or abnormal kyphosis"
+      },
+      {
+        "rating": 40,
+        "criteria": "Forward flexion of the thoracolumbar spine 30 degrees or less; or, favorable ankylosis of the entire thoracolumbar spine"
+      },
+      {
+        "rating": 50,
+        "criteria": "Unfavorable ankylosis of the entire thoracolumbar spine"
+      },
+      {
+        "rating": 100,
+        "criteria": "Unfavorable ankylosis of the entire spine"
+      }
+    ]
+  },
+
+  "ivds_formula": {
+    "name": "Formula for Rating Intervertebral Disc Syndrome Based on Incapacitating Episodes",
+    "diagnostic_code": "5243",
+    "note": "May be rated under General Formula OR IVDS Formula, whichever is more favorable",
+    "levels": [
+      {
+        "rating": 10,
+        "criteria": "Incapacitating episodes having a total duration of at least one week but less than 2 weeks during the past 12 months"
+      },
+      {
+        "rating": 20,
+        "criteria": "Incapacitating episodes having a total duration of at least 2 weeks but less than 4 weeks during the past 12 months"
+      },
+      {
+        "rating": 40,
+        "criteria": "Incapacitating episodes having a total duration of at least 4 weeks but less than 6 weeks during the past 12 months"
+      },
+      {
+        "rating": 60,
+        "criteria": "Incapacitating episodes having a total duration of at least 6 weeks during the past 12 months"
+      }
+    ],
+    "incapacitating_episode_definition": "A period of acute signs and symptoms due to IVDS that requires bed rest prescribed by a physician and treatment by a physician"
+  },
+
+  "diagnostic_codes": {
+    "cervical_spine": {
+      "5235": "Vertebral fracture or dislocation",
+      "5236": "Sacroiliac injury and weakness",
+      "5237": "Lumbosacral or cervical strain",
+      "5238": "Spinal stenosis",
+      "5239": "Spondylolisthesis or segmental instability",
+      "5240": "Ankylosing spondylitis",
+      "5241": "Spinal fusion",
+      "5242": "Degenerative arthritis of the spine",
+      "5243": "Intervertebral disc syndrome"
+    }
+  },
+
+  "notes": [
+    {
+      "note": 1,
+      "text": "Evaluate any associated objective neurologic abnormalities, including, but not limited to, bowel or bladder impairment, separately, under an appropriate diagnostic code."
+    },
+    {
+      "note": 2,
+      "text": "For VA compensation purposes, normal forward flexion of the cervical spine is zero to 45 degrees, extension is zero to 45 degrees, left and right lateral flexion are zero to 45 degrees, and left and right lateral rotation are zero to 80 degrees. Normal forward flexion of the thoracolumbar spine is zero to 90 degrees, extension is zero to 30 degrees, left and right lateral flexion are zero to 30 degrees, and left and right lateral rotation are zero to 30 degrees. The combined range of motion refers to the sum of the range of forward flexion, extension, left and right lateral flexion, and left and right rotation. The normal combined range of motion of the cervical spine is 340 degrees and of the thoracolumbar spine is 240 degrees. The normal ranges of motion for each component of spinal motion provided in this note are the maximum that can be used for calculation of the combined range of motion."
+    },
+    {
+      "note": 3,
+      "text": "In exceptional cases, an examiner may state that because of age, body habitus, neurologic disease, or other factors not the result of disease or injury of the spine, the range of motion of the spine in a particular individual should be considered normal for that individual, even though it does not conform to the normal range of motion. Provided that the examiner supplies an explanation, the examiner's assessment that the range of motion is normal for that individual will be accepted."
+    },
+    {
+      "note": 4,
+      "text": "Round each range of motion measurement to the nearest five degrees."
+    },
+    {
+      "note": 5,
+      "text": "For VA compensation purposes, unfavorable ankylosis is a condition in which the entire cervical spine, the entire thoracolumbar spine, or the entire spine is fixed in flexion or extension, and the ankylosis results in one or more of the following: difficulty walking because of a limited line of vision; restricted opening of the mouth and chewing; breathing limited to diaphragmatic respiration; gastrointestinal symptoms due to pressure of the costal margin on the abdomen; dyspnea or dysphagia; atlantoaxial or cervical subluxation or dislocation; or neurologic symptoms due to nerve root stretching."
+    },
+    {
+      "note": 6,
+      "text": "Separately evaluate disability of the thoracolumbar and cervical spine segments, except when there is unfavorable ankylosis of both segments, which will be rated as a single disability."
+    }
+  ],
+
+  "important_rules": [
+    "Cervical and thoracolumbar spine are rated SEPARATELY",
+    "Neurological symptoms (radiculopathy) rated SEPARATELY under peripheral nerve codes",
+    "Painful motion warrants at least the minimum rating",
+    "Functional loss due to pain, weakness, fatigability, and incoordination must be considered",
+    "DeLuca factors: pain, weakened movement, excess fatigability, incoordination, flare-ups"
+  ]
+}

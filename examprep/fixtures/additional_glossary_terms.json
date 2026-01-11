@@ -1,0 +1,282 @@
+[
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 27,
+    "fields": {
+      "term": "TDIU (Total Disability Individual Unemployability)",
+      "plain_language": "Getting paid at the 100% rate even if your combined rating is less than 100%, because your service-connected disabilities prevent you from working.",
+      "context": "If you can't hold a substantially gainful job due to your service-connected conditions, TDIU lets you receive 100% compensation. You typically need at least one condition rated 60%+ OR a combined rating of 70%+ with one condition at 40%+.",
+      "example": "A veteran has PTSD at 70% and can't maintain employment due to symptoms. Even though they're not rated at 100%, they qualify for TDIU and receive the same monthly payment as a 100% rated veteran.",
+      "show_in_tooltips": true,
+      "order": 27,
+      "created_at": "2026-01-09T12:00:00Z",
+      "updated_at": "2026-01-09T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 28,
+    "fields": {
+      "term": "SMC (Special Monthly Compensation)",
+      "plain_language": "Additional compensation beyond your regular rating for severe disabilities like loss of limb, blindness, or needing aid and attendance.",
+      "context": "SMC is extra money on top of your regular disability payment. There are different levels (SMC-K, SMC-L, SMC-S, etc.) based on the type and severity of disability. Loss of use of a limb, erectile dysfunction, and being housebound can qualify.",
+      "example": "A veteran rated 100% for PTSD who also lost use of their hand in service receives their 100% payment PLUS an additional SMC-K payment each month for the loss of use.",
+      "show_in_tooltips": true,
+      "order": 28,
+      "created_at": "2026-01-09T12:00:00Z",
+      "updated_at": "2026-01-09T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 29,
+    "fields": {
+      "term": "Aid and Attendance",
+      "plain_language": "Extra monthly payment for veterans who need help with daily activities like bathing, dressing, or eating due to service-connected disabilities.",
+      "context": "This is a type of Special Monthly Compensation (SMC-L) for veterans who require the regular aid of another person. It provides additional funds to help pay for caregiving assistance.",
+      "example": "A veteran with severe PTSD and physical disabilities who needs their spouse to help them bathe and prepare meals may qualify for Aid and Attendance benefits.",
+      "show_in_tooltips": true,
+      "order": 29,
+      "created_at": "2026-01-09T12:00:00Z",
+      "updated_at": "2026-01-09T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 30,
+    "fields": {
+      "term": "DRO (Decision Review Officer)",
+      "plain_language": "A senior VA employee who can review your claim and potentially grant a higher rating without you having to go through a formal appeal.",
+      "context": "Before the Appeals Modernization Act (AMA) in 2019, DRO reviews were a common way to challenge decisions. Under the new system, Higher-Level Reviews serve a similar function with senior reviewers examining decisions.",
+      "example": "After receiving a denial, a veteran could request a DRO review where a more experienced VA employee would take a fresh look at the evidence.",
+      "show_in_tooltips": true,
+      "order": 30,
+      "created_at": "2026-01-09T12:00:00Z",
+      "updated_at": "2026-01-09T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 31,
+    "fields": {
+      "term": "Duty to Assist",
+      "plain_language": "The VA's legal obligation to help you gather evidence for your claim - including obtaining medical records and scheduling C&P exams.",
+      "context": "The VA must make reasonable efforts to help veterans obtain evidence. This includes requesting service records, VA medical records, and identified private records. However, veterans are ultimately responsible for ensuring the VA has what it needs.",
+      "example": "You tell the VA you were treated at a private hospital. Under duty to assist, the VA must attempt to obtain those records on your behalf (with your authorization).",
+      "show_in_tooltips": true,
+      "order": 31,
+      "created_at": "2026-01-09T12:00:00Z",
+      "updated_at": "2026-01-09T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 32,
+    "fields": {
+      "term": "Benefit of the Doubt",
+      "plain_language": "When evidence for and against your claim is roughly equal (50/50), the VA must decide in your favor.",
+      "context": "This is a legal standard that works in veterans' favor. You don't need to prove your case beyond all doubt - you just need to tip the scales to 'at least as likely as not' (50% or greater probability).",
+      "example": "Two doctors disagree about whether your knee arthritis is connected to service. One says yes, one says no. Under benefit of the doubt, the VA should grant service connection.",
+      "show_in_tooltips": true,
+      "order": 32,
+      "created_at": "2026-01-09T12:00:00Z",
+      "updated_at": "2026-01-09T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 33,
+    "fields": {
+      "term": "CUE (Clear and Unmistakable Error)",
+      "plain_language": "A serious mistake in a past VA decision that, if corrected, would change the outcome. Used to reopen old, final decisions.",
+      "context": "CUE is a high bar to meet. The error must be obvious and undebatable based on the evidence and law at the time of the original decision. If proven, the VA must correct the decision and may owe significant back pay.",
+      "example": "The VA denied your claim in 2010, but your service records clearly showed the injury they said wasn't documented. That's potentially CUE - an obvious error that should have resulted in approval.",
+      "show_in_tooltips": true,
+      "order": 33,
+      "created_at": "2026-01-09T12:00:00Z",
+      "updated_at": "2026-01-09T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 34,
+    "fields": {
+      "term": "VASRD (VA Schedule for Rating Disabilities)",
+      "plain_language": "The rulebook that determines how the VA rates each type of disability - lists every condition and the criteria for each rating percentage.",
+      "context": "Found in 38 CFR Part 4, the VASRD contains diagnostic codes and rating criteria for every ratable condition. Understanding how your condition is rated helps you prepare for exams and know what evidence matters.",
+      "example": "Diagnostic Code 5201 covers shoulder limitation of motion. The VASRD shows that arm motion limited to 25 degrees from the side rates 40%, while motion to shoulder level rates 20%.",
+      "show_in_tooltips": true,
+      "order": 34,
+      "created_at": "2026-01-09T12:00:00Z",
+      "updated_at": "2026-01-09T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 35,
+    "fields": {
+      "term": "Diagnostic Code",
+      "plain_language": "A 4-digit number assigned to your disability that determines how it's rated and what criteria apply.",
+      "context": "Every service-connected condition gets a diagnostic code from the VASRD. The code determines the rating criteria. Some conditions can be rated under multiple codes - the VA should use whichever gives you the highest rating.",
+      "example": "PTSD is rated under Diagnostic Code 9411. Knee limitation of motion uses Code 5260 (flexion) or 5261 (extension). Tinnitus is Code 6260.",
+      "show_in_tooltips": true,
+      "order": 35,
+      "created_at": "2026-01-09T12:00:00Z",
+      "updated_at": "2026-01-09T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 36,
+    "fields": {
+      "term": "DeLuca Factors",
+      "plain_language": "Legal requirement that the VA consider pain, weakness, fatigue, and flare-ups when rating joint and muscle disabilities - not just physical measurements.",
+      "context": "Based on a court case (DeLuca v. Brown), the VA must consider functional loss due to pain, weakness, fatigability, and incoordination. This means your rating should reflect your worst days, not just what the examiner measures on exam day.",
+      "example": "Your knee bends to 100 degrees on exam day, but during flare-ups you can barely bend it to 60 degrees. DeLuca factors require the VA to consider that reduced function.",
+      "show_in_tooltips": true,
+      "order": 36,
+      "created_at": "2026-01-09T12:00:00Z",
+      "updated_at": "2026-01-09T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 37,
+    "fields": {
+      "term": "Pyramiding",
+      "plain_language": "The VA's rule against paying you twice for the same symptoms - you can't get separate ratings for overlapping disabilities.",
+      "context": "Anti-pyramiding rules prevent rating the same manifestation of a disability under multiple diagnostic codes. However, if conditions cause DIFFERENT symptoms, they can be rated separately.",
+      "example": "You have knee arthritis causing pain and limited motion. You can't get separate ratings for 'knee pain' and 'knee arthritis' because they're the same symptoms. But you could get separate ratings for limited flexion AND instability because those are different impairments.",
+      "show_in_tooltips": true,
+      "order": 37,
+      "created_at": "2026-01-09T12:00:00Z",
+      "updated_at": "2026-01-09T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 38,
+    "fields": {
+      "term": "Goniometer",
+      "plain_language": "The protractor-like tool examiners use to measure joint range of motion in degrees during C&P exams.",
+      "context": "Goniometer measurements are crucial for musculoskeletal ratings. The examiner places the device on your joint and measures how far you can bend, extend, or rotate. These degree measurements directly correspond to rating percentages in the VASRD.",
+      "example": "During your knee exam, the examiner places a goniometer on your knee and asks you to bend it. They measure 110 degrees of flexion and document it on the DBQ form.",
+      "show_in_tooltips": true,
+      "order": 38,
+      "created_at": "2026-01-09T12:00:00Z",
+      "updated_at": "2026-01-09T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 39,
+    "fields": {
+      "term": "Ancillary Benefits",
+      "plain_language": "Additional benefits beyond monthly compensation that come with your VA disability rating - like healthcare, property tax exemptions, and commissary access.",
+      "context": "Your VA rating unlocks more than just a monthly check. Depending on your rating percentage, you may qualify for VA healthcare, CHAMPVA for dependents, vocational rehabilitation, property tax exemptions, and other state/federal benefits.",
+      "example": "A veteran rated 30% or higher qualifies for VA healthcare priority group 1. At 100% P&T, dependents get CHAMPVA healthcare coverage and many states offer property tax exemptions.",
+      "show_in_tooltips": true,
+      "order": 39,
+      "created_at": "2026-01-09T12:00:00Z",
+      "updated_at": "2026-01-09T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 40,
+    "fields": {
+      "term": "P&T (Permanent and Total)",
+      "plain_language": "A 100% disability rating that the VA has determined is permanent - meaning no future re-evaluations and access to additional benefits.",
+      "context": "P&T status means the VA believes your condition will never improve. This provides security (no surprise rating reductions) and unlocks benefits like Chapter 35 education benefits for dependents and Dependency and Indemnity Compensation (DIC) eligibility for survivors.",
+      "example": "A veteran with a 100% PTSD rating receives a letter stating their disability is 'permanent and total.' They won't face future C&P exams for that condition, and their children can use Chapter 35 education benefits.",
+      "show_in_tooltips": true,
+      "order": 40,
+      "created_at": "2026-01-09T12:00:00Z",
+      "updated_at": "2026-01-09T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 41,
+    "fields": {
+      "term": "Chapter 35 (DEA Benefits)",
+      "plain_language": "Education benefits for dependents (spouse and children) of veterans who are permanently and totally disabled or who died from service-connected causes.",
+      "context": "Dependents' Educational Assistance (DEA) provides up to 45 months of education benefits. Children can use it between ages 18-26. Spouses have 10 years from the date of P&T determination or the veteran's death.",
+      "example": "A veteran is rated 100% P&T. Their 19-year-old daughter can now use Chapter 35 benefits to attend college, receiving a monthly stipend while enrolled.",
+      "show_in_tooltips": true,
+      "order": 41,
+      "created_at": "2026-01-09T12:00:00Z",
+      "updated_at": "2026-01-09T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 42,
+    "fields": {
+      "term": "DIC (Dependency and Indemnity Compensation)",
+      "plain_language": "Monthly tax-free payments to surviving spouses and dependents of veterans who died from service-connected causes.",
+      "context": "If a veteran dies from a service-connected disability OR was rated P&T for 10+ years before death, survivors may qualify for DIC. As of 2026, the base rate is over $1,600/month for surviving spouses.",
+      "example": "A veteran rated 100% P&T for 12 years passes away from unrelated causes. Their spouse qualifies for DIC because the veteran held P&T status for more than 10 years.",
+      "show_in_tooltips": true,
+      "order": 42,
+      "created_at": "2026-01-09T12:00:00Z",
+      "updated_at": "2026-01-09T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 43,
+    "fields": {
+      "term": "CHAMPVA",
+      "plain_language": "Healthcare coverage for dependents of veterans who are permanently and totally disabled - similar to TRICARE but through the VA.",
+      "context": "The Civilian Health and Medical Program of the VA covers spouses and children of P&T veterans who aren't eligible for TRICARE. It covers most healthcare services with low cost-sharing.",
+      "example": "A veteran is rated 100% P&T. Their spouse, who isn't eligible for TRICARE or employer insurance, enrolls in CHAMPVA and can see civilian doctors with the VA covering most costs.",
+      "show_in_tooltips": true,
+      "order": 43,
+      "created_at": "2026-01-09T12:00:00Z",
+      "updated_at": "2026-01-09T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 44,
+    "fields": {
+      "term": "Protected Rating",
+      "plain_language": "A disability rating that can't be reduced because it's been in effect for 5, 10, or 20 years.",
+      "context": "The longer you hold a rating, the harder it is for the VA to reduce it. After 5 years, ratings can only be reduced if there's sustained improvement. After 20 years, ratings are permanent and can't be reduced at all.",
+      "example": "You've been rated 70% for PTSD for 22 years. Even if a new C&P exam shows improvement, the VA cannot reduce your rating because it's been in effect for over 20 years.",
+      "show_in_tooltips": true,
+      "order": 44,
+      "created_at": "2026-01-09T12:00:00Z",
+      "updated_at": "2026-01-09T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 45,
+    "fields": {
+      "term": "Staged Rating",
+      "plain_language": "Different rating percentages for different time periods - reflects that your condition may have been worse or better at various times.",
+      "context": "The VA can assign different ratings for different periods based on the evidence. This often happens when conditions worsen over time or when there's limited evidence for earlier periods.",
+      "example": "You file a claim with an effective date of January 2024. The VA gives you 10% from January-June 2024, then 30% from July 2024 onward because evidence shows your condition worsened.",
+      "show_in_tooltips": true,
+      "order": 45,
+      "created_at": "2026-01-09T12:00:00Z",
+      "updated_at": "2026-01-09T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 46,
+    "fields": {
+      "term": "Claim Shark",
+      "plain_language": "Unaccredited individuals or companies that charge veterans large fees to help with VA claims - often using predatory practices.",
+      "context": "Claim sharks are NOT accredited by the VA and often charge thousands of dollars for services that VSOs provide free. Some sign veterans up for high-interest loans or take percentages of back pay. Always verify accreditation at VA.gov before paying anyone.",
+      "example": "A company promises to 'guarantee' a 100% rating for $5,000 upfront. This is a claim shark. Legitimate VSOs and accredited attorneys don't charge upfront fees and are regulated by the VA.",
+      "show_in_tooltips": true,
+      "order": 46,
+      "created_at": "2026-01-09T12:00:00Z",
+      "updated_at": "2026-01-09T12:00:00Z"
+    }
+  }
+]

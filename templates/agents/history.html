@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Agent History - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+        <a href="{% url 'agents:home' %}" class="text-blue-600 hover:text-blue-800 text-sm mb-2 inline-block">&larr; Back to AI Agents</a>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Your AI Agent History</h1>
+        <p class="text-gray-600">View all your past analyses and generated content.</p>
+    </div>
+
+    {% if interactions %}
+    <div class="space-y-4">
+        {% for interaction in interactions %}
+        <div class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    {% if interaction.agent_type == 'decision_analyzer' %}
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    {% elif interaction.agent_type == 'evidence_gap' %}
+                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    {% else %}
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                        </svg>
+                    </div>
+                    {% endif %}
+
+                    <div>
+                        <h3 class="font-medium text-gray-900">{{ interaction.get_agent_type_display }}</h3>
+                        <p class="text-sm text-gray-500">{{ interaction.created_at|date:"M j, Y \a\t g:i A" }}</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <span class="px-2 py-1 rounded text-xs font-medium
+                        {% if interaction.status == 'completed' %}bg-green-100 text-green-800
+                        {% elif interaction.status == 'failed' %}bg-red-100 text-red-800
+                        {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                        {{ interaction.status|title }}
+                    </span>
+
+                    {% if interaction.status == 'completed' %}
+                        {% if interaction.agent_type == 'decision_analyzer' and interaction.decision_analysis %}
+                        <a href="{% url 'agents:decision_analyzer_result' interaction.decision_analysis.pk %}"
+                           class="text-blue-600 hover:text-blue-800 font-medium text-sm">
+                            View &rarr;
+                        </a>
+                        {% elif interaction.agent_type == 'evidence_gap' and interaction.evidence_analysis %}
+                        <a href="{% url 'agents:evidence_gap_result' interaction.evidence_analysis.pk %}"
+                           class="text-purple-600 hover:text-purple-800 font-medium text-sm">
+                            View &rarr;
+                        </a>
+                        {% elif interaction.agent_type == 'statement_generator' and interaction.personal_statement %}
+                        <a href="{% url 'agents:statement_result' interaction.personal_statement.pk %}"
+                           class="text-green-600 hover:text-green-800 font-medium text-sm">
+                            View &rarr;
+                        </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if interaction.status == 'completed' %}
+            <div class="mt-3 pt-3 border-t border-gray-100 text-sm text-gray-500">
+                {% if interaction.agent_type == 'decision_analyzer' and interaction.decision_analysis %}
+                    {{ interaction.decision_analysis.conditions_granted|length }} granted,
+                    {{ interaction.decision_analysis.conditions_denied|length }} denied
+                {% elif interaction.agent_type == 'evidence_gap' and interaction.evidence_analysis %}
+                    {{ interaction.evidence_analysis.claimed_conditions|length }} conditions analyzed,
+                    {{ interaction.evidence_analysis.readiness_score }}% ready
+                {% elif interaction.agent_type == 'statement_generator' and interaction.personal_statement %}
+                    {{ interaction.personal_statement.condition }} - {{ interaction.personal_statement.word_count }} words
+                    {% if interaction.personal_statement.is_finalized %}
+                    <span class="ml-2 px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">Finalized</span>
+                    {% endif %}
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-12">
+        <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg>
+        <h2 class="text-xl font-bold text-gray-700 mb-2">No history yet</h2>
+        <p class="text-gray-500 mb-6">Start using our AI agents to build your history.</p>
+        <a href="{% url 'agents:home' %}" class="inline-block px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">
+            Explore AI Agents
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

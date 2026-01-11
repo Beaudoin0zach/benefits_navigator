@@ -1,0 +1,23 @@
+"""
+URL configuration for core app
+"""
+
+from django.urls import path
+from . import views
+
+app_name = 'core'
+
+urlpatterns = [
+    # Journey Dashboard
+    path('journey/', views.journey_dashboard, name='journey_dashboard'),
+    path('journey/timeline/', views.journey_timeline_partial, name='journey_timeline'),
+
+    # Milestones
+    path('journey/milestone/add/', views.add_milestone, name='add_milestone'),
+    path('journey/milestone/<int:pk>/delete/', views.delete_milestone, name='delete_milestone'),
+
+    # Deadlines
+    path('journey/deadline/add/', views.add_deadline, name='add_deadline'),
+    path('journey/deadline/<int:pk>/toggle/', views.toggle_deadline, name='toggle_deadline'),
+    path('journey/deadline/<int:pk>/delete/', views.delete_deadline, name='delete_deadline'),
+]

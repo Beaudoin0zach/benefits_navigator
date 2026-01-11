@@ -1,0 +1,171 @@
+{
+  "dbq_name": "Neck (Cervical Spine) Conditions",
+  "dbq_type": "examination",
+  "condition": "Cervical Spine Conditions",
+  "category": "musculoskeletal",
+  "diagnostic_codes": ["5235", "5236", "5237", "5238", "5239", "5240", "5241", "5242", "5243"],
+  "cfr_reference": "38 CFR 4.71a",
+  "last_updated": "2024-08-20",
+  "version": "v24_1",
+
+  "rating_criteria": {
+    "description": "Cervical spine rated under General Rating Formula for Diseases and Injuries of the Spine",
+    "formula": "General Rating Formula for Diseases and Injuries of the Spine",
+    "levels": [
+      {
+        "rating": 10,
+        "criteria": "Forward flexion of the cervical spine greater than 30 degrees but not greater than 40 degrees; OR combined range of motion of the cervical spine greater than 170 degrees but not greater than 335 degrees; OR muscle spasm, guarding, or localized tenderness not resulting in abnormal gait or abnormal spinal contour; OR vertebral body fracture with loss of 50% or more of the height",
+        "keywords": ["flexion 30-40", "combined ROM 170-335", "muscle spasm", "guarding"]
+      },
+      {
+        "rating": 20,
+        "criteria": "Forward flexion of the cervical spine greater than 15 degrees but not greater than 30 degrees; OR combined range of motion of the cervical spine not greater than 170 degrees; OR muscle spasm or guarding severe enough to result in abnormal gait or abnormal spinal contour such as scoliosis, reversed lordosis, or abnormal kyphosis",
+        "keywords": ["flexion 15-30", "combined ROM ≤170", "abnormal gait", "abnormal contour"]
+      },
+      {
+        "rating": 30,
+        "criteria": "Forward flexion of the cervical spine 15 degrees or less; OR favorable ankylosis of the entire cervical spine",
+        "keywords": ["flexion ≤15", "favorable ankylosis"]
+      },
+      {
+        "rating": 40,
+        "criteria": "Unfavorable ankylosis of the entire cervical spine",
+        "keywords": ["unfavorable ankylosis", "cervical"]
+      },
+      {
+        "rating": 100,
+        "criteria": "Unfavorable ankylosis of the entire spine (cervical + thoracolumbar)",
+        "keywords": ["unfavorable ankylosis", "entire spine"]
+      }
+    ]
+  },
+
+  "normal_rom": {
+    "flexion": 45,
+    "extension": 45,
+    "left_lateral_flexion": 45,
+    "right_lateral_flexion": 45,
+    "left_rotation": 80,
+    "right_rotation": 80,
+    "combined_rom": 340
+  },
+
+  "rom_calculation": {
+    "description": "Combined ROM = Flexion + Extension + Left Lat Flexion + Right Lat Flexion + Left Rotation + Right Rotation",
+    "normal_combined": "340 degrees"
+  },
+
+  "ivds_formula": {
+    "description": "Intervertebral Disc Syndrome (IVDS) can be rated under this formula if more favorable",
+    "diagnostic_code": "5243",
+    "note": "Same IVDS formula as thoracolumbar spine",
+    "levels": [
+      {"rating": 10, "criteria": "Incapacitating episodes having a total duration of at least 1 week but less than 2 weeks during the past 12 months"},
+      {"rating": 20, "criteria": "Incapacitating episodes having a total duration of at least 2 weeks but less than 4 weeks during the past 12 months"},
+      {"rating": 40, "criteria": "Incapacitating episodes having a total duration of at least 4 weeks but less than 6 weeks during the past 12 months"},
+      {"rating": 60, "criteria": "Incapacitating episodes having a total duration of at least 6 weeks during the past 12 months"}
+    ],
+    "incapacitating_episode_definition": "Period of acute signs and symptoms requiring bed rest PRESCRIBED BY A PHYSICIAN"
+  },
+
+  "common_diagnoses": [
+    "Cervical strain",
+    "Cervical sprain",
+    "Cervical degenerative disc disease (DDD)",
+    "Cervical disc herniation",
+    "Cervical spondylosis",
+    "Cervical stenosis",
+    "Cervical radiculopathy",
+    "Cervical myelopathy",
+    "Cervical osteoarthritis",
+    "Cervical facet arthritis",
+    "Whiplash injury",
+    "Cervical fracture"
+  ],
+
+  "exam_sections": [
+    "Diagnosis",
+    "Medical History",
+    "Range of Motion Testing",
+    "Flare-ups",
+    "Muscle Spasm and Guarding",
+    "Localized Tenderness",
+    "Abnormal Gait",
+    "Abnormal Spinal Contour",
+    "IVDS",
+    "Neurological Abnormalities",
+    "Other Pertinent Findings",
+    "Diagnostic Testing",
+    "Functional Impact"
+  ],
+
+  "secondary_conditions": {
+    "radiculopathy": {
+      "description": "Nerve root compression causing symptoms in arms/hands",
+      "claim_separately": true,
+      "common_symptoms": [
+        "Pain radiating into shoulder, arm, or hand",
+        "Numbness or tingling in fingers",
+        "Weakness in arm or grip",
+        "Reflex changes"
+      ],
+      "rating_note": "Each affected side rated separately under peripheral nerve codes"
+    },
+    "headaches": {
+      "description": "Cervicogenic headaches secondary to neck condition",
+      "claim_separately": true,
+      "diagnostic_code": "8100"
+    },
+    "myelopathy": {
+      "description": "Spinal cord compression causing neurological deficits",
+      "symptoms": ["Difficulty with fine motor tasks", "Gait problems", "Weakness in legs", "Bowel/bladder issues"],
+      "serious_condition": true
+    }
+  },
+
+  "flare_up_documentation": {
+    "importance": "Critical for accurate rating",
+    "examiner_must_estimate": "ROM loss during flare-ups",
+    "document": [
+      "Frequency of flare-ups",
+      "Duration of each flare-up",
+      "Severity during flare-ups",
+      "Functional limitations during flare-ups",
+      "What triggers flare-ups"
+    ]
+  },
+
+  "tips_for_veterans": [
+    "Describe your WORST days, not average days",
+    "Report all symptoms: pain, stiffness, limited motion",
+    "Mention pain radiating into arms or hands (radiculopathy)",
+    "Document any numbness, tingling, or weakness in arms/hands",
+    "Report headaches that may be related to neck condition",
+    "Describe how neck affects daily activities and work",
+    "Mention if you've had steroid injections or surgery",
+    "Report any muscle spasms and their frequency",
+    "Don't push through pain during ROM testing",
+    "Ask examiner to document ROM during flare-ups",
+    "Bring imaging results (X-ray, MRI, CT)",
+    "CLAIM RADICULOPATHY SEPARATELY if you have arm symptoms"
+  ],
+
+  "common_mistakes": [
+    "Not claiming radiculopathy as secondary condition",
+    "Minimizing symptoms during examination",
+    "Forgetting to mention flare-ups",
+    "Not describing arm/hand symptoms (may be radiculopathy)",
+    "Not bringing imaging studies",
+    "Failing to document how condition affects work"
+  ],
+
+  "important_notes": [
+    "Cervical and thoracolumbar spine are rated separately",
+    "Radiculopathy (arm symptoms) rated SEPARATELY from spine",
+    "Each radicular nerve group is rated individually",
+    "Painful motion warrants at least minimum rating",
+    "Flare-up ROM must be estimated by examiner",
+    "IVDS formula may provide higher rating if applicable",
+    "Incapacitating episodes require physician-prescribed bed rest"
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "cfr_reference": "38 CFR 4.104",
+  "title": "Schedule of Ratings - Cardiovascular System",
+  "description": "Rating criteria for heart and vascular conditions",
+  "last_updated": "2024",
+
+  "rating_basis": {
+    "mets": {
+      "description": "Metabolic Equivalents - primary basis for rating most heart conditions",
+      "testing": "Exercise stress test (treadmill, bicycle) or interview-based assessment",
+      "examples": {
+        "1_met": "Eating, getting dressed, walking indoors around the house",
+        "3_mets": "Walking one to two blocks on level ground at 2-3 mph",
+        "5_mets": "Light yard work, mowing lawn, dancing",
+        "7_mets": "Carrying 60 pounds, heavy yard work, jogging",
+        "10_mets": "Swimming, singles tennis, running"
+      }
+    },
+    "lvef": {
+      "description": "Left Ventricular Ejection Fraction - percentage of blood pumped per heartbeat",
+      "normal": "55-70%",
+      "measured_by": "Echocardiogram"
+    }
+  },
+
+  "diagnostic_codes": {
+    "7000": {
+      "name": "Valvular heart disease (including rheumatic heart disease)",
+      "levels": [
+        {"rating": 10, "criteria": "Workload of greater than 7 METs but not greater than 10 METs results in dyspnea, fatigue, angina, dizziness, or syncope, or; continuous medication required"},
+        {"rating": 30, "criteria": "Workload of greater than 5 METs but not greater than 7 METs results in dyspnea, fatigue, angina, dizziness, or syncope, or; evidence of cardiac hypertrophy or dilatation on ECG, echocardiogram, or X-ray"},
+        {"rating": 60, "criteria": "More than one episode of acute congestive heart failure in past year, or; workload of greater than 3 METs but not greater than 5 METs results in dyspnea, fatigue, angina, dizziness, or syncope, or; left ventricular dysfunction with ejection fraction of 30-50%"},
+        {"rating": 100, "criteria": "Chronic congestive heart failure, or; workload of 3 METs or less results in dyspnea, fatigue, angina, dizziness, or syncope, or; left ventricular dysfunction with ejection fraction of less than 30%"}
+      ]
+    },
+    "7005": {
+      "name": "Arteriosclerotic heart disease (Coronary artery disease)",
+      "levels": [
+        {"rating": 10, "criteria": "Workload of greater than 7 METs but not greater than 10 METs results in dyspnea, fatigue, angina, dizziness, or syncope, or; continuous medication required"},
+        {"rating": 30, "criteria": "Workload of greater than 5 METs but not greater than 7 METs results in dyspnea, fatigue, angina, dizziness, or syncope, or; evidence of cardiac hypertrophy or dilatation on ECG, echocardiogram, or X-ray"},
+        {"rating": 60, "criteria": "More than one episode of acute congestive heart failure in past year, or; workload of greater than 3 METs but not greater than 5 METs results in dyspnea, fatigue, angina, dizziness, or syncope, or; left ventricular dysfunction with ejection fraction of 30-50%"},
+        {"rating": 100, "criteria": "Chronic congestive heart failure, or; workload of 3 METs or less results in dyspnea, fatigue, angina, dizziness, or syncope, or; left ventricular dysfunction with ejection fraction of less than 30%"}
+      ],
+      "presumptive": "Agent Orange presumptive condition (ischemic heart disease)"
+    },
+    "7006": {
+      "name": "Myocardial infarction",
+      "special_rating": "100% for 3 months following MI, then rated on residuals",
+      "residual_rating": "Same criteria as 7005"
+    },
+    "7007": {
+      "name": "Hypertensive heart disease",
+      "uses_same_criteria_as": "7005",
+      "note": "Separate from hypertension rating (7101)"
+    },
+    "7010": {
+      "name": "Supraventricular arrhythmias",
+      "levels": [
+        {"rating": 10, "criteria": "Permanent atrial fibrillation (lone atrial fibrillation), or; one to four episodes per year of paroxysmal atrial fibrillation or other supraventricular tachycardia documented by ECG or Holter monitor"},
+        {"rating": 30, "criteria": "Paroxysmal atrial fibrillation or other supraventricular tachycardia, with more than four episodes per year documented by ECG or Holter monitor"}
+      ],
+      "note": "If there are associated cardiac symptoms, rate under appropriate code for underlying heart condition"
+    },
+    "7011": {
+      "name": "Ventricular arrhythmias (sustained)",
+      "levels": [
+        {"rating": 10, "criteria": "1-4 episodes per year documented by ECG or Holter monitor"},
+        {"rating": 30, "criteria": "More than 4 episodes per year documented by ECG or Holter monitor"},
+        {"rating": 60, "criteria": "ICD (implantable cardioverter-defibrillator) required"},
+        {"rating": 100, "criteria": "Chronic congestive heart failure, or workload of 3 METs or less"}
+      ]
+    },
+    "7015": {
+      "name": "Atrioventricular block",
+      "levels": [
+        {"rating": 10, "criteria": "Workload of greater than 7 METs but not greater than 10 METs"},
+        {"rating": 30, "criteria": "Workload of greater than 5 METs but not greater than 7 METs, or pacemaker required"},
+        {"rating": 60, "criteria": "Workload of greater than 3 METs but not greater than 5 METs"},
+        {"rating": 100, "criteria": "Workload of 3 METs or less, or chronic CHF, or LVEF less than 30%"}
+      ]
+    },
+    "7019": {
+      "name": "Heart transplant",
+      "levels": [
+        {"rating": 100, "criteria": "For 1 year following transplant"},
+        {"rating": 60, "criteria": "Minimum rating thereafter, rate on residuals if greater"}
+      ]
+    }
+  },
+
+  "hypertension": {
+    "diagnostic_code": "7101",
+    "name": "Hypertensive vascular disease (hypertension and isolated systolic hypertension)",
+    "levels": [
+      {"rating": 10, "criteria": "Diastolic pressure predominantly 100 or more, or; systolic pressure predominantly 160 or more, or; minimum evaluation for an individual with a history of diastolic pressure predominantly 100 or more who requires continuous medication for control"},
+      {"rating": 20, "criteria": "Diastolic pressure predominantly 110 or more, or; systolic pressure predominantly 200 or more"},
+      {"rating": 40, "criteria": "Diastolic pressure predominantly 120 or more"},
+      {"rating": 60, "criteria": "Diastolic pressure predominantly 130 or more"}
+    ],
+    "note": "Hypertension is NOT the same as hypertensive heart disease (7007). Can have separate ratings if both conditions exist.",
+    "presumptive": "Agent Orange presumptive (as of 2021) and Camp Lejeune presumptive"
+  },
+
+  "peripheral_vascular": {
+    "7114": {
+      "name": "Arteriosclerosis obliterans",
+      "levels": [
+        {"rating": 20, "criteria": "Claudication on walking more than 100 yards, and; diminished peripheral pulses or ankle/brachial index of 0.9 or less"},
+        {"rating": 40, "criteria": "Claudication on walking between 25 and 100 yards on a level grade at 2 mph, and; trophic changes (thin skin, absence of hair, dystrophic nails) or ankle/brachial index of 0.7 or less"},
+        {"rating": 60, "criteria": "Claudication on walking less than 25 yards on a level grade at 2 mph, and; trophic changes or ankle/brachial index of 0.5 or less"},
+        {"rating": 100, "criteria": "Ischemic limb pain at rest, and; deep ischemic ulcers or ankle/brachial index of 0.4 or less"}
+      ]
+    }
+  },
+
+  "important_rules": [
+    "METs and LVEF are primary rating criteria",
+    "Ischemic heart disease is Agent Orange presumptive",
+    "Hypertension is Agent Orange presumptive (since 2021)",
+    "ICD implantation automatically gets minimum 60%",
+    "100% for 3 months after MI, 1 year after transplant",
+    "Hypertension (7101) and hypertensive heart disease (7007) can be rated separately"
+  ]
+}

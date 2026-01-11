@@ -1,0 +1,166 @@
+{
+  "dbq_name": "Respiratory Conditions (Other than Tuberculosis and Sleep Apnea)",
+  "dbq_type": "examination",
+  "condition": "Respiratory Conditions",
+  "category": "respiratory",
+  "diagnostic_codes": ["6600", "6602", "6603", "6604", "6825", "6826", "6833", "6840", "6841", "6842", "6843", "6844", "6845"],
+  "cfr_reference": "38 CFR 4.97",
+  "last_updated": "2024-08-01",
+  "version": "v24_1",
+
+  "rating_overview": {
+    "description": "Respiratory conditions are rated primarily based on pulmonary function test (PFT) results",
+    "key_measurements": [
+      "FEV-1 (Forced Expiratory Volume in 1 second)",
+      "FVC (Forced Vital Capacity)",
+      "FEV-1/FVC ratio",
+      "DLCO (Diffusion Capacity of Carbon Monoxide)"
+    ]
+  },
+
+  "asthma_rating": {
+    "diagnostic_code": "6602",
+    "condition": "Bronchial Asthma",
+    "levels": [
+      {
+        "rating": 10,
+        "criteria": "FEV-1 of 71-80% predicted, or FEV-1/FVC of 71-80%, or intermittent inhalational or oral bronchodilator therapy",
+        "keywords": ["FEV-1 71-80%", "intermittent therapy", "bronchodilator"]
+      },
+      {
+        "rating": 30,
+        "criteria": "FEV-1 of 56-70% predicted, or FEV-1/FVC of 56-70%, or daily inhalational or oral bronchodilator therapy, or inhalational anti-inflammatory medication",
+        "keywords": ["FEV-1 56-70%", "daily therapy", "anti-inflammatory"]
+      },
+      {
+        "rating": 60,
+        "criteria": "FEV-1 of 40-55% predicted, or FEV-1/FVC of 40-55%, or at least monthly visits to a physician for required care of exacerbations, or intermittent (at least three per year) courses of systemic (oral or parenteral) corticosteroids",
+        "keywords": ["FEV-1 40-55%", "monthly visits", "systemic corticosteroids"]
+      },
+      {
+        "rating": 100,
+        "criteria": "FEV-1 less than 40% predicted, or FEV-1/FVC less than 40%, or more than one attack per week with episodes of respiratory failure, or requires daily use of systemic (oral or parenteral) high dose corticosteroids or immuno-suppressive medications",
+        "keywords": ["FEV-1 <40%", "respiratory failure", "daily systemic corticosteroids"]
+      }
+    ]
+  },
+
+  "copd_rating": {
+    "diagnostic_code": "6604",
+    "condition": "Chronic Obstructive Pulmonary Disease (COPD)",
+    "levels": [
+      {"rating": 10, "criteria": "FEV-1 of 71-80% predicted, or FEV-1/FVC of 71-80%, or DLCO (SB) of 66-80% predicted", "keywords": ["FEV-1 71-80%"]},
+      {"rating": 30, "criteria": "FEV-1 of 56-70% predicted, or FEV-1/FVC of 56-70%, or DLCO (SB) of 56-65% predicted", "keywords": ["FEV-1 56-70%"]},
+      {"rating": 60, "criteria": "FEV-1 of 40-55% predicted, or FEV-1/FVC of 40-55%, or DLCO (SB) of 40-55% predicted, or maximum oxygen consumption of 15 to 20 ml/kg/min (with cardiorespiratory limit)", "keywords": ["FEV-1 40-55%"]},
+      {"rating": 100, "criteria": "FEV-1 less than 40% predicted, or FEV-1/FVC less than 40%, or DLCO (SB) less than 40% predicted, or maximum exercise capacity less than 15 ml/kg/min oxygen consumption (with cardiac or respiratory limitation), or cor pulmonale (right heart failure), or right ventricular hypertrophy, or pulmonary hypertension, or episode(s) of acute respiratory failure, or requires outpatient oxygen therapy", "keywords": ["FEV-1 <40%", "oxygen therapy", "cor pulmonale"]}
+    ]
+  },
+
+  "restrictive_lung_disease": {
+    "diagnostic_codes": ["6840", "6841", "6842", "6843", "6844", "6845"],
+    "conditions": [
+      "Diaphragm paralysis/paresis (6840)",
+      "Spinal cord injury with respiratory insufficiency (6841)",
+      "Kyphoscoliosis/pectus excavatum/pectus carinatum (6842)",
+      "Traumatic chest wall defect (6843)",
+      "Post-surgical residual (6844)",
+      "Chronic pleural effusion/fibrosis (6845)"
+    ],
+    "rating_method": "Same PFT-based criteria as COPD"
+  },
+
+  "interstitial_lung_disease": {
+    "diagnostic_code": "6833",
+    "condition": "Interstitial lung disease/pulmonary fibrosis",
+    "levels": [
+      {"rating": 10, "criteria": "FVC of 75-80% predicted, or DLCO (SB) of 66-80% predicted"},
+      {"rating": 30, "criteria": "FVC of 65-74% predicted, or DLCO (SB) of 56-65% predicted"},
+      {"rating": 60, "criteria": "FVC of 50-64% predicted, or DLCO (SB) of 40-55% predicted, or maximum exercise capacity of 15-20 ml/kg/min O2 consumption with cardiorespiratory limitation"},
+      {"rating": 100, "criteria": "FVC less than 50% predicted, or DLCO (SB) less than 40% predicted, or maximum exercise capacity less than 15 ml/kg/min O2 consumption with cardiorespiratory limitation, or cor pulmonale or pulmonary hypertension, or requires outpatient oxygen therapy"}
+    ]
+  },
+
+  "pft_testing": {
+    "description": "Pulmonary Function Tests are critical for rating",
+    "tests_required": [
+      "Spirometry (FEV-1, FVC, FEV-1/FVC ratio)",
+      "DLCO when indicated",
+      "Pre and post-bronchodilator values"
+    ],
+    "rating_note": "Post-bronchodilator results used unless pre-bronchodilator results are more favorable"
+  },
+
+  "exam_sections": [
+    "Diagnosis",
+    "Medical History",
+    "Current Treatment",
+    "Pulmonary Function Tests",
+    "Exercise Capacity Testing (if applicable)",
+    "Imaging Studies",
+    "Oxygen Requirements",
+    "Functional Impact"
+  ],
+
+  "presumptive_conditions": {
+    "pact_act_burn_pits": {
+      "description": "PACT Act made many respiratory conditions presumptive for burn pit exposure",
+      "presumptive_conditions": [
+        "Asthma diagnosed after service",
+        "Chronic bronchitis",
+        "COPD",
+        "Constrictive bronchiolitis",
+        "Interstitial lung disease",
+        "Pleuritis",
+        "Pulmonary fibrosis",
+        "Sarcoidosis",
+        "Granulomatous disease",
+        "Chronic sinusitis",
+        "Chronic rhinitis"
+      ],
+      "qualifying_service": "Service in covered locations under PACT Act"
+    },
+    "agent_orange": {
+      "description": "Certain respiratory conditions presumptive for herbicide exposure",
+      "conditions": ["Respiratory cancers"]
+    }
+  },
+
+  "secondary_service_connection": {
+    "common_connections": [
+      {"condition": "GERD/acid reflux", "connection": "Aspiration can worsen or cause respiratory problems"},
+      {"condition": "Obesity from medications", "connection": "Weight can worsen respiratory function"},
+      {"condition": "Sinusitis/rhinitis", "connection": "Upper airway conditions affect lower airways"}
+    ]
+  },
+
+  "tips_for_veterans": [
+    "Bring ALL pulmonary function test results",
+    "Document all medications - inhalers, nebulizers, steroids",
+    "Track frequency of exacerbations requiring treatment",
+    "Report any emergency room visits for breathing",
+    "Mention if you use or need supplemental oxygen",
+    "Describe activities limited by breathing problems",
+    "Document burn pit or toxic exposure history",
+    "Report frequency of rescue inhaler use",
+    "Describe worst breathing episodes",
+    "Keep records of steroid treatments (oral/IV)"
+  ],
+
+  "common_mistakes": [
+    "Not having recent PFT results available",
+    "Failing to document medication requirements",
+    "Not reporting exacerbations and ER visits",
+    "Forgetting to mention oxygen needs",
+    "Not documenting military toxic exposures",
+    "Minimizing symptoms during examination"
+  ],
+
+  "important_notes": [
+    "PFT results are primary basis for rating",
+    "Post-bronchodilator results used unless pre is more favorable",
+    "PACT Act made many conditions presumptive for burn pit exposure",
+    "Oxygen therapy requirement generally supports 100% rating",
+    "Keep detailed records of all treatments and exacerbations",
+    "Multiple respiratory conditions may be rated together"
+  ]
+}

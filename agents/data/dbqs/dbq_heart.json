@@ -1,0 +1,187 @@
+{
+  "dbq_name": "Heart Conditions",
+  "dbq_type": "examination",
+  "condition": "Heart Conditions",
+  "category": "cardiovascular",
+  "diagnostic_codes": ["7000", "7001", "7002", "7003", "7004", "7005", "7006", "7007", "7008", "7010", "7011", "7015", "7016", "7017", "7019", "7020"],
+  "cfr_reference": "38 CFR 4.104",
+  "last_updated": "2024-08-10",
+  "version": "v24_1",
+
+  "rating_overview": {
+    "description": "Heart conditions rated primarily based on METs (metabolic equivalents) or LVEF (left ventricular ejection fraction)",
+    "key_measurements": {
+      "mets": {
+        "description": "Metabolic Equivalents - measure of energy expenditure during activity",
+        "examples": {
+          "1_met": "Eating, dressing",
+          "3_mets": "Walking 2.5 mph on level ground",
+          "5_mets": "Light yard work, dancing",
+          "7_mets": "Carrying 60 lbs, heavy yard work",
+          "10_mets": "Swimming, singles tennis"
+        }
+      },
+      "lvef": {
+        "description": "Left Ventricular Ejection Fraction - percentage of blood pumped out with each heartbeat",
+        "normal": "55-70%"
+      }
+    }
+  },
+
+  "coronary_artery_disease": {
+    "diagnostic_code": "7005",
+    "condition": "Coronary Artery Disease (CAD)",
+    "very_common": true,
+    "levels": [
+      {
+        "rating": 10,
+        "criteria": "Workload of greater than 7 METs but not greater than 10 METs resulting in dyspnea, fatigue, angina, dizziness, or syncope; or continuous medication required",
+        "keywords": ["METs 7-10", "continuous medication"]
+      },
+      {
+        "rating": 30,
+        "criteria": "Workload of greater than 5 METs but not greater than 7 METs resulting in dyspnea, fatigue, angina, dizziness, or syncope; or evidence of cardiac hypertrophy or dilatation on electrocardiogram, echocardiogram or X-ray",
+        "keywords": ["METs 5-7", "cardiac hypertrophy", "dilatation"]
+      },
+      {
+        "rating": 60,
+        "criteria": "More than one episode of acute congestive heart failure in the past year; or workload of greater than 3 METs but not greater than 5 METs resulting in dyspnea, fatigue, angina, dizziness, or syncope; or left ventricular dysfunction with an ejection fraction of 30-50%",
+        "keywords": ["METs 3-5", "CHF", "LVEF 30-50%"]
+      },
+      {
+        "rating": 100,
+        "criteria": "Chronic congestive heart failure; or workload of 3 METs or less resulting in dyspnea, fatigue, angina, dizziness, or syncope; or left ventricular dysfunction with an ejection fraction of less than 30%",
+        "keywords": ["METs ≤3", "chronic CHF", "LVEF <30%"]
+      }
+    ]
+  },
+
+  "myocardial_infarction": {
+    "diagnostic_code": "7006",
+    "condition": "Myocardial Infarction (Heart Attack)",
+    "special_rating": {
+      "rating": 100,
+      "duration": "For 3 months following myocardial infarction",
+      "note": "Reevaluated after 3 months using standard heart rating criteria"
+    }
+  },
+
+  "hypertensive_heart_disease": {
+    "diagnostic_code": "7007",
+    "condition": "Hypertensive Heart Disease",
+    "description": "Heart disease caused by chronic hypertension",
+    "uses_standard_heart_criteria": true,
+    "note": "Separate from hypertension rating (7101)"
+  },
+
+  "arrhythmias": {
+    "supraventricular_arrhythmia": {
+      "diagnostic_code": "7010",
+      "levels": [
+        {"rating": 10, "criteria": "Permanent atrial fibrillation (lone atrial fibrillation), or one to four episodes per year of paroxysmal atrial fibrillation or other supraventricular tachycardia documented by ECG or Holter monitor"},
+        {"rating": 30, "criteria": "More than four episodes per year of paroxysmal atrial fibrillation or other supraventricular tachycardia documented by ECG or Holter monitor"}
+      ]
+    },
+    "ventricular_arrhythmia": {
+      "diagnostic_code": "7011",
+      "levels": [
+        {"rating": 10, "criteria": "1-4 episodes per year of sustained ventricular tachycardia or ventricular fibrillation documented by ECG/Holter"},
+        {"rating": 30, "criteria": "More than 4 episodes per year of sustained ventricular tachycardia or ventricular fibrillation"},
+        {"rating": 60, "criteria": "Requires implantable cardiac defibrillator (ICD)"},
+        {"rating": 100, "criteria": "Chronic congestive heart failure or workload of 3 METs or less"}
+      ]
+    }
+  },
+
+  "cardiac_devices": {
+    "pacemaker": {
+      "diagnostic_code": "7018",
+      "minimum_rating": 10,
+      "note": "Rate on residuals based on METs/symptoms"
+    },
+    "icd": {
+      "diagnostic_code": "7011",
+      "minimum_rating": 60,
+      "description": "Implantable Cardioverter Defibrillator"
+    },
+    "heart_transplant": {
+      "diagnostic_code": "7019",
+      "levels": [
+        {"rating": 100, "duration": "For 1 year following transplant"},
+        {"rating": 60, "criteria": "Minimum rating thereafter, rate on residuals"}
+      ]
+    },
+    "cabg_or_stent": {
+      "description": "Coronary Artery Bypass Graft or Stent Placement",
+      "post_procedure": "Rate based on residuals (METs, LVEF) after recovery"
+    }
+  },
+
+  "exam_sections": [
+    "Diagnosis",
+    "Medical History",
+    "Current Treatment",
+    "METs Testing (Exercise or Interview)",
+    "Echocardiogram Results",
+    "ECG Findings",
+    "Congestive Heart Failure History",
+    "Cardiac Devices",
+    "Functional Impact"
+  ],
+
+  "mets_testing": {
+    "exercise_testing": "Gold standard - treadmill or bicycle stress test",
+    "interview_based": "Can estimate METs based on reported activity tolerance when exercise test not possible",
+    "note": "Examiner must document whether METs are from testing or interview"
+  },
+
+  "secondary_service_connection": {
+    "heart_conditions_secondary_to": [
+      {"condition": "Hypertension", "connection": "Long-term hypertension causes hypertensive heart disease"},
+      {"condition": "Diabetes", "connection": "Diabetes significantly increases heart disease risk"},
+      {"condition": "Sleep Apnea", "connection": "Increases risk of arrhythmias and heart disease"},
+      {"condition": "PTSD", "connection": "Chronic stress associated with increased cardiac risk"},
+      {"condition": "Obesity from medications", "connection": "Weight gain increases heart disease risk"}
+    ]
+  },
+
+  "presumptive_conditions": {
+    "agent_orange": {
+      "condition": "Ischemic Heart Disease",
+      "description": "Presumptive for veterans exposed to Agent Orange",
+      "includes": ["CAD", "Angina", "MI", "CABG", "Stent placement"]
+    }
+  },
+
+  "tips_for_veterans": [
+    "Bring ALL cardiac test results - echo, stress test, ECG",
+    "Know your ejection fraction (LVEF) percentage",
+    "Describe activities that cause symptoms (dyspnea, fatigue, chest pain)",
+    "Document all cardiac medications",
+    "Report any hospitalizations for heart problems",
+    "Mention any implanted devices (pacemaker, ICD)",
+    "Track episodes of arrhythmia if applicable",
+    "Describe limitations on physical activity",
+    "Report history of heart attack, CHF, or procedures",
+    "If exposed to Agent Orange, know that ischemic heart disease is presumptive"
+  ],
+
+  "common_mistakes": [
+    "Not having recent echocardiogram results",
+    "Not knowing ejection fraction percentage",
+    "Failing to describe symptom-limited activity level",
+    "Not documenting cardiac procedures (CABG, stents)",
+    "Forgetting to mention arrhythmia episodes",
+    "Not claiming as secondary to hypertension or diabetes"
+  ],
+
+  "important_notes": [
+    "METs and LVEF are primary rating criteria",
+    "Ischemic heart disease is presumptive for Agent Orange exposure",
+    "ICD implantation gets minimum 60% rating",
+    "100% rating for 3 months after MI, 1 year after transplant",
+    "Heart conditions often secondary to hypertension, diabetes, or sleep apnea",
+    "Symptoms during activity (dyspnea, fatigue, angina) are key",
+    "Keep copies of all cardiac testing results"
+  ]
+}

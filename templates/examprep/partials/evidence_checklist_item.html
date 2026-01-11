@@ -1,0 +1,83 @@
+{% load static %}
+<div class="flex items-start {% if item.completed %}opacity-75{% endif %}">
+    <form hx-post="{% url 'examprep:evidence_checklist_toggle' checklist.pk %}"
+          hx-target="#item-{{ item.id }}"
+          hx-swap="innerHTML"
+          class="flex-shrink-0 mr-4">
+        {% csrf_token %}
+        <input type="hidden" name="item_id" value="{{ item.id }}">
+        <button type="submit"
+                class="w-6 h-6 rounded border-2 flex items-center justify-center transition-colors
+                    {% if item.completed %}
+                        bg-green-500 border-green-500 text-white
+                    {% else %}
+                        border-gray-300 hover:border-blue-500
+                    {% endif %}"
+                aria-label="{% if item.completed %}Mark {{ item.title }} as incomplete{% else %}Mark {{ item.title }} as complete{% endif %}">
+            {% if item.completed %}
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+            </svg>
+            {% endif %}
+        </button>
+    </form>
+
+    <div class="flex-1 min-w-0">
+        <div class="flex items-start justify-between">
+            <div>
+                <h3 class="text-sm font-medium {% if item.completed %}text-gray-500 line-through{% else %}text-gray-900{% endif %}">
+                    {{ item.title }}
+                </h3>
+                {% if item.description %}
+                <p class="text-sm text-gray-500 mt-1">{{ item.description }}</p>
+                {% endif %}
+            </div>
+            <span class="ml-4 flex-shrink-0">
+                {% if item.priority == 'critical' %}
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                    Critical
+                </span>
+                {% elif item.priority == 'important' %}
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                    Important
+                </span>
+                {% elif item.priority == 'helpful' %}
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    Helpful
+                </span>
+                {% else %}
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                    Supporting
+                </span>
+                {% endif %}
+            </span>
+        </div>
+
+        {% if item.tips and not item.completed %}
+        <div class="mt-2">
+            <details class="group">
+                <summary class="text-xs text-blue-600 cursor-pointer hover:text-blue-800">
+                    How to get this evidence
+                </summary>
+                <ul class="mt-2 pl-4 text-xs text-gray-600 list-disc space-y-1">
+                    {% for tip in item.tips %}
+                    <li>{{ tip }}</li>
+                    {% endfor %}
+                </ul>
+            </details>
+        </div>
+        {% endif %}
+
+        {% if item.m21_reference %}
+        <p class="mt-2 text-xs text-gray-400">
+            <span class="font-mono">{{ item.m21_reference }}</span>
+        </p>
+        {% endif %}
+
+        {% if item.completed and item.completed_at %}
+        <p class="mt-2 text-xs text-gray-400">
+            Completed {{ item.completed_at }}
+        </p>
+        {% endif %}
+    </div>
+</div>

@@ -1,0 +1,180 @@
+{
+  "cfr_reference": "38 CFR Part 4 - General Provisions",
+  "title": "Special Rating Provisions and General Rules",
+  "description": "Key rating rules, combined ratings, and special considerations",
+  "last_updated": "2024",
+
+  "combined_ratings": {
+    "reference": "38 CFR 4.25",
+    "method": "Combined Ratings Table",
+    "description": "Disabilities are combined using the Combined Ratings Table, not simple addition",
+    "principle": "Combine most severe rating first, then combine that result with next rating, etc.",
+    "rounding": "Combined values ending in 0.5 or higher are rounded up to nearest 10%",
+    "examples": [
+      {"ratings": [30, 20], "result": 44, "rounds_to": 40},
+      {"ratings": [50, 30], "result": 65, "rounds_to": 70},
+      {"ratings": [40, 40, 20], "result": 68, "rounds_to": 70},
+      {"ratings": [70, 50], "result": 85, "rounds_to": 90}
+    ],
+    "formula": "Combined = A + B(1-A), where A and B are decimal values of ratings"
+  },
+
+  "bilateral_factor": {
+    "reference": "38 CFR 4.26",
+    "description": "Extra 10% added when both paired extremities are disabled",
+    "applies_to": [
+      "Both arms or both legs",
+      "Both hands or both feet",
+      "Both upper extremities or both lower extremities"
+    ],
+    "calculation": "Combine bilateral disabilities, multiply by 0.1, add to combined value",
+    "example": "Left knee 20% + Right knee 10% = 28% combined. 28 x 0.1 = 2.8. 28 + 2.8 = 30.8, which becomes 31%"
+  },
+
+  "pyramiding_prohibition": {
+    "reference": "38 CFR 4.14",
+    "rule": "The evaluation of the same manifestation under different diagnoses is to be avoided",
+    "meaning": "Cannot receive multiple ratings for the same symptoms",
+    "exceptions": [
+      "Knee: Instability (5257) can be rated separately from arthritis/limitation of motion",
+      "Knee: Limited flexion (5260) and extension (5261) can be rated separately",
+      "Spine: Radiculopathy rated separately from spinal condition",
+      "Mental health: Only ONE rating for all mental disorders combined"
+    ]
+  },
+
+  "painful_motion": {
+    "reference": "38 CFR 4.59",
+    "rule": "Painful motion of a major joint warrants at least the minimum compensable rating",
+    "application": "With X-ray evidence of arthritis and painful motion, minimum 10% applies"
+  },
+
+  "deluca_factors": {
+    "reference": "DeLuca v. Brown, 8 Vet. App. 202 (1995)",
+    "requirements": "Examiner must consider functional loss due to:",
+    "factors": [
+      "Pain on motion",
+      "Weakened movement",
+      "Excess fatigability",
+      "Incoordination",
+      "Flare-ups (must estimate additional ROM loss)"
+    ],
+    "importance": "May support higher rating than pure ROM measurements"
+  },
+
+  "staged_ratings": {
+    "reference": "Fenderson v. West, 12 Vet. App. 119 (1999)",
+    "description": "Different ratings can be assigned for different periods",
+    "application": "If condition severity varied during appeal period, different ratings apply to different periods"
+  },
+
+  "benefit_of_doubt": {
+    "reference": "38 CFR 3.102",
+    "rule": "When evidence is in approximate balance, give benefit of doubt to veteran",
+    "application": "If evidence is 50-50, decide in favor of the veteran"
+  },
+
+  "tdiu": {
+    "reference": "38 CFR 4.16",
+    "name": "Total Disability Individual Unemployability",
+    "description": "100% rating based on inability to work due to service-connected disabilities",
+    "schedular_criteria": {
+      "single_disability": "One disability rated 60% or more",
+      "combined_disabilities": "Combined rating of 70% or more, with at least one disability rated 40% or more"
+    },
+    "extraschedular": "Can be granted even without meeting schedular criteria on case-by-case basis",
+    "requirement": "Must be unable to secure or follow substantially gainful employment due to service-connected disabilities"
+  },
+
+  "special_monthly_compensation": {
+    "reference": "38 CFR 3.350",
+    "description": "Additional compensation for specific severe disabilities",
+    "types": [
+      {"level": "SMC(k)", "for": "Loss of use of one hand, one foot, both buttocks, one or more creative organs, blindness in one eye, complete organic aphonia"},
+      {"level": "SMC(l)", "for": "Need for regular aid and attendance or housebound"},
+      {"level": "SMC(m-n)", "for": "Multiple disabilities at 100% level"},
+      {"level": "SMC(o)", "for": "Anatomical loss or loss of use of both arms, both legs, or combination"},
+      {"level": "SMC(r)", "for": "Need for higher level of aid and attendance (R1 or R2)"},
+      {"level": "SMC(s)", "for": "Housebound status - one disability at 100% plus additional disabilities at 60%+"}
+    ]
+  },
+
+  "protected_ratings": {
+    "5_year_rule": {
+      "reference": "38 CFR 3.344(a)",
+      "description": "Ratings in effect for 5+ years cannot be reduced unless sustained improvement is shown",
+      "standard": "Higher evidentiary standard for reduction"
+    },
+    "10_year_rule": {
+      "reference": "38 CFR 3.957",
+      "description": "Service connection in effect for 10+ years cannot be severed except for fraud"
+    },
+    "20_year_rule": {
+      "reference": "38 CFR 3.951(b)",
+      "description": "Rating in effect for 20+ years cannot be reduced below the lowest rating it has been during that period"
+    }
+  },
+
+  "effective_dates": {
+    "general_rule": "Effective date is date of claim or date entitlement arose, whichever is later",
+    "exceptions": [
+      {"type": "Increase", "rule": "Date of increase if claim filed within 1 year, otherwise date of claim"},
+      {"type": "Liberalizing law", "rule": "May be effective date of law change for existing claimants"},
+      {"type": "Service treatment records", "rule": "May allow earlier effective date if records were not previously considered"}
+    ]
+  },
+
+  "presumptive_conditions": {
+    "agent_orange": {
+      "qualifying_service": "Vietnam, Thailand (certain bases), Korean DMZ, other qualifying locations",
+      "conditions": [
+        "Type 2 Diabetes",
+        "Ischemic Heart Disease",
+        "Parkinson's Disease",
+        "Prostate Cancer",
+        "Respiratory Cancers",
+        "Multiple Myeloma",
+        "Hodgkin's Disease",
+        "Non-Hodgkin's Lymphoma",
+        "Chronic B-Cell Leukemias",
+        "AL Amyloidosis",
+        "Chloracne",
+        "Porphyria Cutanea Tarda",
+        "Peripheral Neuropathy (early-onset)",
+        "Soft Tissue Sarcomas",
+        "Bladder Cancer (as of 2024)",
+        "Hypothyroidism (as of 2024)",
+        "Parkinsonism (as of 2024)",
+        "Hypertension (as of 2021)",
+        "Monoclonal Gammopathy of Undetermined Significance (MGUS)"
+      ]
+    },
+    "pact_act": {
+      "qualifying_service": "Burn pit and toxic exposure locations",
+      "respiratory_conditions": [
+        "Asthma (diagnosed after service)",
+        "COPD",
+        "Chronic bronchitis",
+        "Constrictive bronchiolitis",
+        "Interstitial lung disease",
+        "Pulmonary fibrosis",
+        "Sarcoidosis",
+        "Chronic sinusitis",
+        "Chronic rhinitis"
+      ],
+      "other_conditions": [
+        "Various cancers",
+        "Multiple conditions based on location and timeframe"
+      ]
+    },
+    "gulf_war": {
+      "qualifying_service": "Southwest Asia theater from August 1990 onward",
+      "conditions": [
+        "Chronic Fatigue Syndrome",
+        "Fibromyalgia",
+        "Functional Gastrointestinal Disorders",
+        "Undiagnosed Illnesses"
+      ]
+    }
+  }
+}
