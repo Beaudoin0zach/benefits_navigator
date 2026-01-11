@@ -407,7 +407,7 @@ class TestPublicGuidanceViews:
 
     def test_appeals_home_loads(self, client):
         """Appeals home page loads without login."""
-        response = client.get(reverse('appeals:appeals_home'))
+        response = client.get(reverse('appeals:home'))
         assert response.status_code == 200
 
     def test_guidance_detail_loads(self, client, appeal_guidance):

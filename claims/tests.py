@@ -510,12 +510,12 @@ class TestDenialDecoderViews:
 
     def test_upload_requires_login(self, client):
         """Denial decoder upload requires authentication."""
-        response = client.get(reverse('claims:denial_decoder_upload'))
+        response = client.get(reverse('claims:denial_decoder'))
         assert response.status_code == 302
 
     def test_upload_page_loads(self, authenticated_client):
         """Denial decoder upload page loads."""
-        response = authenticated_client.get(reverse('claims:denial_decoder_upload'))
+        response = authenticated_client.get(reverse('claims:denial_decoder'))
         assert response.status_code == 200
 
 

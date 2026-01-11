@@ -7,6 +7,13 @@ This file provides:
 - Mock configurations for external services (OpenAI, Celery, etc.)
 """
 
+import os
+import django
+
+# Configure Django settings before any Django imports
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'benefits_navigator.settings')
+django.setup()
+
 import pytest
 from datetime import date, datetime, timedelta
 from decimal import Decimal
