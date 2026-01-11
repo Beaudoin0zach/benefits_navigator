@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deadline Reminder - {{ site_name }}</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f3f4f6;">
+    <table role="presentation" style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <table role="presentation" style="width: 100%; max-width: 600px; border-collapse: collapse;">
+                    <!-- Header -->
+                    <tr>
+                        <td style="background-color: {% if urgency == 'critical' %}#dc2626{% elif urgency == 'urgent' %}#f59e0b{% else %}#2563eb{% endif %}; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+                            {% if urgency == 'critical' %}
+                            <p style="color: #ffffff; font-size: 14px; font-weight: bold; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 1px;">URGENT: ACTION REQUIRED</p>
+                            {% endif %}
+                            <h1 style="color: #ffffff; font-size: 24px; margin: 0;">Deadline Reminder</h1>
+                        </td>
+                    </tr>
+
+                    <!-- Body -->
+                    <tr>
+                        <td style="background-color: #ffffff; padding: 40px 30px;">
+                            <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+                                Hi{{ user.first_name|default:"" }},
+                            </p>
+
+                            {% if urgency == 'critical' %}
+                            <div style="background-color: #fef2f2; border-left: 4px solid #dc2626; padding: 15px 20px; margin-bottom: 25px;">
+                                <p style="color: #991b1b; font-size: 16px; font-weight: bold; margin: 0;">
+                                    Your deadline is in {{ days_remaining }} day{{ days_remaining|pluralize }}!
+                                </p>
+                                <p style="color: #7f1d1d; font-size: 14px; margin: 10px 0 0 0;">
+                                    Don't let this deadline pass - missing it could mean starting over or losing your appeal rights.
+                                </p>
+                            </div>
+                            {% elif urgency == 'urgent' %}
+                            <div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px 20px; margin-bottom: 25px;">
+                                <p style="color: #92400e; font-size: 16px; font-weight: bold; margin: 0;">
+                                    Your deadline is coming up in {{ days_remaining }} days.
+                                </p>
+                                <p style="color: #78350f; font-size: 14px; margin: 10px 0 0 0;">
+                                    Now is the time to make sure everything is ready for submission.
+                                </p>
+                            </div>
+                            {% else %}
+                            <div style="background-color: #eff6ff; border-left: 4px solid #2563eb; padding: 15px 20px; margin-bottom: 25px;">
+                                <p style="color: #1e40af; font-size: 16px; margin: 0;">
+                                    This is a friendly reminder about an upcoming deadline.
+                                </p>
+                            </div>
+                            {% endif %}
+
+                            <!-- Deadline Details -->
+                            <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f9fafb; border-radius: 8px; margin-bottom: 25px;">
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <h2 style="color: #111827; font-size: 18px; margin: 0 0 15px 0;">{{ deadline.title }}</h2>
+                                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                                            <tr>
+                                                <td style="padding: 8px 0; color: #6b7280; font-size: 14px; width: 120px;">Due Date:</td>
+                                                <td style="padding: 8px 0; color: #111827; font-size: 14px; font-weight: bold;">{{ deadline.deadline_date|date:"F j, Y" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">Days Left:</td>
+                                                <td style="padding: 8px 0; color: {% if days_remaining <= 3 %}#dc2626{% elif days_remaining <= 7 %}#f59e0b{% else %}#111827{% endif %}; font-size: 14px; font-weight: bold;">{{ days_remaining }} day{{ days_remaining|pluralize }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">Priority:</td>
+                                                <td style="padding: 8px 0; color: #111827; font-size: 14px;">{{ deadline.get_priority_display }}</td>
+                                            </tr>
+                                            {% if deadline.description %}
+                                            <tr>
+                                                <td colspan="2" style="padding: 12px 0 0 0; color: #4b5563; font-size: 14px; line-height: 1.5;">{{ deadline.description }}</td>
+                                            </tr>
+                                            {% endif %}
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- CTA Button -->
+                            <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td align="center" style="padding: 10px 0 30px 0;">
+                                        <a href="{{ site_url }}/journey/" style="display: inline-block; background-color: {% if urgency == 'critical' %}#dc2626{% elif urgency == 'urgent' %}#f59e0b{% else %}#2563eb{% endif %}; color: #ffffff; text-decoration: none; padding: 14px 30px; border-radius: 6px; font-size: 16px; font-weight: bold;">View Your Deadline</a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Encouragement -->
+                            <div style="background-color: #ecfdf5; border-radius: 8px; padding: 20px; text-align: center;">
+                                <p style="color: #065f46; font-size: 14px; margin: 0; line-height: 1.5;">
+                                    <strong>You've got this.</strong> Every deadline you meet is a step closer to the benefits you earned.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #f9fafb; padding: 25px 30px; text-align: center; border-radius: 0 0 8px 8px; border-top: 1px solid #e5e7eb;">
+                            <p style="color: #6b7280; font-size: 12px; margin: 0 0 10px 0;">
+                                You're receiving this because you have deadline reminders enabled.
+                            </p>
+                            <p style="color: #6b7280; font-size: 12px; margin: 0;">
+                                <a href="{{ site_url }}/account/notifications/" style="color: #2563eb; text-decoration: underline;">Update notification preferences</a>
+                            </p>
+                            <p style="color: #9ca3af; font-size: 11px; margin: 20px 0 0 0;">
+                                {{ site_name }} - Helping veterans navigate the VA claims process.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

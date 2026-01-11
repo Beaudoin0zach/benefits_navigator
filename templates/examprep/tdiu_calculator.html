@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+
+{% block title %}TDIU Eligibility Calculator - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+        <nav class="text-sm mb-4">
+            <a href="{% url 'examprep:rating_calculator' %}" class="text-blue-600 hover:text-blue-800">Rating Calculator</a>
+            <span class="text-gray-400 mx-2">/</span>
+            <span class="text-gray-600">TDIU Calculator</span>
+        </nav>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">TDIU Eligibility Calculator</h1>
+        <p class="text-gray-600">
+            Check if you may be eligible for Total Disability Individual Unemployability (TDIU),
+            which provides 100% compensation if you can't work due to service-connected disabilities.
+        </p>
+    </div>
+
+    <!-- What is TDIU -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
+        <h2 class="font-bold text-blue-900 mb-2">What is TDIU?</h2>
+        <p class="text-sm text-blue-800 mb-3">
+            TDIU allows veterans to receive compensation at the 100% rate even if their combined
+            rating is less than 100%, when they cannot maintain substantially gainful employment
+            due to service-connected disabilities.
+        </p>
+        <div class="bg-blue-100 rounded p-3">
+            <h3 class="font-bold text-blue-900 text-sm mb-2">Schedular Criteria (38 CFR 4.16(a)):</h3>
+            <ul class="text-sm text-blue-700 list-disc list-inside space-y-1">
+                <li><strong>One disability rated 60% or more</strong>, OR</li>
+                <li><strong>Combined rating of 70%+</strong> with at least one disability rated 40%+</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-8">
+        <!-- Left Column: Input Form -->
+        <div>
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">Enter Your Ratings</h2>
+                <p class="text-sm text-gray-600 mb-4">
+                    Add your service-connected disability ratings to check TDIU eligibility.
+                </p>
+
+                <!-- Ratings Container -->
+                <div id="ratings-container" class="space-y-3 mb-6">
+                    <!-- Rating rows will be added here by JavaScript -->
+                </div>
+
+                <!-- Add Rating Button -->
+                <button type="button"
+                        onclick="addRating()"
+                        class="w-full py-2 px-4 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-500 hover:text-blue-500 transition-colors">
+                    + Add Disability Rating
+                </button>
+
+                <!-- Calculate Button -->
+                <button type="button"
+                        onclick="calculate()"
+                        class="w-full mt-6 py-3 px-4 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Check TDIU Eligibility
+                </button>
+            </div>
+
+            <!-- Link to SMC Calculator -->
+            <div class="mt-4 bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <p class="text-gray-700 mb-2">
+                    <strong>Have severe disabilities or loss of use?</strong>
+                </p>
+                <a href="{% url 'examprep:smc_calculator' %}" class="text-blue-600 hover:text-blue-800 font-medium">
+                    Check SMC Eligibility &rarr;
+                </a>
+            </div>
+
+            <!-- Back to Rating Calculator -->
+            <div class="mt-4">
+                <a href="{% url 'examprep:rating_calculator' %}" class="text-blue-600 hover:text-blue-800 text-sm">
+                    &larr; Back to Rating Calculator
+                </a>
+            </div>
+        </div>
+
+        <!-- Right Column: Results -->
+        <div>
+            <div id="results-container" class="bg-white shadow-md rounded-lg p-6 sticky top-4">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">TDIU Eligibility</h2>
+                <div id="tdiu-result">
+                    <div class="text-center py-8 text-gray-500">
+                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                        <p>Add disability ratings and click "Check TDIU Eligibility"</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TDIU Key Points -->
+            <div class="mt-4 bg-white shadow-md rounded-lg p-6">
+                <h3 class="font-bold text-gray-900 mb-3">Key Points About TDIU</h3>
+                <div class="space-y-3 text-sm">
+                    <div class="flex items-start">
+                        <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="text-gray-700">TDIU pays at the 100% rate: <strong class="text-green-600">${{ compensation_rates.100|floatformat:2 }}/month</strong></span>
+                    </div>
+                    <div class="flex items-start">
+                        <svg class="w-5 h-5 text-blue-500 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="text-gray-700">You must be unable to maintain "substantially gainful employment"</span>
+                    </div>
+                    <div class="flex items-start">
+                        <svg class="w-5 h-5 text-blue-500 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="text-gray-700">Unemployability must be due to service-connected disabilities</span>
+                    </div>
+                    <div class="flex items-start">
+                        <svg class="w-5 h-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="text-gray-700">Extraschedular TDIU is possible even without meeting criteria</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Required Form -->
+            <div class="mt-4 bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <h4 class="font-bold text-gray-900 mb-2">To Apply for TDIU</h4>
+                <p class="text-sm text-gray-600">
+                    Submit <strong>VA Form 21-8940</strong> (Application for Increased Compensation Based on Unemployability)
+                    with supporting evidence showing how your disabilities prevent employment.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="mt-8 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <h3 class="font-bold text-yellow-900 mb-2">Important Disclaimer</h3>
+        <p class="text-sm text-yellow-800">
+            This calculator shows whether you meet the schedular criteria for TDIU. Meeting these criteria
+            doesn't guarantee approval - you must also demonstrate that your service-connected disabilities
+            prevent you from maintaining substantially gainful employment. TDIU decisions are based on the
+            full evidence of record. Consult with a VSO or VA-accredited attorney for personalized guidance.
+        </p>
+    </div>
+</div>
+
+<script>
+let ratingCount = 0;
+
+// Rating percentages for dropdown
+const ratingOptions = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+
+function addRating(percentage = '', description = '', isBilateral = false) {
+    ratingCount++;
+    const container = document.getElementById('ratings-container');
+
+    const row = document.createElement('div');
+    row.className = 'rating-row flex flex-wrap gap-2 items-center p-3 bg-gray-50 rounded-lg';
+    row.id = `rating-${ratingCount}`;
+
+    row.innerHTML = `
+        <select name="percentage" onchange="calculate()"
+                class="w-24 px-2 py-2 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
+                aria-label="Disability percentage">
+            <option value="">%</option>
+            ${ratingOptions.map(r => `<option value="${r}" ${percentage == r ? 'selected' : ''}>${r}%</option>`).join('')}
+        </select>
+        <input type="text" name="description" value="${description}" placeholder="Condition (e.g., PTSD, Knee)"
+               onchange="calculate()"
+               class="flex-1 min-w-[150px] px-3 py-2 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
+               aria-label="Condition description">
+        <label class="flex items-center whitespace-nowrap">
+            <input type="checkbox" name="bilateral" ${isBilateral ? 'checked' : ''} onchange="calculate()"
+                   class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                   aria-label="Bilateral condition">
+            <span class="ml-1 text-sm text-gray-600">Bilateral</span>
+        </label>
+        <button type="button" onclick="removeRating(${ratingCount})"
+                class="p-2 text-red-600 hover:bg-red-100 rounded"
+                aria-label="Remove this rating">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    `;
+
+    container.appendChild(row);
+}
+
+function removeRating(id) {
+    const row = document.getElementById(`rating-${id}`);
+    if (row) {
+        row.remove();
+        calculate();
+    }
+}
+
+function getRatingsData() {
+    const ratings = [];
+    document.querySelectorAll('.rating-row').forEach(row => {
+        const percentage = row.querySelector('select[name="percentage"]').value;
+        const description = row.querySelector('input[name="description"]').value;
+        const isBilateral = row.querySelector('input[name="bilateral"]').checked;
+
+        if (percentage) {
+            ratings.push({
+                percentage: parseInt(percentage),
+                description: description,
+                is_bilateral: isBilateral
+            });
+        }
+    });
+    return ratings;
+}
+
+function calculate() {
+    const ratings = getRatingsData();
+
+    const formData = new FormData();
+    formData.append('ratings', JSON.stringify(ratings));
+
+    fetch('{% url "examprep:calculate_tdiu" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    })
+    .then(response => response.text())
+    .then(html => {
+        document.getElementById('tdiu-result').innerHTML = html;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+// Add initial rating row on page load
+document.addEventListener('DOMContentLoaded', function() {
+    addRating();
+});
+</script>
+{% endblock %}

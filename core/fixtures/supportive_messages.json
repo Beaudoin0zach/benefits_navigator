@@ -1,0 +1,398 @@
+[
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "dashboard_welcome",
+      "message": "Welcome back. Every step you take here brings you closer to the benefits you earned through your service.",
+      "tone": "encouraging",
+      "icon": "shield",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "dashboard_welcome",
+      "message": "You served your country. Now let's make sure your country serves you. We're here to help.",
+      "tone": "encouraging",
+      "icon": "flag",
+      "is_active": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "dashboard_progress",
+      "message": "You're making progress. Most veterans who stay organized and persistent get the rating they deserve.",
+      "tone": "encouraging",
+      "icon": "chart",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "exam_starting",
+      "message": "You're taking control of your claim. Preparing for your C&P exam is the first step to getting the rating you deserve.",
+      "tone": "encouraging",
+      "icon": "clipboard",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "exam_starting",
+      "message": "Starting exam prep shows you're serious about your claim. We'll help you prepare to show the examiner the full picture of your condition.",
+      "tone": "encouraging",
+      "icon": "star",
+      "is_active": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "exam_progress_25",
+      "message": "You're off to a good start. Keep going - each task you complete strengthens your exam preparation.",
+      "tone": "encouraging",
+      "icon": "check",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "exam_progress_50",
+      "message": "Halfway there! You're doing the work that most veterans skip. This preparation makes a real difference.",
+      "tone": "encouraging",
+      "icon": "star",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "exam_progress_75",
+      "message": "Almost ready! Your thorough preparation will help you communicate your symptoms clearly and get an accurate rating.",
+      "tone": "encouraging",
+      "icon": "trophy",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "exam_ready",
+      "message": "You're prepared. You've done the work that most veterans don't. Walk into that exam confident - you're ready to tell your story.",
+      "tone": "celebratory",
+      "icon": "trophy",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "exam_upcoming_7_days",
+      "message": "Your exam is coming up in 7 days. Remember: be honest about your worst days, not just how you feel today. You earned these benefits.",
+      "tone": "informative",
+      "icon": "calendar",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "exam_upcoming_7_days",
+      "message": "One week until your exam. Review your notes, but don't over-rehearse. The goal is to show the examiner your real condition, not to perform.",
+      "tone": "calming",
+      "icon": "calendar",
+      "is_active": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "exam_upcoming_tomorrow",
+      "message": "Your exam is tomorrow. Get a normal night's sleep. Take your regular medications. Bring your notes. You've got this.",
+      "tone": "calming",
+      "icon": "heart",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "exam_upcoming_tomorrow",
+      "message": "Remember: you earned these benefits through your service. Be honest about your worst days. Don't minimize your symptoms to appear 'strong.'",
+      "tone": "encouraging",
+      "icon": "shield",
+      "is_active": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "exam_completed",
+      "message": "Exam complete! You did something hard. Now document what happened while it's fresh, then give yourself permission to rest.",
+      "tone": "celebratory",
+      "icon": "check",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "claim_filed",
+      "message": "Your claim is filed. That took courage. Now the waiting begins, but you've taken the most important step.",
+      "tone": "celebratory",
+      "icon": "document",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "claim_pending",
+      "message": "Your claim is being reviewed. The average wait is 3-4 months. Use this time to gather any additional evidence that could strengthen your case.",
+      "tone": "informative",
+      "icon": "clock",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "claim_waiting",
+      "message": "Waiting is hard. But the VA processes millions of claims. Your claim hasn't been forgotten - it's moving through the system.",
+      "tone": "calming",
+      "icon": "clock",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "claim_waiting",
+      "message": "Still waiting? That's normal. Use this time to make sure all your evidence is in order. A complete file leads to better decisions.",
+      "tone": "informative",
+      "icon": "folder",
+      "is_active": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "decision_granted",
+      "message": "Congratulations! Your claim was granted. You fought for this, and you won. Take a moment to appreciate what you accomplished.",
+      "tone": "celebratory",
+      "icon": "trophy",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "decision_denied",
+      "message": "A denial isn't the end. Veterans who appeal with new evidence succeed 85% of the time. You've got this - let's figure out the next steps.",
+      "tone": "encouraging",
+      "icon": "flag",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "decision_denied",
+      "message": "Denied claims are won on appeal every day. The key is understanding WHY it was denied and addressing that specific issue. We can help.",
+      "tone": "informative",
+      "icon": "lightbulb",
+      "is_active": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "decision_denied",
+      "message": "This denial doesn't define your service or your injuries. Many veterans have been exactly where you are and won on appeal. Don't give up.",
+      "tone": "encouraging",
+      "icon": "heart",
+      "is_active": true,
+      "order": 3
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "decision_partial",
+      "message": "You got a partial grant - that's a win. Now let's look at what was denied and whether an appeal makes sense for the rest.",
+      "tone": "encouraging",
+      "icon": "chart",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "appeal_starting",
+      "message": "Starting an appeal takes guts. Many veterans give up here, but not you. Let's build a stronger case together.",
+      "tone": "encouraging",
+      "icon": "flag",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "appeal_filed",
+      "message": "Your appeal is filed. You didn't give up, and that matters. Most veterans who persist through the appeals process succeed.",
+      "tone": "celebratory",
+      "icon": "document",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "appeal_pending",
+      "message": "Your appeal is moving through the system. Use this time to gather any additional evidence that addresses why you were originally denied.",
+      "tone": "informative",
+      "icon": "clock",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "deadline_30_days",
+      "message": "You have 30 days until your deadline. Now is a good time to review what you need to submit and start gathering your materials.",
+      "tone": "informative",
+      "icon": "calendar",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "deadline_7_days",
+      "message": "Your deadline is in 7 days. Don't let bureaucracy win - you've come too far. Make sure your submission is ready.",
+      "tone": "urgent",
+      "icon": "alert",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "deadline_urgent",
+      "message": "Deadline approaching! Missing this deadline could mean starting over. Take action today to protect your claim.",
+      "tone": "urgent",
+      "icon": "alert",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "milestone_achieved",
+      "message": "Another milestone reached. You're building momentum. Keep going - each step forward is progress toward your goal.",
+      "tone": "celebratory",
+      "icon": "star",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "first_login",
+      "message": "Welcome. Taking this step shows you're ready to fight for what you earned. We're here to help you navigate the VA claims process.",
+      "tone": "encouraging",
+      "icon": "shield",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "evidence_uploaded",
+      "message": "Evidence uploaded. Every piece of documentation strengthens your claim. You're building a solid case.",
+      "tone": "encouraging",
+      "icon": "folder",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "evidence_gap_found",
+      "message": "We found some evidence gaps. Don't worry - knowing what's missing is half the battle. Now you know exactly what to gather.",
+      "tone": "informative",
+      "icon": "lightbulb",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "general",
+      "message": "You're not alone in this. Thousands of veterans use this tool to fight for their benefits. We're here to help you succeed.",
+      "tone": "encouraging",
+      "icon": "heart",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "general",
+      "message": "The VA claims process is complicated, but you don't have to figure it out alone. Take it one step at a time.",
+      "tone": "calming",
+      "icon": "compass",
+      "is_active": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "core.supportivemessage",
+    "fields": {
+      "context": "general",
+      "message": "Your service mattered. Your injuries are real. You deserve the benefits you're fighting for.",
+      "tone": "encouraging",
+      "icon": "medal",
+      "is_active": true,
+      "order": 3
+    }
+  }
+]

@@ -1,0 +1,65 @@
+{% if urgency == 'critical' %}URGENT: ACTION REQUIRED{% endif %}
+
+{{ site_name }} - Deadline Reminder
+================================================================================
+
+Hi{{ user.first_name|default:"" }},
+
+{% if urgency == 'critical' %}
+YOUR DEADLINE IS IN {{ days_remaining }} DAY{{ days_remaining|pluralize }}!
+
+Don't let this deadline pass - missing it could mean starting over or losing your appeal rights.
+{% elif urgency == 'urgent' %}
+Your deadline is coming up in {{ days_remaining }} days.
+
+Now is the time to make sure everything is ready for submission.
+{% else %}
+This is a friendly reminder about an upcoming deadline.
+{% endif %}
+
+DEADLINE DETAILS
+--------------------------------------------------------------------------------
+Title: {{ deadline.title }}
+Due Date: {{ deadline.deadline_date|date:"F j, Y" }}
+Days Remaining: {{ days_remaining }}
+Priority: {{ deadline.get_priority_display }}
+
+{% if deadline.description %}
+Details: {{ deadline.description }}
+{% endif %}
+
+{% if deadline.claim %}
+Related Claim: {{ deadline.claim.condition }}
+{% endif %}
+
+{% if deadline.appeal %}
+Related Appeal: {{ deadline.appeal.appeal_type }}
+{% endif %}
+
+WHAT TO DO
+--------------------------------------------------------------------------------
+{% if urgency == 'critical' %}
+1. Gather all required documents TODAY
+2. Submit your materials as soon as possible
+3. Don't wait until the last minute - systems can have delays
+{% elif urgency == 'urgent' %}
+1. Review your submission requirements
+2. Gather any remaining documents
+3. Plan to submit with time to spare
+{% else %}
+1. Review what's needed for this deadline
+2. Start gathering your materials
+3. Mark your calendar for submission
+{% endif %}
+
+VIEW YOUR DEADLINE
+--------------------------------------------------------------------------------
+Visit your dashboard to view and manage this deadline:
+{{ site_url }}/journey/
+
+--------------------------------------------------------------------------------
+You're receiving this because you have deadline reminders enabled.
+To update your notification preferences, visit: {{ site_url }}/account/notifications/
+
+{{ site_name }}
+Helping veterans navigate the VA claims process.

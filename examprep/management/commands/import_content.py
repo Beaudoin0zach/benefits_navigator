@@ -38,6 +38,9 @@ class Command(BaseCommand):
     FIXTURE_GUIDE_FILES = [
         'exam_guides.json',
         'exam_guides_msk_hearing.json',
+        'exam_guides_tbi.json',
+        'exam_guides_sleep_apnea.json',
+        'exam_guides_mental_health.json',
     ]
     FIXTURE_GLOSSARY_FILES = [
         'glossary_terms.json',

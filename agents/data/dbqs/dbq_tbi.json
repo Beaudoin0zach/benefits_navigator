@@ -1,0 +1,225 @@
+{
+  "dbq_name": "Traumatic Brain Injury (TBI) Review",
+  "dbq_type": "review",
+  "condition": "Traumatic Brain Injury (TBI)",
+  "category": "neurological",
+  "diagnostic_codes": ["8045"],
+  "cfr_reference": "38 CFR 4.124a",
+  "last_updated": "2024-09-05",
+  "version": "v24_2",
+
+  "rating_criteria": {
+    "description": "TBI is rated based on residual symptoms in THREE areas: cognitive, behavioral/emotional, and physical. The overall rating is determined by the HIGHEST level of impairment in any of the three areas.",
+    "evaluation_areas": {
+      "cognitive": {
+        "name": "Cognitive Impairment",
+        "description": "Memory, concentration, executive function, judgment",
+        "levels": [
+          {"level": 0, "description": "No impairment"},
+          {"level": 1, "description": "Mild impairment - complains of memory, attention, concentration, or executive function problems, but objective evidence of impairment is not demonstrated"},
+          {"level": 2, "description": "Moderate impairment - objective evidence of moderate impairment in memory, attention, concentration, or executive function"},
+          {"level": 3, "description": "Severe impairment - objective evidence of severe impairment in memory, attention, concentration, or executive function"},
+          {"level": "total", "description": "Total impairment - unable to function independently"}
+        ]
+      },
+      "behavioral_emotional": {
+        "name": "Behavioral/Emotional Dysfunction",
+        "description": "Mood, irritability, impulsivity, social functioning",
+        "levels": [
+          {"level": 0, "description": "No impairment"},
+          {"level": 1, "description": "Mild impairment - occasional irritability, mild anxiety"},
+          {"level": 2, "description": "Moderate impairment - increased irritability, impaired judgment, social difficulties"},
+          {"level": 3, "description": "Severe impairment - marked irritability, aggression, or emotional instability"},
+          {"level": "total", "description": "Total impairment - danger to self or others"}
+        ]
+      },
+      "physical_neurological": {
+        "name": "Physical/Neurological Dysfunction",
+        "description": "Headaches, dizziness, balance, fatigue, sensory symptoms",
+        "levels": [
+          {"level": 0, "description": "No impairment"},
+          {"level": 1, "description": "Mild impairment - occasional symptoms that do not interfere significantly with functioning"},
+          {"level": 2, "description": "Moderate impairment - symptoms that moderately interfere with functioning"},
+          {"level": 3, "description": "Severe impairment - symptoms that severely interfere with functioning"},
+          {"level": "total", "description": "Total impairment - constant symptoms preventing all functioning"}
+        ]
+      }
+    },
+    "levels": [
+      {
+        "rating": 0,
+        "criteria": "Diagnosed TBI with no residual symptoms (Level 0 in all three areas)",
+        "keywords": ["diagnosed", "no residuals", "resolved", "no impairment"]
+      },
+      {
+        "rating": 10,
+        "criteria": "Level 1 impairment in one or more areas - mild subjective symptoms not objectively demonstrated",
+        "keywords": ["level 1", "mild", "subjective complaints", "not objectively demonstrated"]
+      },
+      {
+        "rating": 40,
+        "criteria": "Level 2 impairment in one or more areas - moderate objective evidence of impairment",
+        "keywords": ["level 2", "moderate", "objective evidence", "interferes with functioning"]
+      },
+      {
+        "rating": 70,
+        "criteria": "Level 3 impairment in one or more areas - severe objective evidence of impairment causing deficiencies in most areas",
+        "keywords": ["level 3", "severe", "deficiencies in most areas", "markedly impaired"]
+      },
+      {
+        "rating": 100,
+        "criteria": "Total impairment in one or more areas - unable to function independently",
+        "keywords": ["total impairment", "unable to function", "requires constant supervision"]
+      }
+    ]
+  },
+
+  "symptoms_checklist": {
+    "description": "TBI residual symptoms documented by examiner",
+    "cognitive_symptoms": [
+      {"symptom": "Memory impairment (short-term)", "typical_rating": "10+"},
+      {"symptom": "Memory impairment (long-term)", "typical_rating": "40+"},
+      {"symptom": "Decreased attention/concentration", "typical_rating": "10+"},
+      {"symptom": "Difficulty with executive functions (planning, organizing)", "typical_rating": "10+"},
+      {"symptom": "Impaired judgment", "typical_rating": "40+"},
+      {"symptom": "Processing speed deficits", "typical_rating": "10+"},
+      {"symptom": "Word-finding difficulty", "typical_rating": "10+"},
+      {"symptom": "Disorientation to time or place", "typical_rating": "70+"},
+      {"symptom": "Severely impaired abstract thinking", "typical_rating": "70+"},
+      {"symptom": "Complete inability to recall recent events", "typical_rating": "100"}
+    ],
+    "behavioral_emotional_symptoms": [
+      {"symptom": "Irritability", "typical_rating": "10+"},
+      {"symptom": "Mood swings", "typical_rating": "10+"},
+      {"symptom": "Depression", "typical_rating": "10+"},
+      {"symptom": "Anxiety", "typical_rating": "10+"},
+      {"symptom": "Impulsivity", "typical_rating": "40+"},
+      {"symptom": "Aggression/angry outbursts", "typical_rating": "40+"},
+      {"symptom": "Apathy/lack of motivation", "typical_rating": "40+"},
+      {"symptom": "Social inappropriateness", "typical_rating": "70+"},
+      {"symptom": "Personality change", "typical_rating": "40+"},
+      {"symptom": "Danger to self or others", "typical_rating": "100"}
+    ],
+    "physical_neurological_symptoms": [
+      {"symptom": "Headaches (occasional)", "typical_rating": "10+"},
+      {"symptom": "Headaches (frequent, prostrating)", "typical_rating": "30-50 (separately rated)"},
+      {"symptom": "Dizziness/vertigo", "typical_rating": "10+"},
+      {"symptom": "Balance problems", "typical_rating": "10+"},
+      {"symptom": "Light sensitivity (photophobia)", "typical_rating": "10+"},
+      {"symptom": "Noise sensitivity (phonophobia)", "typical_rating": "10+"},
+      {"symptom": "Tinnitus", "typical_rating": "10 (separately rated)"},
+      {"symptom": "Sleep disturbance", "typical_rating": "10+"},
+      {"symptom": "Fatigue", "typical_rating": "10+"},
+      {"symptom": "Seizures", "typical_rating": "10-100 (separately rated)"},
+      {"symptom": "Visual disturbances", "typical_rating": "10+"},
+      {"symptom": "Loss of sense of smell (anosmia)", "typical_rating": "10 (separately rated)"}
+    ]
+  },
+
+  "diagnostic_criteria": {
+    "description": "TBI diagnosis requires documentation of traumatic event and residual symptoms",
+    "criteria": [
+      {
+        "criterion": "A",
+        "name": "Traumatic Event",
+        "description": "History of head injury or blast exposure with one or more of the following",
+        "requirements": [
+          "Loss of consciousness (LOC)",
+          "Alteration of consciousness/mental state (AOC)",
+          "Post-traumatic amnesia (PTA)",
+          "Evidence of trauma (imaging, neurological findings)"
+        ]
+      },
+      {
+        "criterion": "B",
+        "name": "Residual Symptoms",
+        "description": "Current symptoms in one or more areas",
+        "requirements": [
+          "Cognitive dysfunction",
+          "Behavioral/emotional dysfunction",
+          "Physical/neurological symptoms"
+        ]
+      },
+      {
+        "criterion": "C",
+        "name": "Nexus",
+        "description": "Current symptoms are at least as likely as not related to the traumatic event"
+      }
+    ],
+    "tbi_severity_classification": {
+      "mild": {
+        "loc": "0-30 minutes",
+        "aoc": "Up to 24 hours",
+        "pta": "0-1 day",
+        "gcs": "13-15"
+      },
+      "moderate": {
+        "loc": "30 minutes to 24 hours",
+        "aoc": "More than 24 hours",
+        "pta": "1-7 days",
+        "gcs": "9-12"
+      },
+      "severe": {
+        "loc": "More than 24 hours",
+        "aoc": "More than 24 hours",
+        "pta": "More than 7 days",
+        "gcs": "3-8"
+      }
+    }
+  },
+
+  "exam_sections": [
+    "Diagnostic Summary",
+    "Medical History",
+    "TBI History (events, severity)",
+    "Cognitive Evaluation",
+    "Behavioral/Emotional Evaluation",
+    "Physical/Neurological Evaluation",
+    "Functional Impact Assessment",
+    "Residual Symptoms Documentation",
+    "Secondary Conditions Review",
+    "Competency Assessment"
+  ],
+
+  "secondary_conditions": {
+    "description": "TBI commonly causes conditions that may warrant separate ratings",
+    "conditions": [
+      {"condition": "Migraine headaches", "diagnostic_code": "8100", "max_rating": 50},
+      {"condition": "Tinnitus", "diagnostic_code": "6260", "max_rating": 10},
+      {"condition": "Hearing loss", "diagnostic_code": "6100", "max_rating": "varies"},
+      {"condition": "Vestibular disorder", "diagnostic_code": "6204", "max_rating": 100},
+      {"condition": "Sleep apnea", "diagnostic_code": "6847", "max_rating": 100},
+      {"condition": "Depression", "diagnostic_code": "9434", "max_rating": 100},
+      {"condition": "Anxiety", "diagnostic_code": "9400", "max_rating": 100},
+      {"condition": "PTSD", "diagnostic_code": "9411", "max_rating": 100},
+      {"condition": "Seizure disorder", "diagnostic_code": "8910-8914", "max_rating": 100},
+      {"condition": "Cognitive disorder", "diagnostic_code": "9326", "max_rating": 100},
+      {"condition": "Erectile dysfunction", "diagnostic_code": "7522", "max_rating": "SMC"},
+      {"condition": "Loss of smell (anosmia)", "diagnostic_code": "6275", "max_rating": 10}
+    ]
+  },
+
+  "tips_for_veterans": [
+    "Document ALL head injuries and blast exposures in service, even 'minor' ones",
+    "Describe symptoms based on your WORST days, not average or good days",
+    "List all compensations you use: alarms, lists, GPS, family help",
+    "Have family members write statements about changes they've observed",
+    "Don't appear too 'put together' - this masks your actual deficits",
+    "Mention cognitive fatigue and how long you can concentrate",
+    "Document headache frequency, severity, and duration specifically",
+    "Consider separate claims for headaches, tinnitus, and other residuals",
+    "Explain what you could do before vs. what you cannot do now",
+    "If you've lost jobs due to TBI symptoms, provide documentation"
+  ],
+
+  "common_mistakes": [
+    "Appearing too 'functional' due to compensations (lists, alarms, GPS)",
+    "Minimizing injury as 'just a concussion'",
+    "Not mentioning all head trauma incidents (cumulative damage matters)",
+    "Not bringing family/buddy statements documenting changes",
+    "Performing well on cognitive tests on a 'good day'",
+    "Not claiming secondary conditions separately",
+    "Forgetting to mention sleep, fatigue, and light/noise sensitivity",
+    "Not explaining functional impact on work and daily life"
+  ]
+}

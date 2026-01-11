@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load supportive_tags %}
 
 {% block title %}My Claims Journey - {{ SITE_NAME }}{% endblock %}
 
@@ -9,6 +10,11 @@
         <h1 class="text-3xl font-bold text-gray-900">My Claims Journey</h1>
         <p class="text-gray-600 mt-1">Track your VA benefits journey from start to finish</p>
     </header>
+
+    <!-- Supportive Message -->
+    <div class="mb-6">
+        {% supportive_message "dashboard_progress" %}
+    </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Main Content (Timeline) -->

@@ -17,6 +17,22 @@ from .va_math import (
     VA_COMPENSATION_RATES_2024,
     format_currency,
 )
+from .va_special_compensation import (
+    SMCCondition,
+    SMCLevel,
+    check_smc_eligibility,
+    check_tdiu_eligibility,
+    get_all_smc_levels_info,
+    SMC_RATES_2024,
+)
+from .secondary_conditions_data import (
+    get_all_primary_conditions,
+    get_primary_condition,
+    get_categories,
+    get_conditions_by_category,
+    search_secondary_conditions,
+    get_conditions_count,
+)
 import json
 
 
@@ -715,3 +731,244 @@ def evidence_checklist_from_denial(request, analysis_id):
         'denied_conditions': denied_conditions,
     }
     return render(request, 'examprep/evidence_checklist_from_denial.html', context)
+
+
+# =============================================================================
+# SMC AND TDIU CALCULATOR VIEWS
+# =============================================================================
+
+def smc_calculator(request):
+    """
+    Special Monthly Compensation (SMC) eligibility calculator.
+    Accessible to all users.
+    """
+    smc_levels_info = get_all_smc_levels_info()
+
+    context = {
+        'smc_levels_info': smc_levels_info,
+        'smc_rates': {level.value: rate for level, rate in SMC_RATES_2024.items()},
+    }
+    return render(request, 'examprep/smc_calculator.html', context)
+
+
+def calculate_smc_htmx(request):
+    """
+    HTMX endpoint for real-time SMC eligibility calculation.
+    Accepts POST with conditions data and returns eligibility results.
+    """
+    if request.method != 'POST':
+        return HttpResponse(status=405)
+
+    try:
+        # Parse conditions from form data
+        conditions_json = request.POST.get('conditions', '[]')
+        conditions_data = json.loads(conditions_json)
+
+        # Convert to SMCCondition objects
+        conditions = []
+        for c in conditions_data:
+            rating = int(c.get('rating', 0))
+            if rating > 0:
+                conditions.append(SMCCondition(
+                    name=c.get('name', 'Unknown condition'),
+                    rating=rating,
+                    loss_of_use=c.get('loss_of_use', False),
+                    anatomical_loss=c.get('anatomical_loss', False),
+                    body_part=c.get('body_part', ''),
+                    requires_aid_attendance=c.get('requires_aid_attendance', False),
+                    is_housebound=c.get('is_housebound', False),
+                ))
+
+        if not conditions:
+            context = {
+                'has_conditions': False,
+                'eligible': False,
+                'levels': [],
+                'explanations': ['Add conditions to check SMC eligibility.'],
+                'recommendations': [],
+            }
+            return render(request, 'examprep/partials/smc_result.html', context)
+
+        # Check eligibility
+        result = check_smc_eligibility(conditions)
+
+        context = {
+            'has_conditions': True,
+            'eligible': result.eligible,
+            'levels': [level.value.upper() for level in result.levels],
+            'eligible_conditions': result.eligible_conditions,
+            'explanations': result.explanations,
+            'estimated_monthly': format_currency(result.estimated_monthly_addition),
+            'recommendations': result.recommendations,
+        }
+        return render(request, 'examprep/partials/smc_result.html', context)
+
+    except (json.JSONDecodeError, ValueError, TypeError) as e:
+        return HttpResponse(f"Error: {str(e)}", status=400)
+
+
+def tdiu_calculator(request):
+    """
+    TDIU (Total Disability Individual Unemployability) eligibility calculator.
+    Accessible to all users.
+    """
+    context = {
+        'compensation_rates': VA_COMPENSATION_RATES_2024,
+    }
+    return render(request, 'examprep/tdiu_calculator.html', context)
+
+
+def calculate_tdiu_htmx(request):
+    """
+    HTMX endpoint for real-time TDIU eligibility calculation.
+    Accepts POST with ratings data and returns eligibility results.
+    """
+    if request.method != 'POST':
+        return HttpResponse(status=405)
+
+    try:
+        # Parse ratings from form data
+        ratings_json = request.POST.get('ratings', '[]')
+        ratings_data = json.loads(ratings_json)
+
+        # Filter valid ratings
+        valid_ratings = [
+            r for r in ratings_data
+            if r.get('percentage', 0) > 0
+        ]
+
+        if not valid_ratings:
+            context = {
+                'has_ratings': False,
+                'schedular_eligible': False,
+                'extraschedular_possible': False,
+                'explanations': ['Add disability ratings to check TDIU eligibility.'],
+                'recommendations': [],
+            }
+            return render(request, 'examprep/partials/tdiu_result.html', context)
+
+        # Calculate combined rating using existing VA Math
+        disability_ratings = []
+        for r in valid_ratings:
+            disability_ratings.append(DisabilityRating(
+                percentage=int(r.get('percentage', 0)),
+                description=r.get('description', ''),
+                is_bilateral=r.get('is_bilateral', False)
+            ))
+
+        combined_result = calculate_combined_rating(disability_ratings)
+
+        # Check TDIU eligibility
+        result = check_tdiu_eligibility(valid_ratings, combined_result.combined_rounded)
+
+        context = {
+            'has_ratings': True,
+            'schedular_eligible': result.schedular_eligible,
+            'extraschedular_possible': result.extraschedular_possible,
+            'meets_single_disability': result.meets_single_disability,
+            'meets_combined_criteria': result.meets_combined_criteria,
+            'highest_single_rating': result.highest_single_rating,
+            'combined_rating': result.combined_rating,
+            'qualifying_ratings': result.qualifying_ratings,
+            'explanations': result.explanations,
+            'recommendations': result.recommendations,
+            'monthly_at_100': format_currency(VA_COMPENSATION_RATES_2024.get(100, 0)),
+        }
+        return render(request, 'examprep/partials/tdiu_result.html', context)
+
+    except (json.JSONDecodeError, ValueError, TypeError) as e:
+        return HttpResponse(f"Error: {str(e)}", status=400)
+
+
+# =============================================================================
+# SECONDARY CONDITIONS HUB VIEWS
+# =============================================================================
+
+def secondary_conditions_hub(request):
+    """
+    Main hub page for secondary conditions information.
+    Shows all primary conditions and allows browsing/searching.
+    """
+    query = request.GET.get('q', '').strip()
+    category = request.GET.get('category', '')
+
+    if query:
+        # Search mode
+        conditions = search_secondary_conditions(query)
+    elif category:
+        # Category filter mode
+        conditions = get_conditions_by_category(category)
+    else:
+        # Default: show all
+        conditions = get_all_primary_conditions()
+
+    categories = get_categories()
+    stats = get_conditions_count()
+
+    context = {
+        'conditions': conditions,
+        'categories': sorted(categories),
+        'current_category': category,
+        'query': query,
+        'stats': stats,
+    }
+    return render(request, 'examprep/secondary_conditions_hub.html', context)
+
+
+def secondary_condition_detail(request, condition_slug):
+    """
+    Detail page for a specific primary condition showing all its secondary conditions.
+    """
+    # Convert slug to condition name (e.g., "ptsd" -> "PTSD")
+    slug_to_name = {
+        'ptsd': 'PTSD',
+        'tbi': 'Traumatic Brain Injury (TBI)',
+        'traumatic-brain-injury': 'Traumatic Brain Injury (TBI)',
+        'back-condition': 'Back Condition (Lumbar/Thoracolumbar Spine)',
+        'lumbar-spine': 'Back Condition (Lumbar/Thoracolumbar Spine)',
+        'knee-condition': 'Knee Condition',
+        'knee': 'Knee Condition',
+        'diabetes': 'Diabetes Mellitus Type II',
+        'diabetes-mellitus': 'Diabetes Mellitus Type II',
+        'sleep-apnea': 'Sleep Apnea',
+        'hypertension': 'Hypertension',
+        'tinnitus': 'Tinnitus',
+    }
+
+    condition_name = slug_to_name.get(condition_slug.lower(), condition_slug.replace('-', ' ').title())
+    condition = get_primary_condition(condition_name)
+
+    if not condition:
+        # Try a more flexible search
+        for primary in get_all_primary_conditions():
+            if condition_slug.lower() in primary['condition'].lower().replace(' ', '-'):
+                condition = primary
+                break
+
+    if not condition:
+        messages.error(request, f"Condition '{condition_slug}' not found.")
+        return redirect('examprep:secondary_conditions_hub')
+
+    context = {
+        'condition': condition,
+        'secondary_count': len(condition.get('secondary_conditions', [])),
+    }
+    return render(request, 'examprep/secondary_condition_detail.html', context)
+
+
+def secondary_conditions_search(request):
+    """
+    HTMX endpoint for live search of secondary conditions.
+    """
+    query = request.GET.get('q', '').strip()
+
+    if len(query) < 2:
+        return HttpResponse('')
+
+    results = search_secondary_conditions(query)
+
+    context = {
+        'conditions': results,
+        'query': query,
+    }
+    return render(request, 'examprep/partials/secondary_conditions_results.html', context)

@@ -1,12 +1,15 @@
 """
-Celery tasks for core app - data retention enforcement and maintenance.
+Celery tasks for core app - data retention enforcement, maintenance, and notifications.
 """
 
 import logging
-from datetime import timedelta
+from datetime import timedelta, date
 
 from celery import shared_task
 from django.utils import timezone
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -181,3 +184,271 @@ def create_default_retention_policies():
             logger.info(f"Created retention policy: {policy_data['data_type']}")
 
     return f"Created {created} new retention policies"
+
+
+# =============================================================================
+# EMAIL NOTIFICATION TASKS
+# =============================================================================
+
+@shared_task
+def send_deadline_reminders():
+    """
+    Send email reminders for upcoming deadlines.
+
+    Checks all users with upcoming deadlines and sends reminder emails
+    based on their notification preferences.
+
+    Should be scheduled via Celery Beat (e.g., daily at 9 AM).
+    """
+    from .models import Deadline
+    from accounts.models import NotificationPreferences
+
+    today = date.today()
+    reminders_sent = 0
+    errors = []
+
+    # Get all incomplete deadlines that haven't had reminders sent
+    upcoming_deadlines = Deadline.objects.filter(
+        is_completed=False,
+        reminder_sent=False,
+        deadline_date__gte=today,
+    ).select_related('user', 'claim', 'appeal')
+
+    for deadline in upcoming_deadlines:
+        try:
+            # Get user's notification preferences
+            try:
+                prefs = deadline.user.notification_preferences
+            except NotificationPreferences.DoesNotExist:
+                # Create default preferences if they don't exist
+                prefs = NotificationPreferences.objects.create(user=deadline.user)
+
+            # Check if we should send based on days remaining and user preferences
+            days_remaining = deadline.days_remaining
+            if days_remaining is None:
+                continue
+
+            if not prefs.should_send_deadline_reminder(days_remaining):
+                continue
+
+            # Send the email
+            success = _send_deadline_reminder_email(deadline, days_remaining)
+
+            if success:
+                # Mark reminder as sent
+                deadline.reminder_sent = True
+                deadline.save(update_fields=['reminder_sent', 'updated_at'])
+
+                # Update user's notification tracking
+                prefs.last_email_sent = timezone.now()
+                prefs.emails_sent_count += 1
+                prefs.save(update_fields=['last_email_sent', 'emails_sent_count', 'updated_at'])
+
+                reminders_sent += 1
+                logger.info(f"Sent deadline reminder to {deadline.user.email} for: {deadline.title}")
+
+        except Exception as e:
+            error_msg = f"Failed to send reminder for deadline {deadline.id}: {e}"
+            logger.error(error_msg)
+            errors.append(error_msg)
+
+    result = f"Sent {reminders_sent} deadline reminders"
+    if errors:
+        result += f" ({len(errors)} errors)"
+
+    logger.info(result)
+    return result
+
+
+@shared_task
+def send_exam_reminders():
+    """
+    Send email reminders for upcoming C&P exams.
+
+    Checks all exam checklists with upcoming exam dates and sends reminder emails
+    based on their notification preferences.
+
+    Should be scheduled via Celery Beat (e.g., daily at 9 AM).
+    """
+    from examprep.models import ExamChecklist
+    from accounts.models import NotificationPreferences
+
+    today = date.today()
+    reminders_sent = 0
+    errors = []
+
+    # Get all incomplete exam checklists with upcoming dates
+    upcoming_exams = ExamChecklist.objects.filter(
+        exam_completed=False,
+        exam_date__gte=today,
+    ).select_related('user', 'guidance')
+
+    for exam in upcoming_exams:
+        try:
+            # Get user's notification preferences
+            try:
+                prefs = exam.user.notification_preferences
+            except NotificationPreferences.DoesNotExist:
+                prefs = NotificationPreferences.objects.create(user=exam.user)
+
+            # Check days until exam
+            days_until = (exam.exam_date - today).days
+            if days_until is None or days_until < 0:
+                continue
+
+            if not prefs.should_send_exam_reminder(days_until):
+                continue
+
+            # Check if we already sent a reminder for this timing window
+            # (We track this in the exam's metadata)
+            reminder_key = f"reminder_sent_{days_until}_days"
+            metadata = exam.metadata or {}
+            if metadata.get(reminder_key):
+                continue
+
+            # Send the email
+            success = _send_exam_reminder_email(exam, days_until)
+
+            if success:
+                # Mark this reminder window as sent
+                metadata[reminder_key] = timezone.now().isoformat()
+                exam.metadata = metadata
+                exam.save(update_fields=['metadata', 'updated_at'])
+
+                # Update user's notification tracking
+                prefs.last_email_sent = timezone.now()
+                prefs.emails_sent_count += 1
+                prefs.save(update_fields=['last_email_sent', 'emails_sent_count', 'updated_at'])
+
+                reminders_sent += 1
+                logger.info(f"Sent exam reminder to {exam.user.email} for: {exam.condition}")
+
+        except Exception as e:
+            error_msg = f"Failed to send reminder for exam {exam.id}: {e}"
+            logger.error(error_msg)
+            errors.append(error_msg)
+
+    result = f"Sent {reminders_sent} exam reminders"
+    if errors:
+        result += f" ({len(errors)} errors)"
+
+    logger.info(result)
+    return result
+
+
+def _send_deadline_reminder_email(deadline, days_remaining: int) -> bool:
+    """
+    Send a deadline reminder email to the user.
+
+    Returns True if email was sent successfully, False otherwise.
+    """
+    user = deadline.user
+
+    # Determine urgency for email tone
+    if days_remaining <= 3:
+        urgency = 'critical'
+    elif days_remaining <= 7:
+        urgency = 'urgent'
+    else:
+        urgency = 'upcoming'
+
+    # Build email context
+    context = {
+        'user': user,
+        'deadline': deadline,
+        'days_remaining': days_remaining,
+        'urgency': urgency,
+        'site_name': getattr(settings, 'SITE_NAME', 'Benefits Navigator'),
+        'site_url': getattr(settings, 'SITE_URL', 'https://benefitsnavigator.com'),
+    }
+
+    # Render email templates
+    subject = f"{'URGENT: ' if urgency == 'critical' else ''}Deadline Reminder: {deadline.title}"
+    text_content = render_to_string('emails/deadline_reminder.txt', context)
+    html_content = render_to_string('emails/deadline_reminder.html', context)
+
+    try:
+        send_mail(
+            subject=subject,
+            message=text_content,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            html_message=html_content,
+            fail_silently=False,
+        )
+        return True
+    except Exception as e:
+        logger.error(f"Failed to send email to {user.email}: {e}")
+        return False
+
+
+def _send_exam_reminder_email(exam, days_until: int) -> bool:
+    """
+    Send a C&P exam reminder email to the user.
+
+    Returns True if email was sent successfully, False otherwise.
+    """
+    user = exam.user
+
+    # Determine urgency
+    if days_until <= 1:
+        urgency = 'tomorrow'
+    elif days_until <= 3:
+        urgency = 'critical'
+    elif days_until <= 7:
+        urgency = 'upcoming'
+    else:
+        urgency = 'scheduled'
+
+    # Build email context
+    context = {
+        'user': user,
+        'exam': exam,
+        'days_until': days_until,
+        'urgency': urgency,
+        'completion_percentage': exam.completion_percentage,
+        'site_name': getattr(settings, 'SITE_NAME', 'Benefits Navigator'),
+        'site_url': getattr(settings, 'SITE_URL', 'https://benefitsnavigator.com'),
+    }
+
+    # Render email templates
+    if days_until <= 1:
+        subject = f"TOMORROW: Your {exam.condition} C&P Exam"
+    elif days_until <= 3:
+        subject = f"URGENT: {exam.condition} C&P Exam in {days_until} days"
+    else:
+        subject = f"Reminder: {exam.condition} C&P Exam in {days_until} days"
+
+    text_content = render_to_string('emails/exam_reminder.txt', context)
+    html_content = render_to_string('emails/exam_reminder.html', context)
+
+    try:
+        send_mail(
+            subject=subject,
+            message=text_content,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            html_message=html_content,
+            fail_silently=False,
+        )
+        return True
+    except Exception as e:
+        logger.error(f"Failed to send email to {user.email}: {e}")
+        return False
+
+
+@shared_task
+def send_all_reminders():
+    """
+    Master task that sends all types of reminders.
+
+    Calls both deadline and exam reminder tasks.
+    Should be scheduled via Celery Beat (e.g., daily at 9 AM).
+    """
+    deadline_result = send_deadline_reminders()
+    exam_result = send_exam_reminders()
+
+    return {
+        'deadlines': deadline_result,
+        'exams': exam_result,
+    }

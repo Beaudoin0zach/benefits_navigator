@@ -534,6 +534,148 @@ class AuditLog(models.Model):
         return ip
 
 
+# =============================================================================
+# SUPPORTIVE MESSAGING
+# =============================================================================
+
+class SupportiveMessage(models.Model):
+    """
+    Encouraging messages displayed to veterans at key moments.
+    Messages are contextual based on where the veteran is in their journey.
+    """
+
+    CONTEXT_CHOICES = [
+        # Dashboard contexts
+        ('dashboard_welcome', 'Dashboard Welcome'),
+        ('dashboard_progress', 'Dashboard Progress'),
+
+        # Exam preparation contexts
+        ('exam_starting', 'Starting Exam Prep'),
+        ('exam_progress_25', 'Exam Prep 25% Complete'),
+        ('exam_progress_50', 'Exam Prep 50% Complete'),
+        ('exam_progress_75', 'Exam Prep 75% Complete'),
+        ('exam_ready', 'Exam Prep Complete'),
+        ('exam_upcoming_7_days', 'Exam in 7 Days'),
+        ('exam_upcoming_tomorrow', 'Exam Tomorrow'),
+        ('exam_completed', 'Exam Completed'),
+
+        # Claim contexts
+        ('claim_filed', 'Claim Filed'),
+        ('claim_pending', 'Claim Pending Review'),
+        ('claim_waiting', 'Long Wait Encouragement'),
+
+        # Decision contexts
+        ('decision_granted', 'Claim Granted'),
+        ('decision_denied', 'Claim Denied'),
+        ('decision_partial', 'Partial Grant'),
+
+        # Appeal contexts
+        ('appeal_starting', 'Starting Appeal'),
+        ('appeal_filed', 'Appeal Filed'),
+        ('appeal_pending', 'Appeal Pending'),
+
+        # Deadline contexts
+        ('deadline_30_days', 'Deadline in 30 Days'),
+        ('deadline_7_days', 'Deadline in 7 Days'),
+        ('deadline_urgent', 'Deadline Urgent'),
+
+        # Milestone contexts
+        ('milestone_achieved', 'Milestone Achieved'),
+        ('first_login', 'First Login'),
+
+        # Evidence contexts
+        ('evidence_uploaded', 'Evidence Uploaded'),
+        ('evidence_gap_found', 'Evidence Gap Identified'),
+
+        # General encouragement
+        ('general', 'General Encouragement'),
+    ]
+
+    TONE_CHOICES = [
+        ('encouraging', 'Encouraging'),
+        ('informative', 'Informative'),
+        ('celebratory', 'Celebratory'),
+        ('urgent', 'Urgent'),
+        ('calming', 'Calming'),
+    ]
+
+    context = models.CharField(
+        'Context',
+        max_length=30,
+        choices=CONTEXT_CHOICES,
+        db_index=True,
+        help_text='When this message should be displayed'
+    )
+    message = models.TextField(
+        'Message',
+        help_text='The supportive message text (supports markdown)'
+    )
+    tone = models.CharField(
+        'Tone',
+        max_length=20,
+        choices=TONE_CHOICES,
+        default='encouraging'
+    )
+    icon = models.CharField(
+        'Icon',
+        max_length=50,
+        default='heart',
+        help_text='Icon name (e.g., heart, star, flag, shield)'
+    )
+    is_active = models.BooleanField('Active', default=True)
+    order = models.IntegerField(
+        'Order',
+        default=0,
+        help_text='Display order (lower = higher priority)'
+    )
+
+    class Meta:
+        verbose_name = 'Supportive Message'
+        verbose_name_plural = 'Supportive Messages'
+        ordering = ['context', 'order']
+
+    def __str__(self):
+        return f"{self.get_context_display()}: {self.message[:50]}..."
+
+    @classmethod
+    def get_message_for_context(cls, context: str, random_select: bool = True):
+        """
+        Get a message for a specific context.
+
+        Args:
+            context: Context code from CONTEXT_CHOICES
+            random_select: If True, randomly select from available messages
+
+        Returns:
+            SupportiveMessage instance or None
+        """
+        messages = cls.objects.filter(context=context, is_active=True)
+        if not messages.exists():
+            return None
+        if random_select:
+            import random
+            return random.choice(list(messages))
+        return messages.first()
+
+    @classmethod
+    def get_messages_for_contexts(cls, contexts: list) -> dict:
+        """
+        Get messages for multiple contexts.
+
+        Args:
+            contexts: List of context codes
+
+        Returns:
+            Dict mapping context to message
+        """
+        result = {}
+        for context in contexts:
+            msg = cls.get_message_for_context(context)
+            if msg:
+                result[context] = msg
+        return result
+
+
 class DataRetentionPolicy(models.Model):
     """
     Defines data retention policies for different data types.

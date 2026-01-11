@@ -155,6 +155,31 @@
         </div>
     </div>
 
+    <!-- Related Calculators -->
+    <div class="mt-8 bg-white shadow-md rounded-lg p-6">
+        <h3 class="font-bold text-gray-900 mb-4">Additional Eligibility Tools</h3>
+        <div class="grid md:grid-cols-2 gap-4">
+            <a href="{% url 'examprep:tdiu_calculator' %}" class="block p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors">
+                <h4 class="font-bold text-gray-900 mb-1">TDIU Calculator</h4>
+                <p class="text-sm text-gray-600">
+                    Check if you may qualify for 100% compensation based on inability to work due to service-connected disabilities.
+                </p>
+                <span class="inline-block mt-2 text-blue-600 text-sm font-medium">
+                    Check TDIU Eligibility &rarr;
+                </span>
+            </a>
+            <a href="{% url 'examprep:smc_calculator' %}" class="block p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors">
+                <h4 class="font-bold text-gray-900 mb-1">SMC Calculator</h4>
+                <p class="text-sm text-gray-600">
+                    Check eligibility for Special Monthly Compensation for severe disabilities beyond the rating schedule.
+                </p>
+                <span class="inline-block mt-2 text-blue-600 text-sm font-medium">
+                    Check SMC Eligibility &rarr;
+                </span>
+            </a>
+        </div>
+    </div>
+
     <!-- Disclaimer -->
     <div class="mt-8 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
         <h3 class="font-bold text-yellow-900 mb-2">Important Disclaimer</h3>

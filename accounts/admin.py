@@ -4,7 +4,7 @@ Django admin configuration for accounts app
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User, UserProfile, Subscription
+from .models import User, UserProfile, Subscription, NotificationPreferences
 
 
 @admin.register(User)
@@ -48,3 +48,32 @@ class SubscriptionAdmin(admin.ModelAdmin):
     search_fields = ['user__email', 'stripe_subscription_id', 'stripe_customer_id']
     raw_id_fields = ['user']
     readonly_fields = ['created_at', 'updated_at']
+
+
+@admin.register(NotificationPreferences)
+class NotificationPreferencesAdmin(admin.ModelAdmin):
+    """Admin for NotificationPreferences"""
+    list_display = [
+        'user', 'email_enabled', 'deadline_reminders', 'exam_reminders',
+        'deadline_reminder_days', 'emails_sent_count', 'last_email_sent'
+    ]
+    list_filter = ['email_enabled', 'deadline_reminders', 'exam_reminders', 'weekly_summary']
+    search_fields = ['user__email']
+    raw_id_fields = ['user']
+    readonly_fields = ['last_email_sent', 'emails_sent_count', 'created_at', 'updated_at']
+
+    fieldsets = (
+        ('User', {
+            'fields': ('user',)
+        }),
+        ('Email Toggles', {
+            'fields': ('email_enabled', 'deadline_reminders', 'exam_reminders', 'claim_updates', 'weekly_summary')
+        }),
+        ('Timing Preferences', {
+            'fields': ('deadline_reminder_days', 'exam_reminder_days')
+        }),
+        ('Statistics', {
+            'fields': ('last_email_sent', 'emails_sent_count'),
+            'classes': ('collapse',)
+        }),
+    )
