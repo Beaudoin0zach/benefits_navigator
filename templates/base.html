@@ -110,6 +110,12 @@
                         </li>
                         {% if user.is_authenticated %}
                         <li>
+                            <a href="/journey/" class="hover:underline focus:underline"
+                               {% if request.resolver_match.url_name == 'journey_dashboard' %}aria-current="page"{% endif %}>
+                                My Journey
+                            </a>
+                        </li>
+                        <li>
                             <a href="/dashboard/" class="hover:underline focus:underline"
                                {% if request.resolver_match.url_name == 'dashboard' %}aria-current="page"{% endif %}>
                                 Dashboard

@@ -147,14 +147,40 @@ class Document(TimeStampedModel, SoftDeleteModel):
         self.status = 'analyzing'
         self.save(update_fields=['status'])
 
-    def mark_completed(self, duration=None):
-        """Mark document processing as completed"""
+    def mark_completed(self, ocr_text=None, ocr_confidence=None, page_count=None, duration=None):
+        """
+        Mark document processing as completed.
+
+        Args:
+            ocr_text: Extracted text from OCR processing
+            ocr_confidence: OCR confidence score (0-100)
+            page_count: Number of pages in the document
+            duration: Processing duration in seconds
+        """
         from django.utils import timezone
+
         self.status = 'completed'
         self.processed_at = timezone.now()
-        if duration:
+
+        update_fields = ['status', 'processed_at']
+
+        if ocr_text is not None:
+            self.ocr_text = ocr_text
+            update_fields.append('ocr_text')
+
+        if ocr_confidence is not None:
+            self.ocr_confidence = ocr_confidence
+            update_fields.append('ocr_confidence')
+
+        if page_count is not None:
+            self.page_count = page_count
+            update_fields.append('page_count')
+
+        if duration is not None:
             self.processing_duration = duration
-        self.save(update_fields=['status', 'processed_at', 'processing_duration'])
+            update_fields.append('processing_duration')
+
+        self.save(update_fields=update_fields)
 
     def mark_failed(self, error_message):
         """Mark document processing as failed"""
