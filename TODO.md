@@ -1,6 +1,6 @@
 # VA Benefits Navigator - Comprehensive TODO List
 
-**Last Updated:** 2026-01-09
+**Last Updated:** 2026-01-11
 **Updated By:** Claude Code Session
 
 ---
@@ -17,11 +17,16 @@ A Django-based web application helping veterans navigate VA disability claims, C
 - Docker Compose environment (web, db, redis, celery)
 - User authentication (email-based via django-allauth)
 - Document upload with OCR and AI analysis
-- 4 C&P exam guides with preparation checklists
-- 46 VA glossary terms
+- 7 C&P exam guides (General, PTSD, Musculoskeletal, Hearing, TBI, Sleep Apnea, Mental Health)
+- 46+ VA glossary terms
 - Appeals workflow system
-- **NEW: VA Disability Rating Calculator with accurate VA Math**
-- User dashboard
+- VA Disability Rating Calculator with accurate VA Math
+- **NEW: SMC (Special Monthly Compensation) Calculator**
+- **NEW: TDIU Eligibility Calculator**
+- **NEW: Secondary Conditions Hub with 40+ condition relationships**
+- **NEW: Email notification system (deadline/exam reminders)**
+- **NEW: Supportive messaging system**
+- User dashboard with journey tracking
 - Security hardening (CSP, rate limiting, etc.)
 
 ### Tech Stack
@@ -44,17 +49,17 @@ A Django-based web application helping veterans navigate VA disability claims, C
 - [ ] Verify CSP headers don't break functionality
 
 ### 2. Content Additions
-- [ ] Add TBI (Traumatic Brain Injury) exam guide
-- [ ] Add Sleep Apnea exam guide
-- [ ] Add Mental Health (non-PTSD) exam guide
+- [x] Add TBI (Traumatic Brain Injury) exam guide ✅ (2026-01-11)
+- [x] Add Sleep Apnea exam guide ✅ (2026-01-11)
+- [x] Add Mental Health (non-PTSD) exam guide ✅ (2026-01-11)
 - [ ] Add more glossary terms (aim for 75-100 total)
-- [ ] Add common secondary conditions guide
+- [x] Add common secondary conditions guide ✅ (2026-01-11)
 
 ### 3. User Experience
-- [ ] Add email notifications for:
+- [x] Add email notifications for:
   - [ ] Document analysis complete
-  - [ ] Appeal deadline reminders (7 days, 1 day before)
-  - [ ] C&P exam reminders
+  - [x] Appeal deadline reminders (7 days, 1 day before) ✅ (2026-01-11)
+  - [x] C&P exam reminders ✅ (2026-01-11)
 - [ ] Add PDF export for rating calculations
 - [ ] Add "share calculation" feature (generate shareable link)
 
@@ -63,8 +68,8 @@ A Django-based web application helping veterans navigate VA disability claims, C
 ## MEDIUM PRIORITY (Nice to Have)
 
 ### 4. Rating Calculator Enhancements
-- [ ] Add SMC (Special Monthly Compensation) calculator
-- [ ] Add TDIU eligibility checker
+- [x] Add SMC (Special Monthly Compensation) calculator ✅ (2026-01-11)
+- [x] Add TDIU eligibility checker ✅ (2026-01-11)
 - [ ] Historical compensation rates (2020-2024)
 - [ ] "Compare scenarios" side-by-side view
 - [ ] Import ratings from VA letter (OCR)
@@ -276,7 +281,38 @@ docker compose build web && docker compose up -d
 
 ## SESSION HANDOFF NOTES
 
-### What Was Done This Session (2026-01-09)
+### What Was Done This Session (2026-01-11)
+**Tier 2 Features Implemented:**
+
+1. **SMC/TDIU Calculators** (`examprep/va_special_compensation.py`)
+   - SMC levels K through S with eligibility checks
+   - TDIU schedular vs extraschedular determination
+   - 2024 compensation rates
+   - HTMX-powered real-time calculations
+
+2. **Secondary Conditions Hub** (`examprep/secondary_conditions_data.py`)
+   - 8 primary conditions: PTSD, TBI, Back, Knee, Diabetes, Sleep Apnea, Hypertension, Tinnitus
+   - 40+ secondary condition relationships with medical rationale
+   - Search and category filtering
+   - Evidence tips and nexus letter guidance
+
+3. **New Exam Prep Guides** (fixtures):
+   - TBI Guide (`exam_guides_tbi.json`)
+   - Sleep Apnea Guide (`exam_guides_sleep_apnea.json`)
+   - Mental Health Non-PTSD Guide (`exam_guides_mental_health.json`)
+
+4. **Email Notifications** (`core/tasks.py`)
+   - Deadline reminders (7 days, 1 day before)
+   - C&P exam reminders
+   - User notification preferences
+   - HTML and text email templates
+
+5. **Supportive Messaging** (`core/models.py`, `core/templatetags/`)
+   - Rotating veteran-friendly messages by journey stage
+   - Template tag integration
+   - Admin management
+
+### What Was Done Previously (2026-01-09)
 1. Fixed security issues (CSP, rate limiting, SECRET_KEY)
 2. Built VA Disability Rating Calculator with:
    - Accurate VA Math (38 CFR § 4.25)
@@ -288,13 +324,17 @@ docker compose build web && docker compose up -d
 4. Fixed template URL references (appeals:home)
 
 ### Recommended Next Steps
-1. Run test suite to verify nothing broke
-2. Add more exam guides (TBI, Sleep Apnea)
-3. Set up email notifications
-4. Plan production deployment
+1. Run migrations for new models: `python manage.py migrate`
+2. Import new fixtures: `python manage.py import_content --fixtures`
+3. Load supportive messages: `python manage.py loaddata core/fixtures/supportive_messages.json`
+4. Set up Celery beat for scheduled notification tasks
+5. Run test suite to verify nothing broke
+6. Plan production deployment
 
 ### Things to Watch Out For
 - Compensation rates need annual update (usually December)
+- SMC rates are separate from standard compensation - verify annually
+- Celery workers must be running for email notifications
 - CSP may need adjusting if adding new external resources
 - Rate limiting is IP-based, may need adjustment for shared IPs
 
