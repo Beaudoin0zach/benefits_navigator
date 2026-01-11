@@ -1,0 +1,185 @@
+{
+  "dbq_name": "Back (Thoracolumbar Spine) Conditions",
+  "dbq_type": "examination",
+  "condition": "Thoracolumbar Spine (Lower Back)",
+  "category": "musculoskeletal",
+  "diagnostic_codes": ["5235", "5236", "5237", "5238", "5239", "5240", "5241", "5242", "5243"],
+  "cfr_reference": "38 CFR 4.71a",
+  "last_updated": "2024-12-20",
+  "version": "v24_4",
+
+  "rating_criteria": {
+    "description": "Spine conditions are rated based on range of motion limitation OR incapacitating episodes",
+    "general_rating_formula": {
+      "description": "General Rating Formula for Diseases and Injuries of the Spine (with or without symptoms such as pain, stiffness, or aching)",
+      "levels": [
+        {
+          "rating": 10,
+          "criteria": "Forward flexion of the thoracolumbar spine greater than 60 degrees but not greater than 85 degrees; OR combined range of motion greater than 120 degrees but not greater than 235 degrees; OR muscle spasm, guarding, or localized tenderness not resulting in abnormal gait or abnormal spinal contour",
+          "keywords": ["flexion 61-85", "combined ROM 121-235", "muscle spasm", "guarding", "tenderness"]
+        },
+        {
+          "rating": 20,
+          "criteria": "Forward flexion of the thoracolumbar spine greater than 30 degrees but not greater than 60 degrees; OR combined range of motion not greater than 120 degrees; OR muscle spasm or guarding severe enough to result in abnormal gait or abnormal spinal contour",
+          "keywords": ["flexion 31-60", "combined ROM <=120", "abnormal gait", "abnormal spinal contour"]
+        },
+        {
+          "rating": 40,
+          "criteria": "Forward flexion of the thoracolumbar spine 30 degrees or less; OR favorable ankylosis of the entire thoracolumbar spine",
+          "keywords": ["flexion <=30", "favorable ankylosis"]
+        },
+        {
+          "rating": 50,
+          "criteria": "Unfavorable ankylosis of the entire thoracolumbar spine",
+          "keywords": ["unfavorable ankylosis", "thoracolumbar"]
+        },
+        {
+          "rating": 100,
+          "criteria": "Unfavorable ankylosis of the entire spine",
+          "keywords": ["unfavorable ankylosis", "entire spine"]
+        }
+      ]
+    },
+    "ivds_formula": {
+      "description": "Formula for Rating Intervertebral Disc Syndrome Based on Incapacitating Episodes",
+      "note": "An incapacitating episode is a period of acute signs and symptoms that requires bed rest prescribed by a physician and treatment by a physician",
+      "levels": [
+        {
+          "rating": 10,
+          "criteria": "Incapacitating episodes having a total duration of at least 1 week but less than 2 weeks during the past 12 months",
+          "keywords": ["1-2 weeks", "bed rest", "incapacitating"]
+        },
+        {
+          "rating": 20,
+          "criteria": "Incapacitating episodes having a total duration of at least 2 weeks but less than 4 weeks during the past 12 months",
+          "keywords": ["2-4 weeks", "bed rest"]
+        },
+        {
+          "rating": 40,
+          "criteria": "Incapacitating episodes having a total duration of at least 4 weeks but less than 6 weeks during the past 12 months",
+          "keywords": ["4-6 weeks", "bed rest"]
+        },
+        {
+          "rating": 60,
+          "criteria": "Incapacitating episodes having a total duration of at least 6 weeks during the past 12 months",
+          "keywords": ["6+ weeks", "bed rest"]
+        }
+      ]
+    }
+  },
+
+  "normal_rom": {
+    "forward_flexion": 90,
+    "extension": 30,
+    "right_lateral_flexion": 30,
+    "left_lateral_flexion": 30,
+    "right_lateral_rotation": 30,
+    "left_lateral_rotation": 30,
+    "combined_rom": 240
+  },
+
+  "common_diagnoses": [
+    "Ankylosing spondylitis",
+    "Degenerative arthritis",
+    "Degenerative disc disease (non-IVDS)",
+    "Lumbosacral strain",
+    "Intervertebral disc syndrome (IVDS)",
+    "Sacroiliac injury",
+    "Sacroiliac weakness",
+    "Segmental instability",
+    "Spinal fusion",
+    "Spinal stenosis",
+    "Spondylolisthesis",
+    "Traumatic paralysis",
+    "Vertebral dislocation",
+    "Vertebral fracture"
+  ],
+
+  "exam_sections": [
+    "Diagnosis",
+    "Medical History",
+    "Range of Motion (ROM) and Functional Limitation",
+    "Muscle Strength Testing",
+    "Reflex Exam",
+    "Sensory Exam",
+    "Straight Leg Raising Test",
+    "Radiculopathy",
+    "Ankylosis",
+    "Other Neurologic Abnormalities",
+    "Intervertebral Disc Syndrome (IVDS)",
+    "Assistive Devices",
+    "Remaining Effective Function",
+    "Other Pertinent Findings",
+    "Diagnostic Testing",
+    "Functional Impact"
+  ],
+
+  "key_measurements": {
+    "rom_testing": {
+      "active_rom": "Required - patient moves on their own",
+      "passive_rom": "Required - examiner moves the joint",
+      "weight_bearing": "Must test both weight-bearing and non-weight-bearing",
+      "repetitive_use": "At least 3 repetitions required",
+      "flare_ups": "Must estimate ROM during flare-ups based on all evidence"
+    },
+    "muscle_strength": {
+      "scale": "0/5 to 5/5",
+      "areas_tested": ["Hip flexion", "Knee extension", "Ankle plantar flexion", "Ankle dorsiflexion", "Great toe extension"]
+    },
+    "reflexes": {
+      "scale": "0 (absent) to 4+ (hyperactive with clonus)",
+      "areas_tested": ["Knee", "Ankle"]
+    },
+    "sensory": {
+      "areas_tested": ["Upper anterior thigh (L2)", "Thigh/knee (L3/4)", "Lower leg/ankle (L4/L5/S1)", "Foot/toes (L5)"]
+    }
+  },
+
+  "secondary_conditions": {
+    "radiculopathy": {
+      "description": "Nerve root involvement causing pain/symptoms in lower extremities",
+      "nerves": ["L2/L3/L4 (femoral nerve)", "L4/L5/S1/S2/S3 (sciatic nerve)"],
+      "separate_rating": true,
+      "note": "Radiculopathy of each lower extremity is rated separately under 38 CFR 4.124a"
+    },
+    "bowel_dysfunction": {
+      "description": "Loss of bowel control related to spine condition",
+      "separate_rating": true
+    },
+    "bladder_dysfunction": {
+      "description": "Loss of bladder control related to spine condition",
+      "separate_rating": true
+    }
+  },
+
+  "tips_for_veterans": [
+    "Document your WORST days, not just average days",
+    "Describe specific limitations: how far can you bend, twist, lift?",
+    "Mention if you have flare-ups and how often they occur",
+    "Describe what triggers flare-ups and how long they last",
+    "Report ALL symptoms including radiating pain down legs (radiculopathy)",
+    "Mention if you have numbness, tingling, or weakness in legs",
+    "Document any bowel or bladder problems",
+    "Bring records of any incapacitating episodes requiring bed rest",
+    "If you use a cane, brace, or walker - tell the examiner",
+    "Explain how your back limits work activities and daily tasks",
+    "Don't push through pain during ROM testing - stop when it hurts"
+  ],
+
+  "common_mistakes": [
+    "Minimizing pain during the exam to appear strong",
+    "Not mentioning radiating leg pain (this can be rated separately)",
+    "Forgetting to describe flare-ups and their impact",
+    "Not mentioning incapacitating episodes requiring bed rest",
+    "Failing to document how condition affects work and daily life",
+    "Not bringing documentation of all treatment and medications"
+  ],
+
+  "important_notes": [
+    "Objective neurologic abnormalities (radiculopathy) are rated separately",
+    "Forward flexion is the most critical measurement for rating",
+    "Painful motion is functional limitation and should be considered",
+    "IVDS can be rated under either general formula OR incapacitating episodes - whichever is higher",
+    "Examiner MUST estimate ROM during flare-ups even if not observed"
+  ]
+}

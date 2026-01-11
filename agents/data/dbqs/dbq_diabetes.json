@@ -1,0 +1,183 @@
+{
+  "dbq_name": "Diabetes Mellitus",
+  "dbq_type": "examination",
+  "condition": "Diabetes Mellitus",
+  "category": "endocrine",
+  "diagnostic_codes": ["7913"],
+  "cfr_reference": "38 CFR 4.119",
+  "last_updated": "2024-07-15",
+  "version": "v24_1",
+
+  "rating_criteria": {
+    "description": "Diabetes is rated based on treatment requirements and regulation of activities",
+    "diagnostic_code": "7913",
+    "levels": [
+      {
+        "rating": 10,
+        "criteria": "Manageable by restricted diet only",
+        "keywords": ["diet only", "no medication", "diet controlled"]
+      },
+      {
+        "rating": 20,
+        "criteria": "Requiring insulin and restricted diet, or oral hypoglycemic agent and restricted diet",
+        "keywords": ["insulin", "oral medication", "restricted diet", "metformin"]
+      },
+      {
+        "rating": 40,
+        "criteria": "Requiring insulin, restricted diet, and regulation of activities",
+        "keywords": ["regulation of activities", "insulin", "activity restriction"]
+      },
+      {
+        "rating": 60,
+        "criteria": "Requiring insulin, restricted diet, and regulation of activities with episodes of ketoacidosis or hypoglycemic reactions requiring one or two hospitalizations per year or twice a month visits to a diabetic care provider, plus complications that would not be compensable if separately evaluated",
+        "keywords": ["hospitalizations", "ketoacidosis", "hypoglycemic reactions", "twice monthly visits"]
+      },
+      {
+        "rating": 100,
+        "criteria": "Requiring more than one daily injection of insulin, restricted diet, and regulation of activities (avoidance of strenuous occupational and recreational activities) with episodes of ketoacidosis or hypoglycemic reactions requiring at least three hospitalizations per year or weekly visits to a diabetic care provider, plus either progressive loss of weight and strength or complications that would be compensable if separately evaluated",
+        "keywords": ["multiple daily injections", "three hospitalizations", "weekly visits", "weight loss", "strength loss"]
+      }
+    ]
+  },
+
+  "key_definitions": {
+    "regulation_of_activities": {
+      "definition": "Avoidance of strenuous occupational and recreational activities",
+      "critical_note": "This must be MEDICALLY REQUIRED and documented by a physician",
+      "examples": [
+        "Doctor's order to avoid strenuous exercise",
+        "Medical restriction on physical labor",
+        "Cannot perform certain work activities due to diabetes"
+      ],
+      "common_mistake": "Self-imposed activity restrictions do NOT count - must be doctor-ordered"
+    },
+    "ketoacidosis": "Diabetic ketoacidosis (DKA) - dangerous buildup of ketones in blood",
+    "hypoglycemic_reaction": "Dangerously low blood sugar episode"
+  },
+
+  "types_of_diabetes": [
+    {"type": "Type 1", "description": "Autoimmune destruction of insulin-producing cells; requires insulin"},
+    {"type": "Type 2", "description": "Insulin resistance; may be controlled with diet, oral meds, or insulin"},
+    {"type": "Gestational", "description": "Develops during pregnancy"},
+    {"type": "Other", "description": "Drug-induced, genetic defects, pancreatic disease"}
+  ],
+
+  "common_symptoms": [
+    "Increased thirst (polydipsia)",
+    "Frequent urination (polyuria)",
+    "Increased hunger (polyphagia)",
+    "Unexplained weight loss",
+    "Fatigue",
+    "Blurred vision",
+    "Slow-healing sores",
+    "Frequent infections",
+    "Numbness or tingling in hands or feet"
+  ],
+
+  "exam_sections": [
+    "Diagnosis",
+    "Medical History",
+    "Treatment",
+    "Regulation of Activities",
+    "Episodes Requiring Hospitalization",
+    "Visits to Diabetic Care Provider",
+    "Complications",
+    "Functional Impact"
+  ],
+
+  "secondary_conditions": {
+    "description": "Diabetes commonly causes or aggravates many secondary conditions",
+    "common_complications": [
+      {
+        "condition": "Diabetic Peripheral Neuropathy",
+        "diagnostic_codes": ["8520-8730"],
+        "description": "Nerve damage causing numbness, pain, weakness in extremities",
+        "very_common": true
+      },
+      {
+        "condition": "Diabetic Retinopathy",
+        "diagnostic_codes": ["6006"],
+        "description": "Eye damage potentially causing vision loss",
+        "very_common": true
+      },
+      {
+        "condition": "Diabetic Nephropathy",
+        "diagnostic_codes": ["7541"],
+        "description": "Kidney damage from diabetes",
+        "very_common": true
+      },
+      {
+        "condition": "Erectile Dysfunction",
+        "diagnostic_codes": ["7522"],
+        "description": "Common complication in male diabetics",
+        "very_common": true
+      },
+      {
+        "condition": "Hypertension",
+        "diagnostic_codes": ["7101"],
+        "description": "High blood pressure often associated with diabetes"
+      },
+      {
+        "condition": "Coronary Artery Disease",
+        "diagnostic_codes": ["7005"],
+        "description": "Heart disease risk increased by diabetes"
+      },
+      {
+        "condition": "Peripheral Vascular Disease",
+        "diagnostic_codes": ["7114"],
+        "description": "Poor circulation in extremities"
+      }
+    ],
+    "rating_note": "Complications are rated separately UNLESS they are non-compensable, in which case they support a higher diabetes rating"
+  },
+
+  "presumptive_service_connection": {
+    "agent_orange": {
+      "applies_to": "Type 2 Diabetes only",
+      "conditions": "Veterans exposed to Agent Orange in Vietnam, Thailand (certain bases), Korean DMZ, or other qualifying locations",
+      "note": "No nexus letter required for presumptive connection"
+    }
+  },
+
+  "tips_for_veterans": [
+    "Document ALL medications - insulin type, dosage, frequency",
+    "Get written doctor's orders for any activity restrictions",
+    "Keep records of blood sugar logs showing highs and lows",
+    "Document any hospitalizations for ketoacidosis or hypoglycemia",
+    "Track frequency of diabetic care provider visits",
+    "List ALL complications - neuropathy, vision, kidney, ED",
+    "Request separate evaluations for compensable complications",
+    "If you have secondary conditions, file for them separately",
+    "Document how diabetes affects your work and daily activities",
+    "Keep records of diet restrictions prescribed by doctor"
+  ],
+
+  "common_mistakes": [
+    "Not getting written medical orders for activity restrictions",
+    "Failing to document hospitalizations for diabetic emergencies",
+    "Not claiming secondary conditions separately",
+    "Not tracking blood sugar logs",
+    "Forgetting to mention all complications",
+    "Self-restricting activities without doctor's orders (doesn't count)"
+  ],
+
+  "40_percent_requirements": {
+    "description": "Critical requirements for 40% rating",
+    "all_three_required": [
+      "Insulin use",
+      "Restricted diet",
+      "Regulation of activities (MUST be medically ordered)"
+    ],
+    "common_denial_reason": "Veteran restricts own activities but lacks doctor's written order",
+    "tip": "Ask your doctor to document in writing that you must avoid strenuous activities due to diabetes"
+  },
+
+  "important_notes": [
+    "Regulation of activities MUST be prescribed by a physician to count",
+    "Type 2 Diabetes is presumptive for Agent Orange exposure",
+    "Complications should be rated separately if compensable (10%+)",
+    "Peripheral neuropathy is extremely common secondary condition",
+    "Blood sugar logs and A1C results support claim",
+    "Hospitalizations for diabetic emergencies are key for higher ratings"
+  ]
+}

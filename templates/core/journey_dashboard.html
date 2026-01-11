@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% block title %}My Claims Journey - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">My Claims Journey</h1>
+        <p class="text-gray-600 mt-1">Track your VA benefits journey from start to finish</p>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content (Timeline) -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Current Stage Card -->
+            {% if current_stage %}
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <div class="px-6 py-4 bg-{{ current_stage.color }}-50 border-b border-{{ current_stage.color }}-100">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-{{ current_stage.color }}-600 font-medium">Current Stage</p>
+                            <h2 class="text-xl font-semibold text-{{ current_stage.color }}-800">
+                                {{ current_stage.name }}
+                            </h2>
+                        </div>
+                        <div class="h-12 w-12 rounded-full bg-{{ current_stage.color }}-100 flex items-center justify-center">
+                            <svg class="h-6 w-6 text-{{ current_stage.color }}-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            </svg>
+                        </div>
+                    </div>
+                    {% if current_stage.description %}
+                    <p class="mt-2 text-sm text-{{ current_stage.color }}-700">
+                        {{ current_stage.description }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Stats Summary -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white shadow rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-blue-600">{{ stats.total_claims }}</div>
+                    <div class="text-sm text-gray-500">Claims Filed</div>
+                </div>
+                <div class="bg-white shadow rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-green-600">{{ stats.granted_claims }}</div>
+                    <div class="text-sm text-gray-500">Granted</div>
+                </div>
+                <div class="bg-white shadow rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-purple-600">{{ stats.total_appeals }}</div>
+                    <div class="text-sm text-gray-500">Appeals</div>
+                </div>
+                <div class="bg-white shadow rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-gray-900">{{ stats.combined_rating }}%</div>
+                    <div class="text-sm text-gray-500">Combined Rating</div>
+                </div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
+                    <h2 class="text-lg font-medium text-gray-900">Timeline</h2>
+                    <button hx-get="{% url 'core:journey_timeline' %}"
+                            hx-target="#timeline-content"
+                            hx-swap="innerHTML"
+                            class="text-sm text-blue-600 hover:text-blue-800">
+                        Refresh
+                    </button>
+                </div>
+
+                <div id="timeline-content">
+                    {% include 'core/partials/journey_timeline.html' %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Deadlines -->
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
+                    <h2 class="text-lg font-medium text-gray-900">Deadlines</h2>
+                    <a href="{% url 'core:add_deadline' %}"
+                       class="text-sm text-blue-600 hover:text-blue-800">
+                        + Add
+                    </a>
+                </div>
+
+                {% if deadlines %}
+                <div class="divide-y divide-gray-200">
+                    {% for deadline in deadlines %}
+                    <div id="deadline-{{ deadline.pk }}" class="p-4">
+                        {% include 'core/partials/deadline_item.html' %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="p-6 text-center text-gray-500">
+                    <p class="text-sm">No upcoming deadlines</p>
+                    <a href="{% url 'core:add_deadline' %}"
+                       class="mt-2 inline-block text-sm text-blue-600 hover:text-blue-800">
+                        Add your first deadline
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Milestones -->
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
+                    <h2 class="text-lg font-medium text-gray-900">Milestones</h2>
+                    <a href="{% url 'core:add_milestone' %}"
+                       class="text-sm text-blue-600 hover:text-blue-800">
+                        + Add
+                    </a>
+                </div>
+
+                {% if milestones %}
+                <div class="divide-y divide-gray-200">
+                    {% for milestone in milestones %}
+                    <div class="p-4">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <h3 class="text-sm font-medium text-gray-900">{{ milestone.title }}</h3>
+                                <p class="text-xs text-gray-500">{{ milestone.date|date:"M d, Y" }}</p>
+                            </div>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                                {{ milestone.get_milestone_type_display }}
+                            </span>
+                        </div>
+                        {% if milestone.notes %}
+                        <p class="mt-1 text-xs text-gray-500">{{ milestone.notes|truncatewords:15 }}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="p-6 text-center text-gray-500">
+                    <p class="text-sm">No milestones yet</p>
+                    <a href="{% url 'core:add_milestone' %}"
+                       class="mt-2 inline-block text-sm text-blue-600 hover:text-blue-800">
+                        Record your first milestone
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="bg-white shadow rounded-lg p-6">
+                <h2 class="text-lg font-medium text-gray-900 mb-4">Quick Actions</h2>
+                <div class="space-y-3">
+                    <a href="{% url 'claims:claim_create' %}"
+                       class="block w-full text-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                        File New Claim
+                    </a>
+                    <a href="{% url 'claims:denial_decoder' %}"
+                       class="block w-full text-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Decode Denial Letter
+                    </a>
+                    <a href="{% url 'examprep:evidence_checklist_create' %}"
+                       class="block w-full text-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Create Evidence Checklist
+                    </a>
+                    <a href="{% url 'examprep:rating_calculator' %}"
+                       class="block w-full text-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Rating Calculator
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

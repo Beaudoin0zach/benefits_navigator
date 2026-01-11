@@ -1,0 +1,66 @@
+{% if timeline %}
+<div class="relative">
+    <!-- Timeline line -->
+    <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+
+    <div class="space-y-0">
+        {% for item in timeline %}
+        <div class="relative pl-16 pr-6 py-4 hover:bg-gray-50 transition-colors">
+            <!-- Timeline dot -->
+            <div class="absolute left-6 w-5 h-5 rounded-full border-2 border-white shadow
+                {% if item.color == 'blue' %}bg-blue-500
+                {% elif item.color == 'green' %}bg-green-500
+                {% elif item.color == 'yellow' %}bg-yellow-500
+                {% elif item.color == 'red' %}bg-red-500
+                {% elif item.color == 'purple' %}bg-purple-500
+                {% else %}bg-gray-400{% endif %}">
+            </div>
+
+            <div class="flex items-start justify-between">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center space-x-2">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
+                            {% if item.type == 'claim' %}bg-blue-100 text-blue-800
+                            {% elif item.type == 'appeal' %}bg-purple-100 text-purple-800
+                            {% elif item.type == 'milestone' %}bg-green-100 text-green-800
+                            {% else %}bg-gray-100 text-gray-800{% endif %}">
+                            {{ item.type|title }}
+                        </span>
+                        {% if item.subtype %}
+                        <span class="text-xs text-gray-400">{{ item.subtype|title }}</span>
+                        {% endif %}
+                    </div>
+                    <h3 class="mt-1 text-sm font-medium text-gray-900">{{ item.title }}</h3>
+                    {% if item.description %}
+                    <p class="mt-0.5 text-sm text-gray-500">{{ item.description|truncatewords:20 }}</p>
+                    {% endif %}
+                </div>
+                <div class="ml-4 text-right flex-shrink-0">
+                    <p class="text-sm text-gray-500">{{ item.date|date:"M d, Y" }}</p>
+                    {% if item.metadata.rating %}
+                    <p class="text-sm font-medium text-green-600">{{ item.metadata.rating }}%</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<div class="p-12 text-center">
+    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    <h3 class="mt-4 text-lg font-medium text-gray-900">No Journey Events Yet</h3>
+    <p class="mt-2 text-gray-500">
+        Your timeline will populate as you file claims, complete exams, and receive decisions.
+    </p>
+    <div class="mt-6">
+        <a href="{% url 'claims:claim_create' %}"
+           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+            Start Your Journey
+        </a>
+    </div>
+</div>
+{% endif %}

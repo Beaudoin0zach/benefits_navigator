@@ -1,0 +1,199 @@
+{
+  "dbq_name": "Knee and Lower Leg",
+  "dbq_type": "examination",
+  "condition": "Knee and Lower Leg Conditions",
+  "category": "musculoskeletal",
+  "diagnostic_codes": ["5003", "5010", "5055", "5256", "5257", "5258", "5259", "5260", "5261", "5262", "5263"],
+  "cfr_reference": "38 CFR 4.71a",
+  "last_updated": "2024-09-03",
+  "version": "v24_2",
+
+  "rating_criteria": {
+    "description": "Knee conditions can be rated under multiple diagnostic codes simultaneously",
+
+    "limitation_of_flexion": {
+      "diagnostic_code": "5260",
+      "levels": [
+        {"rating": 0, "criteria": "Flexion limited to 60 degrees or better", "keywords": ["flexion >60"]},
+        {"rating": 10, "criteria": "Flexion limited to 45 degrees", "keywords": ["flexion 45"]},
+        {"rating": 20, "criteria": "Flexion limited to 30 degrees", "keywords": ["flexion 30"]},
+        {"rating": 30, "criteria": "Flexion limited to 15 degrees", "keywords": ["flexion 15"]}
+      ]
+    },
+
+    "limitation_of_extension": {
+      "diagnostic_code": "5261",
+      "levels": [
+        {"rating": 0, "criteria": "Extension limited to 5 degrees or better", "keywords": ["extension <=5"]},
+        {"rating": 10, "criteria": "Extension limited to 10 degrees", "keywords": ["extension 10"]},
+        {"rating": 20, "criteria": "Extension limited to 15 degrees", "keywords": ["extension 15"]},
+        {"rating": 30, "criteria": "Extension limited to 20 degrees", "keywords": ["extension 20"]},
+        {"rating": 40, "criteria": "Extension limited to 30 degrees", "keywords": ["extension 30"]},
+        {"rating": 50, "criteria": "Extension limited to 45 degrees", "keywords": ["extension 45"]}
+      ]
+    },
+
+    "instability": {
+      "diagnostic_code": "5257",
+      "description": "Recurrent subluxation or lateral instability",
+      "levels": [
+        {"rating": 10, "criteria": "Slight instability", "keywords": ["slight", "mild instability"]},
+        {"rating": 20, "criteria": "Moderate instability", "keywords": ["moderate instability"]},
+        {"rating": 30, "criteria": "Severe instability", "keywords": ["severe instability"]}
+      ],
+      "note": "Can be rated in addition to limitation of motion if both are present"
+    },
+
+    "meniscus_conditions": {
+      "cartilage_semilunar_dislocated": {
+        "diagnostic_code": "5258",
+        "criteria": "Dislocated semilunar cartilage with frequent episodes of locking, pain, and effusion into the joint",
+        "rating": 20
+      },
+      "cartilage_semilunar_removal": {
+        "diagnostic_code": "5259",
+        "criteria": "Symptomatic removal of semilunar cartilage",
+        "rating": 10
+      }
+    },
+
+    "ankylosis": {
+      "diagnostic_code": "5256",
+      "levels": [
+        {"rating": 30, "criteria": "Favorable angle in full extension, or in slight flexion between 0 and 10 degrees", "keywords": ["favorable ankylosis"]},
+        {"rating": 40, "criteria": "In flexion between 10 and 20 degrees", "keywords": ["ankylosis 10-20"]},
+        {"rating": 50, "criteria": "In flexion between 20 and 45 degrees", "keywords": ["ankylosis 20-45"]},
+        {"rating": 60, "criteria": "Extremely unfavorable, in flexion at an angle of 45 degrees or more", "keywords": ["unfavorable ankylosis"]}
+      ]
+    },
+
+    "knee_replacement": {
+      "diagnostic_code": "5055",
+      "levels": [
+        {"rating": 100, "criteria": "For 1 year following implantation of prosthesis", "keywords": ["1 year post-op", "replacement"]},
+        {"rating": 60, "criteria": "With chronic residuals consisting of severe painful motion or weakness", "keywords": ["severe residuals"]},
+        {"rating": 30, "criteria": "Minimum rating after 1 year with intermediate degrees of residual weakness, pain, or limitation of motion", "keywords": ["intermediate residuals"]}
+      ]
+    },
+
+    "tibia_fibula_impairment": {
+      "diagnostic_code": "5262",
+      "levels": [
+        {"rating": 10, "criteria": "Malunion with slight knee or ankle disability", "keywords": ["slight disability", "malunion"]},
+        {"rating": 20, "criteria": "Malunion with moderate knee or ankle disability", "keywords": ["moderate disability"]},
+        {"rating": 30, "criteria": "Malunion with marked knee or ankle disability", "keywords": ["marked disability"]},
+        {"rating": 40, "criteria": "Nonunion with loose motion, requiring brace", "keywords": ["nonunion", "loose motion", "brace"]}
+      ]
+    },
+
+    "genu_recurvatum": {
+      "diagnostic_code": "5263",
+      "criteria": "Acquired, traumatic genu recurvatum with weakness and insecurity in weight-bearing objectively demonstrated",
+      "rating": 10
+    }
+  },
+
+  "normal_rom": {
+    "flexion": 140,
+    "extension": 0
+  },
+
+  "common_diagnoses": [
+    "Knee strain",
+    "Knee meniscal tear",
+    "Knee anterior cruciate ligament (ACL) tear",
+    "Knee posterior cruciate ligament (PCL) tear",
+    "Patellar or quadriceps tendon rupture",
+    "Knee joint osteoarthritis",
+    "Knee joint ankylosis",
+    "Knee fracture",
+    "Stress fracture of tibia",
+    "Tibia and/or fibula fracture",
+    "Recurrent patellar dislocation",
+    "Recurrent subluxation",
+    "Knee instability",
+    "Patellar instability",
+    "Shin splints (medial tibial stress syndrome)",
+    "Patellofemoral pain syndrome",
+    "Degenerative arthritis",
+    "Post-traumatic arthritis",
+    "Bursitis",
+    "Tendinopathy"
+  ],
+
+  "exam_sections": [
+    "Diagnosis",
+    "Medical History",
+    "Range of Motion (ROM) and Functional Limitation",
+    "Muscle Atrophy",
+    "Ankylosis",
+    "Joint Stability",
+    "Tibial or Fibular Impairment",
+    "Meniscal Conditions",
+    "Surgical Procedures",
+    "Other Pertinent Findings",
+    "Assistive Devices",
+    "Remaining Effective Function",
+    "Diagnostic Testing",
+    "Functional Impact"
+  ],
+
+  "key_measurements": {
+    "rom_testing": {
+      "flexion_normal": "140 degrees",
+      "extension_normal": "0 degrees",
+      "active_and_passive": "Both required",
+      "weight_bearing_and_non": "Both required",
+      "repetitive_use": "3 repetitions minimum",
+      "contralateral_joint": "Must test opposite knee unless contraindicated"
+    },
+    "stability_testing": {
+      "anterior_drawer": "Tests ACL",
+      "posterior_drawer": "Tests PCL",
+      "varus_valgus": "Tests collateral ligaments",
+      "results": "None, Slight (1+), Moderate (2+), Severe (3+)"
+    }
+  },
+
+  "pyramid_rating_note": {
+    "description": "Knee conditions CAN receive multiple ratings under different codes",
+    "examples": [
+      "Arthritis with limited motion (5003/5260/5261) PLUS instability (5257)",
+      "Limited flexion (5260) AND limited extension (5261) can be rated separately",
+      "Meniscus condition (5258/5259) can be combined with other knee ratings"
+    ],
+    "key_case": "VAOPGCPREC 23-97: Veteran can receive separate ratings for arthritis with limitation of motion AND instability of the same knee"
+  },
+
+  "tips_for_veterans": [
+    "Describe your WORST days, not average days",
+    "Report ALL symptoms: pain, swelling, giving way, locking, clicking",
+    "Mention if your knee gives out or feels unstable",
+    "Document any episodes where knee locks or catches",
+    "If you use a brace or cane, tell the examiner",
+    "Describe how knee affects walking, stairs, squatting, kneeling",
+    "Mention if symptoms are worse with weather changes",
+    "Report any swelling or effusion (fluid in joint)",
+    "Don't push through pain during ROM testing",
+    "Ask examiner to test both flexion AND extension limitations",
+    "Request stability testing even if not prompted"
+  ],
+
+  "common_mistakes": [
+    "Not mentioning instability symptoms (can be rated separately)",
+    "Forgetting to describe locking/catching episodes",
+    "Minimizing pain during examination",
+    "Not documenting use of assistive devices",
+    "Failing to report how condition affects work and daily activities",
+    "Not mentioning if knee swells regularly"
+  ],
+
+  "important_notes": [
+    "Limitation of flexion AND extension can be rated separately",
+    "Instability can be rated IN ADDITION to arthritis/limited motion",
+    "Both knees should be examined even if only one is claimed",
+    "Painful motion with arthritis warrants at least a 10% rating",
+    "Examiner must estimate ROM during flare-ups",
+    "Meniscus symptoms may warrant separate rating"
+  ]
+}

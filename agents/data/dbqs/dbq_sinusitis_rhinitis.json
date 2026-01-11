@@ -1,0 +1,171 @@
+{
+  "dbq_name": "Sinusitis, Rhinitis, and Other Conditions of the Nose, Throat, Larynx and Pharynx",
+  "dbq_type": "examination",
+  "condition": "Sinusitis and Rhinitis",
+  "category": "respiratory",
+  "diagnostic_codes": ["6502", "6510", "6511", "6512", "6513", "6514", "6520", "6521", "6522", "6523", "6524"],
+  "cfr_reference": "38 CFR 4.97",
+  "last_updated": "2024-07-20",
+  "version": "v24_1",
+
+  "conditions_covered": {
+    "rhinitis": {
+      "allergic_rhinitis": {
+        "diagnostic_code": "6522",
+        "description": "Allergic inflammation of nasal passages",
+        "levels": [
+          {"rating": 10, "criteria": "Without polyps, but with greater than 50% obstruction of nasal passage on both sides or complete obstruction on one side", "keywords": ["50% obstruction", "complete one side"]},
+          {"rating": 30, "criteria": "With polyps", "keywords": ["polyps"]}
+        ]
+      },
+      "vasomotor_rhinitis": {
+        "diagnostic_code": "6523",
+        "description": "Non-allergic rhinitis triggered by various stimuli"
+      },
+      "granulomatous_rhinitis": {
+        "diagnostic_code": "6524"
+      }
+    },
+    "sinusitis": {
+      "chronic_sinusitis": {
+        "description": "Chronic inflammation of sinuses",
+        "diagnostic_codes": {
+          "pansinusitis": "6510",
+          "ethmoid": "6511",
+          "frontal": "6512",
+          "maxillary": "6513",
+          "sphenoid": "6514"
+        },
+        "general_rating_formula": true,
+        "levels": [
+          {"rating": 0, "criteria": "Detected by X-ray only", "keywords": ["X-ray only", "no symptoms"]},
+          {"rating": 10, "criteria": "One or two incapacitating episodes per year of sinusitis requiring prolonged (lasting four to six weeks) antibiotic treatment, or three to six non-incapacitating episodes per year of sinusitis characterized by headaches, pain, and purulent discharge or crusting", "keywords": ["1-2 incapacitating", "3-6 non-incapacitating", "antibiotics"]},
+          {"rating": 30, "criteria": "Three or more incapacitating episodes per year of sinusitis requiring prolonged (lasting four to six weeks) antibiotic treatment, or more than six non-incapacitating episodes per year of sinusitis characterized by headaches, pain, and purulent discharge or crusting", "keywords": ["3+ incapacitating", "6+ non-incapacitating"]},
+          {"rating": 50, "criteria": "Following radical surgery with chronic osteomyelitis, or near constant sinusitis characterized by headaches, pain and tenderness of affected sinus, and purulent discharge or crusting after repeated surgeries", "keywords": ["radical surgery", "near constant", "repeated surgeries", "osteomyelitis"]}
+        ]
+      }
+    },
+    "deviated_septum": {
+      "diagnostic_code": "6502",
+      "description": "Deviation of nasal septum",
+      "levels": [
+        {"rating": 0, "criteria": "Slight deviation not causing symptoms"},
+        {"rating": 10, "criteria": "Traumatic deviation with 50% obstruction of nasal passage on both sides or complete obstruction on one side", "keywords": ["50% obstruction", "complete obstruction"]}
+      ]
+    },
+    "loss_of_smell": {
+      "diagnostic_code": "6275",
+      "anosmia": "Complete loss of sense of smell",
+      "rating": 10
+    }
+  },
+
+  "exam_sections": [
+    "Diagnosis",
+    "Medical History",
+    "Signs and Symptoms",
+    "Incapacitating Episodes",
+    "Non-Incapacitating Episodes",
+    "Antibiotic Treatment",
+    "Nasal Obstruction",
+    "Polyps",
+    "Surgical History",
+    "Other Pertinent Findings",
+    "Diagnostic Testing",
+    "Functional Impact"
+  ],
+
+  "key_definitions": {
+    "incapacitating_episode": {
+      "description": "Episode requiring bed rest and treatment by a physician",
+      "note": "Typically involves severe symptoms requiring medical intervention"
+    },
+    "non_incapacitating_episode": {
+      "description": "Episode characterized by headaches, pain, and purulent discharge or crusting",
+      "note": "Does not require bed rest but causes significant symptoms"
+    },
+    "prolonged_antibiotic_treatment": "4-6 weeks of antibiotics"
+  },
+
+  "common_symptoms": [
+    "Nasal congestion/obstruction",
+    "Runny nose (rhinorrhea)",
+    "Post-nasal drip",
+    "Facial pain/pressure",
+    "Headaches",
+    "Reduced sense of smell",
+    "Purulent (thick, colored) nasal discharge",
+    "Crusting in nasal passages",
+    "Sneezing",
+    "Sinus tenderness"
+  ],
+
+  "secondary_service_connection": {
+    "rhinitis_as_secondary_to": [
+      {"condition": "Environmental exposures", "connection": "Burn pits, dust, chemicals during service"},
+      {"condition": "Asthma", "connection": "Often coexists with allergic rhinitis"}
+    ],
+    "sleep_apnea_connection": {
+      "description": "Rhinitis/sinusitis can cause or aggravate sleep apnea",
+      "mechanism": "Nasal obstruction contributes to upper airway problems",
+      "claim_tip": "If you have sinusitis/rhinitis AND sleep apnea, consider secondary connection"
+    },
+    "headaches_connection": {
+      "description": "Sinus conditions commonly cause headaches",
+      "claim_tip": "Can claim headaches as secondary to sinusitis"
+    }
+  },
+
+  "presumptive_conditions": {
+    "burn_pit_exposure": {
+      "applies_to": "Veterans with qualifying service under PACT Act",
+      "conditions": ["Sinusitis", "Rhinitis"],
+      "note": "PACT Act made certain respiratory conditions presumptive for burn pit exposure"
+    }
+  },
+
+  "tips_for_veterans": [
+    "Document ALL sinus/rhinitis episodes throughout the year",
+    "Keep records of antibiotic prescriptions and duration",
+    "Track how many days you're incapacitated by sinus problems",
+    "Describe severity of symptoms - headaches, pain, discharge",
+    "Mention if you've had sinus surgery",
+    "Report any loss or reduction of smell",
+    "Document nasal obstruction percentage if known",
+    "Mention if you have nasal polyps",
+    "Describe how condition affects daily life and work",
+    "If exposed to burn pits, document that exposure",
+    "Connect to sleep apnea if applicable"
+  ],
+
+  "common_mistakes": [
+    "Not tracking number of episodes per year",
+    "Failing to document antibiotic treatment duration",
+    "Not distinguishing incapacitating from non-incapacitating episodes",
+    "Not mentioning nasal polyps",
+    "Forgetting to report loss of smell",
+    "Not connecting to potential secondary conditions"
+  ],
+
+  "episode_tracking_tip": {
+    "description": "Keep a log throughout the year",
+    "track": [
+      "Date of each episode",
+      "Duration of symptoms",
+      "Whether it required bed rest (incapacitating)",
+      "Antibiotics prescribed and duration",
+      "Symptoms: headaches, pain, discharge, crusting"
+    ],
+    "why": "Rating depends heavily on NUMBER of episodes per year"
+  },
+
+  "important_notes": [
+    "Rating depends on frequency of episodes - TRACK THEM",
+    "Incapacitating vs non-incapacitating episodes have different thresholds",
+    "Prolonged antibiotic treatment = 4-6 weeks",
+    "50% obstruction threshold for rhinitis ratings",
+    "Polyps automatically warrant 30% for allergic rhinitis",
+    "Rhinitis/sinusitis presumptive under PACT Act for burn pit exposure",
+    "Can contribute to or aggravate sleep apnea"
+  ]
+}

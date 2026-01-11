@@ -1,0 +1,241 @@
+{
+  "I.i.1.A": {
+    "article_id": "554400000181474",
+    "title": "Description and General Information on Duty to Notify and Duty to Assist",
+    "part": "I",
+    "subpart": "i",
+    "chapter": "1",
+    "section": "A"
+  },
+  "I.i.1.B": {
+    "article_id": "554400000181476",
+    "title": "General Information on Due Process",
+    "part": "I",
+    "subpart": "i",
+    "chapter": "1",
+    "section": "B"
+  },
+  "I.i.2.A": {
+    "article_id": "554400000181477",
+    "title": "General Information on Power of Attorney (POA)",
+    "part": "I",
+    "subpart": "i",
+    "chapter": "2",
+    "section": "A"
+  },
+  "I.i.2.B": {
+    "article_id": "554400000181479",
+    "title": "A Representative's Right to Notification and Review of Records",
+    "part": "I",
+    "subpart": "i",
+    "chapter": "2",
+    "section": "B"
+  },
+  "I.i.2.C": {
+    "article_id": "554400000181482",
+    "title": "System Updates for POA Appointments",
+    "part": "I",
+    "subpart": "i",
+    "chapter": "2",
+    "section": "C"
+  },
+  "I.ii.1.A": {
+    "article_id": "554400000181483",
+    "title": "Structure of the Veterans Service Center (VSC)",
+    "part": "I",
+    "subpart": "ii",
+    "chapter": "1",
+    "section": "A"
+  },
+  "I.ii.1.B": {
+    "article_id": "554400000181484",
+    "title": "Organization of the Pension Management Centers (PMCs)",
+    "part": "I",
+    "subpart": "ii",
+    "chapter": "1",
+    "section": "B"
+  },
+  "I.ii.1.C": {
+    "article_id": "554400000181485",
+    "title": "Pension Management Center (PMC) Procedures",
+    "part": "I",
+    "subpart": "ii",
+    "chapter": "1",
+    "section": "C"
+  },
+  "II.i.1.A": {
+    "article_id": "554400000174855",
+    "title": "Centralized Mail (CM) Intake",
+    "part": "II",
+    "subpart": "i",
+    "chapter": "1",
+    "section": "A"
+  },
+  "II.i.1.B": {
+    "article_id": "554400000174856",
+    "title": "Veterans Claims Intake Program (VCIP) Shipping",
+    "part": "II",
+    "subpart": "i",
+    "chapter": "1",
+    "section": "B"
+  },
+  "II.i.2.A": {
+    "article_id": "554400000174858",
+    "title": "Process Overview for Screening Mail",
+    "part": "II",
+    "subpart": "i",
+    "chapter": "2",
+    "section": "A"
+  },
+  "II.i.2.B": {
+    "article_id": "554400000174859",
+    "title": "Recording the Date of Receipt and Handling Signatures and Outdated Forms",
+    "part": "II",
+    "subpart": "i",
+    "chapter": "2",
+    "section": "B"
+  },
+  "II.i.2.C": {
+    "article_id": "554400000174860",
+    "title": "Mail Management",
+    "part": "II",
+    "subpart": "i",
+    "chapter": "2",
+    "section": "C"
+  },
+  "II.i.2.D": {
+    "article_id": "554400000174861",
+    "title": "Handling Specific Types of Mail",
+    "part": "II",
+    "subpart": "i",
+    "chapter": "2",
+    "section": "D"
+  },
+  "II.iii.1.A": {
+    "article_id": "554400000174869",
+    "title": "Applications for Benefits",
+    "part": "II",
+    "subpart": "iii",
+    "chapter": "1",
+    "section": "A"
+  },
+  "II.iii.1.B": {
+    "article_id": "554400000174870",
+    "title": "Screening Applications for Benefit Eligibility",
+    "part": "II",
+    "subpart": "iii",
+    "chapter": "1",
+    "section": "B"
+  },
+  "II.iii.1.C": {
+    "article_id": "554400000174871",
+    "title": "Screening Applications for Substantial Completeness and Notification Requirements",
+    "part": "II",
+    "subpart": "iii",
+    "chapter": "1",
+    "section": "C"
+  },
+  "II.iii.2.A": {
+    "article_id": "554400000174872",
+    "title": "Intent to File (ITF)",
+    "part": "II",
+    "subpart": "iii",
+    "chapter": "2",
+    "section": "A"
+  },
+  "II.iii.2.B": {
+    "article_id": "554400000174873",
+    "title": "Supplemental Claims",
+    "part": "II",
+    "subpart": "iii",
+    "chapter": "2",
+    "section": "B"
+  },
+  "III.ii.2.B": {
+    "article_id": "554400000014119",
+    "title": "Procedures for Obtaining Service Treatment Records (STRs)",
+    "part": "III",
+    "subpart": "ii",
+    "chapter": "2",
+    "section": "B"
+  },
+  "IV.i.1.A": {
+    "article_id": "554400000180494",
+    "title": "Duty to Assist With Providing a Medical Examination or Opinion",
+    "part": "IV",
+    "subpart": "i",
+    "chapter": "1",
+    "section": "A"
+  },
+  "V.ii.4.A": {
+    "article_id": "554400000180492",
+    "title": "Effective Dates",
+    "part": "V",
+    "subpart": "ii",
+    "chapter": "4",
+    "section": "A"
+  },
+  "VIII.i.1.A": {
+    "article_id": "554400000177422",
+    "title": "Developing Claims for SC Based on Herbicide Exposure",
+    "part": "VIII",
+    "subpart": "i",
+    "chapter": "1",
+    "section": "A"
+  },
+  "UNMAPPED_1": {
+    "article_id": "554400000181468",
+    "title": "Unknown - To be determined by scraper",
+    "part": "I",
+    "subpart": "",
+    "chapter": "",
+    "section": ""
+  },
+  "UNMAPPED_2": {
+    "article_id": "554400000181475",
+    "title": "Unknown - To be determined by scraper",
+    "part": "I",
+    "subpart": "",
+    "chapter": "",
+    "section": ""
+  },
+  "UNMAPPED_3": {
+    "article_id": "554400000301268",
+    "title": "Unknown - To be determined by scraper",
+    "part": "",
+    "subpart": "",
+    "chapter": "",
+    "section": ""
+  },
+  "UNMAPPED_4": {
+    "article_id": "554400000173308",
+    "title": "Unknown - To be determined by scraper",
+    "part": "",
+    "subpart": "",
+    "chapter": "",
+    "section": ""
+  },
+  "UNMAPPED_5": {
+    "article_id": "554400000173307",
+    "title": "Unknown - To be determined by scraper",
+    "part": "",
+    "subpart": "",
+    "chapter": "",
+    "section": ""
+  },
+  "UNMAPPED_6": {
+    "article_id": "554400000173306",
+    "title": "Unknown - To be determined by scraper",
+    "part": "",
+    "subpart": "",
+    "chapter": "",
+    "section": ""
+  },
+  "_metadata": {
+    "total_articles": 29,
+    "mapped_articles": 23,
+    "unmapped_articles": 6,
+    "source": "M21 Table of Contents Word Document",
+    "note": "Article IDs extracted from VA M21-1 Adjudication Procedures Manual Table of Contents. Unmapped IDs will have their references determined during scraping."
+  }
+}

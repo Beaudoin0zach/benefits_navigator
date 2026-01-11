@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Agents - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">AI Claims Assistants</h1>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            Powerful AI tools to help you understand VA decisions, identify evidence gaps, and write compelling statements.
+        </p>
+    </div>
+
+    <!-- Agent Cards -->
+    <div class="grid md:grid-cols-3 gap-8 mb-12">
+        {% for agent in agents %}
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+            <div class="h-2 bg-{{ agent.color }}-600"></div>
+            <div class="p-6">
+                <div class="w-14 h-14 bg-{{ agent.color }}-100 rounded-xl flex items-center justify-center mb-4">
+                    {% if agent.icon == 'document-text' %}
+                    <svg class="w-8 h-8 text-{{ agent.color }}-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    {% elif agent.icon == 'search' %}
+                    <svg class="w-8 h-8 text-{{ agent.color }}-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    {% elif agent.icon == 'pencil' %}
+                    <svg class="w-8 h-8 text-{{ agent.color }}-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                    </svg>
+                    {% endif %}
+                </div>
+                <h2 class="text-xl font-bold text-gray-900 mb-2">{{ agent.name }}</h2>
+                <p class="text-gray-600 mb-6">{{ agent.description }}</p>
+                <a href="{% url 'agents:'|add:agent.slug %}"
+                   class="block w-full text-center py-3 px-4 bg-{{ agent.color }}-600 text-white font-medium rounded-lg hover:bg-{{ agent.color }}-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-{{ agent.color }}-500">
+                    Launch Agent
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- How It Works -->
+    <div class="bg-gray-50 rounded-xl p-8 mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">How Our AI Agents Help</h2>
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="text-center">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <span class="text-xl font-bold text-blue-600">1</span>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-2">Provide Information</h3>
+                <p class="text-sm text-gray-600">Paste your decision letter, select conditions, or answer guided questions</p>
+            </div>
+            <div class="text-center">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <span class="text-xl font-bold text-blue-600">2</span>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-2">AI Analysis</h3>
+                <p class="text-sm text-gray-600">Our AI analyzes your input using VA-specific knowledge</p>
+            </div>
+            <div class="text-center">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <span class="text-xl font-bold text-blue-600">3</span>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-2">Get Results</h3>
+                <p class="text-sm text-gray-600">Receive actionable insights, recommendations, or generated content</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <div class="flex">
+            <svg class="w-5 h-5 text-yellow-600 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <div>
+                <h3 class="font-bold text-yellow-800">Important Disclaimer</h3>
+                <p class="text-sm text-yellow-700 mt-1">
+                    These AI tools provide educational assistance only. They do not constitute legal advice and are not a substitute for accredited VA representatives, attorneys, or claims agents. Always verify important information with official sources.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

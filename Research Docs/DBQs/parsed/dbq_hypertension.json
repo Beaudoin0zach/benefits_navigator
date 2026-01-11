@@ -1,0 +1,144 @@
+{
+  "dbq_name": "Hypertension",
+  "dbq_type": "examination",
+  "condition": "Hypertension (High Blood Pressure)",
+  "category": "cardiovascular",
+  "diagnostic_codes": ["7101"],
+  "cfr_reference": "38 CFR 4.104",
+  "last_updated": "2024-07-15",
+  "version": "v24_1",
+
+  "rating_criteria": {
+    "description": "Hypertension is rated based on blood pressure readings and medication requirements",
+    "diagnostic_code": "7101",
+    "levels": [
+      {
+        "rating": 10,
+        "criteria": "Diastolic pressure predominantly 100 or more, OR systolic pressure predominantly 160 or more, OR minimum evaluation for individual with history of diastolic pressure predominantly 100 or more who requires continuous medication for control",
+        "keywords": ["diastolic 100", "systolic 160", "continuous medication"]
+      },
+      {
+        "rating": 20,
+        "criteria": "Diastolic pressure predominantly 110 or more, OR systolic pressure predominantly 200 or more",
+        "keywords": ["diastolic 110", "systolic 200"]
+      },
+      {
+        "rating": 40,
+        "criteria": "Diastolic pressure predominantly 120 or more",
+        "keywords": ["diastolic 120"]
+      },
+      {
+        "rating": 60,
+        "criteria": "Diastolic pressure predominantly 130 or more",
+        "keywords": ["diastolic 130"]
+      }
+    ]
+  },
+
+  "key_definitions": {
+    "diastolic_pressure": "The bottom number - pressure when heart rests between beats",
+    "systolic_pressure": "The top number - pressure when heart beats",
+    "predominantly": "The majority of readings show this level; not just one isolated reading",
+    "hypertensive_heart_disease": "When hypertension causes heart damage, rated under separate code 7007"
+  },
+
+  "blood_pressure_categories": {
+    "normal": "Less than 120/80 mmHg",
+    "elevated": "120-129/<80 mmHg",
+    "stage_1_hypertension": "130-139/80-89 mmHg",
+    "stage_2_hypertension": "140+/90+ mmHg",
+    "hypertensive_crisis": "Higher than 180/120 mmHg"
+  },
+
+  "exam_sections": [
+    "Diagnosis",
+    "Medical History",
+    "Blood Pressure Readings (multiple required)",
+    "Treatment/Medications",
+    "Complications",
+    "Functional Impact"
+  ],
+
+  "blood_pressure_testing": {
+    "requirement": "At least TWO blood pressure readings taken on the day of exam",
+    "additional_readings": "Three or more readings on at least two different days if possible",
+    "historical_review": "Review of treatment records for blood pressure history",
+    "note": "Predominantly means the majority of readings, not just exam day readings"
+  },
+
+  "important_evidence": [
+    "History of blood pressure readings over time",
+    "All hypertension medications with dosages",
+    "Records showing blood pressure was 'predominantly' at certain levels",
+    "Documentation of any hypertensive crises",
+    "Evidence of end-organ damage (heart, kidney, eyes)"
+  ],
+
+  "secondary_conditions": {
+    "description": "Hypertension can cause or be caused by other conditions",
+    "hypertension_as_secondary_to": [
+      {"condition": "Diabetes Mellitus", "connection": "Diabetes commonly causes hypertension"},
+      {"condition": "Kidney Disease", "connection": "Kidney problems can cause hypertension"},
+      {"condition": "Sleep Apnea", "connection": "Sleep apnea is associated with hypertension"},
+      {"condition": "PTSD", "connection": "Chronic stress from PTSD may contribute to hypertension"},
+      {"condition": "Obesity from medications", "connection": "Weight gain from psychiatric meds can cause hypertension"}
+    ],
+    "conditions_secondary_to_hypertension": [
+      {"condition": "Hypertensive Heart Disease", "diagnostic_code": "7007", "connection": "Long-term hypertension damages the heart"},
+      {"condition": "Chronic Kidney Disease", "connection": "Hypertension is a leading cause of kidney disease"},
+      {"condition": "Stroke", "connection": "Hypertension increases stroke risk"},
+      {"condition": "Retinopathy", "connection": "High blood pressure can damage eye blood vessels"}
+    ]
+  },
+
+  "presumptive_service_connection": {
+    "agent_orange": {
+      "status": "Presumptive as of 2021",
+      "applies_to": "Veterans exposed to Agent Orange or other herbicides",
+      "note": "Added to presumptive list - no nexus letter required for exposed veterans"
+    },
+    "camp_lejeune": {
+      "applies_to": "Veterans who served at Camp Lejeune for 30+ days between Aug 1953 and Dec 1987",
+      "note": "Hypertension is one of the Camp Lejeune presumptive conditions"
+    }
+  },
+
+  "tips_for_veterans": [
+    "Track your blood pressure at home and bring logs to exam",
+    "Document ALL blood pressure medications with dosages",
+    "Bring records showing blood pressure history over time",
+    "Mention any hypertensive emergencies or crises",
+    "Report if blood pressure is uncontrolled despite medication",
+    "Document any end-organ damage (heart, kidney, eye problems)",
+    "If secondary to another condition, get a nexus letter",
+    "Request multiple readings during exam if first reading is low",
+    "Don't take extra medication before exam - be honest about control",
+    "Mention if you have 'white coat hypertension' affecting readings"
+  ],
+
+  "common_mistakes": [
+    "Not having enough blood pressure readings to show 'predominantly' elevated",
+    "Taking extra medication before exam which lowers readings",
+    "Not documenting medication requirements",
+    "Failing to claim as secondary to diabetes or other conditions",
+    "Not reporting complications or end-organ damage",
+    "Not knowing about Agent Orange presumptive connection"
+  ],
+
+  "10_percent_medication_note": {
+    "description": "Key provision for 10% rating",
+    "criteria": "History of diastolic pressure predominantly 100+ WHO REQUIRES continuous medication for control",
+    "explanation": "Even if current readings are controlled, you can get 10% if you needed medication to achieve control",
+    "evidence_needed": "Medical records showing diastolic was 100+ before medication started"
+  },
+
+  "important_notes": [
+    "Hypertension is presumptive for Agent Orange exposure (as of 2021)",
+    "Hypertension is presumptive for Camp Lejeune water contamination",
+    "'Predominantly' means majority of readings, not just exam day",
+    "Controlled hypertension with medication can still warrant 10%",
+    "Hypertensive heart disease (7007) is rated separately from hypertension (7101)",
+    "Secondary to diabetes is a very common and valid claim pathway",
+    "Multiple blood pressure readings over time are more persuasive than single reading"
+  ]
+}

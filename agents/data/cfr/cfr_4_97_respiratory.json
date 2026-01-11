@@ -1,0 +1,113 @@
+{
+  "cfr_reference": "38 CFR 4.97",
+  "title": "Schedule of Ratings - Respiratory System",
+  "description": "Rating criteria for respiratory conditions",
+  "last_updated": "2024",
+
+  "general_rating_provisions": {
+    "pft_requirements": "Pulmonary function tests (PFTs) are required for rating most respiratory conditions",
+    "post_bronchodilator": "Use post-bronchodilator results unless pre-bronchodilator results are more favorable to the veteran",
+    "dlco_requirement": "DLCO (SB) required when there is diffusion impairment"
+  },
+
+  "diagnostic_codes": {
+    "6600": {
+      "name": "Bronchitis, chronic",
+      "levels": [
+        {"rating": 0, "criteria": "FEV-1 of 71-80% predicted, or FEV-1/FVC of 71-80%"},
+        {"rating": 10, "criteria": "FEV-1 of 56-70% predicted, or FEV-1/FVC of 56-70%"},
+        {"rating": 30, "criteria": "FEV-1 of 40-55% predicted, or FEV-1/FVC of 40-55%, or DLCO (SB) 40-55% predicted, or maximum oxygen consumption of 15-20 ml/kg/min"},
+        {"rating": 60, "criteria": "FEV-1 less than 40% predicted, or FEV-1/FVC less than 40%, or DLCO (SB) less than 40%, or maximum oxygen consumption less than 15 ml/kg/min, or cor pulmonale, or right ventricular hypertrophy, or pulmonary hypertension, or acute respiratory failure, or requires outpatient oxygen therapy"}
+      ]
+    },
+    "6602": {
+      "name": "Asthma, bronchial",
+      "levels": [
+        {"rating": 10, "criteria": "FEV-1 of 71-80% predicted, or FEV-1/FVC of 71-80%, or intermittent inhalational or oral bronchodilator therapy"},
+        {"rating": 30, "criteria": "FEV-1 of 56-70% predicted, or FEV-1/FVC of 56-70%, or daily inhalational or oral bronchodilator therapy, or inhalational anti-inflammatory medication"},
+        {"rating": 60, "criteria": "FEV-1 of 40-55% predicted, or FEV-1/FVC of 40-55%, or at least monthly visits to physician for required care of exacerbations, or intermittent (at least 3 per year) courses of systemic corticosteroids"},
+        {"rating": 100, "criteria": "FEV-1 less than 40% predicted, or FEV-1/FVC less than 40%, or more than one attack per week with episodes of respiratory failure, or requires daily use of systemic high dose corticosteroids or immuno-suppressive medications"}
+      ],
+      "note": "In the absence of clinical findings of asthma at time of examination, a verified history of asthmatic attacks must be of record"
+    },
+    "6604": {
+      "name": "Chronic obstructive pulmonary disease (COPD)",
+      "levels": [
+        {"rating": 10, "criteria": "FEV-1 of 71-80% predicted, or FEV-1/FVC of 71-80%, or DLCO (SB) 66-80% predicted"},
+        {"rating": 30, "criteria": "FEV-1 of 56-70% predicted, or FEV-1/FVC of 56-70%, or DLCO (SB) 56-65% predicted"},
+        {"rating": 60, "criteria": "FEV-1 of 40-55% predicted, or FEV-1/FVC of 40-55%, or DLCO (SB) 40-55% predicted, or maximum oxygen consumption of 15-20 ml/kg/min with cardiorespiratory limit"},
+        {"rating": 100, "criteria": "FEV-1 less than 40% predicted, or FEV-1/FVC less than 40%, or DLCO (SB) less than 40% predicted, or maximum exercise capacity less than 15 ml/kg/min oxygen consumption with cardiac or respiratory limitation, or cor pulmonale, or right ventricular hypertrophy, or pulmonary hypertension, or episode(s) of acute respiratory failure, or requires outpatient oxygen therapy"}
+      ]
+    },
+    "6833": {
+      "name": "Interstitial lung disease/pulmonary fibrosis",
+      "levels": [
+        {"rating": 10, "criteria": "FVC of 75-80% predicted, or DLCO (SB) of 66-80% predicted"},
+        {"rating": 30, "criteria": "FVC of 65-74% predicted, or DLCO (SB) of 56-65% predicted"},
+        {"rating": 60, "criteria": "FVC of 50-64% predicted, or DLCO (SB) of 40-55% predicted, or maximum exercise capacity of 15-20 ml/kg/min O2 consumption with cardiorespiratory limitation"},
+        {"rating": 100, "criteria": "FVC less than 50% predicted, or DLCO (SB) less than 40% predicted, or maximum exercise capacity less than 15 ml/kg/min O2 consumption with cardiorespiratory limitation, or cor pulmonale or pulmonary hypertension, or requires outpatient oxygen therapy"}
+      ]
+    },
+    "6847": {
+      "name": "Sleep apnea syndromes (obstructive, central, mixed)",
+      "levels": [
+        {"rating": 0, "criteria": "Asymptomatic but with documented sleep disorder breathing"},
+        {"rating": 30, "criteria": "Persistent day-time hypersomnolence"},
+        {"rating": 50, "criteria": "Requires use of breathing assistance device such as continuous airway pressure (CPAP) machine"},
+        {"rating": 100, "criteria": "Chronic respiratory failure with carbon dioxide retention or cor pulmonale, or requires tracheostomy"}
+      ],
+      "note": "Diagnosis must be confirmed by sleep study"
+    }
+  },
+
+  "sinusitis_rhinitis": {
+    "6502": {
+      "name": "Septum, nasal, deviation of",
+      "levels": [
+        {"rating": 0, "criteria": "Slight deviation with no symptoms"},
+        {"rating": 10, "criteria": "Traumatic only, with 50% obstruction of nasal passage on both sides or complete obstruction on one side"}
+      ]
+    },
+    "6510_to_6514": {
+      "name": "Sinusitis (pansinusitis, ethmoid, frontal, maxillary, sphenoid)",
+      "levels": [
+        {"rating": 0, "criteria": "Detected by X-ray only"},
+        {"rating": 10, "criteria": "One or two incapacitating episodes per year requiring prolonged (4-6 weeks) antibiotic treatment, or 3-6 non-incapacitating episodes per year with headaches, pain, and purulent discharge or crusting"},
+        {"rating": 30, "criteria": "Three or more incapacitating episodes per year requiring prolonged antibiotic treatment, or more than 6 non-incapacitating episodes per year"},
+        {"rating": 50, "criteria": "Following radical surgery with chronic osteomyelitis, or near constant sinusitis with headaches, pain, tenderness, and purulent discharge or crusting after repeated surgeries"}
+      ]
+    },
+    "6522": {
+      "name": "Allergic or vasomotor rhinitis",
+      "levels": [
+        {"rating": 10, "criteria": "Without polyps, but with greater than 50% obstruction of nasal passage on both sides or complete obstruction on one side"},
+        {"rating": 30, "criteria": "With polyps"}
+      ]
+    }
+  },
+
+  "pact_act_presumptives": {
+    "description": "Conditions presumptive for veterans with qualifying service under PACT Act",
+    "conditions": [
+      "Asthma diagnosed after service",
+      "Chronic bronchitis",
+      "COPD",
+      "Constrictive bronchiolitis",
+      "Interstitial lung disease",
+      "Pleuritis",
+      "Pulmonary fibrosis",
+      "Sarcoidosis",
+      "Chronic sinusitis",
+      "Chronic rhinitis"
+    ]
+  },
+
+  "important_rules": [
+    "PFTs required for most respiratory ratings",
+    "Post-bronchodilator results used unless pre is more favorable",
+    "Sleep apnea requires confirmed diagnosis by sleep study",
+    "CPAP use automatically qualifies for 50% sleep apnea rating",
+    "Outpatient oxygen therapy typically supports 100% rating",
+    "Many conditions presumptive under PACT Act for burn pit exposure"
+  ]
+}

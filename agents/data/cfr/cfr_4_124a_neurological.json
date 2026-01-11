@@ -1,0 +1,171 @@
+{
+  "cfr_reference": "38 CFR 4.124a",
+  "title": "Schedule of Ratings - Neurological Conditions and Convulsive Disorders",
+  "description": "Rating criteria for peripheral nerve conditions, headaches, and seizures",
+  "last_updated": "2024",
+
+  "general_rating_rules": {
+    "complete_vs_incomplete": {
+      "complete_paralysis": "Total loss of function of the nerve",
+      "incomplete_paralysis": {
+        "mild": "Minor motor or sensory disturbance",
+        "moderate": "Noticeable motor weakness and sensory disturbance",
+        "severe": "Marked motor weakness or sensory disturbance, may have muscle atrophy"
+      }
+    },
+    "major_vs_minor": {
+      "description": "Upper extremity nerve ratings differ based on dominance",
+      "major": "Dominant arm (usually right for right-handed people)",
+      "minor": "Non-dominant arm",
+      "ambidextrous": "Treat affected arm as major"
+    }
+  },
+
+  "headaches": {
+    "8100": {
+      "name": "Migraine",
+      "levels": [
+        {"rating": 0, "criteria": "Less frequent attacks"},
+        {"rating": 10, "criteria": "Characteristic prostrating attacks averaging one in 2 months over the last several months"},
+        {"rating": 30, "criteria": "Characteristic prostrating attacks occurring on an average once a month over the last several months"},
+        {"rating": 50, "criteria": "Very frequent completely prostrating and prolonged attacks productive of severe economic inadaptability"}
+      ],
+      "definitions": {
+        "prostrating": "Causing extreme exhaustion, powerlessness, debilitation, or incapacitation with substantial inability to engage in ordinary activities",
+        "completely_prostrating": "Total incapacitation during attack",
+        "severe_economic_inadaptability": "Significantly impacts ability to work and earn income (does not require unemployment)"
+      }
+    }
+  },
+
+  "upper_extremity_nerves": {
+    "8510": {
+      "name": "Upper radicular group (fifth and sixth cervicals)",
+      "paralysis_ratings": {
+        "complete": {"major": 70, "minor": 60, "description": "All shoulder and elbow movements lost or severely affected; hand and wrist movements not affected"},
+        "severe": {"major": 50, "minor": 40},
+        "moderate": {"major": 40, "minor": 30},
+        "mild": {"major": 20, "minor": 20}
+      }
+    },
+    "8514": {
+      "name": "Musculospiral nerve (radial nerve)",
+      "paralysis_ratings": {
+        "complete": {"major": 70, "minor": 60, "description": "Drop of hand and fingers, wrist and fingers perpetually flexed"},
+        "severe": {"major": 50, "minor": 40},
+        "moderate": {"major": 30, "minor": 20},
+        "mild": {"major": 20, "minor": 20}
+      }
+    },
+    "8515": {
+      "name": "Median nerve",
+      "paralysis_ratings": {
+        "complete": {"major": 70, "minor": 60, "description": "Hand inclined to ulnar side; index and middle fingers cannot make fist; cannot flex distal phalanx of thumb; atrophy of thenar muscles"},
+        "severe": {"major": 50, "minor": 40},
+        "moderate": {"major": 30, "minor": 20},
+        "mild": {"major": 10, "minor": 10}
+      },
+      "common_condition": "Carpal tunnel syndrome"
+    },
+    "8516": {
+      "name": "Ulnar nerve",
+      "paralysis_ratings": {
+        "complete": {"major": 60, "minor": 50, "description": "Griffin claw deformity; cannot spread fingers; cannot adduct thumb; atrophy of interossei"},
+        "severe": {"major": 40, "minor": 30},
+        "moderate": {"major": 30, "minor": 20},
+        "mild": {"major": 10, "minor": 10}
+      }
+    }
+  },
+
+  "lower_extremity_nerves": {
+    "8520": {
+      "name": "Sciatic nerve",
+      "paralysis_ratings": {
+        "complete": {"rating": 80, "description": "Foot dangles and drops, no active movement possible below the knee, flexion of knee weakened or lost"},
+        "severe_with_marked_muscular_atrophy": {"rating": 60},
+        "moderately_severe": {"rating": 40},
+        "moderate": {"rating": 20},
+        "mild": {"rating": 10}
+      },
+      "common_condition": "Lumbar radiculopathy",
+      "note": "Most commonly claimed lower extremity nerve condition"
+    },
+    "8521": {
+      "name": "External popliteal nerve (common peroneal)",
+      "paralysis_ratings": {
+        "complete": {"rating": 40, "description": "Foot drop and slight droop of first phalanges of all toes; cannot dorsiflex foot; extension of proximal phalanges lost"},
+        "severe": {"rating": 30},
+        "moderate": {"rating": 20},
+        "mild": {"rating": 10}
+      }
+    },
+    "8524": {
+      "name": "Internal popliteal nerve (tibial)",
+      "paralysis_ratings": {
+        "complete": {"rating": 40, "description": "Plantar flexion lost, cannot flex toes or move foot inward; atrophy of plantar muscles"},
+        "severe": {"rating": 30},
+        "moderate": {"rating": 20},
+        "mild": {"rating": 10}
+      }
+    },
+    "8525": {
+      "name": "Posterior tibial nerve",
+      "paralysis_ratings": {
+        "complete": {"rating": 30},
+        "severe": {"rating": 20},
+        "moderate": {"rating": 10},
+        "mild": {"rating": 10}
+      }
+    },
+    "8526": {
+      "name": "Anterior crural nerve (femoral)",
+      "paralysis_ratings": {
+        "complete": {"rating": 40, "description": "Quadriceps paralysis"},
+        "severe": {"rating": 30},
+        "moderate": {"rating": 20},
+        "mild": {"rating": 10}
+      }
+    },
+    "8529": {
+      "name": "External cutaneous nerve of thigh",
+      "paralysis_ratings": {
+        "severe_to_complete": {"rating": 10},
+        "mild_to_moderate": {"rating": 0}
+      },
+      "common_condition": "Meralgia paresthetica"
+    }
+  },
+
+  "epilepsy_seizures": {
+    "8910": {
+      "name": "Epilepsy, grand mal",
+      "levels": [
+        {"rating": 10, "criteria": "A confirmed diagnosis with a history of seizures"},
+        {"rating": 20, "criteria": "At least 1 major seizure in the last 2 years; or at least 2 minor seizures in the last 6 months"},
+        {"rating": 40, "criteria": "At least 1 major seizure in the last 6 months or 2 in the last year; or averaging at least 5-8 minor seizures weekly"},
+        {"rating": 60, "criteria": "Averaging at least 1 major seizure in 4 months over the last year; or 9-10 minor seizures per week"},
+        {"rating": 80, "criteria": "Averaging at least 1 major seizure in 3 months over the last year; or more than 10 minor seizures weekly"},
+        {"rating": 100, "criteria": "Averaging at least 1 major seizure per month over the last year"}
+      ]
+    },
+    "8911": {
+      "name": "Epilepsy, petit mal",
+      "uses_same_criteria_as": "8910"
+    }
+  },
+
+  "important_rules": [
+    "Upper extremity ratings differ based on dominant (major) vs non-dominant (minor) arm",
+    "Radiculopathy should always be claimed separately from spine conditions",
+    "Each affected nerve can be rated separately",
+    "Both sides (bilateral) can be rated separately",
+    "Prostrating for headaches means unable to perform ordinary activities",
+    "50% headache rating requires both frequent attacks AND economic impact"
+  ],
+
+  "radiculopathy_claim_tip": {
+    "importance": "Critical",
+    "message": "If you have a spine condition (neck or back), ALWAYS claim radiculopathy as a secondary condition. Radiculopathy is rated separately from the spine condition itself and can significantly increase overall disability rating."
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "dbq_name": "Headaches (Including Migraine Headaches)",
+  "dbq_type": "examination",
+  "condition": "Headaches and Migraines",
+  "category": "neurological",
+  "diagnostic_codes": ["8100"],
+  "cfr_reference": "38 CFR 4.124a",
+  "last_updated": "2024-07-09",
+  "version": "v24_1",
+
+  "rating_criteria": {
+    "description": "Headaches are rated based on frequency and severity of prostrating attacks and economic impact",
+    "diagnostic_code": "8100",
+    "levels": [
+      {
+        "rating": 0,
+        "criteria": "Less frequent attacks",
+        "keywords": ["infrequent", "less frequent", "rare attacks"]
+      },
+      {
+        "rating": 10,
+        "criteria": "Characteristic prostrating attacks averaging one in 2 months over the last several months",
+        "keywords": ["one in 2 months", "bimonthly", "prostrating"]
+      },
+      {
+        "rating": 30,
+        "criteria": "Characteristic prostrating attacks occurring on an average once a month over the last several months",
+        "keywords": ["once a month", "monthly", "prostrating attacks"]
+      },
+      {
+        "rating": 50,
+        "criteria": "Very frequent completely prostrating and prolonged attacks productive of severe economic inadaptability",
+        "keywords": ["very frequent", "completely prostrating", "prolonged", "severe economic inadaptability"]
+      }
+    ]
+  },
+
+  "key_definitions": {
+    "prostrating": {
+      "va_definition": "Causing extreme exhaustion, powerlessness, debilitation or incapacitation with substantial inability to engage in ordinary activities",
+      "examples": [
+        "Unable to work during attack",
+        "Must lie down in dark room",
+        "Cannot perform normal daily activities",
+        "Debilitating pain requiring rest"
+      ]
+    },
+    "completely_prostrating": {
+      "description": "More severe than prostrating - total incapacitation during attack",
+      "note": "Required for 50% rating along with prolonged duration"
+    },
+    "severe_economic_inadaptability": {
+      "description": "Headaches significantly impact ability to work and earn income",
+      "note": "Does not require unemployment, but must show substantial work impact"
+    }
+  },
+
+  "headache_types": [
+    {
+      "type": "Migraine (including variants)",
+      "characteristics": ["Pulsating/throbbing pain", "Often one-sided", "Nausea/vomiting", "Light/sound sensitivity", "Aura possible"]
+    },
+    {
+      "type": "Tension",
+      "characteristics": ["Band-like pressure", "Both sides of head", "Mild to moderate", "No nausea typically"]
+    },
+    {
+      "type": "Cluster",
+      "characteristics": ["Severe unilateral pain", "Around eye/temple", "Short duration (15min-3hrs)", "Occur in clusters"]
+    }
+  ],
+
+  "common_symptoms": {
+    "headache_pain": [
+      "Constant head pain",
+      "Pulsating or throbbing head pain",
+      "Pain localized to one side of head",
+      "Pain on both sides of head",
+      "Pain worsens with physical activity"
+    ],
+    "associated_symptoms": [
+      "Nausea",
+      "Vomiting",
+      "Sensitivity to light (photophobia)",
+      "Sensitivity to sound (phonophobia)",
+      "Changes in vision (scotoma, flashes, tunnel vision)",
+      "Sensory changes (pins and needles in extremities)"
+    ]
+  },
+
+  "exam_sections": [
+    "Diagnosis",
+    "Medical History",
+    "Symptoms",
+    "Prostrating Attacks of Headache Pain",
+    "Other Pertinent Physical Findings",
+    "Diagnostic Testing",
+    "Functional Impact"
+  ],
+
+  "critical_documentation": {
+    "frequency": {
+      "description": "How often prostrating attacks occur",
+      "for_50_percent": "Very frequent - more than once per month",
+      "for_30_percent": "Once per month average",
+      "for_10_percent": "Once every 2 months average"
+    },
+    "duration": {
+      "description": "How long each attack lasts",
+      "importance": "Prolonged attacks support higher rating"
+    },
+    "severity": {
+      "prostrating": "Unable to perform ordinary activities",
+      "completely_prostrating": "Total incapacitation"
+    },
+    "economic_impact": {
+      "description": "How headaches affect work/income",
+      "examples": ["Missed work days", "Reduced productivity", "Job loss", "Unable to maintain employment"]
+    }
+  },
+
+  "tips_for_veterans": [
+    "Keep a detailed headache diary documenting EVERY attack",
+    "Record date, time, duration, and severity of each headache",
+    "Document what you cannot do during an attack (this shows prostration)",
+    "Track missed work days and reduced productivity",
+    "Describe your WORST headaches, not just average ones",
+    "Mention ALL symptoms: nausea, light sensitivity, etc.",
+    "Document medications taken and their effectiveness",
+    "Explain how headaches affect your job and income",
+    "Get buddy statements from family/coworkers who witness attacks",
+    "Bring medication records showing continuous treatment"
+  ],
+
+  "common_mistakes": [
+    "Not documenting frequency of prostrating attacks",
+    "Failing to explain what 'prostrating' means for you",
+    "Not tracking economic/work impact",
+    "Minimizing symptoms during examination",
+    "Not keeping a headache diary",
+    "Forgetting to mention all associated symptoms",
+    "Not explaining how attacks affect daily activities"
+  ],
+
+  "secondary_service_connection": {
+    "common_primaries": [
+      {"condition": "Traumatic Brain Injury (TBI)", "connection": "Post-traumatic headaches are very common after TBI"},
+      {"condition": "PTSD", "connection": "Stress and anxiety can trigger and worsen migraines"},
+      {"condition": "Cervical spine condition", "connection": "Neck problems can cause cervicogenic headaches"},
+      {"condition": "Tinnitus", "connection": "Associated with headaches in some veterans"},
+      {"condition": "Sinusitis/Rhinitis", "connection": "Sinus conditions can cause headache pain"}
+    ]
+  },
+
+  "important_notes": [
+    "Prostrating = unable to perform ordinary activities during attack",
+    "50% rating requires BOTH very frequent attacks AND severe economic impact",
+    "Keep detailed records - frequency is KEY to rating",
+    "Economic inadaptability doesn't require unemployment",
+    "All headache types (migraine, tension, cluster) are rated under same criteria",
+    "Associated symptoms (nausea, light sensitivity) support migraine diagnosis"
+  ]
+}

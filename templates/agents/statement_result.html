@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}Your Personal Statement - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+        <a href="{% url 'agents:statement_generator' %}" class="text-green-600 hover:text-green-800 text-sm mb-2 inline-block">&larr; Generate Another Statement</a>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Personal Statement: {{ statement.condition }}</h1>
+        <p class="text-gray-500">
+            {{ statement.get_statement_type_display }} • Generated {{ statement.created_at|date:"F j, Y" }}
+            • {{ statement.word_count }} words
+        </p>
+    </div>
+
+    {% if statement.is_finalized %}
+    <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+        <div class="flex items-center">
+            <svg class="w-5 h-5 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <span class="text-green-800 font-medium">Statement finalized and saved</span>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Statement Display/Edit -->
+    <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="font-bold text-gray-900">Your Statement</h2>
+            <div class="flex gap-2">
+                <button onclick="copyStatement()" class="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50">
+                    Copy to Clipboard
+                </button>
+                <button onclick="window.print()" class="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50">
+                    Print
+                </button>
+            </div>
+        </div>
+
+        {% if statement.is_finalized %}
+        <!-- Show final statement (read-only) -->
+        <div id="statement-text" class="prose max-w-none whitespace-pre-wrap text-gray-700 leading-relaxed">{{ statement.final_statement }}</div>
+        {% else %}
+        <!-- Editable form -->
+        <form method="post" action="{% url 'agents:statement_save_final' statement.pk %}">
+            {% csrf_token %}
+            <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-2">Review and edit the generated statement below, then save your final version:</p>
+                <textarea id="statement-text" name="final_statement" rows="20"
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 font-mono text-sm leading-relaxed">{{ statement.final_statement|default:statement.generated_statement }}</textarea>
+            </div>
+            <button type="submit"
+                    class="w-full py-3 px-4 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700">
+                Save Final Statement
+            </button>
+        </form>
+        {% endif %}
+    </div>
+
+    <!-- Original Input Summary -->
+    <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
+        <h2 class="font-bold text-gray-900 mb-4">Information You Provided</h2>
+        <dl class="space-y-4 text-sm">
+            <div>
+                <dt class="font-medium text-gray-700">In-Service Event:</dt>
+                <dd class="text-gray-600 mt-1">{{ statement.in_service_event }}</dd>
+            </div>
+            <div>
+                <dt class="font-medium text-gray-700">Current Symptoms:</dt>
+                <dd class="text-gray-600 mt-1">{{ statement.current_symptoms }}</dd>
+            </div>
+            <div>
+                <dt class="font-medium text-gray-700">Daily Life Impact:</dt>
+                <dd class="text-gray-600 mt-1">{{ statement.daily_impact }}</dd>
+            </div>
+            {% if statement.work_impact %}
+            <div>
+                <dt class="font-medium text-gray-700">Work Impact:</dt>
+                <dd class="text-gray-600 mt-1">{{ statement.work_impact }}</dd>
+            </div>
+            {% endif %}
+            {% if statement.treatment_history %}
+            <div>
+                <dt class="font-medium text-gray-700">Treatment History:</dt>
+                <dd class="text-gray-600 mt-1">{{ statement.treatment_history }}</dd>
+            </div>
+            {% endif %}
+            {% if statement.worst_days %}
+            <div>
+                <dt class="font-medium text-gray-700">Worst Days:</dt>
+                <dd class="text-gray-600 mt-1">{{ statement.worst_days }}</dd>
+            </div>
+            {% endif %}
+        </dl>
+    </div>
+
+    <!-- Tips for Using -->
+    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-8">
+        <h3 class="font-bold text-yellow-900 mb-2">Next Steps</h3>
+        <ul class="text-sm text-yellow-800 space-y-1">
+            <li>• Review and personalize the statement - add specific dates and details you remember</li>
+            <li>• Print or copy the statement for your records</li>
+            <li>• Sign and date the statement before submitting to the VA</li>
+            <li>• Keep a copy for your records</li>
+            <li>• Consider having a buddy statement to support your claim</li>
+        </ul>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex gap-4">
+        <a href="{% url 'agents:statement_generator' %}"
+           class="flex-1 text-center py-3 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50">
+            Generate Another Statement
+        </a>
+        <a href="{% url 'agents:evidence_gap' %}"
+           class="flex-1 text-center py-3 px-4 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700">
+            Check Evidence Gaps
+        </a>
+    </div>
+</div>
+
+<script>
+function copyStatement() {
+    const text = document.getElementById('statement-text');
+    const content = text.tagName === 'TEXTAREA' ? text.value : text.innerText;
+
+    navigator.clipboard.writeText(content).then(() => {
+        alert('Statement copied to clipboard!');
+    }).catch(err => {
+        console.error('Failed to copy:', err);
+    });
+}
+</script>
+
+<style>
+@media print {
+    nav, footer, .no-print, button, a {
+        display: none !important;
+    }
+    .bg-white {
+        box-shadow: none !important;
+        border: none !important;
+    }
+}
+</style>
+{% endblock %}

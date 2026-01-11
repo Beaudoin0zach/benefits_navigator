@@ -1,0 +1,236 @@
+{
+  "dbq_name": "Peripheral Nerves Conditions (Not Including Diabetic Sensory-Motor Peripheral Neuropathy)",
+  "dbq_type": "examination",
+  "condition": "Peripheral Nerve Conditions",
+  "category": "neurological",
+  "diagnostic_codes": ["8510-8730"],
+  "cfr_reference": "38 CFR 4.123, 4.124, 4.124a",
+  "last_updated": "2024-08-15",
+  "version": "v24_1",
+
+  "rating_criteria": {
+    "description": "Peripheral nerve conditions are rated based on degree of paralysis - complete or incomplete",
+    "general_formula": "Diseases of the Peripheral Nerves",
+    "paralysis_types": {
+      "complete_paralysis": "Total loss of function of the nerve",
+      "incomplete_paralysis": {
+        "severe": "Marked muscular atrophy, severe sensory disturbances",
+        "moderate": "Noticeable weakness and sensory changes",
+        "mild": "Minor weakness or sensory disturbances"
+      }
+    }
+  },
+
+  "common_peripheral_nerves": {
+    "upper_extremity": [
+      {
+        "nerve": "Radiculopathy - Upper",
+        "description": "Nerve root compression in cervical spine",
+        "diagnostic_codes": ["8510-8519"],
+        "ratings": {
+          "mild": {"major": 20, "minor": 20},
+          "moderate": {"major": 40, "minor": 30},
+          "severe": {"major": 50, "minor": 40}
+        }
+      },
+      {
+        "nerve": "Median Nerve (Carpal Tunnel)",
+        "diagnostic_code": "8515",
+        "location": "Wrist/hand - thumb, index, middle fingers",
+        "ratings": {
+          "mild": {"major": 10, "minor": 10},
+          "moderate": {"major": 30, "minor": 20},
+          "severe": {"major": 50, "minor": 40},
+          "complete": {"major": 70, "minor": 60}
+        }
+      },
+      {
+        "nerve": "Ulnar Nerve",
+        "diagnostic_code": "8516",
+        "location": "Elbow/wrist - ring and little fingers",
+        "ratings": {
+          "mild": {"major": 10, "minor": 10},
+          "moderate": {"major": 30, "minor": 20},
+          "severe": {"major": 40, "minor": 30},
+          "complete": {"major": 60, "minor": 50}
+        }
+      },
+      {
+        "nerve": "Radial Nerve",
+        "diagnostic_code": "8514",
+        "location": "Arm - wrist drop possible",
+        "ratings": {
+          "mild": {"major": 20, "minor": 20},
+          "moderate": {"major": 30, "minor": 20},
+          "severe": {"major": 50, "minor": 40},
+          "complete": {"major": 70, "minor": 60}
+        }
+      }
+    ],
+    "lower_extremity": [
+      {
+        "nerve": "Radiculopathy - Lower (Sciatic roots)",
+        "description": "Nerve root compression in lumbar spine",
+        "diagnostic_codes": ["8520"],
+        "very_common": true,
+        "ratings": {
+          "mild": 10,
+          "moderate": 20,
+          "moderately_severe": 40,
+          "severe_with_foot_drop": 60,
+          "complete": 80
+        }
+      },
+      {
+        "nerve": "External Popliteal (Peroneal) Nerve",
+        "diagnostic_code": "8521",
+        "location": "Lower leg - foot drop",
+        "ratings": {
+          "mild": 10,
+          "moderate": 20,
+          "severe": 30,
+          "complete": 40
+        }
+      },
+      {
+        "nerve": "Femoral Nerve",
+        "diagnostic_code": "8526",
+        "location": "Thigh - quadriceps",
+        "ratings": {
+          "mild": 10,
+          "moderate": 20,
+          "severe": 30,
+          "complete": 40
+        }
+      },
+      {
+        "nerve": "External Cutaneous Nerve of Thigh",
+        "diagnostic_code": "8529",
+        "description": "Meralgia paresthetica - lateral thigh numbness",
+        "ratings": {
+          "mild_to_moderate": 0,
+          "severe_to_complete": 10
+        }
+      }
+    ]
+  },
+
+  "sciatic_nerve_detail": {
+    "diagnostic_code": "8520",
+    "description": "Most commonly rated peripheral nerve condition for veterans",
+    "often_secondary_to": "Lumbar spine (back) conditions",
+    "levels": [
+      {"rating": 10, "criteria": "Mild incomplete paralysis", "keywords": ["mild", "slight numbness", "minor weakness"]},
+      {"rating": 20, "criteria": "Moderate incomplete paralysis", "keywords": ["moderate", "noticeable weakness", "numbness"]},
+      {"rating": 40, "criteria": "Moderately severe incomplete paralysis", "keywords": ["moderately severe", "significant weakness"]},
+      {"rating": 60, "criteria": "Severe incomplete paralysis with marked muscular atrophy", "keywords": ["severe", "muscular atrophy", "foot drop"]},
+      {"rating": 80, "criteria": "Complete paralysis - foot dangles and drops, no active movement below knee, weakened or lost knee flexion", "keywords": ["complete", "paralysis", "foot drop", "no movement"]}
+    ]
+  },
+
+  "exam_sections": [
+    "Diagnosis",
+    "Medical History",
+    "Symptoms and Signs",
+    "Nerve Conduction Studies/EMG Results",
+    "Muscle Strength Testing",
+    "Sensory Examination",
+    "Reflexes",
+    "Trophic Changes",
+    "Gait and Coordination",
+    "Functional Impact"
+  ],
+
+  "key_testing": {
+    "nerve_conduction_study": "Measures speed of electrical signals in nerves",
+    "electromyography_emg": "Measures electrical activity in muscles",
+    "importance": "Objective testing that supports severity level"
+  },
+
+  "symptoms_by_severity": {
+    "mild": [
+      "Occasional numbness or tingling",
+      "Minor sensory changes",
+      "No significant weakness",
+      "Minimal functional impact"
+    ],
+    "moderate": [
+      "Frequent numbness and tingling",
+      "Noticeable weakness",
+      "Some functional limitations",
+      "Reduced grip strength or foot strength"
+    ],
+    "severe": [
+      "Constant numbness or pain",
+      "Marked weakness",
+      "Muscle atrophy visible",
+      "Significant functional impairment",
+      "May have foot drop or wrist drop"
+    ],
+    "complete": [
+      "No sensation in nerve distribution",
+      "No motor function",
+      "Obvious muscle wasting",
+      "Total functional loss of affected area"
+    ]
+  },
+
+  "secondary_service_connection": {
+    "very_common": true,
+    "typical_primaries": [
+      {"condition": "Lumbar spine (back) condition", "connection": "Causes radiculopathy in legs", "most_common": true},
+      {"condition": "Cervical spine (neck) condition", "connection": "Causes radiculopathy in arms"},
+      {"condition": "Diabetes Mellitus", "connection": "Causes diabetic peripheral neuropathy", "note": "Use separate Diabetic Neuropathy DBQ"},
+      {"condition": "Traumatic injury", "connection": "Direct nerve damage from injury"}
+    ]
+  },
+
+  "radiculopathy_special_note": {
+    "description": "Radiculopathy is extremely common and often missed",
+    "claim_tip": "If you have back or neck conditions, ALWAYS claim radiculopathy as secondary",
+    "symptoms": [
+      "Pain radiating down arm or leg",
+      "Numbness or tingling in extremities",
+      "Weakness in arm or leg",
+      "Reflex changes"
+    ],
+    "rating_separate": "Radiculopathy is rated separately from the spine condition itself"
+  },
+
+  "tips_for_veterans": [
+    "Describe ALL symptoms: numbness, tingling, burning, pain, weakness",
+    "Explain which parts of your body are affected",
+    "Mention if you drop things or have trouble gripping",
+    "Report any foot drop or difficulty walking",
+    "Get nerve conduction study/EMG for objective evidence",
+    "If you have back/neck problems, CLAIM RADICULOPATHY",
+    "Describe how nerve problems affect daily activities and work",
+    "Document any muscle wasting or atrophy",
+    "Mention if symptoms radiate from spine to extremities",
+    "Note which hand is dominant (affects ratings for upper extremity)"
+  ],
+
+  "common_mistakes": [
+    "Not claiming radiculopathy secondary to spine conditions",
+    "Failing to describe severity of symptoms",
+    "Not getting EMG/nerve conduction studies",
+    "Forgetting to mention dominant hand for arm conditions",
+    "Not describing functional limitations",
+    "Minimizing symptoms during examination"
+  ],
+
+  "bilateral_consideration": {
+    "description": "Both sides can be rated separately",
+    "example": "Bilateral radiculopathy from back condition = separate rating for each leg",
+    "tip": "Always claim both sides if both are affected"
+  },
+
+  "important_notes": [
+    "Major (dominant) arm gets higher ratings than minor arm",
+    "Radiculopathy should ALWAYS be claimed if you have spine conditions",
+    "Each affected nerve can be rated separately",
+    "EMG/nerve conduction studies provide objective evidence",
+    "Bilateral conditions get separate ratings for each side",
+    "Peripheral neuropathy from diabetes uses separate DBQ (Diabetic Peripheral Neuropathy)"
+  ]
+}

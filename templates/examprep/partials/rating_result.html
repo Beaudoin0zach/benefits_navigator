@@ -1,0 +1,112 @@
+{% if has_ratings %}
+<!-- Combined Rating Display -->
+<div class="text-center mb-6">
+    <div class="text-6xl font-bold text-blue-600 mb-2">{{ combined_rounded }}%</div>
+    <div class="text-gray-500">Combined VA Rating</div>
+    {% if combined_raw != combined_rounded %}
+    <div class="text-sm text-gray-400 mt-1">
+        (Actual: {{ combined_raw }}% &rarr; rounded to {{ combined_rounded }}%)
+    </div>
+    {% endif %}
+</div>
+
+<!-- Compensation Estimate -->
+<div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+    <h3 class="font-bold text-green-900 mb-2">Estimated Compensation</h3>
+    <div class="grid grid-cols-2 gap-4 text-center">
+        <div>
+            <div class="text-2xl font-bold text-green-600">{{ monthly_compensation }}</div>
+            <div class="text-sm text-green-700">Monthly</div>
+        </div>
+        <div>
+            <div class="text-2xl font-bold text-green-600">{{ annual_compensation }}</div>
+            <div class="text-sm text-green-700">Annual</div>
+        </div>
+    </div>
+</div>
+
+{% if bilateral_factor > 0 %}
+<!-- Bilateral Factor Applied -->
+<div class="bg-purple-50 border border-purple-200 rounded-lg p-3 mb-6">
+    <div class="flex items-center">
+        <svg class="w-5 h-5 text-purple-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <span class="text-purple-800">
+            <strong>Bilateral Factor:</strong> +{{ bilateral_factor }}% applied (10% bonus for paired limbs)
+        </span>
+    </div>
+</div>
+{% endif %}
+
+<!-- Step-by-Step Calculation -->
+<div class="border-t border-gray-200 pt-4">
+    <h3 class="font-bold text-gray-900 mb-3">How We Calculated This</h3>
+
+    {% for phase in step_by_step %}
+    {% if phase.phase == 'bilateral' %}
+    <div class="mb-4 p-3 bg-purple-50 rounded-lg">
+        <h4 class="font-medium text-purple-900 mb-2">{{ phase.description }}</h4>
+        <div class="text-sm text-purple-700 space-y-1">
+            {% for step in phase.steps %}
+            <div>{{ step.explanation }}</div>
+            {% endfor %}
+            <div class="mt-2 font-medium">
+                Combined bilateral: {{ phase.combined|floatformat:1 }}%<br>
+                + 10% bilateral factor: {{ phase.bilateral_factor|floatformat:1 }}%<br>
+                = {{ phase.total_with_factor|floatformat:1 }}%
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if phase.phase == 'final' %}
+    <div class="space-y-2 text-sm">
+        {% for step in phase.steps %}
+        <div class="flex items-start p-2 {% if forloop.last %}bg-blue-50 rounded{% endif %}">
+            <span class="w-6 h-6 flex items-center justify-center bg-blue-600 text-white text-xs rounded-full mr-2 flex-shrink-0">
+                {{ step.step }}
+            </span>
+            <div class="flex-1">
+                <span class="text-gray-700">{{ step.explanation }}</span>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="mt-4 p-3 bg-gray-100 rounded-lg">
+            <div class="flex justify-between items-center">
+                <span class="font-medium text-gray-700">Final Combined (raw):</span>
+                <span class="font-bold">{{ combined_raw }}%</span>
+            </div>
+            <div class="flex justify-between items-center mt-1">
+                <span class="font-medium text-gray-700">Rounded to nearest 10%:</span>
+                <span class="font-bold text-blue-600 text-lg">{{ combined_rounded }}%</span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+
+<!-- Ratings Summary -->
+<div class="mt-4 pt-4 border-t border-gray-200">
+    <h4 class="font-medium text-gray-700 mb-2">Ratings Used:</h4>
+    <div class="flex flex-wrap gap-2">
+        {% for r in ratings %}
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm {% if r.is_bilateral %}bg-purple-100 text-purple-800{% else %}bg-gray-100 text-gray-800{% endif %}">
+            {{ r.percentage }}%{% if r.description %} - {{ r.description }}{% endif %}
+            {% if r.is_bilateral %}<span class="ml-1 text-xs">(B)</span>{% endif %}
+        </span>
+        {% endfor %}
+    </div>
+</div>
+
+{% else %}
+<!-- No Ratings -->
+<div class="text-center py-8 text-gray-500">
+    <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+    </svg>
+    <p>Add disability ratings and click Calculate</p>
+</div>
+{% endif %}

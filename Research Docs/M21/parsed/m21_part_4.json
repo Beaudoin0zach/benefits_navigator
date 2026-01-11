@@ -1,0 +1,541 @@
+{
+  "part": "IV",
+  "part_number": 4,
+  "title": "Examinations",
+  "subparts": {
+    "i": {
+      "2": {
+        "F": {
+          "title": "Failure to Report and Rescheduling Examinations",
+          "reference": "M21-1.IV.i.2.F",
+          "full_reference": "M21-1, Part IV, Subpart i, Chapter 2, Section F",
+          "overview": "<-- Previous Section  Next Section --> Topic 1 Handling Failure to Report for a Scheduled Examination 2 Protocol for Scheduling Examinations Using the Veterans Health Administration (VHA) RSVP Scheduling Program Introduction This topic contains information on handling a Veteran’s failure to report for a scheduled examination, including effect of non-cooperation on the duty to provide an examination or opinion definition of good cause review of returned mail notifying the Veteran of a scheduled examination action taken after attempting to locate a better address allegations of non-receipt of scheduling notice, and initial scheduling problems and rescheduling examinations. Change Date August 7, 2023",
+          "topics": [
+            {
+              "code": "IV.i.2.F.1.a",
+              "topic_num": "1",
+              "subtopic": "a",
+              "title": "Effect of Non-Cooperation on the Duty to Provide an Examination or Opinion",
+              "content": "While the Department of Veterans Affairs (VA) is obligated under 38 CFR 3.159(c)(4) to provide medical examinations or obtain medical opinions to assist in substantiating claims, the claimant must cooperate by reporting for such examination.\n\n38 CFR 3.655 provides that when entitlement or continued entitlement to a benefit cannot be established or confirmed without a current VA examination and the claimant fails to report without good cause, action will be taken as provided in 38 CFR 3.655(b) and (c).  See the table below for a summary of the actions to take.\n\nIf the failure to report for examination without good cause is in connection with a(n) ...\nThen ...\noriginal compensation claim, or\nnew claim (for a new benefit or new disability)\ndecide the claim based on the evidence of record.\nincreased evaluation claim\nsupplemental claim for a previously denied benefit, or\noriginal claim for a benefit other than compensation\ndeny the claim.\nexamination ordered to assess continuing entitlement when there is a running award\n\ndiscontinue payment for the benefit, or\nreduce payment for the disability for which examination was scheduled to a\nminimum evaluation established under 38 CFR Part 4, or\nlower protected evaluation under 38 CFR 3.951(b).\nNotes:\nDiscontinuance or reduction is only finalized after due process, as provided in M21-1, Part IV, Subpart ii, 2.B.\nReduction or discontinuance will not be finalized when the claimant submits evidence during the proposed reduction period justifying continuation of the benefit or indicates a willingness to report for examination.\n\nImportant:\nFor the purpose of the table above, the phrase without good causemeans that good cause for a claimant’s failure to report (defined in M21-1, Part IV, Subpart i, 2.F.1.b) was not provided before a decision was issued in the claim for which the examination was necessary.\nDocumentation supporting the good cause offered is generally not required.\nAlthough M21-1, Part IV, Subpart i, 2.F.1.f provides that good cause must be accepted at any time before a decision is issued, in cases of repeated(two or more) failures to attend a VA examination, proceed with a decision on the claim.  Clear rationale for rejecting an offer of good cause must be included in the rating narrative.\nNote:  If the Veterans Health Administration (VHA) attempted to schedule the exam under their RSVP program, follow the procedures in M21-1, Part IV, Subpart i, 2.F.2.\n\nReferences:  For more information on\nallegations of non-receipt of a notice that an examination was scheduled, see M21-1, Part IV, Subpart i, 2.F.1.e, and\ninitial scheduling problems and rescheduling examinations, see M21-1, Part IV, Subpart i, 2.F.1.f."
+            },
+            {
+              "code": "IV.i.2.F.1.b",
+              "topic_num": "1",
+              "subtopic": "b",
+              "title": "Definition:  Good Cause",
+              "content": "Good cause means a reason that justifies failure to report for VA examination.\n\nVA will generally accept any reason offered by the individual as good cause for failure to report for an exam.  Examples of good cause include, but are not limited to, illness or hospitalization of the claimant or death of an immediate family member.\n\nException:  Good cause is not established if the claimant\nfails to provide any reason for failing to report\nindicates failure to report was based on general concerns about being exposed to and/or contracting an illness while undergoing examination, or\nindicates notice of the scheduled examination was not received.\nReferences:  For more information on\neffect of non-cooperation on the duty to provide an examination or opinion, see M21-1, Part IV, Subpart i, 2.F.1.a\nallegations of non-receipt of examination notice, see M21-1, Part IV, Subpart i, 2.F.1.e, and\ncases where a claimant expresses a willingness to report for examination, see M21-1, Part IV, Subpart i, 2.F.1.f."
+            },
+            {
+              "code": "IV.i.2.F.1.c",
+              "topic_num": "1",
+              "subtopic": "c",
+              "title": "Review of Returned Mail Notifying the Veteran of a Scheduled Examination",
+              "content": "Regional offices (ROs) have the duty to ensure that examination notices are sent to the proper address in all situations, including during the traditional claims process as well as when associated with the scheduling of routine future examinations.  If a VA medical facility advises that mail notifying a Veteran of a scheduled VA examination has been returned because the Postal Service reported the letter was undeliverable at the address provided, review the claims folder to determine whether\nthe mail was erroneously addressed\na more recent address is of record, or\na valid address is available from non-VA sources, such as the Internet or telephone directory assistance.\nNotes:\nVA is authorized to use the Internet address locator service CLEAR (https://clear.thomsonreuters.com/clear_home/index.jsp) to obtain current address information for claimants.\nIf the Veteran receives VA benefits via direct deposit/electronic funds transfer, send a letter to the Veteran’s financial institution asking for a current mailing address.\nReference:  For more information on using the CLEAR service, see the CLEAR Quick-Start Training Guide and Reference Manual."
+            },
+            {
+              "code": "IV.i.2.F.1.d",
+              "topic_num": "1",
+              "subtopic": "d",
+              "title": "Action Taken After Attempting to Locate a Better Address",
+              "content": "When notification is received from a VA medical facility that an examination could not be scheduled due to notice that was undeliverable at the address provided, use the table below to determine the action to take after attempting to locate a better address.\n\nIf a better address is …\nThen ...\nidentified\nprovide the new address to the VA medical facility\nrequest that the VA medical facility\nreschedule the examination, and\nnotify the Veteran at the new address of the pending examination, and\nupdate the corporate record.\nnot identified\nproceed with failure to report analysis under 38 CFR 3.655."
+            },
+            {
+              "code": "IV.i.2.F.1.e",
+              "topic_num": "1",
+              "subtopic": "e",
+              "title": "Allegations of Non-Receipt of Scheduling Notice",
+              "content": "A Veteran’s allegation that notice of a scheduled VA examination was not received is not considered good cause for failure to report.\n\nAn assertion that a notice was not received does not rebut the presumption of administrative regularity that VA discharged its duty to schedule an examination and notify the Veteran of the scheduled examination.\n\nA copy of an examination scheduling notice from the examining facility does not need to appear in the claims folder for the presumption of regularity to apply.\n\nIf evidence is available that rebuts the presumption of regularity, such as the failure of VA to timely update the claimant’s address or an assertion that the exam notice was received after the date of the examination, then that evidence must be considered.\n\nReferences:  For more information on\nallegations of non-receipt of a scheduling notice, see Kyhn v. Shinseki, 24 Vet. App. 228 (2011)\neffect of non-cooperation on the duty to provide an examination or opinion, see M21-1, Part IV, Subpart i, 2.F.1.a, and\nthe definition of good cause, see M21-1, Part IV, Subpart i, 2.F.1.b."
+            },
+            {
+              "code": "IV.i.2.F.1.f",
+              "topic_num": "1",
+              "subtopic": "f",
+              "title": "Initial Scheduling Problems and Rescheduling Examinations",
+              "content": "Consider the following guidance on how duty to assist concepts and principles apply when there is\na delay or other problems with the medical provider initially scheduling an examination, or\nthe claimant fails to report to a scheduled examination and thereafter\noffers good cause, or\nexpresses a willingness to attend a previously missed exam.\nNotes:\nKnown impediments to scheduling an examination will generally be resolved by the provider and claimant in advance of the scheduled examination date.  This may result in delay of the examination to another date, but is not considered a failure to report and does not implicate claimant non-cooperation with the duty to assist.\nWhen notification is received from a VA medical facility that an examination could not be scheduled because a scheduling notice mailed to the claimant’s address of record was returned as undeliverable, take action as specified in M21-1, Part IV, Subpart i, 2.F.1.c and d.  When the claimant’s correct address is subsequently located, request that the medical facility reschedule the examination.\nIf an examinee fails to report for a scheduled examination but offers good cause on or after the examination and before a decision is issued, request that the examination provider reschedule the examination before issuing a decision.  However, see M21-1, Part IV, Subpart i, 2.F.1.a for cases of repeated failure to report.\nExpressing willingness to report without some reason offered for failing to report to an examination is not the same as good cause.  However, in two situations a claimant expressing a willingness to report for a missed examination is sufficient for another exam to be authorized.\nWhen the claimant expresses willingness to report for a previously missed VA examination after a decision is made – even in the context of an allegation of non-receipt of a scheduling notice or other absence of good cause – that statement is sufficient new and relevant evidence for supplemental claim purposes and an examination is authorized.\n38 CFR 3.655(c)(3) provides that in cases of failure to report in connection with examination on continuing entitlement, if notice of willingness to report is received before payment has been discontinued or reduced, action to adjust payment should be deferred and the reexamination must be rescheduled.  However, if there is another failure to report final action to reduce or discontinue payments will be taken.\nImportant:  Apply this block in conjunction with all other blocks in this topic.\n\n2.  Protocol for Scheduling Examinations Using the VHA RSVP Scheduling Program\n\nIntroduction\n\nThis topic contains information on the VHA RSVP program, including\nVHA RSVP scheduling program\nVHA RSVP examination cancellations, and\neffect of a Veteran’s failure to RSVP.\n\nChange Date\n\nFebruary 27, 2017"
+            },
+            {
+              "code": "IV.i.2.F.2.a",
+              "topic_num": "2",
+              "subtopic": "a",
+              "title": "VHA RSVP Scheduling Program",
+              "content": "Based on historical data, when Veterans do not have the opportunity to participate in the scheduling process, they are more likely to fail to report to scheduled examinations.  This results in the non-use of examination appointments that could have been appropriated to other Veterans.\n\nConsequently, VHA established an RSVP program to help ensure Veterans attend their scheduled examinations.  Through this program, VHA attempts to reach Veterans by telephone and via mail in order to schedule examinations.\n\nImportant:  VHA examining facilities are not required to participate in the RSVP scheduling program."
+            },
+            {
+              "code": "IV.i.2.F.2.b",
+              "topic_num": "2",
+              "subtopic": "b",
+              "title": "VHA RSVP Examination Cancellations",
+              "content": "When VHA receives VA Form 21-2507, Request for Physical Examination, from an RO that includes the Veteran’s telephone number and address, they will make several attempts to contact the Veteran and schedule the examination.\n\nIf a claimant fails to respond to the attempts to schedule the examination in the RSVP program, VHA will cancel the examination request.  The cancellation notification will reflect that the cancellation was due to the claimant’s failure to respond to the RSVP scheduling process.\n\nThe documented information indicating the Veteran failed to RSVP to schedule an examination at a mutually convenient time is considered the same as a failure to report for an examination for the purpose of claims processing.\n\nVHA is responsible for ensuring that all procedures and timelines required in the RSVP process were followed.\n\nReference:  For more information on the VHA RSVP scheduling procedure, see the Office of Disability and Medical Assessment Fact Sheet 23-002."
+            },
+            {
+              "code": "IV.i.2.F.2.c",
+              "topic_num": "2",
+              "subtopic": "c",
+              "title": "Effect of a Veteran’s Failure to RSVP",
+              "content": "When VHA provides notification that the Veteran failed to RSVP, the\nRO must\nattempt to locate a better or more current address, as discussed in M21-1, Part IV, Subpart i, 2.F.1.c and d, and/or\nhandle the situation as commensurate with a failure to report for examination, following the procedures outlined in M21-1, Part IV, Subpart i, 2.F.1.a."
+            }
+          ],
+          "references": [
+            "M21-1, Part IV, Subpart ii, 2.B.",
+            "M21-1, Part IV, Subpart i, 2.F.1.b",
+            "M21-1, Part IV, Subpart i, 2.F.1.f",
+            "M21-1, Part IV, Subpart i, 2.F.2.",
+            "M21-1, Part IV, Subpart i, 2.F.1.e",
+            "M21-1, Part IV, Subpart i, 2.F.1.f.",
+            "M21-1, Part IV, Subpart i, 2.F.1.a",
+            "M21-1, Part IV, Subpart i, 2.F.1.b.",
+            "M21-1, Part IV, Subpart i, 2.F.1.c",
+            "M21-1, Part IV, Subpart i, 2.F.1.a.",
+            "38 CFR 3.159",
+            "38 CFR 3.655",
+            "38 CFR 3.951",
+            "38 CFR 3.655."
+          ],
+          "key_points": [],
+          "article_id": "554400000180508",
+          "last_updated": "May 27, 2025",
+          "topic_list": [
+            {
+              "num": "1",
+              "name": "Handling Failure to Report for a Scheduled Examination"
+            }
+          ]
+        }
+      },
+      "3": {
+        "A": {
+          "title": "General Criteria for Sufficiency of Examination Reports",
+          "reference": "M21-1.IV.i.3.A",
+          "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section A",
+          "overview": "<-- Previous Section  Next Section --> This section contains the topic \"Examination Report Requirements.\" Introduction This topic contains information about reviewing examination reports, including who must sign examination reports examiner qualifications and signature requirements TeleCompensation and Pension (Tele-C&P) and telemental health examinations review of disability benefits questionnaires (DBQs) assessing sufficiency of DBQs completed by non-Department of Veterans Affairs (VA) providers authenticity of DBQs potential indicators of DBQ inauthenticity DBQs completed by Veterans who are physicians/health care providers qualification requirements of examiners – psychological examinations traumatic brain injury (TBI) examinations, and hearing loss and tinnitus requirements for examination reports, and acceptable clinical evidence (ACE) examination reports evaluating disability diagnoses questions from claimants or their representatives about competency and/or validity of examinations accepting a fee-based examiner’s report, and examiner statements that an opinion would be speculative. Change Date September 24, 2025",
+          "topics": [
+            {
+              "code": "IV.i.3.A.1.a",
+              "topic_num": "1",
+              "subtopic": "a",
+              "title": "Who Must Sign Examination Reports",
+              "content": "All examination reports must be signed by the examining health care provider.\n\nNotes:\nExamination reports transmitted electronically by either a Department of Veterans Affairs (VA) medical center or a contract examination provider must be digitally signed.\nGenerally, examination reports and the required signatures are documented on disability benefits questionnaires (DBQs) specific to the body system or disability being examined.\nReference:  For more information on DBQs, see M21-1, Part IV, Subpart i, 2.A.3."
+            },
+            {
+              "code": "IV.i.3.A.1.b",
+              "topic_num": "1",
+              "subtopic": "b",
+              "title": "Examiner Qualifications and Signature Requirements",
+              "content": "VA medical facilities (or the medical examination contractor) are responsible for ensuring that examiners are adequately qualified.\n\nRegional office (RO) employees are not expected to routinely scrutinize or question the credentials of clinical personnel to determine the acceptability of their reports, unless there is contradictory evidence of record.  However, DBQs or other examination reports must include a valid signature by the certifying professional.\n\nUse the table below to determine what certification elements are required to accept an examination provider’s signature and qualifications.\n\nIf the DBQ or examination report was prepared by a ...\nThen the certification and signature block must contain the following:  ...\nVeterans Health Administration (VHA) clinician\nsignature, and\nprinted name and credentials (for example, M.D., D.O., F.N.P.).\nVeterans Benefits Administration (VBA)-contracted examination provider\nsignature\ncredentials, and\narea of practice/specialty (for example, cardiology, orthopedics, internal medicine).\nnon-VA health care provider\nsignature\nprinted name and credentials\narea of practice/specialty\nphone and/or fax number\nmedical license number, and\nNational Provider Identifier (NPI) number.\nExceptions:  Inclusion of a(n)\nphone and/or fax number is not required if the\nDBQ is otherwise satisfactorily completed, and\nprovider’s contact information can be verified via internet search, and\nNPI number is not required if the DBQ was prepared in support of a foreign claim and/or by an international health care provider.\n\nNotes:\nIn all cases involving completion of a DBQ or examination report by a non-VA health care provider, the area of practice/specialty of the provider must be identified.  For a DBQ or examination report completed by a VHA or VBA contract examiner, the area of practice/specialty must be evident if a specialist examination is required or requested.\nHealth care providers participating in the Clinicians in Residence program at ROs must be registered and certified VHA clinicians.\nWhere the above-outlined signature and certification requirements are not met, follow the procedures discussed in\nM21-1, Part IV, Subpart i, 3.C.1.e or f, to return the examination report as insufficient if it was completed by a VHA or VBA contract examiner, or\nM21-1, Part IV, Subpart i, 3.A.1.e, to reconcile deficiencies in the DBQ if it was completed by a non-VA health care provider.\nReferences:  For more information on\nwho must sign examination reports, see M21-1, Part IV, Subpart i, 3.A.1.a\nthe review of DBQs, see M21-1, Part IV, Subpart i, 3.A.1.d\ntypes of examinations that require a specialist, see M21-1, Part IV, Subpart i, 2.A.1.g, and\ninsufficient examination reports, see M21-1, Part IV, Subpart i, 3.C."
+            },
+            {
+              "code": "IV.i.3.A.1.c",
+              "topic_num": "1",
+              "subtopic": "c",
+              "title": "Tele-C&P and Telemental Health Examination",
+              "content": "TeleCompensation and Pension (Tele-C&P) disability evaluations can provide accurate and fully descriptive face-to-face evaluations for VBA rating purposes through use of telehealth video technologies.\n\nWhen an examiner elects to conduct a Tele-C&P (or telemental health) examination utilizing telehealth video technologies in lieu of performing an in-person examination, assess the report for sufficiency under the same standards applicable to in-person examinations.\n\nImportant:  When reviewing DBQs or medical/examination reports prepared by private, non-VA providers via means of telehealth/telemental health, for the purposes of determining adequacy for rating purposes, exercise prudent judgment by\napplying the general assessment principles discussed in M21-1, Part IV, Subpart i, 3.A.1.e, and\nconsidering the\ncredibility and probative value associated with variables disclosed in the DBQ/report, to include the\nclinician’s knowledge of the claimant’s relevant history\nlength of time the clinician has treated the Veteran, and\nextent to which medical records and/or other records were reviewed and considered, and\ncompatibility of the DBQ/report submitted with the types identified as suitable for performance via telehealth technology in the Office of Disability and Medical Assessment (DMA) Fact Sheet 20-002, Telehealth for Compensation and Pension (C&P) Examinations."
+            },
+            {
+              "code": "IV.i.3.A.1.d",
+              "topic_num": "1",
+              "subtopic": "d",
+              "title": "Review of DBQs",
+              "content": "Review DBQs to ensure\nthe health care provider meets any specialty requirement for the examination conducted, and\nthe DBQ is sufficient for rating purposes.\nNote:  DBQs completed by a licensed health care provider, to include a nurse practitioner or physician’s assistant, are acceptable for VA examinations.\n\nReferences:  For more information on\nDBQs approved for public use, see the Public Disability Benefits Questionnaires page\nrequirements for examination reports, see M21-1, Part IV, Subpart i, 3.A.1.l\nexaminer qualifications and signature requirements, see M21-1, Part IV, Subpart i, 3.A.1.b\nuse and acceptance of DBQs for VA examinations and opinions, see M21-1, Part IV, Subpart i, 2.A.3.b ,and\nqualification requirements for\npsychological examinations, see M21-1, Part IV, Subpart i, 3.A.1.i\ntraumatic brain injury (TBI) examinations, see M21-1, Part IV, Subpart i, 3.A.1.j, and\naudiology examinations, see M21-1, Part IV, Subpart i, 3.A.1.k."
+            },
+            {
+              "code": "IV.i.3.A.1.e",
+              "topic_num": "1",
+              "subtopic": "e",
+              "title": "Assessing Sufficiency of DBQs Completed by Non-VA Providers",
+              "content": "If the evidentiary record contains a privately completed DBQ, generally, claims processors must\nassess the authenticity of the information reported, as described in M21-1, Part IV, Subpart i, 3.A.1.f and g, bearing in mind that it should generally be accepted at face value unless there is reason to doubt or question it\nevaluate it under the evidentiary principles discussed in M21-1, Part V, Subpart ii, 1.A, and\ndetermine if a VA examination is still warranted in accordance with\nM21-1, Part IV, Subpart i, 3.A.1.d\nM21-1, Part IV, Subpart i, 2.A.3.b, and\nM21-1, Part IV, Subpart i, 1.B.\nUse the table below to determine what action must be taken after receiving a DBQ that has been\ncompleted by a private, non-VA provider, and\ndeemed insufficient for rating purposes for the reasons described in the table.\nIf the DBQ ...\nThen ...\nis missing information or contains blank or contradictory values in fields that are relevant to the rating activity\nattempt to contact the certifying provider by telephone to resolve insufficiencies, and\ndocument any successful effort at telephone contact on VA Form 27-0820, Report of General Information.\nNote:  If the provider cannot be reached by telephone, document any unsuccessful attempt at contact as a permanent note in in the Veterans Benefits Management System (VBMS), including the\ndate, time, and purpose of the call, and\nprovider’s\nname, and\ntelephone number.\nReference:  For more information on requesting clarification from private physicians, see M21-1, Part IV, Subpart i, 3.C.1.i.\nwas completed by a non-VA provider whose records the Veteran has requested be considered in connection with the claim via submission of\nVA Form 21-4142, Authorization to Disclose Information to the Department of Veterans Affairs (VA), and\nVA Form 21-4142a, General Release for Medical Provider Information to the Department of Veterans Affairs (VA)\nensure that all necessary developmental efforts to secure relevant private medical records have been undertaken.\n\nReference:  For more information on requesting evidence from private health care providers, see M21-1, Part III, Subpart ii, 3.\nrequires additional examination components, such as\na review of service treatment records\nperformance of specific confirmatory or laboratory testing, and/or\nrendition of a medical opinion\nask a VA examiner to perform only those missing requirements.\n\nNotes:\nNo action to develop an insufficient privately completed DBQ need be taken if the facts of the case would not otherwise necessitate providing an examination and/or opinion.\nWhen a privately completed DBQ is deemed insufficient for rating purposes and a VA examination is requested as a result, claims processors must add a permanent VBMS note explaining the reason for finding the privately completed DBQ insufficient."
+            },
+            {
+              "code": "IV.i.3.A.1.f",
+              "topic_num": "1",
+              "subtopic": "f",
+              "title": "Authenticity of DBQs",
+              "content": "In general, as with other items of evidence, DBQs from treatment providers should be taken at face value.\n\nHowever, all DBQs completed by treatment providers are subject to review to ensure the information provided is seemingly authentic, consistent with the evidentiary record, and free from improper alteration.\n\nDBQs released for public use inform the provider that\nthe patient is applying for VA benefits and VA will consider the information provided in processing the claim\nthe physician’s signature constitutes a certification that the information provided on the form is accurate, complete, and current, and\nVA may request medical information, including additional examinations, if necessary to complete VA’s review of a claimant’s application.\nWhere a review of the DBQ raises questions of authenticity or improper alteration, determine whether additional development is necessary.  This may include\nvalidation of results by the treatment provider\nobtaining medical records, and/or\na VA examination.\nInformal contact with the Office of Inspector General or a fraud referral may also be appropriate, particularly if the record shows any of the potential indicators of inauthenticity described in M21-1, Part IV, Subpart i, 3.A.1.g.\n\nImportant:\nClaims processors may not dismiss a privately completed DBQ without a justifiable and documented reason.\nIf a claims processor determines that a privately completed DBQ is potentially inauthentic and a VA examination is needed, then the claims processor must add a permanent VBMS note stating PDBQ followed by the reason the DBQ appears inauthentic.\nExample:  PDBQ – Provider contact information unverifiable.\nReferences:  For more information on\nwhen development to obtain additional evidence may be needed, see M21-1, Part V, Subpart ii, 3.B.1.a\ntaking evidence at face value, see M21-1, Part V, Subpart ii, 1.A\nhandling fraudulent cases, see M21-1, Part X, Subpart iv, 3.A\npotential indicators of DBQ inauthenticity, see M21-1, Part IV, Subpart i, 3.A.1.g, and\nadding a permanent VBMS note, see\nM21-1, Part II, Subpart ii, 2.A.1.c, and\nthe VBMS Core User Guide."
+            },
+            {
+              "code": "IV.i.3.A.1.g",
+              "topic_num": "1",
+              "subtopic": "g",
+              "title": "Potential Indicators of DBQ Inauthenticity",
+              "content": "While privately completed DBQs should generally be accepted at face value, as discussed in M21-1, Part IV, Subpart i, 3.A.1.e and f, there may be factors that warrant closer scrutiny to assess the authenticity of the information provided.\n\nIndicators of potential inauthenticity include, but are not limited to, the following:\nThe non-VA provider identified on the DBQ\nhas contact information that is unverifiable or contains discrepancies, or\nis located an unreasonable distance (generally, more than 100 miles) from the Veteran’s place of residence, yet the provider reported\nregularly seeing the Veteran as a patient, and/or\nthat the examination was completed in person.\nThe privately completed DBQ contains\ninformation that conflicts with the overall evidentiary record, particularly concerning details that impact the outcome of the claim, or\nsigns of improper alteration (for example, inconsistent appearance of text and formatting, such as the examiner certification and signature section being visually different than other sections of the DBQ).\nVA determines the privately completed DBQ is insufficient for rating purposes and orders an examination, but the Veteran refuses to report for the examination.\nImportant:\nThe presence of one or more of these potential indicators of inauthenticity does not automatically mean that a privately completed DBQ is inauthentic or fraudulent.  However, the presence of one or more of these indicators may call into question the authenticity of the information provided and may warrant additional development, as discussed in M21-1, Part IV, Subpart i, 3.A.1.f, and/or referral for possible fraud review.  This is necessarily a case-by-case determination.\nThe distance between the non-VA provider’s location and the Veteran’s place of residence should not be considered an indicator of potential inauthenticity, as described above, if the Veteran\nlives in a remote area, such that driving more than 100 miles to see a health care provider would not be considered unreasonable, or\nregularly or periodically travels more than 100 miles to see the particular health care provider for a specific reason (for example, to receive specialized treatment at a cancer center or research hospital).\nA privately completed DBQ should not be routinely rejected or automatically deemed potentially inauthentic or fraudulent solely because it supports entitlement to a maximum schedular (or other increased) evaluation for the condition, unless such a disability picture is clearly inconsistent with the overall evidentiary record.\nNotes:\nClaims processors have a duty to evaluate and weigh all evidence of record, including privately completed DBQs.  If it is determined that a privately completed DBQ contains indicator(s) of inauthenticity that are substantive enough to deem it potentially inauthentic or fraudulent, claims processors have the authority to assign low or no probative value to the privately completed DBQ.\nIf a privately completed DBQ is erroneously deemed insufficient and the Veteran fails to report for an examination that was requested on the basis of the DBQ being inadequate for rating purposes, then the privately completed DBQ should not be assigned lower probative value.\n\nReferences:  For more information on\nreviewing DBQs prepared by private, non-VA providers via telehealth technology, see M21-1, Part IV, Subpart i, 3.A.1.c\na Veteran’s submission of evidence and refusal to attend a VA examination, see Kowalski v. Nicholson, 19 Vet.App. 171 (2005)\nthe definition of fraud, see\n38 CFR 3.901(a), and\nM21-1, Part X, Subpart iv, 3.A.1.a\nhandling cases of fraud, see M21-1, Part X, Subpart iv, 3.A.2, and\nevaluating evidence and determining probative value, see M21-1, Part V, Subpart ii, 1.A."
+            },
+            {
+              "code": "IV.i.3.A.1.h",
+              "topic_num": "1",
+              "subtopic": "h",
+              "title": "DBQs Completed by Veterans Who Are Physicians/Health Care Providers",
+              "content": "VA cannot summarily discount otherwise competent medical evidence from a Veteran who is a physician or health care provider.  DBQ reports completed by these individuals will be reviewed under the same criteria for reviewing DBQs submitted by a third-party health care provider.\n\nIn effect, VA claims adjudicators must subject the evidence of record to some degree of scrutiny to determine its probative worth.  It is improper in VA practice to “exclude” evidence.  Decision makers must weigh the probative value of the evidence and discuss its probative value in the decision narrative.\n\nNote:  Exercise the same weighing of probative value for internal-use DBQs that are completed by an external non-VA provider.\n\nImportant:  Ensure the Disability Benefits Questionnaire (DBQ) – Veteran Provided DOCUMENT TYPE under the VBMS UNSOLICITED EVIDENCE tab has been updated for DBQs submitted from non-VA providers.\n\nReferences:  For more information on\nreviewing DBQs, see M21-1, Part IV, Subpart i, 3.A.1.d\nevidentiary concepts, see M21-1, Part V, Subpart ii, 1.A.2\nwritten testimony submitted by the claimant, see 38 CFR 3.200(b), and\ncase law supporting adequacy of examination completed by a Veteran-health care provider, see Pond v. West, 12 Vet.App. 341 (1999)."
+            },
+            {
+              "code": "IV.i.3.A.1.i",
+              "topic_num": "1",
+              "subtopic": "i",
+              "title": "Qualification Requirements of Examiners –  Psychological Examinations",
+              "content": "The following credentialed mental health professionals are qualified to perform C&P psychological examinations:\nboard-certified or board-eligible psychiatrists\nlicensed doctorate-level psychologists, or\nthe following other mental health professionals, under the close supervision of a board-certified or board-eligible psychiatrist or licensed doctorate-level psychologist:\nnon-licensed doctorate-level psychologists working toward licensure\npsychiatry residents, and\nclinical or counseling psychologists completing a one-year internship or residency.\nNote:  “Close supervision” means that the supervising psychiatrist or psychologist met with the Veteran and conferred with the examining mental health professional in providing the diagnosis and the final assessment.  The supervising psychiatrist or psychologist must co-sign the examination report.\n\nImportant:  For a claim for service connection (SC) for posttraumatic stress disorder based upon a stressor related to the Veteran’s fear of hostile military or terrorist activity, 38 CFR 3.304(f)(3) directs that the examination must be conducted by a VA psychiatrist or psychologist, or a psychiatrist or psychologist with whom VA has contracted.\n\nReference:  For more information on qualifications of examiners for psychological examinations, see the DBQ Switchboard."
+            },
+            {
+              "code": "IV.i.3.A.1.j",
+              "topic_num": "1",
+              "subtopic": "j",
+              "title": "Qualification Requirements of Examiners – TBI Examinations",
+              "content": "The initial diagnosis of TBI must be made by one of the following specialists:\nphysiatrists\npsychiatrists\nneurosurgeons, or\nneurologists.\nNote:  A generalist clinician who has successfully completed the Disability Examination Management Office TBI training module may conduct a TBI examination, if a TBI diagnosis is of record and was established by one of the aforementioned specialty providers.\n\nReference:  For more information on qualifications of examiners for TBI examinations, see the Initial Evaluation of Residuals of Traumatic Brain Injury (TBI) Disability Benefits Questionnaire in the DBQ Switchboard."
+            },
+            {
+              "code": "IV.i.3.A.1.k",
+              "topic_num": "1",
+              "subtopic": "k",
+              "title": "Qualification Requirements of Examiners –Hearing Loss and Tinnitus",
+              "content": "Hearing loss examinations must be completed by a state-licensed audiologist.\n\nIf only a tinnitus examination is being requested, the examination may be conducted by either an audiologist or non-audiologist clinician, if a hearing loss examination is of record.\nNotes:\nIt is appropriate to request an examination for tinnitus alone when\na Veteran claims SC for tinnitus on the basis that it is due to a disability other than hearing loss, and/or\ntinnitus was treated during military service.\nFor other situations – particularly those in which the etiology of tinnitus is unclear or unspecified – it is necessary to request both hearing loss and tinnitus examinations.\nAudiology licensing requirements and credentials in a foreign country may not be the same as in the U.S., and audiologists are not available in all countries.\nFor audiology examinations conducted in foreign countries, the examiner must be licensed to provide diagnostic audiology services according to the licensing standards in the country or territory where the examiner is providing services.  This also includes medical examiners credentialed in specialties related to otolaryngology.\nFor contract examinations, the VBA contract examination vendor verifies that the provider meets applicable foreign licensing requirements.  Therefore, no additional verification is needed and claims processors should presume the selected examiner meets the qualification requirements for an audiology examination.\nReferences:  For more information on\nqualifications of examiners for hearing loss and tinnitus examinations, see the Hearing Loss and Tinnitus Disability Benefits Questionnaire in the DBQ Switchboard, and\nevaluating hearing loss and tinnitus, see\n38 CFR 4.85\n38 CFR 4.87, and\nM21-1, Part V, Subpart iii, 2.B."
+            },
+            {
+              "code": "IV.i.3.A.1.l",
+              "topic_num": "1",
+              "subtopic": "l",
+              "title": "Requirements for Examination Reports",
+              "content": "VA examinations are to be conducted using DBQs which are disease- and condition-specific, organized as a documentation tool to provide the precise medical evidence needed to rate specific disabilities.  The examiner is asked to\ncomplete the form step by step\nanswer the questions posed, and\nprovide additional information as required by examination findings.\nNote:  The report must have a definite and unambiguous description of the disability for each complaint or claimed condition.\n\nCommon features of DBQs include\na diagnosis section\nmedical history\nobjective findings\nresults of diagnostic testing performed, and\na remarks section for any necessary explanation.\nAdditional sections may be found on some DBQs, depending on the specialty involved.\n\nReference:  For more information on DBQs, see the DBQ Switchboard."
+            },
+            {
+              "code": "IV.i.3.A.1.m",
+              "topic_num": "1",
+              "subtopic": "m",
+              "title": "Requirements for ACE Examination Reports",
+              "content": "When an examination provider uses acceptable clinical evidence (ACE) in lieu of conducting an in-person examination, review the report for sufficiency.  The report must\nnote use of the ACE Process, and\nindicate that the claims folder was reviewed.\nReference:  For more information on ACE examinations, see M21-1, Part IV, Subpart i, 2.A.4."
+            },
+            {
+              "code": "IV.i.3.A.1.n",
+              "topic_num": "1",
+              "subtopic": "n",
+              "title": "Evaluating Disability Diagnoses",
+              "content": "The precise cause of a disability is often difficult to determine.  It is important that\nthe same disability is not covered by more than one diagnosis, and\na definite and unambiguous diagnosis is made for each complaint or symptom having a medical cause.\nThe table below describes various examination scenarios and what is required for a sufficient diagnosis.\n\nIf ...\nThen ...\nthere are no findings on examination\na diagnosis of a disability should not be rendered by the examiner.\n\nExample:  Examiner states “normal left knee” and examination shows normal range of motion (ROM), normal stability, and no complaints of pain or other symptoms.\nthere are findings on examination\na definitive diagnosis of a disability should be rendered by the examiner.\n\nExample:  Examiner diagnoses “left knee patellofemoral syndrome” and examination shows limited ROM with pain.\n\nImportant:\nNon-committal diagnoses, such as those including the terms “rule-out” and/or “differential,” are not sufficient for rating purposes.\nAs discussed in M21-1, Part V, Subpart ii, 3.C.2, symptoms, even in the absence of a specific diagnosis, may constitute a disability sufficient for rating purposes if they produce functional impairment of earning capacity.\na disability exists but a definite name cannot be given\nthe examiner should describe the disability and indicate that it is of unknown etiology.\n\nExample:  “Respiratory insufficiency of unknown etiology.”\nthe examiner states further studies, evaluations, or laboratory tests are needed\nthe additional studies, evaluations, or testing must be performed before the diagnosis on examination can be considered final.\na previously established diagnosis is changed by the examiner\nthe examiner must state whether the current diagnosis represents\na new disability, or\na progression of the former disability.\n\nReference:  For more information on handling examinations insufficient for rating purposes, see M21-1, Part IV, Subpart i, 3.C."
+            },
+            {
+              "code": "IV.i.3.A.1.o",
+              "topic_num": "1",
+              "subtopic": "o",
+              "title": "Questions From Claimants or Their Representatives About Competency and/or Validity of Examinations",
+              "content": "Duly consider concerns raised by the claimant or recognized representative about a completed examination or opinion.  Communications raising concerns may take the form of (but are not necessarily limited to)\ncomplaints about the examiner\nrequests for information about the examiner’s qualifications\nassertions that records or other relevant information or evidence was not considered, and/or\nrequests for another examination or opinion.\nImportant:  The mere fact that such a communication is received does not mean that the examination is insufficient or in need of clarification, or that there is a further duty to assist to obtain records or another examination.  However, consideration must be given to whether one or more of those remedies is appropriate.  Do not request a new examination or return an examination as insufficient solely on the basis of a complaint from the claimant or representative.  The substance of the communication must be analyzed as discussed below.\n\nThe table below provides guidance on interpreting communications from claimants or a representative raising concerns about examinations and what action to take, as applicable.\n\nIf the substance of the communication is ...\nThen ...\nthat the examiner was not qualified to perform the examination or issue the opinion\nreview M21-1, Part IV, Subpart i, 3.A.1.band additional blocks in this topic on qualifications for specific types of examinations, and\nconsider the guidance on competency of medical evidence in M21-1, Part V, Subpart ii, 1.A.\nWhen that review leads to a conclusion that the examiner did not have the appropriate qualifications, or that the conclusions of the examination or opinion were otherwise not competent, use the table below to determine the appropriate action.\nIf ...\nThen ...\nthe examination in question was completed by a VHA facility, and\na decision has not been made on the associated claim\nfollow the guidance in M21-1, Part IV, Subpart i, 3.C.1.e for returning an insufficient VHA examination.\nthe examination in question was completed by a contract vendor, and\na decision has not been made on the associated claim\nfollow the guidance in M21-1, Part IV, Subpart i, 3.C.1.f for returning an insufficient contract examination.\na decision has been made on the associated claim, or\nthe time period for returning a VHA examination as insufficient has already passed\nrequest a new examination for only those contentions where the prior examination was found to be insufficient.\n\nNotes:\nWhere an examiner is basically competent, matters like specialty, board certification, experience, and other related factors will merely be considerations in determining probative value of the examination report or opinion.\nVHA facilities and contract examination vendors are responsible for selecting examiners and ensuring they are adequately qualified.  Accordingly, there is a presumption that a selected medical examiner is qualified and competent.\nthat the examination was not sufficient or requires clarification\nreview M21-1, Part IV, Subpart i, 3.B and C, and take any action required by those sections.\nthat additional material evidence must be obtained to substantiate the claim\nreview procedures on the duty to assist, as discussed in\nM21-1, Part III, Subpart i, 2.C, and\nM21-1, Part IV, Subpart i, 1.A and B.\n\nNotes:\nVA’s C&P claim adjudication system does not have a procedure for completion of interrogatories by VA personnel.  Interrogatories are written questions that, in some court proceedings, must be answered under oath. If the claimant or representative submits a communication characterized as an interrogatory\ndo not\ncomplete and return the document, or\nrefer it to the examiner, but\ndo\nlook at the substance of the communication as indicated above in this block, and\ndetermine if it is raising questions about examiner competency, adequacy of the examination, or satisfaction of the duty to assist.\nWhen needed to fulfill a claimant’s request or a requirement of the Board of Veterans' Appeals, the curriculum vitae (CV) of a VHA or VBA contract examiner must be requested via e-mail to VAVBAWAS/CO/Contract Examination Inquiries.\nEach request should contain as much detail as possible, to include\nthe name of the examiner\nthe examiner’s title, credentials, and/or area of practice/specialty (such as M.D., Ph.D., psychology, or dentistry)\nthe geographic location in which the examination in question took place (with attention to such information as the Veterans Integrated Services Network (VISN) of jurisdiction (if known), State, and facility name)\nthe year in which the examination in question took place\nindication as to whether the request pertains to a VHA or VBA contract examiner, and\nfor VBA contract examiners, the individual contract vendor.\nEnter a permanent note in VBMS to document when a CV is requested or received.\nUpload the CV to the electronic claims folder upon receipt, as applicable.\nException:  If a request is received directly from a private attorney for the CV of a VHA or VBA contract examiner, send the CV request to the VBA Freedom of Information Act (FOIA) Office at VAVBAWAS/CO/FOIA.\nReferences:  For more information on a claimant’s\nrequest for information, or complaints, about a VA examination or opinion, see Nohr v. McDonald, 27 Vet.App. 124 (2014), and\nrights to access an examiner’s CV, see Francway v. Wilkie, 930 F.3d 1377 (Fed. Cir. 2019)."
+            },
+            {
+              "code": "IV.i.3.A.1.p",
+              "topic_num": "1",
+              "subtopic": "p",
+              "title": "Accepting a Fee-Based Examiner’s Report",
+              "content": "There is no prohibition against acceptance of a VA examination report for rating purposes from a fee-based medical examiner who has previously submitted a statement on the claimant’s behalf."
+            },
+            {
+              "code": "IV.i.3.A.1.q",
+              "topic_num": "1",
+              "subtopic": "q",
+              "title": "Examiner Statements That an Opinion Would Be Speculative",
+              "content": "Pay careful attention to any conclusion by the examiner that an opinion could not be provided without resorting to mere speculation (or any similar language to that effect).\n\nVA may only accept a medical examiner’s conclusion that an opinion would be speculative if\nthe examiner has\nexplained the basis for such an opinion, identifying what facts cannot be determined, and\ndemonstrated consideration of all procurable and relevant information (to include medical treatment records and/or lay testimony), or\nthe basis for the opinion is otherwise apparent in VA’s review of the evidence.\nThe medical opinion may be insufficient for rating purposes if an examiner’s conclusion\nis not adequately justified, or\nimplies a general lack of knowledge or an aversion to opining on matters beyond direct observation.\nIn such instances, seek clarification of the conclusion.\n\nNote:  If the examiner specifically states that a medical opinion cannot be provided unless specific evidence is made available, VA’s duty to assist requires that VA determine whether that evidence may be reasonably obtained.  If so, VA is to make efforts to obtain it and then seek an additional medical opinion which considers the relevant information.\n\nReference:  For more information on speculative opinions, see\nDaves v. Nicholson, 21 Vet.App. 46 (2007)\nJones (Michael H.) v. Shinseki, 23 Vet.App. 382 (2010), and\nSharp v. Shulkin, 29 Vet.App. 26 (2017)."
+            }
+          ],
+          "references": [
+            "M21-1, Part IV, Subpart i, 2.A.3.",
+            "M21-1, Part IV, Subpart i, 3.C.1.e",
+            "M21-1, Part IV, Subpart i, 3.A.1.e",
+            "M21-1, Part IV, Subpart i, 3.A.1.a",
+            "M21-1, Part IV, Subpart i, 3.A.1.d",
+            "M21-1, Part IV, Subpart i, 2.A.1.g",
+            "M21-1, Part IV, Subpart i, 3.C.",
+            "M21-1, Part IV, Subpart i, 3.A.1.l",
+            "M21-1, Part IV, Subpart i, 3.A.1.b",
+            "M21-1, Part IV, Subpart i, 2.A.3.b",
+            "M21-1, Part IV, Subpart i, 3.A.1.i",
+            "M21-1, Part IV, Subpart i, 3.A.1.j",
+            "M21-1, Part IV, Subpart i, 3.A.1.k.",
+            "M21-1, Part IV, Subpart i, 3.A.1.f",
+            "M21-1, Part V, Subpart ii, 1.A",
+            "M21-1, Part IV, Subpart i, 1.B.",
+            "M21-1, Part IV, Subpart i, 3.C.1.i.",
+            "M21-1, Part III, Subpart ii, 3.",
+            "M21-1, Part IV, Subpart i, 3.A.1.g.",
+            "M21-1, Part V, Subpart ii, 3.B.1.a",
+            "M21-1, Part X, Subpart iv, 3.A",
+            "M21-1, Part IV, Subpart i, 3.A.1.g",
+            "M21-1, Part II, Subpart ii, 2.A.1.c",
+            "M21-1, Part IV, Subpart i, 3.A.1.c",
+            "M21-1, Part X, Subpart iv, 3.A.1.a",
+            "M21-1, Part X, Subpart iv, 3.A.2",
+            "M21-1, Part V, Subpart ii, 1.A.",
+            "M21-1, Part V, Subpart ii, 1.A.2",
+            "M21-1, Part V, Subpart iii, 2.B.",
+            "M21-1, Part IV, Subpart i, 2.A.4.",
+            "M21-1, Part V, Subpart ii, 3.C.2",
+            "M21-1, Part IV, Subpart i, 3.A.1.band",
+            "M21-1, Part IV, Subpart i, 3.C.1.f",
+            "M21-1, Part IV, Subpart i, 3.B",
+            "M21-1, Part III, Subpart i, 2.C",
+            "M21-1, Part IV, Subpart i, 1.A",
+            "38 CFR 3.901",
+            "38 CFR 3.200",
+            "38 CFR 3.304",
+            "38 CFR 4.85",
+            "38 CFR 4.87"
+          ],
+          "key_points": [],
+          "article_id": "554400000180514",
+          "last_updated": "Sep 24, 2025",
+          "topic_list": [
+            {
+              "num": "1",
+              "name": "Examination Report Requirements"
+            }
+          ]
+        },
+        "B": {
+          "title": "Examination Sufficiency for Specific Disabilities",
+          "reference": "M21-1.IV.i.3.B",
+          "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section B",
+          "overview": "<-- Previous Section  Next Section --> This section contains the topic “Reviewing Examination Reports for Rating Criteria.” Introduction This topic contains information about examination considerations specific to certain disabilities and body systems, including eye examination report review headache examination report review hearing loss and tinnitus examination report review mental health examination report review heart conditions examination report review for metabolic equivalents (METs) musculoskeletal examination report review for range of motion (ROM), functional loss, and X-rays nerves examination report review respiratory examination report review for pulmonary function tests (PFTs) skin and scars examination report review sleep disorders examination report review temporomandibular disorder (TMD) examination report review, and traumatic brain injury (TBI) examination report review. Change Date April 28, 2025",
+          "topics": [
+            {
+              "code": "IV.i.3.B.1.a",
+              "topic_num": "1",
+              "subtopic": "a",
+              "title": "Eye Examination Report Review",
+              "content": "When a visual field defect is perceived, examiners must perform any necessary visual field testing using either\nGoldmann kinetic perimetry, or\nautomated perimetry using Humphrey Model 750, Octopus Model 101, or later versions of these perimetric devices with simulated kinetic Goldmann testing capability.\nIf the examination was not performed using the proper testing method, then the examination report should be returned as insufficient.  An examination sufficient for rating purposes must include, at minimum,\ndocumentation of numerical values for all required fields as measured by a perimetric device, or\nresults documented on a Goldmann chart.\nImportant:  Irrespective of the eye condition being examined, no visual field testing is required if the examiner indicates that the Veteran does not suffer a visual field defect.  The absence of visual field testing results does not, in these instances, render an examination report insufficient for rating purposes.\n\nReference:  For more information on eye conditions, see\n38 CFR 4.75\n38 CFR 4.76(b)(3)\n38 CFR 4.77\n38 CFR 4.79, and\nM21-1, Part V, Subpart iii, 2.A."
+            },
+            {
+              "code": "IV.i.3.B.1.b",
+              "topic_num": "1",
+              "subtopic": "b",
+              "title": "Headache Examination Report Review",
+              "content": "A neurological headache examination report will be considered insufficient if it does not indicate the frequency of prostrating headaches and whether the headaches are migraine-type or non-migraine type.\n\nReference:  For more information on rating migraines, see\n38 CFR 4.124a, and\nM21-1, Part V, Subpart iii, 12.A.3."
+            },
+            {
+              "code": "IV.i.3.B.1.c",
+              "topic_num": "1",
+              "subtopic": "c",
+              "title": "Hearing Loss and Tinnitus Examination Report Review",
+              "content": "A hearing loss and tinnitus examination report may be considered insufficient if an opinion was requested but is not provided in the report.\n\nUnusual circumstances may arise during the examination, requiring the examiner to\nidentify any audiometric frequencies that could not be tested (CNT) and explain why testing could not be done\nprovide an explanation of why speech discrimination testing was not performed on the Veteran, or why a speech discrimination score is not appropriate in the Veteran's case, and/or\nstate the functional impact of tinnitus.\nNote:  In a case involving service connection (SC) for hearing loss where an etiology opinion is required, the examiner’s rationale should not solely discuss that hearing was normal at the times of the Veteran’s enlistment and separation.\nWhen there is a current diagnosis of hearing loss, the examiner should provide an explanation as to how the provided opinion was reached.  This includes discussing pertinent objective evidence, lay testimony from the Veteran, and scientific literature that either refutes or supports a relationship between the current hearing loss and an event, injury, or disease during military service.\nDecision makers should not deny SC for hearing loss based on an examiner’s medical opinion rationale which solely discusses that hearing was normal during service to support a conclusion that the current hearing loss is not related to service.  The examination report should be returned due to an insufficient medical opinion rationale.\nReferences:  For more information on\nrequesting audiometric examinations and medical opinions, see  M21-1, Part V, Subpart iii, 2.B.1.d, and\nthe requirement for a supporting rationale for medical opinions, see M21-1, Part V, Subpart ii, 1.A.3.g."
+            },
+            {
+              "code": "IV.i.3.B.1.d",
+              "topic_num": "1",
+              "subtopic": "d",
+              "title": "Mental Health Examination Report Review",
+              "content": "Mental health examinations can be complex when there are psychological symptoms existing simultaneously with and usually independently of another medical condition, such as posttraumatic stress disorder and traumatic brain injury (TBI) symptoms of memory loss.\n\nAn examination report may be insufficient if\nthere is more than one mental disorder diagnosed, and the examiner does not address the criteria for all the diagnoses\nthere is a diagnosis of a mental disorder and TBI, and the examiner does not\ndifferentiate and list which symptom(s) is/are attributable to each diagnosis, or\nprovide a reason that it is not possible to differentiate what portion of each symptom is attributable to each diagnosis\nthe Occupational and Social Impairment section of the report is not completed, or\nthe examiner fails to address the question of the claimant’s competency.\nReference:  For more information on considering a change in the diagnosis of a psychiatric disorder, see M21-1, Part V, Subpart iii, 13."
+            },
+            {
+              "code": "IV.i.3.B.1.e",
+              "topic_num": "1",
+              "subtopic": "e",
+              "title": "Heart Conditions Examination Report Review for METs",
+              "content": "The metabolic equivalents (METs) score for heart conditions can be provided as an estimate, as indicated on the disability benefits questionnaires (DBQs).  If the Veteran has comorbid conditions that prevent the examiner from performing METs testing or providing an interview-based METs estimate, then the\nexaminer must indicate why\nMETs testing could not be performed, or\na METs estimate could not be provided, and\nrating activity will evaluate the condition based on the remaining examination results and evidence of record.\nReference:  For more information on rating heart conditions, see M21-1, Part V, Subpart iii, 5."
+            },
+            {
+              "code": "IV.i.3.B.1.f",
+              "topic_num": "1",
+              "subtopic": "f",
+              "title": "Musculoskeletal Examination Report Review for ROM",
+              "content": "In order to address the Court of Appeals for Veterans Claims (CAVC) interpretation of Department of Veterans Affairs regulations in DeLuca v. Brown, 8 Vet.App. 202 (1995), and Mitchell v. Shinseki, 25 Vet.App. 32 (2011), musculoskeletal joint examination reports must address range of motion (ROM) criteria for repetitive motion and flare-ups.\n\nFollowing the initial assessment of ROM, the examiner must perform repetitive-use testing to the extent permitted by the disability under evaluation.  After the initial measurement, the examiner must reassess ROM after three repetitions and report the post-test measurements.\n\nThe examination report is insufficient if the examiner does not\nrepeat ROM testing during the examination and report any additional functional loss, or\nprovide a rational explanation for why repetitive-use testing could not be accomplished, if applicable.\nIn order to address CAVC’s holding in Correia v. McDonald, 28 Vet.App. 158 (2016), and ensure adequacy for rating purposes, musculoskeletal examination reports must also reflect testing of\ninvolved joints for pain\non both active and passive motion, and\nin states of weight-bearing and nonweight-bearing, and\nROM of the opposite, undamaged joint, if applicable and medically feasible.\nMusculoskeletal examination reports containing self-evident contradictory findings, conclusions, and/or terminology will also be rendered insufficient or require additional clarification.  Examples of such contradictory examination features include, but are not limited to, the following:\nannotations of “unaffected gait” and “walks with a cane” in the same report\nindication that a joint has required surgery, accompanied by the annotation “scar not addressed,” and\nconclusion that a joint warrants no clinical diagnosis, accompanied by coexisting objective findings of unqualified\nirregular limitation of motion (LOM)\npain on ROM testing, and/or\ndegenerative changes or arthritis.\nReferences:  For more information on\nrating musculoskeletal conditions, see M21-1, Part V, Subpart iii, 1.A-F\nmusculoskeletal examination report review for\nfunctional loss, see M21-1, Part IV, Subpart i, 3.B.1.g, and\nx-rays, see M21-1, Part IV, Subpart i, 3.B.1.h\nadditional functional impairment during flare-ups or with repeated use over time, see\nDeLuca v. Brown, 8 Vet.App. 202 (1995), and\nMitchell v. Shinseki, 25 Vet.App. 32 (2011), and\nrequired ROM testing, see Correia v. McDonald, 28 Vet.App. 158 (2016)."
+            },
+            {
+              "code": "IV.i.3.B.1.g",
+              "topic_num": "1",
+              "subtopic": "g",
+              "title": "Musculoskeletal Examination Report Review for Functional Loss",
+              "content": "The clinician conducting a musculoskeletal examination must address additional functional limitation or LOM during flare-ups or following repeated use over time, based on the Veteran’s history and the examiner’s clinical judgment.\n\nThe examination report must address whether the functional ability of a joint is significantly limited during flare-ups or when the joint is used repeatedly over a period of time due to\npain\nweakness\nfatigability, and/or\nincoordination.\nIf such opinion is not feasible, then the examiner must state so and provide an explanation as to why the opinion cannot be rendered.\n\nExample:  John Smith reports severe knee pain with repeated use over time when walking back and forth to the store several times a day.  During those flare-ups, the capacity for knee flexion is demonstrated/reported to be 0-110 degrees.\nImportant:  The examiner conducting an initial or review musculoskeletal examination must consider all the evidence of record when estimating functional loss due to flare-ups.  The examiner must review the claims folder in order to adequately meet this requirement.\nReferences:  For more information on\nrequirement for claims folder review in a musculoskeletal examination, see\nSharp v. Shulkin, 29 Vet.App. 26 (2017), and\nM21-1, Part IV, Subpart i, 2.A.8.b, and\nmusculoskeletal examination report review for\nROM, see M21-1, Part IV, Subpart i, 3.B.1.f, and\nx-rays, see M21-1, Part IV, Subpart i, 3.B.1.h."
+            },
+            {
+              "code": "IV.i.3.B.1.h",
+              "topic_num": "1",
+              "subtopic": "h",
+              "title": "Musculoskeletal Examination Report Review for X-Rays",
+              "content": "During review of musculoskeletal examination reports, check to ensure that x-rays were obtained when necessary.\n\nA diagnosis of arthritis (other than multi-joint) must be confirmed by x-ray or other radiographic testing before SC may be established.\n\nWhere there is a claim of non-specific joint pain in a joint or multiple joints, x-rays will not be provided prior to the Veteran being seen by the examiner.\nThe examiner will determine if x-rays are needed in order to provide a diagnosis consistent with the history and symptomatology.\nIf there is a diagnosis other than degenerative or post-traumatic arthritis, or a determination that no diagnosable disability exists, do not return the examination as insufficient merely because x-rays were not provided.\nHowever, when arthritis (other than multi-joint) is claimed or diagnosed, the examination and/or medical evidence of record must include x-rays of the joint at issue.  If the examination does not include x-rays, and none are otherwise available for consideration, then return the examination report as insufficient.\n\nNote:  Once arthritic changes are shown in a joint, no further x-rays will ever be required for that joint to support a diagnosis of arthritis.\n\nReferences:  For more information on\nmusculoskeletal examination report review for\nROM, see M21-1, Part IV, Subpart i, 3.B.1.f, and\nfunctional loss, see M21-1, Part IV, Subpart i, 3.B.1.g, and\nmulti-joint arthritis and arthritis other than multi-joint, see M21-1, Part V, Subpart iii, 1.C."
+            },
+            {
+              "code": "IV.i.3.B.1.i",
+              "topic_num": "1",
+              "subtopic": "i",
+              "title": "Nerves Examination Report Review",
+              "content": "Examiners must, to the extent possible, identify the nerve that best correlates to the area affected even if the condition is a spinal cord nerve condition.\n\nThis information will allow the rating decision to address the functional impairment of the area affected.\n\nReference:  For more information on diseases of the peripheral nerves, see\n38 CFR 4.120, and\nM21-1, Part V, Subpart iii, 12.A.2."
+            },
+            {
+              "code": "IV.i.3.B.1.j",
+              "topic_num": "1",
+              "subtopic": "j",
+              "title": "Respiratory Examination Report Review for PFTs",
+              "content": "Pulmonary function tests (PFTs) are required for most respiratory conditions unless\nthere is a recent study in the Veteran’s records that accurately reflects the Veteran’s current condition, or\nthe examiner provides an explanation on the special exceptions listed in 38 CFR 4.96(d)(1)(i) through (iv).\nObtaining and reporting the PFT is only half of the requirement.  The other half of the requirement is for the examiner to interpret the PFT in relation to the claimed condition.\n\nReferences:  For more information on\nwhen PFTs are required, see M21-1, Part V, Subpart iii, 4.A.1.e, and\nassigning disability evaluations based on the results of PFTs, see M21-1, Part V, Subpart iii, 4.A.1.f."
+            },
+            {
+              "code": "IV.i.3.B.1.k",
+              "topic_num": "1",
+              "subtopic": "k",
+              "title": "Skin and Scars Examination Report Review",
+              "content": "Use the table below to ensure a skin or scar examination report is not considered insufficient for rating purposes.\n\nIf the disability being assessed is a ...\nThen the ...\nskin condition (dermatitis, eczema, etc.) whose evaluation criteria involve consideration of its effects on bodily areas\nSkin Diseases Disability Benefits Questionnaire must identify the total body surface area and exposed body surface area (both expressed as percentages) affected.\nscar\nScars/Disfigurement Disability Benefits Questionnaire must identify the scar’s\nlocation (left lower extremity, right upper extremity, etc.)\ntype (linear, superficial non-linear, painful, etc.), and\ndimensions of measurement (length and width).\nNote:  Non-scar DBQs identifying residual scars that are not painful/unstable or greater than 39 square centimeters in area are also sufficient for rating purposes.\n\nNotes:\nIf color photographs are not included with a skin or scar examination report, do not return the examination report as insufficient to request photographs unless the report clearly indicates that photographs werecaptured at the time of examination but fails to provide them.  In this instance, the photographs must be obtained for rating consideration.\nIf photographs are included, then consider the evidence when evaluating the condition(s) at issue.\nReference:  For more information on rating skin conditions and scars, see\n38 CFR 4.118, and\nM21-1, Part V, Subpart iii, 10."
+            },
+            {
+              "code": "IV.i.3.B.1.l",
+              "topic_num": "1",
+              "subtopic": "l",
+              "title": "Sleep Disorders Examination Review",
+              "content": "Sleep apnea must be diagnosed with a sleep study.  Review the sleep study to ensure the condition is interpreted in relationship to the claimed condition.\n\nIf there is a service-connected (SC) condition that is comorbid to the sleep apnea that requires a PFT, like asthma, ensure that such testing was completed.\n\nSleep disturbances, such as insomnia, may be claimed as secondary manifestations of other primary conditions, including, but not limited to,\nmental health disorders\npain experienced from an SC disability, and/or\nsigns or symptoms of undiagnosed illness and medically unexplained chronic multi-symptom illnesses.\nNotes:\nWhen the Sleep Apnea Disability Benefits Questionnaire is negative for a diagnosis of sleep apnea but the examiner provides information about sleep disturbances, such as insomnia, review the report in accordance with M21-1, Part V, Subpart iii, 13.1.l to determine if any additional medical opinion is required.\nAs expressed in M21-1, Part V, Subpart iii, 4.A.2.f, upper airway resistance syndrome is neither synonymous with sleep apnea nor considered a ratable disability for compensation purposes.  As such, its diagnosis does not warrant requesting any examination, medical opinion, or clarification of existing examination results.\nReferences:  For more information on\ndetermining when an examination or medical opinion is necessary, see M21-1, Part IV, Subpart i, 1.A\nsubthreshold diagnoses, see M21-1, Part V, Subpart ii, 3.C.1.b\nsleep apnea and sleep studies, see M21-1, Part V, Subpart iii, 4.A.2.a\nsleep apnea schedule of ratings, see 38 CFR 4.97, diagnostic code (DC) 6847, and\nthe Sleep Apnea Disability Benefits Questionnaire, see the DBQ Switchboard."
+            },
+            {
+              "code": "IV.i.3.B.1.m",
+              "topic_num": "1",
+              "subtopic": "m",
+              "title": "TMD Examination Report Review",
+              "content": "There is no need to return a temporomandibular disorder (TMD) examination report simply because a dentist did not perform the examination.  TMD is musculoskeletal in nature.\n\nImportant:  As part of the musculoskeletal requirements, the Temporomandibular Disorders (TMDs) Disability Benefits Questionnaire requires the examiner to address\nflare-ups that impact the function of the temporomandibular joint\ninitial ROM measurements\nROM measurement after repetitive-use testing\nfunctional loss and additional limitation in ROM, and\npain (pain on palpation) and crepitus.\nReferences:  For more information on\nrating TMD, see\n38 CFR 4.150, DC 9905, and\nM21-1, Part V, Subpart iii, 14.2.b, and\nthe Temporomandibular Disorders (TMDs) Disability Benefits Questionnaire, see the DBQ Switchboard."
+            },
+            {
+              "code": "IV.i.3.B.1.n",
+              "topic_num": "1",
+              "subtopic": "n",
+              "title": "TBI Examination Report Review",
+              "content": "Ensure the initial TBI diagnosis is provided by a qualified examiner.\n\nThe examiner must address\nall the facets of the TBI diagnosis, and if any facets are left blank, it must be indicated in the Remarks section of the DBQ that the symptoms are related to a non-TBI condition, with an explanation provided\nany additional residuals, other findings, diagnostic testing, functional impact of the diagnosis, and an explanation regarding conflicting diagnoses from medical versus mental health clinicians, if applicable\nother pertinent physical findings, scars, complications, conditions, signs and/or symptoms, such as mental, physical, or neurological conditions or residuals attributable to a TBI (such as migraine headaches or Meniere’s disease), and\nthe functional impact on the Veteran’s ability to work.\nA mental health evaluation alone is not sufficient in addressing TBI.  A TBI examination completed by a medical clinician, with input from a mental health examiner, needs to be completed when attributable signs and symptoms co-exist.\n\nObjective evidence and neuropsychiatric testing may be required when cognitive impairment symptoms are identified.  Some examples of cognitive impairment symptomology include\nmemory loss, and\nreduced attention, concentration, and executive functioning.\nReferences:  For more information on\nTBI examiner qualifications, see M21-1, Part IV, Subpart i, 3.A.1.j, and\nevaluating TBI, see\n38 CFR 4.124a, and\nM21-1, Part V, Subpart iii, 12.B."
+            }
+          ],
+          "references": [
+            "M21-1, Part V, Subpart iii, 2.A.",
+            "M21-1, Part V, Subpart iii, 12.A.3.",
+            "M21-1, Part V, Subpart iii, 2.B.1.d",
+            "M21-1, Part V, Subpart ii, 1.A.3.g.",
+            "M21-1, Part V, Subpart iii, 13.",
+            "M21-1, Part V, Subpart iii, 5.",
+            "M21-1, Part V, Subpart iii, 1.A",
+            "M21-1, Part IV, Subpart i, 3.B.1.g",
+            "M21-1, Part IV, Subpart i, 3.B.1.h",
+            "M21-1, Part IV, Subpart i, 2.A.8.b",
+            "M21-1, Part IV, Subpart i, 3.B.1.f",
+            "M21-1, Part IV, Subpart i, 3.B.1.h.",
+            "M21-1, Part V, Subpart iii, 1.C.",
+            "M21-1, Part V, Subpart iii, 12.A.2.",
+            "M21-1, Part V, Subpart iii, 4.A.1.e",
+            "M21-1, Part V, Subpart iii, 4.A.1.f.",
+            "M21-1, Part V, Subpart iii, 10.",
+            "M21-1, Part V, Subpart iii, 13.1.l",
+            "M21-1, Part V, Subpart iii, 4.A.2.f",
+            "M21-1, Part IV, Subpart i, 1.A",
+            "M21-1, Part V, Subpart iii, 4.A.2.a",
+            "M21-1, Part V, Subpart iii, 14.2.b",
+            "M21-1, Part IV, Subpart i, 3.A.1.j",
+            "M21-1, Part V, Subpart iii, 12.B.",
+            "38 CFR 4.75",
+            "38 CFR 4.76",
+            "38 CFR 4.77",
+            "38 CFR 4.79",
+            "38 CFR 4.124",
+            "38 CFR 4.120",
+            "38 CFR 4.96",
+            "38 CFR 4.118",
+            "38 CFR 4.97",
+            "38 CFR 4.150"
+          ],
+          "key_points": [],
+          "article_id": "554400000180516",
+          "last_updated": "May 27, 2025",
+          "topic_list": [
+            {
+              "num": "1",
+              "name": "Reviewing Examination Reports for Rating Criteria"
+            }
+          ]
+        },
+        "C": {
+          "title": "Insufficient Examinations",
+          "reference": "M21-1.IV.i.3.C",
+          "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section C",
+          "overview": "<-- Previous Section  Next Section --> This section contains the topic, “Handling Examination and Other Medical Reports That Are Insufficient for Rating Purposes.” Introduction This topic contains information about handling insufficient examination reports, including insufficient examination reports handling insufficient examination reports that were erroneously requested clarification of examination reports resolving inconsistencies returning examination reports requested through the Compensation and Pension Record Interchange (CAPRI), and Veterans Benefits Management System (VBMS) determining whether a rework request or new examination scheduling request (ESR) in VBMS is required handling non-Department of Veterans Affairs (VA) hospital reports that are insufficient for rating purposes, and requesting clarification from private physicians. Change Date July 23, 2025",
+          "topics": [
+            {
+              "code": "IV.i.3.C.1.a",
+              "topic_num": "1",
+              "subtopic": "a",
+              "title": "Insufficient Examination Reports",
+              "content": "A Department of Veterans Affairs (VA) examination report submitted to the rating activity must be as complete as possible.\n\nAny missing required information on the report makes the examination report insufficient for rating purposes.  The following are examples of deficiencies that would render an examination report insufficient:\nThe examination report is unsigned.\nThe examination report does not address all disabilities for which an examination was requested.\nThe required question(s) on the disability benefits questionnaire (DBQ) is/are unanswered.\nThe required review of the claims folder was not accomplished, when applicable.\nThe report is missing information pertinent to the specific disability under review, such as the impact of musculoskeletal pain on the functional loss of an affected joint.\nA medical opinion is not properly supported by a valid rationale and/or by the evidence of record.\nA requested medical opinion was not furnished.\nNotes:\nIf an examination report indicates there is no diagnosis for a claimed condition, then the examination report is not automatically insufficient if the examiner fails to furnish a requested medical opinion for that claimed condition.\nIn general, if there is no diagnosis, then the request for a medical opinion is rendered moot.\nHowever, there are certain claim types or disability pictures for which a medical opinion may still be required, even in the absence of a clinical diagnosis.  These circumstances include\nwhen joint pain or other subjective symptoms without a specific diagnosis may warrant service connection (SC) based on functional impairment of earning capacity, as discussed in M21-1, Part V, Subpart ii, 3.C.2, but the claim being reviewed cannot be decided without a medical opinion\nwhen an examiner’s determination of disability pattern is required to decide a claim for SC of an undiagnosed illness from a Persian Gulf Veteran, as discussed in M21-1, Part VIII, Subpart ii, 1.B.2.p, or\nany other scenario where a decision cannot be made without a medical opinion, based on guidance specific to the issue at hand and/or a question or conflict raised by the evidence.\nIf the rating activity determines that a necessary examination was canceled without a valid reason, it must submit a new examination request to the examining facility and specify why the previous cancellation was inappropriate.\nExample:  An examination requested in connection with a claim for a knee condition was not completed because “the claimed condition was not documented and diagnosed in the service treatment records on examiner review.”  If the rating activity determines that such examination is needed, the existing report or cancellation notice should be returned to the examining facility as insufficient for rating purposes.\n\nImportant:  There are instances where missing information in an examination report does not make the examination itself insufficient.  However, claims processors must seek and obtain the missing information via communication with and clarification by the examiner, as discussed in M21-1, Part IV, Subpart i, 3.C.1.c, before issuing a final decision on the underlying claim.\n\nReferences:  For more information on\ninadequate examinations, see\n38 CFR 4.2, and\n38 CFR 4.70\ncircumstances under which further development may be needed, see M21-1, Part V, Subpart ii, 3.B.1.a\nresolving inconsistencies, see M21-1, Part IV, Subpart i, 3.C.1.d\ndescriptions of pain affecting functional loss, see Floyd v. Brown, 9 Vet.App. 88 (1996), and\nthe requirement for a supporting rationale for medical opinions, see M21-1, Part V, Subpart ii, 1.A.3.g."
+            },
+            {
+              "code": "IV.i.3.C.1.b",
+              "topic_num": "1",
+              "subtopic": "b",
+              "title": "Handling Insufficient Examination Reports That Were Erroneously Requested",
+              "content": "In Barr v. Nicholson, 21 Vet.App. 303 (2007), the Court of Appeals for Veterans Claims held that if VA provides an examination when developing a claim for SC, even if not statutorily obligated to do so,\nthe examination must be adequate, or\nthe Veteran must be notified as to why one will not or cannot be provided.\nException:  The above requirement for adequacy does not apply to examination reports initiated by the Veterans Health Administration (VHA) that do not\nrelate to the contentions under consideration in the pending claim, or\npotentially impact existing benefit entitlement."
+            },
+            {
+              "code": "IV.i.3.C.1.c",
+              "topic_num": "1",
+              "subtopic": "c",
+              "title": "Clarification of Examination Reports",
+              "content": "An examination report that needs clarification must be discussed with or returned to the examiner.  Such instances include, but are not limited to, the following:\nThe same disability is diagnosed differently by different examiners.\nConclusions or findings have been expressed in ambiguous or equivocal terms.\nAn examination report shows a change in the diagnosis or etiology for a disability previously recognized as service-connected.\nAn examination was conducted prior to the issuance of an amendment to the rating schedule, and additional information is needed to fully consider and properly evaluate the disability at issue in light of newly implemented criteria.\nAn examination report provides information that\ncontradicts or conflicts with other information within the same DBQ, or\nrequires additional context for rating purposes.\nNote:  It is not uncommon for VA to receive evidence both in favor of and against a claim.  The mere presence of both positive and negative evidence does not necessarily require clarification or reconciliation by an examiner.  It is the responsibility of the rating activity to review and weigh all relevant evidence and to make determinations as to the probative value and persuasiveness of the evidence.  Clarification or reconciliation by an examiner is only necessary if the medical evidence of record is insufficient to support a conclusion.\nReference:  For more information on reviewing and weighing evidence, see M21-1, Part V, Subpart ii, 1.A."
+            },
+            {
+              "code": "IV.i.3.C.1.d",
+              "topic_num": "1",
+              "subtopic": "d",
+              "title": "Resolving Inconsistencies",
+              "content": "If any inconsistency or conflicting findings of various medical examiners renders the evidence of record insufficient for rating purposes, resolve the inconsistency or conflict by requesting a medical opinion from a different examiner.\n\nReferences:  For more information on requesting\nindependent medical opinions, see\n38 CFR 3.328, and\nM21-1, Part IV, Subpart i, 2.E.5, and\nmedical opinions, see M21-1, Part IV, Subpart i, 2.A.7."
+            },
+            {
+              "code": "IV.i.3.C.1.e",
+              "topic_num": "1",
+              "subtopic": "e",
+              "title": "Returning Examination Reports Requested Through CAPRI",
+              "content": "Refer to the table below to determine how to return an insufficient or inadequate examination report to the appropriate provider when the examination was originally requested through the Compensation and Pension Record Interchange (CAPRI).\n\nIf the examination report ...\nThen ...\nis deemed insufficient within 45 days of its receipt\nreturn the examination as insufficient through CAPRI.\nis deemed insufficient more than 45 days following its receipt\nprepare and submit a new examination request using CAPRI.\nrequires additional clarification\ncall or e-mail the examiner or point of contact at the examination facility to try to resolve the issue(s), or\ninput a medical opinion DBQ request for the necessary supplemental information in CAPRI if the issue(s) is/are complex or cannot be resolved by telephone or e-mail.\npresents an opinion or diagnosis that conflicts with other evidence of record andthe conflict cannot be resolved via review of the evidentiary record\ninput a new medical opinion DBQ request in CAPRI.\n\nImportant:\nAvoid using language that can be construed as adversarial when returning reports for clarification.  Use the term insufficient for rating purposesrather than inadequate examination.\nClearly describe the issue(s) needing clarification or resolution.\nNotes:\nFor VHA examinations, try to resolve any questions or need for clarification with regional office resident clinicians as often as possible in order to promote timely claims processing and efficient customer service.\nWhen the best interest of the Veteran will be advanced by a personal conference or e-mail with the examiner, such measures should always be considered.\nReferences:  For more information on\nnavigation of and data entry in CAPRI, see the CAPRI User Manual\ndeficiencies that would render an examination report insufficient, see M21-1, Part IV, Subpart i, 3.C.1.a, and\nwhen an examination report would need clarification, see M21-1, Part IV, Subpart i, 3.C.1.c."
+            },
+            {
+              "code": "IV.i.3.C.1.f",
+              "topic_num": "1",
+              "subtopic": "f",
+              "title": "Returning Examination Reports Requested Through VBMS",
+              "content": "Refer to the table below to determine how to return an insufficient or inadequate examination report to the appropriate provider when the examination was originally requested through the Veterans Benefits Management System (VBMS).\n\nIf the examination report ...\nThen ...\nis deemed insufficient\nreturn the examination report by\naccessing the EXAMS chevron in VBMS\nselecting\nRework from the ACTIONS menu\neach contention requiring additional attention\nInsufficiency as the rework type, and\none or more bases for the report’s return from the AVAILABLE REWORK REASONS drop-down menu, and\nentering a clear description of the issue(s) needing clarification or resolution in the DETAILED RATIONALE FOR REWORK field.\nImportant:\nWhen a contract examination report is found to be insufficient, it should not be resolved by VHA examiners.\nA rework request must be routed to the vendor that produced the insufficient examination report.  Rework requests must not be routed to a new vendor.\nNote:  Insufficient examination reports include those which are missing\ninformation on the requested DBQ that is needed for rating purposes, or\nan entire requested DBQ.\nReference:  For more information on deficiencies that would render an examination report insufficient, see M21-1, Part IV, Subpart i, 3.C.1.a.\nrequires clarification\nreturn the examination report by\naccessing the EXAMS chevron in VBMS\nselecting\nRework from the ACTIONS menu\neach contention requiring additional attention\nClarification as the rework type, and\none or more bases for the report’s return from the AVAILABLE REWORK REASONS drop-down menu, and\nentering a clear description of the issue(s) needing clarification or resolution in the DETAILED RATIONALE FOR REWORK field.\nImportant:  When submitting a clarification rework request for a contract examination, it is recommended to cite the exact language in the DBQ that requires clarification and specify the clarification(s) needed.\nReference:  For more information on when an examination report would need clarification, see M21-1, Part IV, Subpart i, 3.C.1.c.\npresents an opinion or diagnosis that conflicts with other evidence of record and the conflict cannot be resolved via review of the evidentiary record\ninput a new medical opinion DBQ request in VBMS.\n\nImportant:\nAvoid using language that can be construed as adversarial when returning reports for clarification.  Use the term insufficient for rating purposesrather than inadequate examination.\nAn examination scheduling request (ESR) must be in a Completed status before a rework request can be submitted in VBMS.\nNote:  Contract examination providers have a maximum of 14 days to clarify any insufficiency to avoid an insufficiency call.  If the insufficiency or need for clarification is not rectified within the time allotted, the examination will be deemed insufficient.\nReferences:  For more information on\nnavigation of and data entry in VBMS, see the VBMS Core User Guide\nentering a rework request in VBMS, see the Exam Management System (EMS) User Guide, and\nwhen a rework request in VBMS is not appropriate, see M21-1, Part IV, Subpart i, 3.C.1.g."
+            },
+            {
+              "code": "IV.i.3.C.1.g",
+              "topic_num": "1",
+              "subtopic": "g",
+              "title": "Determining Whether a Rework Request or New ESR in VBMS Is Required",
+              "content": "If necessary information was not requested in the original ESR, a new ESR must be submitted.  It is not appropriate to return an examination report as a rework request in VBMS to obtain new information that was not requested on the original ESR.\nRefer to the table below for guidance on whether an examination rework request in VBMS is appropriate or a new ESR is required.\nIf a(n) ...\nThen a ...\nspecific DBQ is deemed necessary but was not included in or triggered by the request on the original ESR\nnew ESR is required, and\nrework request in VBMS is not appropriate.\nExample:  The original ESR requested a Shoulder and Arm Conditions Disability Benefits Questionnaire for the claimed condition of arm pain, but the claims processor determines an Elbow and Forearm Conditions Disability Benefits Questionnaire is required instead.\nmedical opinion is deemed necessary but the specific opinion required was not requested on the original ESR\nnew ESR is required, and\nrework request in VBMS is not appropriate.\nExample:  A direct medical opinion was requested on the original ESR but, after review, the claims processor determines an aggravation medical opinion is needed.\nexamination is needed for a contention not included on the original ESR\nnew ESR is required, and\nrework request in VBMS is not appropriate.\nExamples:\nThe claims processor missed a contention that requires an examination when entering the original ESR.\nAfter the original ESR was entered, a subsequent claim was received for an additional contention that requires an examination.\nexamination is needed for one or more contention(s) and/or specific DBQ(s) not included on the original ESR, but\nexamination for the additional contention(s) and/or completion of the additional DBQ(s) is triggered by the findings and examiner instructions on the originally requested DBQ(s)\nnew ESR is not required, and\nrework request in VBMS is appropriate.\nExample:  The original ESR requested a Diabetes Mellitus Disability Benefits Questionnaire for the claimed condition of diabetes.  At the time of examination, the Veteran reported symptoms of peripheral neuropathy, which would trigger the examiner to also complete the Diabetic Sensory-Motor Peripheral Neuropathy Disability Benefits Questionnaire.  However, the examiner failed to complete the Diabetic Sensory-Motor Peripheral Neuropathy Disability Benefits Questionnaire.\n\nAnalysis:  This is an insufficient examination as the examiner did not follow the instructions in the Diabetes Mellitus Disability Benefits Questionnaire, and a rework request should be submitted in VBMS as directed in M21-1, Part IV, Subpart i, 3.C.1.f.\nNote:  If a rework request is submitted in VBMS to a contract vendor but a newESR should have been submitted instead, the vendor will send the ESR rework request back as a request for clarification with instructions seeking the submission of a new ESR.\nReference:  For more information on requests for clarification on examinations requested through VBMS, see M21-1, Part IV, Subpart i, 2.A.10.c."
+            },
+            {
+              "code": "IV.i.3.C.1.h",
+              "topic_num": "1",
+              "subtopic": "h",
+              "title": "Handling Non-VA Hospital Reports That Are Insufficient for Rating Purposes",
+              "content": "Request clarification of any hospital report that is insufficient for rating purposes and is received from a\nState hospital\ncounty hospital\nmunicipal hospital\ncontract hospital, or\nprivate hospital.\nImportant:  Authorize a VA examination if a satisfactory corrected report cannot be obtained within a reasonable period of time."
+            },
+            {
+              "code": "IV.i.3.C.1.i",
+              "topic_num": "1",
+              "subtopic": "i",
+              "title": "Requesting Clarification From Private Physicians",
+              "content": "VA, pursuant to 38 U.S.C. 5103A(a), has a duty to return for clarification unclear or insufficient private examination reports or VA progress notes if it reasonably appears that a request for clarification could provide relevant information necessary to properly decide a claim that is otherwise not in the record and cannot be obtained in some other way.  VA’s duty is limited to those instances in which the missing information is relevant, factual, and objective – not a matter of opinion – and bears greatly on the probative value of the private medical examination report.\n\nIf a private medical examination report reasonably appears to contain information necessary to properly decide a claim, but is unclear or not suitable for rating purposes and the information contained in the report otherwise cannot be obtained, VA has a duty to either\nask the private examiner to clarify the report\nrequest that the claimant obtain the necessary information to clarify the report\nrequest a VA examination or medical opinion to remedy the lacking element(s), or\nexplain why clarification is not needed.\nAny request for clarification to a private examiner or claimant should clearly indicate what further action needs to be taken to make the insufficient private examination report acceptable for VA consideration.  If no response is received from the private examiner or claimant, continue adjudicating the claim.\nNote:  When an examination or opinion is requested to remedy a lacking element, the exam and/or opinion may be requested specific to only the lacking element.  A complete examination need not be requested to remedy a lacking element when the evidence of record will otherwise be sufficient once the examination or opinion is received.\n\nReferences:  For more information on\nrequesting clarification of medical reports, see\n38 CFR 4.2, and\nSavage v.Shinseki, 24 Vet.App. 259 (2011)\nhandling privately completed DBQs, see M21-1, Part IV, Subpart i, 3.A, and\nrequesting non-Federal or private records, see M21-1, Part III, Subpart i, 2.C.2."
+            }
+          ],
+          "references": [
+            "M21-1, Part V, Subpart ii, 3.C.2",
+            "M21-1, Part VIII, Subpart ii, 1.B.2.p",
+            "M21-1, Part IV, Subpart i, 3.C.1.c",
+            "M21-1, Part V, Subpart ii, 3.B.1.a",
+            "M21-1, Part IV, Subpart i, 3.C.1.d",
+            "M21-1, Part V, Subpart ii, 1.A.3.g.",
+            "M21-1, Part V, Subpart ii, 1.A.",
+            "M21-1, Part IV, Subpart i, 2.E.5",
+            "M21-1, Part IV, Subpart i, 2.A.7.",
+            "M21-1, Part IV, Subpart i, 3.C.1.a",
+            "M21-1, Part IV, Subpart i, 3.C.1.c.",
+            "M21-1, Part IV, Subpart i, 3.C.1.a.",
+            "M21-1, Part IV, Subpart i, 3.C.1.g.",
+            "M21-1, Part IV, Subpart i, 3.C.1.f.",
+            "M21-1, Part IV, Subpart i, 2.A.10.c.",
+            "M21-1, Part IV, Subpart i, 3.A",
+            "M21-1, Part III, Subpart i, 2.C.2.",
+            "38 CFR 4.2",
+            "38 CFR 4.70",
+            "38 CFR 3.328"
+          ],
+          "key_points": [],
+          "article_id": "554400000180517",
+          "last_updated": "Jul 23, 2025",
+          "topic_list": [
+            {
+              "num": "1",
+              "name": "Handling Examination and Other Medical Reports That Are Insufficient for Rating Purposes"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Evidence Checklist - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <!-- Header -->
+    <header class="mb-8">
+        <nav class="text-sm mb-4">
+            <a href="{% url 'examprep:evidence_checklist_list' %}" class="text-blue-600 hover:text-blue-800">Evidence Checklists</a>
+            <span class="mx-2 text-gray-400">/</span>
+            <span class="text-gray-600">New Checklist</span>
+        </nav>
+        <h1 class="text-3xl font-bold text-gray-900">Create Evidence Checklist</h1>
+        <p class="text-gray-600 mt-1">
+            Get a personalized checklist of evidence needed for your VA claim
+        </p>
+    </header>
+
+    {% if denial_analysis %}
+    <div class="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div class="flex items-start">
+            <svg class="h-5 w-5 text-blue-600 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+            </svg>
+            <div>
+                <p class="text-sm text-blue-800">
+                    Creating checklist from denial analysis. We'll include evidence specific to addressing
+                    why VA denied your claim.
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <form method="post" class="bg-white shadow rounded-lg">
+        {% csrf_token %}
+
+        <div class="p-6 space-y-6">
+            <!-- Condition -->
+            <div>
+                <label for="condition" class="block text-sm font-medium text-gray-700 mb-1">
+                    Condition <span class="text-red-500">*</span>
+                </label>
+                <input type="text"
+                       name="condition"
+                       id="condition"
+                       value="{{ initial_condition }}"
+                       required
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                       placeholder="e.g., PTSD, Knee Pain, Sleep Apnea">
+                <p class="mt-1 text-sm text-gray-500">
+                    Enter the medical condition you're claiming
+                </p>
+            </div>
+
+            <!-- Claim Type -->
+            <div>
+                <label for="claim_type" class="block text-sm font-medium text-gray-700 mb-1">
+                    Claim Type <span class="text-red-500">*</span>
+                </label>
+                <select name="claim_type"
+                        id="claim_type"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        onchange="toggleSecondary(this.value)">
+                    {% for value, label in claim_types %}
+                    <option value="{{ value }}" {% if value == initial_claim_type %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <div class="mt-2 text-sm text-gray-500 space-y-1">
+                    <p><strong>Initial Claim:</strong> First time claiming this condition</p>
+                    <p><strong>Rating Increase:</strong> Already service-connected, seeking higher rating</p>
+                    <p><strong>Secondary Condition:</strong> Caused by a service-connected condition</p>
+                    <p><strong>Appeal:</strong> Previously denied, filing supplemental claim or appeal</p>
+                </div>
+            </div>
+
+            <!-- Primary Condition (for secondary claims) -->
+            <div id="secondary-field" class="{% if initial_claim_type != 'secondary' %}hidden{% endif %}">
+                <label for="primary_condition" class="block text-sm font-medium text-gray-700 mb-1">
+                    Primary Condition (Service-Connected)
+                </label>
+                <input type="text"
+                       name="primary_condition"
+                       id="primary_condition"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                       placeholder="e.g., PTSD, Lumbar Strain">
+                <p class="mt-1 text-sm text-gray-500">
+                    The service-connected condition that caused or aggravated your secondary condition
+                </p>
+            </div>
+        </div>
+
+        <!-- Info box -->
+        <div class="px-6 pb-6">
+            <div class="bg-gray-50 rounded-lg p-4">
+                <h3 class="text-sm font-medium text-gray-900 mb-2">What You'll Get</h3>
+                <ul class="text-sm text-gray-600 space-y-1">
+                    <li class="flex items-start">
+                        <svg class="h-5 w-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        Evidence requirements based on M21-1 VA manual
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-5 w-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        Priority indicators (critical vs. supporting)
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-5 w-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        Tips for obtaining each piece of evidence
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-5 w-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        Interactive tracking of your progress
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between rounded-b-lg">
+            <a href="{% url 'examprep:evidence_checklist_list' %}"
+               class="text-gray-600 hover:text-gray-800">
+                Cancel
+            </a>
+            <button type="submit"
+                    class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                Generate Checklist
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+function toggleSecondary(value) {
+    const field = document.getElementById('secondary-field');
+    if (value === 'secondary') {
+        field.classList.remove('hidden');
+    } else {
+        field.classList.add('hidden');
+    }
+}
+</script>
+{% endblock %}

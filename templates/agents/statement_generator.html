@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block title %}Personal Statement Generator - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+        <a href="{% url 'agents:home' %}" class="text-blue-600 hover:text-blue-800 text-sm mb-2 inline-block">&larr; Back to AI Agents</a>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Personal Statement Generator</h1>
+        <p class="text-gray-600">
+            Create a compelling personal statement for your VA claim with guided prompts.
+        </p>
+    </div>
+
+    <!-- Tips -->
+    <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-8">
+        <h2 class="font-bold text-green-900 mb-2">Tips for a Strong Personal Statement</h2>
+        <ul class="text-sm text-green-800 space-y-1">
+            <li>• Be specific with dates, locations, and events when possible</li>
+            <li>• Describe how symptoms affect your daily life (not just that they exist)</li>
+            <li>• Include your worst days, not just average days</li>
+            <li>• Don't minimize your symptoms - be honest about limitations</li>
+        </ul>
+    </div>
+
+    <!-- Form -->
+    <form method="post" action="{% url 'agents:statement_generator_submit' %}" class="space-y-6">
+        {% csrf_token %}
+
+        <!-- Statement Type -->
+        <div class="bg-white border border-gray-200 rounded-lg p-6">
+            <h2 class="font-bold text-gray-900 mb-4">What type of statement do you need?</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                {% for type_code, type_name, type_desc in statement_types %}
+                <label class="flex items-start p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer has-[:checked]:border-green-500 has-[:checked]:bg-green-50">
+                    <input type="radio" name="statement_type" value="{{ type_code }}"
+                           class="mt-1 text-green-600 focus:ring-green-500"
+                           {% if forloop.first %}checked{% endif %}>
+                    <div class="ml-3">
+                        <div class="font-medium text-gray-900">{{ type_name }}</div>
+                        <div class="text-sm text-gray-500">{{ type_desc }}</div>
+                    </div>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Condition -->
+        <div>
+            <label for="condition" class="block text-sm font-medium text-gray-700 mb-2">
+                What condition is this statement for? <span class="text-red-500">*</span>
+            </label>
+            <input type="text" id="condition" name="condition" required
+                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+                   placeholder="e.g., PTSD, Lower Back Pain, Tinnitus">
+        </div>
+
+        <!-- In-Service Event -->
+        <div>
+            <label for="in_service_event" class="block text-sm font-medium text-gray-700 mb-2">
+                What happened during your service that caused or contributed to this condition? <span class="text-red-500">*</span>
+            </label>
+            <textarea id="in_service_event" name="in_service_event" rows="4" required
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+                      placeholder="Describe the event(s), duties, or exposures during service. Include dates and locations if you remember them."></textarea>
+            <p class="mt-1 text-sm text-gray-500">Example: "While deployed to Iraq in 2007, I was exposed to multiple IED explosions..."</p>
+        </div>
+
+        <!-- Current Symptoms -->
+        <div>
+            <label for="current_symptoms" class="block text-sm font-medium text-gray-700 mb-2">
+                What symptoms do you currently experience? <span class="text-red-500">*</span>
+            </label>
+            <textarea id="current_symptoms" name="current_symptoms" rows="4" required
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+                      placeholder="Describe your current symptoms in detail. How often do they occur? How severe are they?"></textarea>
+            <p class="mt-1 text-sm text-gray-500">Be specific: "constant ringing in both ears" is better than "hearing problems"</p>
+        </div>
+
+        <!-- Daily Impact -->
+        <div>
+            <label for="daily_impact" class="block text-sm font-medium text-gray-700 mb-2">
+                How does this condition affect your daily life? <span class="text-red-500">*</span>
+            </label>
+            <textarea id="daily_impact" name="daily_impact" rows="4" required
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+                      placeholder="Describe specific activities you can't do or have difficulty with. How has your life changed?"></textarea>
+            <p class="mt-1 text-sm text-gray-500">Example: "I cannot play with my grandchildren", "I avoid social situations", "I need help getting dressed"</p>
+        </div>
+
+        <!-- Work Impact (Optional) -->
+        <div>
+            <label for="work_impact" class="block text-sm font-medium text-gray-700 mb-2">
+                How does this condition affect your ability to work? (optional)
+            </label>
+            <textarea id="work_impact" name="work_impact" rows="3"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+                      placeholder="Have you had to change jobs, reduce hours, or stop working because of this condition?"></textarea>
+        </div>
+
+        <!-- Treatment History (Optional) -->
+        <div>
+            <label for="treatment_history" class="block text-sm font-medium text-gray-700 mb-2">
+                What treatment have you received? (optional)
+            </label>
+            <textarea id="treatment_history" name="treatment_history" rows="3"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+                      placeholder="List medications, therapies, surgeries, or other treatments you've tried."></textarea>
+        </div>
+
+        <!-- Worst Days (Optional) -->
+        <div>
+            <label for="worst_days" class="block text-sm font-medium text-gray-700 mb-2">
+                Describe your worst days or flare-ups (optional but important)
+            </label>
+            <textarea id="worst_days" name="worst_days" rows="3"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+                      placeholder="What happens on your worst days? How often do they occur? How long do they last?"></textarea>
+            <p class="mt-1 text-sm text-gray-500">This is important! The VA rates based on how bad your condition can get, not just average days.</p>
+        </div>
+
+        <button type="submit"
+                class="w-full py-4 px-6 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+            Generate Personal Statement
+        </button>
+    </form>
+
+    {% if past_statements %}
+    <!-- Past Statements -->
+    <div class="mt-12">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Your Recent Statements</h2>
+        <div class="space-y-3">
+            {% for statement in past_statements %}
+            <a href="{% url 'agents:statement_result' statement.pk %}"
+               class="block p-4 bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <span class="font-medium text-gray-900">{{ statement.condition }}</span>
+                        <span class="ml-2 text-sm text-gray-500">({{ statement.get_statement_type_display }})</span>
+                        <div class="text-sm text-gray-500 mt-1">
+                            {{ statement.created_at|date:"M j, Y" }} • {{ statement.word_count }} words
+                            {% if statement.is_finalized %}
+                            <span class="ml-2 px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs">Finalized</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

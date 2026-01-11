@@ -1,0 +1,191 @@
+{
+  "dbq_name": "Mental Disorders (Other Than PTSD and Eating Disorders)",
+  "dbq_type": "examination",
+  "condition": "Mental Disorders (Non-PTSD)",
+  "category": "mental_health",
+  "diagnostic_codes": ["9201", "9400", "9403", "9404", "9410", "9412", "9413", "9416", "9417", "9421", "9424", "9432", "9433", "9434", "9435", "9440"],
+  "cfr_reference": "38 CFR 4.130",
+  "last_updated": "2024-08-08",
+  "version": "v24_1",
+  "note": "For PTSD, use the separate PTSD DBQ. This form covers depression, anxiety, bipolar, schizophrenia, and other mental disorders.",
+
+  "rating_criteria": {
+    "description": "Mental health conditions are rated based on occupational and social impairment",
+    "general_rating_formula": "General Rating Formula for Mental Disorders",
+    "levels": [
+      {
+        "rating": 0,
+        "criteria": "A mental condition has been formally diagnosed, but symptoms are not severe enough either to interfere with occupational and social functioning or to require continuous medication",
+        "keywords": ["diagnosed", "not severe enough", "no interference", "no medication needed"]
+      },
+      {
+        "rating": 10,
+        "criteria": "Occupational and social impairment due to mild or transient symptoms which decrease work efficiency and ability to perform occupational tasks only during periods of significant stress, or symptoms controlled by medication",
+        "keywords": ["mild", "transient", "significant stress only", "controlled by medication"]
+      },
+      {
+        "rating": 30,
+        "criteria": "Occupational and social impairment with occasional decrease in work efficiency and intermittent periods of inability to perform occupational tasks, although generally functioning satisfactorily, with normal routine behavior, self-care and conversation",
+        "keywords": ["occasional decrease", "intermittent inability", "generally functioning", "normal routine"]
+      },
+      {
+        "rating": 50,
+        "criteria": "Occupational and social impairment with reduced reliability and productivity",
+        "keywords": ["reduced reliability", "reduced productivity"],
+        "typical_symptoms": [
+          "Flattened affect",
+          "Circumstantial, circumlocutory, or stereotyped speech",
+          "Panic attacks more than once a week",
+          "Difficulty understanding complex commands",
+          "Impaired judgment",
+          "Impaired abstract thinking",
+          "Disturbances of motivation and mood",
+          "Difficulty establishing/maintaining effective work and social relationships"
+        ]
+      },
+      {
+        "rating": 70,
+        "criteria": "Occupational and social impairment with deficiencies in most areas, such as work, school, family relations, judgment, thinking and/or mood",
+        "keywords": ["deficiencies in most areas", "work", "family relations", "judgment", "thinking", "mood"],
+        "typical_symptoms": [
+          "Suicidal ideation",
+          "Obsessional rituals interfering with routine activities",
+          "Speech intermittently illogical, obscure, or irrelevant",
+          "Near-continuous panic or depression affecting ability to function",
+          "Impaired impulse control",
+          "Spatial disorientation",
+          "Neglect of personal appearance and hygiene",
+          "Difficulty adapting to stressful circumstances",
+          "Inability to establish and maintain effective relationships"
+        ]
+      },
+      {
+        "rating": 100,
+        "criteria": "Total occupational and social impairment",
+        "keywords": ["total impairment", "unable to work", "complete disability"],
+        "typical_symptoms": [
+          "Gross impairment in thought processes or communication",
+          "Persistent delusions or hallucinations",
+          "Grossly inappropriate behavior",
+          "Persistent danger of hurting self or others",
+          "Intermittent inability to perform activities of daily living",
+          "Disorientation to time or place",
+          "Memory loss for names of close relatives, own occupation, or own name"
+        ]
+      }
+    ]
+  },
+
+  "symptoms_checklist": {
+    "description": "Symptoms documented by examiner that support rating level",
+    "symptoms": [
+      {"symptom": "Depressed mood", "typical_rating": "30+"},
+      {"symptom": "Anxiety", "typical_rating": "30+"},
+      {"symptom": "Suspiciousness", "typical_rating": "30+"},
+      {"symptom": "Panic attacks that occur weekly or less often", "typical_rating": "30"},
+      {"symptom": "Panic attacks more than once a week", "typical_rating": "50+"},
+      {"symptom": "Near-continuous panic or depression affecting the ability to function independently, appropriately and effectively", "typical_rating": "70+"},
+      {"symptom": "Chronic sleep impairment", "typical_rating": "30+"},
+      {"symptom": "Mild memory loss, such as forgetting names, directions or recent events", "typical_rating": "30"},
+      {"symptom": "Impairment of short and long term memory, for example, retention of only highly learned material, while forgetting to complete tasks", "typical_rating": "50+"},
+      {"symptom": "Memory loss for names of close relatives, own occupation, or own name", "typical_rating": "100"},
+      {"symptom": "Flattened affect", "typical_rating": "50+"},
+      {"symptom": "Circumstantial, circumlocutory or stereotyped speech", "typical_rating": "50+"},
+      {"symptom": "Speech intermittently illogical, obscure, or irrelevant", "typical_rating": "70+"},
+      {"symptom": "Difficulty in understanding complex commands", "typical_rating": "50+"},
+      {"symptom": "Impaired judgment", "typical_rating": "50+"},
+      {"symptom": "Impaired abstract thinking", "typical_rating": "50+"},
+      {"symptom": "Gross impairment in thought processes or communication", "typical_rating": "100"},
+      {"symptom": "Disturbances of motivation and mood", "typical_rating": "50+"},
+      {"symptom": "Difficulty in establishing and maintaining effective work and social relationships", "typical_rating": "50"},
+      {"symptom": "Difficulty adapting to stressful circumstances, including work or a work like setting", "typical_rating": "70"},
+      {"symptom": "Inability to establish and maintain effective relationships", "typical_rating": "70+"},
+      {"symptom": "Suicidal ideation", "typical_rating": "70+"},
+      {"symptom": "Obsessional rituals which interfere with routine activities", "typical_rating": "70+"},
+      {"symptom": "Impaired impulse control, such as unprovoked irritability with periods of violence", "typical_rating": "70+"},
+      {"symptom": "Spatial disorientation", "typical_rating": "70+"},
+      {"symptom": "Persistent delusions or hallucinations", "typical_rating": "100"},
+      {"symptom": "Grossly inappropriate behavior", "typical_rating": "100"},
+      {"symptom": "Persistent danger of hurting self or others", "typical_rating": "100"},
+      {"symptom": "Neglect of personal appearance and hygiene", "typical_rating": "70+"},
+      {"symptom": "Intermittent inability to perform activities of daily living, including maintenance of minimal personal hygiene", "typical_rating": "100"},
+      {"symptom": "Disorientation to time or place", "typical_rating": "100"}
+    ]
+  },
+
+  "common_diagnoses": [
+    "Major Depressive Disorder",
+    "Generalized Anxiety Disorder",
+    "Panic Disorder",
+    "Social Anxiety Disorder",
+    "Bipolar Disorder",
+    "Schizophrenia",
+    "Schizoaffective Disorder",
+    "Obsessive-Compulsive Disorder (OCD)",
+    "Adjustment Disorder",
+    "Somatic Symptom Disorder",
+    "Persistent Depressive Disorder (Dysthymia)"
+  ],
+
+  "exam_sections": [
+    "Diagnosis",
+    "Differentiation of Symptoms",
+    "Occupational and Social Impairment",
+    "Evidence Review",
+    "History (Social/Marital/Family, Occupational/Educational, Mental Health, Legal/Behavioral, Substance Abuse)",
+    "Symptoms",
+    "Behavioral Observations",
+    "Other Symptoms",
+    "Competency",
+    "Remarks"
+  ],
+
+  "examiner_requirements": {
+    "initial_exam": [
+      "Board-certified or board-eligible psychiatrist",
+      "Licensed doctorate-level psychologist",
+      "Non-licensed doctorate-level psychologist under close supervision",
+      "Psychiatry resident under close supervision",
+      "VHA psychology trainee under close supervision"
+    ],
+    "review_exam": [
+      "Any individual eligible to conduct initial exam",
+      "Licensed clinical social worker (LCSW) under close supervision",
+      "Nurse practitioner/clinical nurse specialist/PA under close supervision"
+    ]
+  },
+
+  "tips_for_veterans": [
+    "Describe your WORST days, not just average days",
+    "Explain how symptoms affect work performance and relationships",
+    "Mention ALL symptoms, even ones you think are minor",
+    "Be honest about suicidal thoughts if present - this is critical for accurate rating",
+    "Describe sleep problems and their impact",
+    "Explain how you function in social situations",
+    "Document any hospitalizations or emergency mental health treatment",
+    "Mention any medication side effects",
+    "Describe any difficulty with self-care or hygiene",
+    "Explain memory problems with specific examples",
+    "Don't minimize symptoms to appear 'strong'"
+  ],
+
+  "common_mistakes": [
+    "Minimizing symptoms to appear 'strong'",
+    "Not mentioning all symptoms due to stigma",
+    "Forgetting to describe impact on relationships and work",
+    "Not providing specific examples of functional limitations",
+    "Assuming examiner reviewed your file - explain everything",
+    "Not mentioning suicidal ideation when present",
+    "Not describing your worst days"
+  ],
+
+  "important_notes": [
+    "Same rating criteria apply to ALL mental health conditions (except eating disorders)",
+    "Rating is based on OCCUPATIONAL AND SOCIAL IMPAIRMENT, not just symptoms",
+    "A veteran can only receive ONE rating for mental health under 38 CFR 4.130",
+    "If you have both depression and anxiety, they're rated together, not separately",
+    "PTSD uses a separate DBQ but same rating criteria",
+    "Symptom list is not exhaustive - other symptoms can support higher rating",
+    "Competency determination (managing finances) is separate from rating"
+  ]
+}

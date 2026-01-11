@@ -10,8 +10,8 @@ from django.views.decorators.http import require_http_methods
 from django.conf import settings
 
 from .models import Document
-from .forms import DocumentUploadForm
-from .tasks import process_document_task
+from .forms import DocumentUploadForm, DenialLetterUploadForm
+from .tasks import process_document_task, decode_denial_letter_task
 
 
 @login_required
@@ -160,3 +160,127 @@ def document_delete(request, pk):
     )
 
     return redirect('claims:document_list')
+
+
+# =============================================================================
+# Denial Decoder Views
+# =============================================================================
+
+@login_required
+def denial_decoder_upload(request):
+    """
+    Upload VA denial letter for decoding.
+    Extracts denial reasons, matches to M21 sections, and generates evidence guidance.
+    """
+    if request.method == 'POST':
+        form = DenialLetterUploadForm(request.POST, request.FILES, user=request.user)
+
+        if form.is_valid():
+            # Create document instance
+            document = form.save(commit=False)
+            document.user = request.user
+            document.document_type = 'decision_letter'
+
+            # Set file metadata
+            uploaded_file = request.FILES['file']
+            document.file_name = uploaded_file.name
+            document.file_size = uploaded_file.size
+            document.mime_type = uploaded_file.content_type
+
+            document.save()
+
+            # Trigger denial decoding task
+            decode_denial_letter_task.delay(document.id)
+
+            messages.success(
+                request,
+                f'Denial letter "{document.file_name}" uploaded successfully. '
+                'Analysis in progress - this may take 1-2 minutes.'
+            )
+
+            return redirect('claims:denial_decoder_result', pk=document.id)
+        else:
+            messages.error(
+                request,
+                'There were errors in your upload. Please review the form below.'
+            )
+    else:
+        form = DenialLetterUploadForm(user=request.user)
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'claims/denial_decoder_upload.html', context)
+
+
+@login_required
+def denial_decoder_result(request, pk):
+    """
+    Display denial decoding results.
+    Shows extracted denials, M21 matches, and evidence guidance.
+    """
+    document = get_object_or_404(
+        Document,
+        pk=pk,
+        user=request.user,
+        is_deleted=False
+    )
+
+    # Get associated analysis and decoding
+    analysis = None
+    decoding = None
+
+    # Check if document has been analyzed
+    if hasattr(document, 'decision_analyses'):
+        analysis = document.decision_analyses.first()
+        if analysis and hasattr(analysis, 'denial_decoding'):
+            decoding = analysis.denial_decoding
+
+    context = {
+        'document': document,
+        'analysis': analysis,
+        'decoding': decoding,
+    }
+
+    return render(request, 'claims/denial_decoder_result.html', context)
+
+
+@login_required
+@require_http_methods(["GET"])
+def denial_decoder_status(request, pk):
+    """
+    HTMX endpoint to check denial decoding status.
+    Returns status fragment for polling during processing.
+    """
+    document = get_object_or_404(
+        Document,
+        pk=pk,
+        user=request.user,
+        is_deleted=False
+    )
+
+    # Check for analysis
+    analysis = None
+    decoding = None
+    if hasattr(document, 'decision_analyses'):
+        analysis = document.decision_analyses.first()
+        if analysis and hasattr(analysis, 'denial_decoding'):
+            decoding = analysis.denial_decoding
+
+    context = {
+        'document': document,
+        'analysis': analysis,
+        'decoding': decoding,
+    }
+
+    if request.headers.get('HX-Request'):
+        return render(request, 'claims/partials/denial_decoder_status.html', context)
+
+    return JsonResponse({
+        'status': document.status,
+        'is_processing': document.is_processing,
+        'is_complete': document.is_complete,
+        'has_analysis': analysis is not None,
+        'has_decoding': decoding is not None,
+    })

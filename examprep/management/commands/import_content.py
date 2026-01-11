@@ -3,6 +3,7 @@ Management command to import C&P exam guides and glossary content from JSON file
 
 Usage:
     python manage.py import_content
+    python manage.py import_content --fixtures  (imports from examprep/fixtures/)
     python manage.py import_content --guides-only
     python manage.py import_content --glossary-only
     python manage.py import_content --dry-run
@@ -21,7 +22,10 @@ class Command(BaseCommand):
     # Base path for research docs
     RESEARCH_DOCS_PATH = Path(__file__).resolve().parent.parent.parent.parent / 'Research Docs'
 
-    # JSON file locations
+    # Base path for fixtures
+    FIXTURES_PATH = Path(__file__).resolve().parent.parent.parent / 'fixtures'
+
+    # JSON file locations (Research Docs format)
     GUIDE_FILES = {
         'general': 'files/cp_exam_general_guide.json',
         'ptsd': 'files2/cp_exam_ptsd_guide.json',
@@ -29,6 +33,16 @@ class Command(BaseCommand):
         'hearing': 'files4/cp_exam_hearing_tinnitus_guide.json',
     }
     GLOSSARY_FILE = 'files0/va_terminology_glossary.json'
+
+    # Fixture file locations
+    FIXTURE_GUIDE_FILES = [
+        'exam_guides.json',
+        'exam_guides_msk_hearing.json',
+    ]
+    FIXTURE_GLOSSARY_FILES = [
+        'glossary_terms.json',
+        'additional_glossary_terms.json',
+    ]
 
     # Category mapping from JSON to model choices
     CATEGORY_MAP = {
@@ -40,6 +54,11 @@ class Command(BaseCommand):
     }
 
     def add_arguments(self, parser):
+        parser.add_argument(
+            '--fixtures',
+            action='store_true',
+            help='Import from examprep/fixtures/ directory (pre-formatted JSON)',
+        )
         parser.add_argument(
             '--guides-only',
             action='store_true',
@@ -66,6 +85,7 @@ class Command(BaseCommand):
         guides_only = options['guides_only']
         glossary_only = options['glossary_only']
         clear = options['clear']
+        use_fixtures = options['fixtures']
 
         if dry_run:
             self.stdout.write(self.style.WARNING('DRY RUN - No changes will be made'))
@@ -73,11 +93,18 @@ class Command(BaseCommand):
         if clear and not dry_run:
             self.clear_existing_data(glossary_only, guides_only)
 
-        if not glossary_only:
-            self.import_guides(dry_run)
-
-        if not guides_only:
-            self.import_glossary(dry_run)
+        if use_fixtures:
+            # Import from fixtures directory (pre-formatted JSON)
+            if not glossary_only:
+                self.import_guides_from_fixtures(dry_run)
+            if not guides_only:
+                self.import_glossary_from_fixtures(dry_run)
+        else:
+            # Import from Research Docs (legacy format)
+            if not glossary_only:
+                self.import_guides(dry_run)
+            if not guides_only:
+                self.import_glossary(dry_run)
 
         self.stdout.write(self.style.SUCCESS('Import complete!'))
 
@@ -293,4 +320,108 @@ class Command(BaseCommand):
         if not dry_run:
             self.stdout.write(self.style.SUCCESS(
                 f'Glossary import complete: {created_count} created, {updated_count} updated'
+            ))
+
+    def import_guides_from_fixtures(self, dry_run):
+        """Import exam guides from fixtures directory (pre-formatted JSON)."""
+        self.stdout.write(self.style.HTTP_INFO('\n=== Importing Exam Guides from Fixtures ==='))
+
+        created_count = 0
+        updated_count = 0
+
+        for filename in self.FIXTURE_GUIDE_FILES:
+            full_path = self.FIXTURES_PATH / filename
+            if not full_path.exists():
+                self.stdout.write(self.style.WARNING(f'File not found: {full_path}'))
+                continue
+
+            self.stdout.write(f'\nProcessing: {filename}')
+            with open(full_path, 'r') as f:
+                guides = json.load(f)
+
+            for guide_data in guides:
+                if dry_run:
+                    self.stdout.write(f'  Would create: {guide_data.get("title", "Unknown")}')
+                    self.stdout.write(f'    - Category: {guide_data.get("category", "other")}')
+                    self.stdout.write(f'    - Slug: {guide_data.get("slug", "")}')
+                    checklist = guide_data.get('checklist_items', [])
+                    self.stdout.write(f'    - Checklist items: {len(checklist)}')
+                else:
+                    slug = guide_data.get('slug', '')
+                    obj, created = ExamGuidance.objects.update_or_create(
+                        slug=slug,
+                        defaults=guide_data
+                    )
+                    status = 'Created' if created else 'Updated'
+                    self.stdout.write(self.style.SUCCESS(f'  {status}: {obj.title}'))
+                    if created:
+                        created_count += 1
+                    else:
+                        updated_count += 1
+
+        if not dry_run:
+            self.stdout.write(self.style.SUCCESS(
+                f'\nGuides import complete: {created_count} created, {updated_count} updated'
+            ))
+
+    def import_glossary_from_fixtures(self, dry_run):
+        """Import glossary terms from fixtures directory (pre-formatted JSON)."""
+        self.stdout.write(self.style.HTTP_INFO('\n=== Importing Glossary Terms from Fixtures ==='))
+
+        created_count = 0
+        updated_count = 0
+
+        for filename in self.FIXTURE_GLOSSARY_FILES:
+            full_path = self.FIXTURES_PATH / filename
+            if not full_path.exists():
+                self.stdout.write(self.style.WARNING(f'File not found: {full_path}'))
+                continue
+
+            self.stdout.write(f'\nProcessing: {filename}')
+            with open(full_path, 'r') as f:
+                terms = json.load(f)
+
+            self.stdout.write(f'Found {len(terms)} terms')
+
+            for term_data in terms:
+                # Handle Django fixture format (with model/pk/fields)
+                if 'fields' in term_data:
+                    fields = term_data['fields']
+                    term_obj = {
+                        'term': fields.get('term', ''),
+                        'plain_language': fields.get('plain_language', ''),
+                        'context': fields.get('context', ''),
+                        'example': fields.get('example', ''),
+                        'show_in_tooltips': fields.get('show_in_tooltips', True),
+                        'order': fields.get('order', 0),
+                    }
+                else:
+                    # Handle flat format
+                    term_obj = {
+                        'term': term_data.get('term', ''),
+                        'plain_language': term_data.get('plain_language', ''),
+                        'context': term_data.get('context', ''),
+                        'example': term_data.get('example', ''),
+                        'show_in_tooltips': term_data.get('show_in_tooltips', True),
+                        'order': term_data.get('order', 0),
+                    }
+
+                if not term_obj['term']:
+                    continue  # Skip empty terms
+
+                if dry_run:
+                    self.stdout.write(f'  Would create: {term_obj["term"]}')
+                else:
+                    obj, created = GlossaryTerm.objects.update_or_create(
+                        term=term_obj['term'],
+                        defaults=term_obj
+                    )
+                    if created:
+                        created_count += 1
+                    else:
+                        updated_count += 1
+
+        if not dry_run:
+            self.stdout.write(self.style.SUCCESS(
+                f'\nGlossary import complete: {created_count} created, {updated_count} updated'
             ))

@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}Evidence: {{ checklist.condition }} - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <header class="mb-8">
+        <nav class="text-sm mb-4">
+            <a href="{% url 'examprep:evidence_checklist_list' %}" class="text-blue-600 hover:text-blue-800">Evidence Checklists</a>
+            <span class="mx-2 text-gray-400">/</span>
+            <span class="text-gray-600">{{ checklist.condition }}</span>
+        </nav>
+        <div class="flex items-start justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">{{ checklist.condition }}</h1>
+                <p class="text-gray-600 mt-1">
+                    {{ checklist.get_claim_type_display }}
+                    {% if checklist.primary_condition %}
+                        <span class="text-gray-400">|</span>
+                        Secondary to {{ checklist.primary_condition }}
+                    {% endif %}
+                </p>
+            </div>
+            <a href="{% url 'examprep:evidence_checklist_delete' checklist.pk %}"
+               class="text-red-600 hover:text-red-800 text-sm">
+                Delete Checklist
+            </a>
+        </div>
+    </header>
+
+    <!-- Progress Summary -->
+    <div class="bg-white shadow rounded-lg p-6 mb-6">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-medium text-gray-900">Progress</h2>
+            <span class="text-3xl font-bold {% if checklist.completion_percentage == 100 %}text-green-600{% elif checklist.completion_percentage > 50 %}text-blue-600{% else %}text-gray-600{% endif %}">
+                {{ checklist.completion_percentage }}%
+            </span>
+        </div>
+
+        <div class="h-4 bg-gray-200 rounded-full overflow-hidden">
+            <div class="h-full transition-all duration-500
+                {% if checklist.completion_percentage == 100 %}bg-green-500
+                {% elif checklist.completion_percentage > 50 %}bg-blue-500
+                {% else %}bg-gray-400{% endif %}"
+                style="width: {{ checklist.completion_percentage }}%">
+            </div>
+        </div>
+
+        <div class="mt-4 flex items-center justify-between text-sm">
+            <span class="text-gray-600">{{ checklist.completed_items }} of {{ checklist.total_items }} items completed</span>
+            {% if checklist.critical_items_remaining > 0 %}
+            <span class="text-red-600 flex items-center">
+                <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                </svg>
+                {{ checklist.critical_items_remaining }} critical item{{ checklist.critical_items_remaining|pluralize }} remaining
+            </span>
+            {% endif %}
+        </div>
+
+        {% if checklist.completion_percentage == 100 %}
+        <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+            <div class="flex items-center">
+                <svg class="h-5 w-5 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span class="text-green-800 font-medium">All evidence gathered! You're ready to submit your claim.</span>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Checklist Items by Category -->
+    {% for category, items in items_by_category.items %}
+    <div class="bg-white shadow rounded-lg overflow-hidden mb-6">
+        <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+            <h2 class="text-lg font-medium text-gray-900">{{ category }}</h2>
+        </div>
+
+        <div class="divide-y divide-gray-200">
+            {% for item in items %}
+            <div id="item-{{ item.id }}"
+                 class="p-4 hover:bg-gray-50 transition-colors"
+                 hx-target="this"
+                 hx-swap="outerHTML">
+                {% include 'examprep/partials/evidence_checklist_item.html' %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% empty %}
+    <div class="bg-white shadow rounded-lg p-12 text-center">
+        <p class="text-gray-500">No checklist items found.</p>
+    </div>
+    {% endfor %}
+
+    <!-- Linked Denial Analysis -->
+    {% if checklist.from_denial_analysis %}
+    <div class="bg-white shadow rounded-lg p-6 mb-6">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Linked to Denial Analysis</h2>
+        <p class="text-sm text-gray-600 mb-3">
+            This checklist was generated from your denial letter analysis to help address the specific
+            reasons VA denied your claim.
+        </p>
+        <a href="{% url 'claims:denial_decoder_result' checklist.from_denial_analysis.document_id %}"
+           class="text-blue-600 hover:text-blue-800 text-sm">
+            View Denial Analysis &rarr;
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- M21 References (if any) -->
+    {% if checklist.m21_sections_used %}
+    <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">M21-1 Manual References</h2>
+        <p class="text-sm text-gray-600 mb-3">
+            This checklist is based on requirements from the VA M21-1 Adjudication Manual.
+        </p>
+        <div class="flex flex-wrap gap-2">
+            {% for section in checklist.m21_sections_used %}
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                {{ section }}
+            </span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

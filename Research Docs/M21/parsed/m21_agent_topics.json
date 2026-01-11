@@ -1,0 +1,2834 @@
+{
+  "service_connection": {
+    "title": "Service Connection",
+    "description": "How VA establishes service connection for disabilities",
+    "keywords": [
+      "service connection",
+      "service-connection",
+      "nexus",
+      "in-service",
+      "direct service",
+      "secondary service",
+      "presumptive",
+      "aggravation"
+    ],
+    "sections": [
+      {
+        "reference": "M21-1.I.i.1.A",
+        "full_reference": "M21-1, Part I, Subpart i, Chapter 1, Section A",
+        "title": "Description and General Information on Duty to Notify and Duty to Assist",
+        "part": "I",
+        "part_title": "Claimants' Rights and Claims Processing Centers and Programs",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.I.i.2.A",
+        "full_reference": "M21-1, Part I, Subpart i, Chapter 2, Section A",
+        "title": "General Information on Power of Attorney (POA)",
+        "part": "I",
+        "part_title": "Claimants' Rights and Claims Processing Centers and Programs",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.II.iii.1.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section A",
+        "title": "Applications for Benefits",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.II.iii.1.C",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section C",
+        "title": "Screening Applications for Substantial Completeness and Notification Requirements",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.II.iii.2.B",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section B",
+        "title": "Supplemental Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.II.iii.2.D",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section D",
+        "title": "Claims Based on Reports of Examination or Hospitalization",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.II.iii.2.E",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section E",
+        "title": "Incorrectly Established Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.II.iii.2.F",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section F",
+        "title": "Withdrawal of Initial Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.II.iii.2.G",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section G",
+        "title": "Requests for Application and Claims Solicitation",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.IV.i.3.A",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section A",
+        "title": "General Criteria for Sufficiency of Examination Reports",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.IV.i.3.B",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section B",
+        "title": "Examination Sufficiency for Specific Disabilities",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.IV.i.3.C",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section C",
+        "title": "Insufficient Examinations",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.i.1.A",
+        "full_reference": "M21-1, Part V, Subpart i, Chapter 1, Section A",
+        "title": "General Information on the Rating Activity",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.i.1.B",
+        "full_reference": "M21-1, Part V, Subpart i, Chapter 1, Section B",
+        "title": "Referrals to the Rating Activity",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.i.1.C",
+        "full_reference": "M21-1, Part V, Subpart i, Chapter 1, Section C",
+        "title": "Pre-Rating Review of Claims by the Rating Activity",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.ii.1.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 1, Section A",
+        "title": "Principles of Reviewing and Weighing Evidence",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.ii.1.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 1, Section B",
+        "title": "Reviewing Testimony and Lay Evidence",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.ii.2.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section A",
+        "title": "Direct Service Connection (SC) and Service Incurrence of an Injury",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.ii.2.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section B",
+        "title": "Presumptive Service Connection (SC)",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.ii.2.C",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section C",
+        "title": "In-Service Aggravation of a Pre-Service Disability",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.ii.2.D",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section D",
+        "title": "Secondary Service Connection (SC) and Aggravation of Non-Service-Connected (NSC) Disabilities",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.ii.2.E",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section E",
+        "title": "Service Connection (SC) for Congenital, Developmental, or Hereditary Disorders",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.ii.3.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section A",
+        "title": "Determining the Issues",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.ii.3.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section B",
+        "title": "Making Partial Rating Decisions",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.ii.3.C",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section C",
+        "title": "Reviewing Diagnoses",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.ii.3.D",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section D",
+        "title": "Evaluating Disabilities",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.ii.4.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 4, Section A",
+        "title": "Effective Dates",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.iii.1.A",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section A",
+        "title": "Painful Motion and Functional Loss",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.iii.1.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section B",
+        "title": "Musculoskeletal Disabilities of the Extremities and Spine",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.iii.1.C",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section C",
+        "title": "Arthritis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.iii.1.D",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section D",
+        "title": "Osteomyelitis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.iii.1.F",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section F",
+        "title": "Other Musculoskeletal Considerations",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.iii.2.A",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 2, Section A",
+        "title": "Conditions of the Eyes",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.iii.2.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 2, Section B",
+        "title": "Conditions of the Auditory System",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.iii.4.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 4, Section B",
+        "title": "Tuberculosis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.iii.8.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 8, Section B",
+        "title": "Disabilities of the Breast",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.iv.1.B",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section B",
+        "title": "Codesheet Section",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.iv.1.C",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section C",
+        "title": "Coded Conclusion",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.iv.1.D",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section D",
+        "title": "Finalizing the Rating Decision",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      },
+      {
+        "reference": "M21-1.V.iv.1.E",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section E",
+        "title": "Reviewing the Rating Decision",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "service connection"
+      }
+    ],
+    "section_count": 40
+  },
+  "rating_process": {
+    "title": "Rating Process",
+    "description": "How VA rates disabilities and assigns percentages",
+    "keywords": [
+      "rating",
+      "evaluation",
+      "diagnostic code",
+      "schedule for rating",
+      "percentage",
+      "combined rating"
+    ],
+    "sections": [
+      {
+        "reference": "M21-1.I.i.1.A",
+        "full_reference": "M21-1, Part I, Subpart i, Chapter 1, Section A",
+        "title": "Description and General Information on Duty to Notify and Duty to Assist",
+        "part": "I",
+        "part_title": "Claimants' Rights and Claims Processing Centers and Programs",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.I.i.2.A",
+        "full_reference": "M21-1, Part I, Subpart i, Chapter 2, Section A",
+        "title": "General Information on Power of Attorney (POA)",
+        "part": "I",
+        "part_title": "Claimants' Rights and Claims Processing Centers and Programs",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.II.iii.1.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section A",
+        "title": "Applications for Benefits",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.II.iii.1.B",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section B",
+        "title": "Screening Applications for Benefit Eligibility",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.II.iii.1.C",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section C",
+        "title": "Screening Applications for Substantial Completeness and Notification Requirements",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "evaluation"
+      },
+      {
+        "reference": "M21-1.II.iii.2.B",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section B",
+        "title": "Supplemental Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.II.iii.2.C",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section C",
+        "title": "Claims for Increase",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.II.iii.2.D",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section D",
+        "title": "Claims Based on Reports of Examination or Hospitalization",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.II.iii.2.E",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section E",
+        "title": "Incorrectly Established Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.II.iii.2.F",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section F",
+        "title": "Withdrawal of Initial Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.II.iii.2.G",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section G",
+        "title": "Requests for Application and Claims Solicitation",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.II.iii.3.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 3, Section A",
+        "title": "Claims Establishment",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.IV.i.2.F",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 2, Section F",
+        "title": "Failure to Report and Rescheduling Examinations",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.IV.i.3.A",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section A",
+        "title": "General Criteria for Sufficiency of Examination Reports",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.IV.i.3.B",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section B",
+        "title": "Examination Sufficiency for Specific Disabilities",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.IV.i.3.C",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section C",
+        "title": "Insufficient Examinations",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.i.1.A",
+        "full_reference": "M21-1, Part V, Subpart i, Chapter 1, Section A",
+        "title": "General Information on the Rating Activity",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.i.1.B",
+        "full_reference": "M21-1, Part V, Subpart i, Chapter 1, Section B",
+        "title": "Referrals to the Rating Activity",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.i.1.C",
+        "full_reference": "M21-1, Part V, Subpart i, Chapter 1, Section C",
+        "title": "Pre-Rating Review of Claims by the Rating Activity",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.ii.1.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 1, Section A",
+        "title": "Principles of Reviewing and Weighing Evidence",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.ii.1.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 1, Section B",
+        "title": "Reviewing Testimony and Lay Evidence",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.ii.2.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section A",
+        "title": "Direct Service Connection (SC) and Service Incurrence of an Injury",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.ii.2.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section B",
+        "title": "Presumptive Service Connection (SC)",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.ii.2.C",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section C",
+        "title": "In-Service Aggravation of a Pre-Service Disability",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.ii.2.D",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section D",
+        "title": "Secondary Service Connection (SC) and Aggravation of Non-Service-Connected (NSC) Disabilities",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.ii.2.E",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section E",
+        "title": "Service Connection (SC) for Congenital, Developmental, or Hereditary Disorders",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evaluation"
+      },
+      {
+        "reference": "M21-1.V.ii.3.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section A",
+        "title": "Determining the Issues",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.ii.3.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section B",
+        "title": "Making Partial Rating Decisions",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.ii.3.C",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section C",
+        "title": "Reviewing Diagnoses",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.ii.3.D",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section D",
+        "title": "Evaluating Disabilities",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.ii.4.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 4, Section A",
+        "title": "Effective Dates",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.ii.4.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 4, Section B",
+        "title": "Historical Guidance on the Assignment of Effective Dates",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.iii.1.A",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section A",
+        "title": "Painful Motion and Functional Loss",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.iii.1.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section B",
+        "title": "Musculoskeletal Disabilities of the Extremities and Spine",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.iii.1.C",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section C",
+        "title": "Arthritis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.iii.1.D",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section D",
+        "title": "Osteomyelitis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.iii.1.E",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section E",
+        "title": "Muscle Injuries",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.iii.1.F",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section F",
+        "title": "Other Musculoskeletal Considerations",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.iii.2.A",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 2, Section A",
+        "title": "Conditions of the Eyes",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.iii.2.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 2, Section B",
+        "title": "Conditions of the Auditory System",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.iii.4.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 4, Section B",
+        "title": "Tuberculosis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.iii.8.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 8, Section B",
+        "title": "Disabilities of the Breast",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.iv.1.B",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section B",
+        "title": "Codesheet Section",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.iv.1.C",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section C",
+        "title": "Coded Conclusion",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.iv.1.D",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section D",
+        "title": "Finalizing the Rating Decision",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      },
+      {
+        "reference": "M21-1.V.iv.1.E",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section E",
+        "title": "Reviewing the Rating Decision",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "rating"
+      }
+    ],
+    "section_count": 46
+  },
+  "evidence": {
+    "title": "Evidence Requirements",
+    "description": "What evidence VA needs and how it weighs evidence",
+    "keywords": [
+      "evidence",
+      "medical records",
+      "lay evidence",
+      "buddy statement",
+      "nexus letter",
+      "weighing evidence",
+      "credibility"
+    ],
+    "sections": [
+      {
+        "reference": "M21-1.I.i.1.A",
+        "full_reference": "M21-1, Part I, Subpart i, Chapter 1, Section A",
+        "title": "Description and General Information on Duty to Notify and Duty to Assist",
+        "part": "I",
+        "part_title": "Claimants' Rights and Claims Processing Centers and Programs",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.I.i.1.B",
+        "full_reference": "M21-1, Part I, Subpart i, Chapter 1, Section B",
+        "title": "General Information on Due Process",
+        "part": "I",
+        "part_title": "Claimants' Rights and Claims Processing Centers and Programs",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.I.i.2.A",
+        "full_reference": "M21-1, Part I, Subpart i, Chapter 2, Section A",
+        "title": "General Information on Power of Attorney (POA)",
+        "part": "I",
+        "part_title": "Claimants' Rights and Claims Processing Centers and Programs",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.II.iii.1.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section A",
+        "title": "Applications for Benefits",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.II.iii.1.B",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section B",
+        "title": "Screening Applications for Benefit Eligibility",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.II.iii.1.C",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section C",
+        "title": "Screening Applications for Substantial Completeness and Notification Requirements",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.II.iii.2.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section A",
+        "title": "Intent to File (ITF)",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.II.iii.2.B",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section B",
+        "title": "Supplemental Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.II.iii.2.C",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section C",
+        "title": "Claims for Increase",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.II.iii.2.D",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section D",
+        "title": "Claims Based on Reports of Examination or Hospitalization",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.II.iii.2.F",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section F",
+        "title": "Withdrawal of Initial Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.II.iii.2.G",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section G",
+        "title": "Requests for Application and Claims Solicitation",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.II.iii.3.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 3, Section A",
+        "title": "Claims Establishment",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.IV.i.2.F",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 2, Section F",
+        "title": "Failure to Report and Rescheduling Examinations",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.IV.i.3.A",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section A",
+        "title": "General Criteria for Sufficiency of Examination Reports",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.IV.i.3.B",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section B",
+        "title": "Examination Sufficiency for Specific Disabilities",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.IV.i.3.C",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section C",
+        "title": "Insufficient Examinations",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.i.1.B",
+        "full_reference": "M21-1, Part V, Subpart i, Chapter 1, Section B",
+        "title": "Referrals to the Rating Activity",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.i.1.C",
+        "full_reference": "M21-1, Part V, Subpart i, Chapter 1, Section C",
+        "title": "Pre-Rating Review of Claims by the Rating Activity",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.ii.1.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 1, Section A",
+        "title": "Principles of Reviewing and Weighing Evidence",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.ii.1.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 1, Section B",
+        "title": "Reviewing Testimony and Lay Evidence",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.ii.2.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section A",
+        "title": "Direct Service Connection (SC) and Service Incurrence of an Injury",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.ii.2.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section B",
+        "title": "Presumptive Service Connection (SC)",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.ii.2.C",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section C",
+        "title": "In-Service Aggravation of a Pre-Service Disability",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.ii.2.D",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section D",
+        "title": "Secondary Service Connection (SC) and Aggravation of Non-Service-Connected (NSC) Disabilities",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.ii.2.E",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section E",
+        "title": "Service Connection (SC) for Congenital, Developmental, or Hereditary Disorders",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.ii.3.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section A",
+        "title": "Determining the Issues",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.ii.3.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section B",
+        "title": "Making Partial Rating Decisions",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.ii.3.C",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section C",
+        "title": "Reviewing Diagnoses",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.ii.3.D",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section D",
+        "title": "Evaluating Disabilities",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.ii.4.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 4, Section A",
+        "title": "Effective Dates",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.ii.4.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 4, Section B",
+        "title": "Historical Guidance on the Assignment of Effective Dates",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.iii.1.A",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section A",
+        "title": "Painful Motion and Functional Loss",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.iii.1.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section B",
+        "title": "Musculoskeletal Disabilities of the Extremities and Spine",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.iii.1.C",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section C",
+        "title": "Arthritis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.iii.1.D",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section D",
+        "title": "Osteomyelitis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.iii.1.E",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section E",
+        "title": "Muscle Injuries",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.iii.1.F",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section F",
+        "title": "Other Musculoskeletal Considerations",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.iii.2.A",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 2, Section A",
+        "title": "Conditions of the Eyes",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.iii.2.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 2, Section B",
+        "title": "Conditions of the Auditory System",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.iii.4.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 4, Section B",
+        "title": "Tuberculosis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.iii.8.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 8, Section B",
+        "title": "Disabilities of the Breast",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.iv.1.C",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section C",
+        "title": "Coded Conclusion",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      },
+      {
+        "reference": "M21-1.V.iv.1.D",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section D",
+        "title": "Finalizing the Rating Decision",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "evidence"
+      }
+    ],
+    "section_count": 44
+  },
+  "examinations": {
+    "title": "C&P Examinations",
+    "description": "Compensation & Pension exam procedures",
+    "keywords": [
+      "examination",
+      "C&P",
+      "DBQ",
+      "medical opinion",
+      "examiner",
+      "exam request"
+    ],
+    "sections": [
+      {
+        "reference": "M21-1.I.i.1.A",
+        "full_reference": "M21-1, Part I, Subpart i, Chapter 1, Section A",
+        "title": "Description and General Information on Duty to Notify and Duty to Assist",
+        "part": "I",
+        "part_title": "Claimants' Rights and Claims Processing Centers and Programs",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.I.i.1.B",
+        "full_reference": "M21-1, Part I, Subpart i, Chapter 1, Section B",
+        "title": "General Information on Due Process",
+        "part": "I",
+        "part_title": "Claimants' Rights and Claims Processing Centers and Programs",
+        "matched_keyword": "examiner"
+      },
+      {
+        "reference": "M21-1.I.i.2.A",
+        "full_reference": "M21-1, Part I, Subpart i, Chapter 2, Section A",
+        "title": "General Information on Power of Attorney (POA)",
+        "part": "I",
+        "part_title": "Claimants' Rights and Claims Processing Centers and Programs",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.II.iii.1.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section A",
+        "title": "Applications for Benefits",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.II.iii.1.B",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section B",
+        "title": "Screening Applications for Benefit Eligibility",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.II.iii.1.C",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section C",
+        "title": "Screening Applications for Substantial Completeness and Notification Requirements",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.II.iii.2.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section A",
+        "title": "Intent to File (ITF)",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "examiner"
+      },
+      {
+        "reference": "M21-1.II.iii.2.C",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section C",
+        "title": "Claims for Increase",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.II.iii.2.D",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section D",
+        "title": "Claims Based on Reports of Examination or Hospitalization",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.II.iii.2.F",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section F",
+        "title": "Withdrawal of Initial Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.IV.i.2.F",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 2, Section F",
+        "title": "Failure to Report and Rescheduling Examinations",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.IV.i.3.A",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section A",
+        "title": "General Criteria for Sufficiency of Examination Reports",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.IV.i.3.B",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section B",
+        "title": "Examination Sufficiency for Specific Disabilities",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.IV.i.3.C",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section C",
+        "title": "Insufficient Examinations",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.i.1.A",
+        "full_reference": "M21-1, Part V, Subpart i, Chapter 1, Section A",
+        "title": "General Information on the Rating Activity",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.i.1.B",
+        "full_reference": "M21-1, Part V, Subpart i, Chapter 1, Section B",
+        "title": "Referrals to the Rating Activity",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.i.1.C",
+        "full_reference": "M21-1, Part V, Subpart i, Chapter 1, Section C",
+        "title": "Pre-Rating Review of Claims by the Rating Activity",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.ii.1.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 1, Section A",
+        "title": "Principles of Reviewing and Weighing Evidence",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.ii.1.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 1, Section B",
+        "title": "Reviewing Testimony and Lay Evidence",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "medical opinion"
+      },
+      {
+        "reference": "M21-1.V.ii.2.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section A",
+        "title": "Direct Service Connection (SC) and Service Incurrence of an Injury",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.ii.2.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section B",
+        "title": "Presumptive Service Connection (SC)",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.ii.2.C",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section C",
+        "title": "In-Service Aggravation of a Pre-Service Disability",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.ii.2.D",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section D",
+        "title": "Secondary Service Connection (SC) and Aggravation of Non-Service-Connected (NSC) Disabilities",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.ii.2.E",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section E",
+        "title": "Service Connection (SC) for Congenital, Developmental, or Hereditary Disorders",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.ii.3.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section A",
+        "title": "Determining the Issues",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.ii.3.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section B",
+        "title": "Making Partial Rating Decisions",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.ii.3.C",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section C",
+        "title": "Reviewing Diagnoses",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.ii.3.D",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section D",
+        "title": "Evaluating Disabilities",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.ii.4.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 4, Section A",
+        "title": "Effective Dates",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.ii.4.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 4, Section B",
+        "title": "Historical Guidance on the Assignment of Effective Dates",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.iii.1.A",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section A",
+        "title": "Painful Motion and Functional Loss",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.iii.1.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section B",
+        "title": "Musculoskeletal Disabilities of the Extremities and Spine",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.iii.1.C",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section C",
+        "title": "Arthritis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.iii.1.D",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section D",
+        "title": "Osteomyelitis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.iii.1.E",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section E",
+        "title": "Muscle Injuries",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.iii.1.F",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section F",
+        "title": "Other Musculoskeletal Considerations",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.iii.2.A",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 2, Section A",
+        "title": "Conditions of the Eyes",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.iii.2.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 2, Section B",
+        "title": "Conditions of the Auditory System",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.iii.4.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 4, Section B",
+        "title": "Tuberculosis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.iii.8.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 8, Section B",
+        "title": "Disabilities of the Breast",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examination"
+      },
+      {
+        "reference": "M21-1.V.iv.1.C",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section C",
+        "title": "Coded Conclusion",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "examiner"
+      }
+    ],
+    "section_count": 41
+  },
+  "effective_dates": {
+    "title": "Effective Dates",
+    "description": "How VA determines effective dates for benefits",
+    "keywords": [
+      "effective date",
+      "date of claim",
+      "date entitlement",
+      "earlier effective date"
+    ],
+    "sections": [
+      {
+        "reference": "M21-1.II.iii.1.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section A",
+        "title": "Applications for Benefits",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "date of claim"
+      },
+      {
+        "reference": "M21-1.II.iii.1.C",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section C",
+        "title": "Screening Applications for Substantial Completeness and Notification Requirements",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "date of claim"
+      },
+      {
+        "reference": "M21-1.II.iii.2.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section A",
+        "title": "Intent to File (ITF)",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "effective date"
+      },
+      {
+        "reference": "M21-1.II.iii.2.B",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section B",
+        "title": "Supplemental Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "effective date"
+      },
+      {
+        "reference": "M21-1.II.iii.2.C",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section C",
+        "title": "Claims for Increase",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "effective date"
+      },
+      {
+        "reference": "M21-1.II.iii.2.D",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section D",
+        "title": "Claims Based on Reports of Examination or Hospitalization",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "effective date"
+      },
+      {
+        "reference": "M21-1.II.iii.2.E",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section E",
+        "title": "Incorrectly Established Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "date of claim"
+      },
+      {
+        "reference": "M21-1.II.iii.2.F",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section F",
+        "title": "Withdrawal of Initial Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "effective date"
+      },
+      {
+        "reference": "M21-1.II.iii.2.G",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section G",
+        "title": "Requests for Application and Claims Solicitation",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "date of claim"
+      },
+      {
+        "reference": "M21-1.II.iii.3.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 3, Section A",
+        "title": "Claims Establishment",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "date of claim"
+      },
+      {
+        "reference": "M21-1.V.ii.1.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 1, Section A",
+        "title": "Principles of Reviewing and Weighing Evidence",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "effective date"
+      },
+      {
+        "reference": "M21-1.V.ii.2.D",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section D",
+        "title": "Secondary Service Connection (SC) and Aggravation of Non-Service-Connected (NSC) Disabilities",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "effective date"
+      },
+      {
+        "reference": "M21-1.V.ii.3.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section A",
+        "title": "Determining the Issues",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "effective date"
+      },
+      {
+        "reference": "M21-1.V.ii.3.C",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section C",
+        "title": "Reviewing Diagnoses",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "effective date"
+      },
+      {
+        "reference": "M21-1.V.ii.3.D",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section D",
+        "title": "Evaluating Disabilities",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "effective date"
+      },
+      {
+        "reference": "M21-1.V.ii.4.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 4, Section A",
+        "title": "Effective Dates",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "effective date"
+      },
+      {
+        "reference": "M21-1.V.ii.4.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 4, Section B",
+        "title": "Historical Guidance on the Assignment of Effective Dates",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "effective date"
+      },
+      {
+        "reference": "M21-1.V.iii.1.A",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section A",
+        "title": "Painful Motion and Functional Loss",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "effective date"
+      },
+      {
+        "reference": "M21-1.V.iii.1.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section B",
+        "title": "Musculoskeletal Disabilities of the Extremities and Spine",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "effective date"
+      },
+      {
+        "reference": "M21-1.V.iii.1.C",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section C",
+        "title": "Arthritis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "effective date"
+      },
+      {
+        "reference": "M21-1.V.iii.1.D",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section D",
+        "title": "Osteomyelitis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "effective date"
+      },
+      {
+        "reference": "M21-1.V.iii.2.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 2, Section B",
+        "title": "Conditions of the Auditory System",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "effective date"
+      },
+      {
+        "reference": "M21-1.V.iii.4.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 4, Section B",
+        "title": "Tuberculosis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "effective date"
+      },
+      {
+        "reference": "M21-1.V.iii.8.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 8, Section B",
+        "title": "Disabilities of the Breast",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "effective date"
+      },
+      {
+        "reference": "M21-1.V.iv.1.C",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section C",
+        "title": "Coded Conclusion",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "effective date"
+      },
+      {
+        "reference": "M21-1.V.iv.1.E",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section E",
+        "title": "Reviewing the Rating Decision",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "effective date"
+      }
+    ],
+    "section_count": 26
+  },
+  "appeals": {
+    "title": "Appeals Process",
+    "description": "Appeal lanes and procedures",
+    "keywords": [
+      "appeal",
+      "higher-level review",
+      "HLR",
+      "supplemental claim",
+      "board of veterans",
+      "NOD",
+      "notice of disagreement"
+    ],
+    "sections": [
+      {
+        "reference": "M21-1.I.i.1.A",
+        "full_reference": "M21-1, Part I, Subpart i, Chapter 1, Section A",
+        "title": "Description and General Information on Duty to Notify and Duty to Assist",
+        "part": "I",
+        "part_title": "Claimants' Rights and Claims Processing Centers and Programs",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.I.i.2.A",
+        "full_reference": "M21-1, Part I, Subpart i, Chapter 2, Section A",
+        "title": "General Information on Power of Attorney (POA)",
+        "part": "I",
+        "part_title": "Claimants' Rights and Claims Processing Centers and Programs",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.II.iii.1.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section A",
+        "title": "Applications for Benefits",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.II.iii.1.C",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section C",
+        "title": "Screening Applications for Substantial Completeness and Notification Requirements",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "higher-level review"
+      },
+      {
+        "reference": "M21-1.II.iii.2.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section A",
+        "title": "Intent to File (ITF)",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "higher-level review"
+      },
+      {
+        "reference": "M21-1.II.iii.2.B",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section B",
+        "title": "Supplemental Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.II.iii.2.C",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section C",
+        "title": "Claims for Increase",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "supplemental claim"
+      },
+      {
+        "reference": "M21-1.II.iii.2.E",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section E",
+        "title": "Incorrectly Established Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.II.iii.2.F",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section F",
+        "title": "Withdrawal of Initial Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.II.iii.2.G",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section G",
+        "title": "Requests for Application and Claims Solicitation",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.II.iii.3.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 3, Section A",
+        "title": "Claims Establishment",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.IV.i.2.F",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 2, Section F",
+        "title": "Failure to Report and Rescheduling Examinations",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "supplemental claim"
+      },
+      {
+        "reference": "M21-1.IV.i.3.A",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section A",
+        "title": "General Criteria for Sufficiency of Examination Reports",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.IV.i.3.B",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section B",
+        "title": "Examination Sufficiency for Specific Disabilities",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.IV.i.3.C",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section C",
+        "title": "Insufficient Examinations",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.V.ii.1.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 1, Section A",
+        "title": "Principles of Reviewing and Weighing Evidence",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.V.ii.2.C",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section C",
+        "title": "In-Service Aggravation of a Pre-Service Disability",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.V.ii.3.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section A",
+        "title": "Determining the Issues",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "supplemental claim"
+      },
+      {
+        "reference": "M21-1.V.ii.3.C",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section C",
+        "title": "Reviewing Diagnoses",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.V.ii.3.D",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section D",
+        "title": "Evaluating Disabilities",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.V.ii.4.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 4, Section A",
+        "title": "Effective Dates",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.V.ii.4.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 4, Section B",
+        "title": "Historical Guidance on the Assignment of Effective Dates",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.V.iii.1.D",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section D",
+        "title": "Osteomyelitis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.V.iii.1.F",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section F",
+        "title": "Other Musculoskeletal Considerations",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.V.iii.2.A",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 2, Section A",
+        "title": "Conditions of the Eyes",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.V.iii.2.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 2, Section B",
+        "title": "Conditions of the Auditory System",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "supplemental claim"
+      },
+      {
+        "reference": "M21-1.V.iii.4.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 4, Section B",
+        "title": "Tuberculosis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "NOD"
+      },
+      {
+        "reference": "M21-1.V.iii.8.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 8, Section B",
+        "title": "Disabilities of the Breast",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.V.iv.1.B",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section B",
+        "title": "Codesheet Section",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "appeal"
+      },
+      {
+        "reference": "M21-1.V.iv.1.C",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section C",
+        "title": "Coded Conclusion",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "supplemental claim"
+      },
+      {
+        "reference": "M21-1.V.iv.1.D",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section D",
+        "title": "Finalizing the Rating Decision",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "NOD"
+      },
+      {
+        "reference": "M21-1.V.iv.1.E",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section E",
+        "title": "Reviewing the Rating Decision",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "appeal"
+      }
+    ],
+    "section_count": 32
+  },
+  "mental_health": {
+    "title": "Mental Health Conditions",
+    "description": "Rating mental health disabilities including PTSD",
+    "keywords": [
+      "mental",
+      "PTSD",
+      "depression",
+      "anxiety",
+      "psychiatric",
+      "mental disorder",
+      "psychological"
+    ],
+    "sections": [
+      {
+        "reference": "M21-1.I.i.1.A",
+        "full_reference": "M21-1, Part I, Subpart i, Chapter 1, Section A",
+        "title": "Description and General Information on Duty to Notify and Duty to Assist",
+        "part": "I",
+        "part_title": "Claimants' Rights and Claims Processing Centers and Programs",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.I.i.2.A",
+        "full_reference": "M21-1, Part I, Subpart i, Chapter 2, Section A",
+        "title": "General Information on Power of Attorney (POA)",
+        "part": "I",
+        "part_title": "Claimants' Rights and Claims Processing Centers and Programs",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.II.iii.1.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section A",
+        "title": "Applications for Benefits",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.II.iii.1.C",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section C",
+        "title": "Screening Applications for Substantial Completeness and Notification Requirements",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.II.iii.2.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section A",
+        "title": "Intent to File (ITF)",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.II.iii.2.B",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section B",
+        "title": "Supplemental Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.II.iii.2.C",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section C",
+        "title": "Claims for Increase",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.II.iii.2.F",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section F",
+        "title": "Withdrawal of Initial Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.II.iii.2.G",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section G",
+        "title": "Requests for Application and Claims Solicitation",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.II.iii.3.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 3, Section A",
+        "title": "Claims Establishment",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.IV.i.2.F",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 2, Section F",
+        "title": "Failure to Report and Rescheduling Examinations",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.IV.i.3.A",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section A",
+        "title": "General Criteria for Sufficiency of Examination Reports",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.IV.i.3.B",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section B",
+        "title": "Examination Sufficiency for Specific Disabilities",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.IV.i.3.C",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section C",
+        "title": "Insufficient Examinations",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.V.ii.1.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 1, Section A",
+        "title": "Principles of Reviewing and Weighing Evidence",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.V.ii.2.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section A",
+        "title": "Direct Service Connection (SC) and Service Incurrence of an Injury",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "PTSD"
+      },
+      {
+        "reference": "M21-1.V.ii.2.E",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section E",
+        "title": "Service Connection (SC) for Congenital, Developmental, or Hereditary Disorders",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.V.ii.3.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section A",
+        "title": "Determining the Issues",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.V.ii.3.C",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section C",
+        "title": "Reviewing Diagnoses",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.V.ii.3.D",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section D",
+        "title": "Evaluating Disabilities",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.V.ii.4.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 4, Section A",
+        "title": "Effective Dates",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.V.iii.1.F",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section F",
+        "title": "Other Musculoskeletal Considerations",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.V.iii.2.A",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 2, Section A",
+        "title": "Conditions of the Eyes",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.V.iii.2.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 2, Section B",
+        "title": "Conditions of the Auditory System",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.V.iii.4.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 4, Section B",
+        "title": "Tuberculosis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.V.iii.8.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 8, Section B",
+        "title": "Disabilities of the Breast",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "mental"
+      },
+      {
+        "reference": "M21-1.V.iv.1.B",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section B",
+        "title": "Codesheet Section",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "psychological"
+      },
+      {
+        "reference": "M21-1.V.iv.1.C",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section C",
+        "title": "Coded Conclusion",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "mental"
+      }
+    ],
+    "section_count": 28
+  },
+  "musculoskeletal": {
+    "title": "Musculoskeletal Conditions",
+    "description": "Rating physical disabilities of joints and spine",
+    "keywords": [
+      "musculoskeletal",
+      "range of motion",
+      "ROM",
+      "joint",
+      "spine",
+      "back",
+      "knee",
+      "shoulder",
+      "orthopedic"
+    ],
+    "sections": [
+      {
+        "reference": "M21-1.I.i.1.A",
+        "full_reference": "M21-1, Part I, Subpart i, Chapter 1, Section A",
+        "title": "Description and General Information on Duty to Notify and Duty to Assist",
+        "part": "I",
+        "part_title": "Claimants' Rights and Claims Processing Centers and Programs",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.I.i.1.B",
+        "full_reference": "M21-1, Part I, Subpart i, Chapter 1, Section B",
+        "title": "General Information on Due Process",
+        "part": "I",
+        "part_title": "Claimants' Rights and Claims Processing Centers and Programs",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.I.i.2.A",
+        "full_reference": "M21-1, Part I, Subpart i, Chapter 2, Section A",
+        "title": "General Information on Power of Attorney (POA)",
+        "part": "I",
+        "part_title": "Claimants' Rights and Claims Processing Centers and Programs",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.II.iii.1.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section A",
+        "title": "Applications for Benefits",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.II.iii.1.C",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section C",
+        "title": "Screening Applications for Substantial Completeness and Notification Requirements",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.II.iii.2.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section A",
+        "title": "Intent to File (ITF)",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.II.iii.2.B",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section B",
+        "title": "Supplemental Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.II.iii.2.C",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section C",
+        "title": "Claims for Increase",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.II.iii.2.D",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section D",
+        "title": "Claims Based on Reports of Examination or Hospitalization",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.II.iii.2.E",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section E",
+        "title": "Incorrectly Established Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.II.iii.2.F",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section F",
+        "title": "Withdrawal of Initial Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.II.iii.2.G",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section G",
+        "title": "Requests for Application and Claims Solicitation",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.II.iii.3.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 3, Section A",
+        "title": "Claims Establishment",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.IV.i.2.F",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 2, Section F",
+        "title": "Failure to Report and Rescheduling Examinations",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.IV.i.3.A",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section A",
+        "title": "General Criteria for Sufficiency of Examination Reports",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "range of motion"
+      },
+      {
+        "reference": "M21-1.IV.i.3.B",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section B",
+        "title": "Examination Sufficiency for Specific Disabilities",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "musculoskeletal"
+      },
+      {
+        "reference": "M21-1.IV.i.3.C",
+        "full_reference": "M21-1, Part IV, Subpart i, Chapter 3, Section C",
+        "title": "Insufficient Examinations",
+        "part": "IV",
+        "part_title": "Examinations",
+        "matched_keyword": "musculoskeletal"
+      },
+      {
+        "reference": "M21-1.V.i.1.B",
+        "full_reference": "M21-1, Part V, Subpart i, Chapter 1, Section B",
+        "title": "Referrals to the Rating Activity",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.V.i.1.C",
+        "full_reference": "M21-1, Part V, Subpart i, Chapter 1, Section C",
+        "title": "Pre-Rating Review of Claims by the Rating Activity",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.V.ii.1.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 1, Section A",
+        "title": "Principles of Reviewing and Weighing Evidence",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.V.ii.1.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 1, Section B",
+        "title": "Reviewing Testimony and Lay Evidence",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.V.ii.2.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section A",
+        "title": "Direct Service Connection (SC) and Service Incurrence of an Injury",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.V.ii.2.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section B",
+        "title": "Presumptive Service Connection (SC)",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.V.ii.2.C",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section C",
+        "title": "In-Service Aggravation of a Pre-Service Disability",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.V.ii.2.D",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section D",
+        "title": "Secondary Service Connection (SC) and Aggravation of Non-Service-Connected (NSC) Disabilities",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.V.ii.2.E",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 2, Section E",
+        "title": "Service Connection (SC) for Congenital, Developmental, or Hereditary Disorders",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.V.ii.3.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section A",
+        "title": "Determining the Issues",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "musculoskeletal"
+      },
+      {
+        "reference": "M21-1.V.ii.3.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section B",
+        "title": "Making Partial Rating Decisions",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.V.ii.3.C",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section C",
+        "title": "Reviewing Diagnoses",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "musculoskeletal"
+      },
+      {
+        "reference": "M21-1.V.ii.3.D",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section D",
+        "title": "Evaluating Disabilities",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "musculoskeletal"
+      },
+      {
+        "reference": "M21-1.V.ii.4.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 4, Section A",
+        "title": "Effective Dates",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.V.ii.4.B",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 4, Section B",
+        "title": "Historical Guidance on the Assignment of Effective Dates",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.V.iii.1.A",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section A",
+        "title": "Painful Motion and Functional Loss",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "musculoskeletal"
+      },
+      {
+        "reference": "M21-1.V.iii.1.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section B",
+        "title": "Musculoskeletal Disabilities of the Extremities and Spine",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "musculoskeletal"
+      },
+      {
+        "reference": "M21-1.V.iii.1.C",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section C",
+        "title": "Arthritis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "range of motion"
+      },
+      {
+        "reference": "M21-1.V.iii.1.D",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section D",
+        "title": "Osteomyelitis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "musculoskeletal"
+      },
+      {
+        "reference": "M21-1.V.iii.1.E",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section E",
+        "title": "Muscle Injuries",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "musculoskeletal"
+      },
+      {
+        "reference": "M21-1.V.iii.1.F",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section F",
+        "title": "Other Musculoskeletal Considerations",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "musculoskeletal"
+      },
+      {
+        "reference": "M21-1.V.iii.2.A",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 2, Section A",
+        "title": "Conditions of the Eyes",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.V.iii.2.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 2, Section B",
+        "title": "Conditions of the Auditory System",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.V.iii.4.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 4, Section B",
+        "title": "Tuberculosis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.V.iii.8.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 8, Section B",
+        "title": "Disabilities of the Breast",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "musculoskeletal"
+      },
+      {
+        "reference": "M21-1.V.iv.1.B",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section B",
+        "title": "Codesheet Section",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.V.iv.1.C",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section C",
+        "title": "Coded Conclusion",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.V.iv.1.D",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section D",
+        "title": "Finalizing the Rating Decision",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "ROM"
+      },
+      {
+        "reference": "M21-1.V.iv.1.E",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section E",
+        "title": "Reviewing the Rating Decision",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "ROM"
+      }
+    ],
+    "section_count": 46
+  },
+  "special_monthly_compensation": {
+    "title": "Special Monthly Compensation (SMC)",
+    "description": "Additional compensation for severe disabilities",
+    "keywords": [
+      "special monthly compensation",
+      "SMC",
+      "aid and attendance",
+      "housebound"
+    ],
+    "sections": [
+      {
+        "reference": "M21-1.I.i.1.B",
+        "full_reference": "M21-1, Part I, Subpart i, Chapter 1, Section B",
+        "title": "General Information on Due Process",
+        "part": "I",
+        "part_title": "Claimants' Rights and Claims Processing Centers and Programs",
+        "matched_keyword": "aid and attendance"
+      },
+      {
+        "reference": "M21-1.I.i.2.A",
+        "full_reference": "M21-1, Part I, Subpart i, Chapter 2, Section A",
+        "title": "General Information on Power of Attorney (POA)",
+        "part": "I",
+        "part_title": "Claimants' Rights and Claims Processing Centers and Programs",
+        "matched_keyword": "special monthly compensation"
+      },
+      {
+        "reference": "M21-1.II.iii.1.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section A",
+        "title": "Applications for Benefits",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "special monthly compensation"
+      },
+      {
+        "reference": "M21-1.II.iii.1.B",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section B",
+        "title": "Screening Applications for Benefit Eligibility",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "special monthly compensation"
+      },
+      {
+        "reference": "M21-1.II.iii.2.C",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section C",
+        "title": "Claims for Increase",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "special monthly compensation"
+      },
+      {
+        "reference": "M21-1.II.iii.2.D",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section D",
+        "title": "Claims Based on Reports of Examination or Hospitalization",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "aid and attendance"
+      },
+      {
+        "reference": "M21-1.V.i.1.A",
+        "full_reference": "M21-1, Part V, Subpart i, Chapter 1, Section A",
+        "title": "General Information on the Rating Activity",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "aid and attendance"
+      },
+      {
+        "reference": "M21-1.V.ii.3.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section A",
+        "title": "Determining the Issues",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "special monthly compensation"
+      },
+      {
+        "reference": "M21-1.V.ii.3.C",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section C",
+        "title": "Reviewing Diagnoses",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "special monthly compensation"
+      },
+      {
+        "reference": "M21-1.V.ii.3.D",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section D",
+        "title": "Evaluating Disabilities",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "special monthly compensation"
+      },
+      {
+        "reference": "M21-1.V.ii.4.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 4, Section A",
+        "title": "Effective Dates",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "special monthly compensation"
+      },
+      {
+        "reference": "M21-1.V.iii.1.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 1, Section B",
+        "title": "Musculoskeletal Disabilities of the Extremities and Spine",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "special monthly compensation"
+      },
+      {
+        "reference": "M21-1.V.iii.2.A",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 2, Section A",
+        "title": "Conditions of the Eyes",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "special monthly compensation"
+      },
+      {
+        "reference": "M21-1.V.iii.2.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 2, Section B",
+        "title": "Conditions of the Auditory System",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "special monthly compensation"
+      },
+      {
+        "reference": "M21-1.V.iii.4.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 4, Section B",
+        "title": "Tuberculosis",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "special monthly compensation"
+      },
+      {
+        "reference": "M21-1.V.iii.8.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 8, Section B",
+        "title": "Disabilities of the Breast",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "special monthly compensation"
+      },
+      {
+        "reference": "M21-1.V.iv.1.B",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section B",
+        "title": "Codesheet Section",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "special monthly compensation"
+      },
+      {
+        "reference": "M21-1.V.iv.1.C",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section C",
+        "title": "Coded Conclusion",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "special monthly compensation"
+      },
+      {
+        "reference": "M21-1.V.iv.1.E",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section E",
+        "title": "Reviewing the Rating Decision",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "special monthly compensation"
+      }
+    ],
+    "section_count": 19
+  },
+  "tdiu": {
+    "title": "TDIU - Total Disability Individual Unemployability",
+    "description": "Unemployability due to service-connected disabilities",
+    "keywords": [
+      "TDIU",
+      "unemployability",
+      "individual unemployability",
+      "unable to work"
+    ],
+    "sections": [
+      {
+        "reference": "M21-1.I.i.2.A",
+        "full_reference": "M21-1, Part I, Subpart i, Chapter 2, Section A",
+        "title": "General Information on Power of Attorney (POA)",
+        "part": "I",
+        "part_title": "Claimants' Rights and Claims Processing Centers and Programs",
+        "matched_keyword": "unemployability"
+      },
+      {
+        "reference": "M21-1.II.iii.1.A",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section A",
+        "title": "Applications for Benefits",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "TDIU"
+      },
+      {
+        "reference": "M21-1.II.iii.1.B",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 1, Section B",
+        "title": "Screening Applications for Benefit Eligibility",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "unemployability"
+      },
+      {
+        "reference": "M21-1.II.iii.2.B",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section B",
+        "title": "Supplemental Claims",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "unemployability"
+      },
+      {
+        "reference": "M21-1.II.iii.2.C",
+        "full_reference": "M21-1, Part II, Subpart iii, Chapter 2, Section C",
+        "title": "Claims for Increase",
+        "part": "II",
+        "part_title": "Intake, Claims Establishment, Jurisdiction, and File Maintenance",
+        "matched_keyword": "unemployability"
+      },
+      {
+        "reference": "M21-1.V.i.1.C",
+        "full_reference": "M21-1, Part V, Subpart i, Chapter 1, Section C",
+        "title": "Pre-Rating Review of Claims by the Rating Activity",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "unemployability"
+      },
+      {
+        "reference": "M21-1.V.ii.3.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section A",
+        "title": "Determining the Issues",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "unemployability"
+      },
+      {
+        "reference": "M21-1.V.ii.3.D",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 3, Section D",
+        "title": "Evaluating Disabilities",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "TDIU"
+      },
+      {
+        "reference": "M21-1.V.ii.4.A",
+        "full_reference": "M21-1, Part V, Subpart ii, Chapter 4, Section A",
+        "title": "Effective Dates",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "unemployability"
+      },
+      {
+        "reference": "M21-1.V.iii.8.B",
+        "full_reference": "M21-1, Part V, Subpart iii, Chapter 8, Section B",
+        "title": "Disabilities of the Breast",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "unemployability"
+      },
+      {
+        "reference": "M21-1.V.iv.1.B",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section B",
+        "title": "Codesheet Section",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "unemployability"
+      },
+      {
+        "reference": "M21-1.V.iv.1.C",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section C",
+        "title": "Coded Conclusion",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "unemployability"
+      },
+      {
+        "reference": "M21-1.V.iv.1.D",
+        "full_reference": "M21-1, Part V, Subpart iv, Chapter 1, Section D",
+        "title": "Finalizing the Rating Decision",
+        "part": "V",
+        "part_title": "The Rating Process",
+        "matched_keyword": "unemployability"
+      }
+    ],
+    "section_count": 13
+  }
+}

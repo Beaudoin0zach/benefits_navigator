@@ -1,0 +1,139 @@
+{
+  "cfr_reference": "38 CFR 4.71a",
+  "title": "Schedule of Ratings - Musculoskeletal System - Knee and Leg",
+  "description": "Rating criteria for knee and lower leg disabilities",
+  "last_updated": "2024",
+
+  "normal_rom": {
+    "knee_flexion": 140,
+    "knee_extension": 0,
+    "note": "Normal knee extension is 0 degrees (leg straight). Flexion is measured from 0 to 140 degrees."
+  },
+
+  "diagnostic_codes": {
+    "5055": {
+      "name": "Knee replacement (prosthesis)",
+      "levels": [
+        {"rating": 100, "criteria": "For 1 year following implantation of prosthesis"},
+        {"rating": 60, "criteria": "With chronic residuals consisting of severe painful motion or weakness in the affected extremity"},
+        {"rating": 30, "criteria": "Minimum rating (with intermediate degrees of residual weakness, pain, or limitation of motion)"}
+      ],
+      "note": "Rate on residuals after 1 year"
+    },
+    "5256": {
+      "name": "Ankylosis of the knee",
+      "levels": [
+        {"rating": 30, "criteria": "Favorable angle in full extension, or in slight flexion between 0 and 10 degrees"},
+        {"rating": 40, "criteria": "In flexion between 10 and 20 degrees"},
+        {"rating": 50, "criteria": "In flexion between 20 and 45 degrees"},
+        {"rating": 60, "criteria": "Extremely unfavorable, in flexion at an angle of 45 degrees or more"}
+      ]
+    },
+    "5257": {
+      "name": "Recurrent subluxation or lateral instability",
+      "levels": [
+        {"rating": 10, "criteria": "Slight"},
+        {"rating": 20, "criteria": "Moderate"},
+        {"rating": 30, "criteria": "Severe"}
+      ],
+      "important": "Can be rated separately from limitation of motion if both conditions exist"
+    },
+    "5258": {
+      "name": "Cartilage, semilunar, dislocated",
+      "criteria": "With frequent episodes of 'locking,' pain, and effusion into the joint",
+      "rating": 20,
+      "note": "Meniscus tear with locking, pain, and joint fluid"
+    },
+    "5259": {
+      "name": "Cartilage, semilunar, removal of, symptomatic",
+      "rating": 10,
+      "note": "After meniscectomy with residual symptoms"
+    },
+    "5260": {
+      "name": "Limitation of flexion of the leg",
+      "levels": [
+        {"rating": 0, "criteria": "Flexion limited to 60 degrees"},
+        {"rating": 10, "criteria": "Flexion limited to 45 degrees"},
+        {"rating": 20, "criteria": "Flexion limited to 30 degrees"},
+        {"rating": 30, "criteria": "Flexion limited to 15 degrees"}
+      ]
+    },
+    "5261": {
+      "name": "Limitation of extension of the leg",
+      "levels": [
+        {"rating": 0, "criteria": "Extension limited to 5 degrees"},
+        {"rating": 10, "criteria": "Extension limited to 10 degrees"},
+        {"rating": 20, "criteria": "Extension limited to 15 degrees"},
+        {"rating": 30, "criteria": "Extension limited to 20 degrees"},
+        {"rating": 40, "criteria": "Extension limited to 30 degrees"},
+        {"rating": 50, "criteria": "Extension limited to 45 degrees"}
+      ]
+    },
+    "5262": {
+      "name": "Impairment of tibia and fibula",
+      "levels": [
+        {"rating": 10, "criteria": "Malunion with slight knee or ankle disability"},
+        {"rating": 20, "criteria": "Malunion with moderate knee or ankle disability"},
+        {"rating": 30, "criteria": "Malunion with marked knee or ankle disability"},
+        {"rating": 40, "criteria": "Nonunion, with loose motion, requiring brace"}
+      ]
+    },
+    "5263": {
+      "name": "Genu recurvatum",
+      "criteria": "Acquired, traumatic, with weakness and insecurity in weight-bearing objectively demonstrated",
+      "rating": 10
+    }
+  },
+
+  "pyramiding_rules": {
+    "allowed_combinations": [
+      {
+        "description": "Arthritis with limited motion (5003/5010/5260/5261) + Instability (5257)",
+        "precedent": "VAOPGCPREC 23-97",
+        "explanation": "Veteran can receive separate ratings for arthritis with limitation of motion AND instability of the same knee"
+      },
+      {
+        "description": "Separate ratings for limited flexion (5260) + limited extension (5261)",
+        "precedent": "VAOPGCPREC 9-04",
+        "explanation": "If both flexion and extension are compensably limited, each can be rated separately"
+      }
+    ],
+    "not_allowed": [
+      "Cannot rate under 5257 and 5258 together (instability types)",
+      "Cannot rate 5258 and 5259 together (meniscus codes)"
+    ]
+  },
+
+  "arthritis_rules": {
+    "diagnostic_codes": {
+      "5003": "Degenerative arthritis (degenerative joint disease)",
+      "5010": "Traumatic arthritis"
+    },
+    "rating_method": "Rate based on limitation of motion. If motion is not compensably limited but there is X-ray evidence of arthritis, rate 10% for each major joint or group of minor joints affected.",
+    "painful_motion": "With X-ray evidence of arthritis and painful motion, rate at least 10% under appropriate diagnostic code"
+  },
+
+  "important_rules": [
+    "Limited flexion and extension can be rated separately if both are compensable",
+    "Instability can be rated separately from limitation of motion",
+    "Both knees should be examined and can be rated separately",
+    "Painful motion with X-ray evidence of arthritis warrants at least 10%",
+    "DeLuca factors (pain, weakness, fatigability, incoordination) must be considered",
+    "Flare-up ROM should be estimated by examiner"
+  ],
+
+  "key_precedent_decisions": [
+    {
+      "case": "VAOPGCPREC 23-97",
+      "holding": "Separate ratings for arthritis with limited motion AND instability of the same knee are permitted"
+    },
+    {
+      "case": "VAOPGCPREC 9-04",
+      "holding": "Separate ratings can be assigned for limited flexion (5260) and limited extension (5261) of the same knee when both are compensable"
+    },
+    {
+      "case": "VAOPGCPREC 9-98",
+      "holding": "Confirms that 5257 (instability) and 5003/5260/5261 (arthritis with limitation of motion) are based on different symptoms and can be rated separately"
+    }
+  ]
+}

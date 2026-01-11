@@ -14,4 +14,9 @@ urlpatterns = [
     path('document/<int:pk>/', views.document_detail, name='document_detail'),
     path('document/<int:pk>/status/', views.document_status, name='document_status'),
     path('document/<int:pk>/delete/', views.document_delete, name='document_delete'),
+
+    # Denial Decoder
+    path('decode/', views.denial_decoder_upload, name='denial_decoder'),
+    path('decode/<int:pk>/', views.denial_decoder_result, name='denial_decoder_result'),
+    path('decode/<int:pk>/status/', views.denial_decoder_status, name='denial_decoder_status'),
 ]

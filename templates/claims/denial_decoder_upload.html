@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Denial Decoder - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <!-- Page heading -->
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">VA Denial Decoder</h1>
+        <p class="text-lg text-gray-600">
+            Upload your VA Rating Decision letter to understand exactly why your claim was denied
+            and what evidence you need to win on appeal.
+        </p>
+    </header>
+
+    <!-- Feature explanation -->
+    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6" role="note">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                </svg>
+            </div>
+            <div class="ml-3">
+                <h2 class="text-sm font-medium text-blue-800">What the Denial Decoder Does</h2>
+                <div class="mt-2 text-sm text-blue-700">
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li>Extracts denied conditions and reasons from your letter</li>
+                        <li>Matches denial reasons to VA's M21-1 manual requirements</li>
+                        <li>Tells you exactly what evidence you need</li>
+                        <li>Recommends the best appeal path (HLR, Supplemental, or Board)</li>
+                        <li>Creates a prioritized action plan</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload form -->
+    <form method="post" enctype="multipart/form-data" class="bg-white shadow-md rounded-lg p-6" novalidate>
+        {% csrf_token %}
+
+        <!-- Form errors -->
+        {% if form.errors %}
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6" role="alert" aria-live="assertive">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-red-800">There were errors with your upload</h3>
+                    <div class="mt-2 text-sm text-red-700">
+                        <ul class="list-disc pl-5 space-y-1">
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- File Upload Field -->
+        <div class="mb-6">
+            <label for="{{ form.file.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                {{ form.file.label }}
+            </label>
+
+            <!-- Drag-and-drop area -->
+            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-blue-400 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500">
+                <div class="space-y-1 text-center">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="flex text-sm text-gray-600">
+                        <label for="{{ form.file.id_for_label }}" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                            <span>Choose your denial letter</span>
+                            {% render_field form.file class="sr-only" %}
+                        </label>
+                        <p class="pl-1">or drag and drop</p>
+                    </div>
+                    {% if form.file.help_text %}
+                    <p id="file-help" class="text-xs text-gray-500">
+                        {{ form.file.help_text }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- File name display -->
+            <p id="file-name-display" class="mt-2 text-sm text-gray-700" aria-live="polite" aria-atomic="true"></p>
+
+            {% if form.file.errors %}
+            <p class="mt-2 text-sm text-red-600" role="alert" aria-live="assertive">
+                {{ form.file.errors.0 }}
+            </p>
+            {% endif %}
+        </div>
+
+        <!-- Submit button -->
+        <div class="flex items-center justify-between pt-4">
+            <a href="{% url 'claims:document_list' %}" class="text-sm font-medium text-gray-600 hover:text-gray-800 hover:underline focus:underline">
+                Cancel
+            </a>
+            <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <svg class="-ml-1 mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"/>
+                </svg>
+                Decode My Denial Letter
+            </button>
+        </div>
+    </form>
+
+    <!-- What to expect -->
+    <div class="mt-6 bg-gray-50 border border-gray-200 rounded-lg p-4">
+        <h2 class="text-sm font-medium text-gray-900 mb-2">What to Expect</h2>
+        <p class="text-sm text-gray-600 mb-2">
+            Analysis typically takes 1-2 minutes. You'll get:
+        </p>
+        <ul class="text-sm text-gray-600 list-disc pl-5 space-y-1">
+            <li>A breakdown of each denied condition</li>
+            <li>Links to the exact M21-1 manual sections VA should have followed</li>
+            <li>A checklist of evidence you need to gather</li>
+            <li>A recommended appeal strategy</li>
+        </ul>
+    </div>
+
+    <!-- Privacy notice -->
+    <div class="mt-4 text-xs text-gray-500">
+        <p>
+            Your documents are encrypted and stored securely. We use them only to provide analysis
+            and will never share your personal information.
+        </p>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.querySelector('input[type="file"]');
+        const fileNameDisplay = document.getElementById('file-name-display');
+
+        if (fileInput && fileNameDisplay) {
+            fileInput.addEventListener('change', function(e) {
+                const fileName = e.target.files[0]?.name;
+                if (fileName) {
+                    fileNameDisplay.textContent = `Selected file: ${fileName}`;
+                    fileNameDisplay.setAttribute('role', 'status');
+                } else {
+                    fileNameDisplay.textContent = '';
+                }
+            });
+        }
+
+        // Drag and drop support
+        const dropZone = document.querySelector('.border-dashed');
+        if (dropZone && fileInput) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => {
+                    dropZone.classList.add('border-blue-500', 'bg-blue-50');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => {
+                    dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+                }, false);
+            });
+
+            dropZone.addEventListener('drop', function(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    const event = new Event('change', { bubbles: true });
+                    fileInput.dispatchEvent(event);
+                }
+            }, false);
+        }
+    });
+</script>
+{% endblock %}

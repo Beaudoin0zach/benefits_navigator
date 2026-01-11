@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block title %}Evidence Analysis Results - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+        <a href="{% url 'agents:evidence_gap' %}" class="text-purple-600 hover:text-purple-800 text-sm mb-2 inline-block">&larr; New Analysis</a>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Evidence Gap Analysis</h1>
+        <p class="text-gray-500">Analyzed on {{ analysis.created_at|date:"F j, Y \a\t g:i A" }}</p>
+    </div>
+
+    <!-- Readiness Score -->
+    <div class="bg-white border border-gray-200 rounded-xl p-6 mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-lg font-bold text-gray-900">Claim Readiness Score</h2>
+                <p class="text-sm text-gray-600">Based on your conditions and existing evidence</p>
+            </div>
+            <div class="text-right">
+                <div class="text-5xl font-bold {% if analysis.readiness_score >= 70 %}text-green-600{% elif analysis.readiness_score >= 40 %}text-yellow-600{% else %}text-red-600{% endif %}">
+                    {{ analysis.readiness_score }}%
+                </div>
+                <div class="text-sm text-gray-500">
+                    {% if analysis.readiness_score >= 70 %}Strong{% elif analysis.readiness_score >= 40 %}Moderate{% else %}Needs Work{% endif %}
+                </div>
+            </div>
+        </div>
+        <!-- Progress Bar -->
+        <div class="mt-4 h-3 bg-gray-200 rounded-full overflow-hidden">
+            <div class="h-full {% if analysis.readiness_score >= 70 %}bg-green-500{% elif analysis.readiness_score >= 40 %}bg-yellow-500{% else %}bg-red-500{% endif %}"
+                 style="width: {{ analysis.readiness_score }}%"></div>
+        </div>
+    </div>
+
+    <!-- Conditions Analyzed -->
+    <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8">
+        <h2 class="font-bold text-gray-900 mb-4">Conditions Analyzed</h2>
+        <div class="flex flex-wrap gap-2">
+            {% for condition in analysis.claimed_conditions %}
+            <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">
+                {{ condition }}
+            </span>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Evidence Strength by Condition -->
+    {% if analysis.strength_assessment %}
+    <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8">
+        <h2 class="font-bold text-gray-900 mb-4">Evidence Strength by Condition</h2>
+        <div class="space-y-4">
+            {% for condition, assessment in analysis.strength_assessment.items %}
+            <div class="border border-gray-100 rounded-lg p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="font-medium text-gray-900">{{ condition }}</h3>
+                    <span class="px-2 py-1 rounded text-xs font-medium
+                        {% if assessment.current_strength == 'strong' %}bg-green-100 text-green-800
+                        {% elif assessment.current_strength == 'moderate' %}bg-yellow-100 text-yellow-800
+                        {% else %}bg-red-100 text-red-800{% endif %}">
+                        {{ assessment.current_strength|title }}
+                    </span>
+                </div>
+                {% if assessment.key_issue %}
+                <p class="text-sm text-gray-600">
+                    <strong>Key Issue:</strong> {{ assessment.key_issue }}
+                </p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Evidence Gaps -->
+    {% if analysis.evidence_gaps %}
+    <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8">
+        <h2 class="font-bold text-gray-900 mb-4">Evidence Gaps Identified</h2>
+        <div class="space-y-4">
+            {% for gap in analysis.evidence_gaps %}
+            <div class="border-l-4 pl-4 py-2
+                {% if gap.priority == 'critical' %}border-red-500
+                {% elif gap.priority == 'important' %}border-yellow-500
+                {% else %}border-blue-500{% endif %}">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-medium text-gray-900">{{ gap.gap_type }}</h3>
+                    <span class="px-2 py-1 rounded text-xs font-medium
+                        {% if gap.priority == 'critical' %}bg-red-100 text-red-800
+                        {% elif gap.priority == 'important' %}bg-yellow-100 text-yellow-800
+                        {% else %}bg-blue-100 text-blue-800{% endif %}">
+                        {{ gap.priority|title }}
+                    </span>
+                </div>
+                <p class="text-sm text-gray-600 mt-1">{{ gap.description }}</p>
+                <p class="text-sm text-gray-500 mt-1">
+                    <strong>For:</strong> {{ gap.condition }}
+                </p>
+                {% if gap.how_to_obtain %}
+                <p class="text-sm text-purple-600 mt-2">
+                    <strong>How to get it:</strong> {{ gap.how_to_obtain }}
+                </p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Recommendations -->
+    {% if analysis.recommendations %}
+    <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8">
+        <h2 class="font-bold text-gray-900 mb-4">Prioritized Recommendations</h2>
+        <ol class="space-y-4">
+            {% for rec in analysis.recommendations %}
+            <li class="flex items-start">
+                <span class="flex-shrink-0 w-8 h-8 bg-purple-600 text-white text-sm font-bold rounded-full flex items-center justify-center mr-4">
+                    {{ rec.priority }}
+                </span>
+                <div class="flex-1">
+                    <h3 class="font-medium text-gray-900">{{ rec.action }}</h3>
+                    <p class="text-sm text-gray-500">For: {{ rec.condition }}</p>
+                    {% if rec.expected_benefit %}
+                    <p class="text-sm text-green-600 mt-1">Expected benefit: {{ rec.expected_benefit }}</p>
+                    {% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+    {% endif %}
+
+    <!-- Templates Suggested -->
+    {% if analysis.templates_suggested %}
+    <div class="bg-white border border-gray-200 rounded-lg p-6 mb-8">
+        <h2 class="font-bold text-gray-900 mb-4">Suggested Templates & Forms</h2>
+        <div class="grid md:grid-cols-2 gap-4">
+            {% for template in analysis.templates_suggested %}
+            <div class="border border-gray-200 rounded-lg p-4">
+                <h3 class="font-medium text-gray-900">{{ template.template }}</h3>
+                <p class="text-sm text-gray-500">For: {{ template.for_condition }}</p>
+                <p class="text-sm text-gray-600 mt-1">{{ template.purpose }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Actions -->
+    <div class="flex gap-4">
+        <a href="{% url 'agents:evidence_gap' %}"
+           class="flex-1 text-center py-3 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50">
+            New Analysis
+        </a>
+        <a href="{% url 'agents:statement_generator' %}"
+           class="flex-1 text-center py-3 px-4 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700">
+            Generate Personal Statement
+        </a>
+    </div>
+</div>
+{% endblock %}

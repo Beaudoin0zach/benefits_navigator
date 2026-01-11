@@ -1,0 +1,458 @@
+"""
+Views for AI Agents
+"""
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from decimal import Decimal
+import json
+import logging
+
+from .models import (
+    AgentInteraction,
+    DecisionLetterAnalysis,
+    EvidenceGapAnalysis,
+    PersonalStatement,
+)
+from .services import (
+    DecisionLetterAnalyzer,
+    EvidenceGapAnalyzer,
+    PersonalStatementGenerator,
+)
+
+logger = logging.getLogger(__name__)
+
+
+def agents_home(request):
+    """Landing page for AI agents"""
+    context = {
+        'agents': [
+            {
+                'name': 'Decision Letter Analyzer',
+                'slug': 'decision_analyzer',
+                'description': 'Upload or paste your VA decision letter and get a plain-English breakdown of what was granted, denied, and your next steps.',
+                'icon': 'document-text',
+                'color': 'blue',
+            },
+            {
+                'name': 'Evidence Gap Analyzer',
+                'slug': 'evidence_gap',
+                'description': 'Find out what evidence you need to strengthen your claim before filing.',
+                'icon': 'search',
+                'color': 'purple',
+            },
+            {
+                'name': 'Personal Statement Generator',
+                'slug': 'statement_generator',
+                'description': 'Create a compelling personal statement for your VA claim with guided prompts.',
+                'icon': 'pencil',
+                'color': 'green',
+            },
+        ]
+    }
+    return render(request, 'agents/home.html', context)
+
+
+# =============================================================================
+# DECISION LETTER ANALYZER
+# =============================================================================
+
+@login_required
+def decision_analyzer(request):
+    """Decision Letter Analyzer - input form"""
+    # Get user's past analyses
+    past_analyses = DecisionLetterAnalysis.objects.filter(
+        user=request.user
+    ).order_by('-created_at')[:5]
+
+    context = {
+        'past_analyses': past_analyses,
+    }
+    return render(request, 'agents/decision_analyzer.html', context)
+
+
+@login_required
+@require_POST
+def decision_analyzer_submit(request):
+    """Process decision letter analysis"""
+    letter_text = request.POST.get('letter_text', '').strip()
+    decision_date_str = request.POST.get('decision_date', '')
+
+    if not letter_text:
+        messages.error(request, "Please paste your decision letter text.")
+        return redirect('agents:decision_analyzer')
+
+    if len(letter_text) < 100:
+        messages.error(request, "The text seems too short. Please paste the full decision letter.")
+        return redirect('agents:decision_analyzer')
+
+    # Parse decision date if provided
+    decision_date = None
+    if decision_date_str:
+        try:
+            from datetime import datetime
+            decision_date = datetime.strptime(decision_date_str, '%Y-%m-%d').date()
+        except ValueError:
+            pass
+
+    try:
+        # Create interaction record
+        interaction = AgentInteraction.objects.create(
+            user=request.user,
+            agent_type='decision_analyzer',
+            status='processing'
+        )
+
+        # Run analysis
+        analyzer = DecisionLetterAnalyzer()
+        result = analyzer.analyze(letter_text, decision_date)
+
+        # Update interaction
+        interaction.tokens_used = result.get('_tokens_used', 0)
+        interaction.cost_estimate = Decimal(str(result.get('_cost_estimate', 0)))
+        interaction.status = 'completed'
+        interaction.save()
+
+        # Parse appeal deadline
+        appeal_deadline = None
+        if result.get('appeal_deadline'):
+            try:
+                from datetime import datetime
+                appeal_deadline = datetime.strptime(result['appeal_deadline'], '%Y-%m-%d').date()
+            except (ValueError, TypeError):
+                pass
+
+        # Save analysis
+        analysis = DecisionLetterAnalysis.objects.create(
+            interaction=interaction,
+            user=request.user,
+            raw_text=letter_text,
+            decision_date=decision_date,
+            conditions_granted=result.get('conditions_granted', []),
+            conditions_denied=result.get('conditions_denied', []),
+            conditions_deferred=result.get('conditions_deferred', []),
+            summary=result.get('summary', ''),
+            appeal_options=result.get('appeal_options', []),
+            evidence_issues=result.get('evidence_issues', []),
+            action_items=result.get('action_items', []),
+            appeal_deadline=appeal_deadline,
+        )
+
+        return redirect('agents:decision_analyzer_result', pk=analysis.pk)
+
+    except Exception as e:
+        logger.error(f"Decision analysis error: {str(e)}")
+        if 'interaction' in locals():
+            interaction.status = 'failed'
+            interaction.error_message = str(e)
+            interaction.save()
+        messages.error(request, f"Analysis failed: {str(e)}")
+        return redirect('agents:decision_analyzer')
+
+
+@login_required
+def decision_analyzer_result(request, pk):
+    """Display decision letter analysis results"""
+    analysis = get_object_or_404(
+        DecisionLetterAnalysis,
+        pk=pk,
+        user=request.user
+    )
+
+    context = {
+        'analysis': analysis,
+    }
+    return render(request, 'agents/decision_analyzer_result.html', context)
+
+
+# =============================================================================
+# EVIDENCE GAP ANALYZER
+# =============================================================================
+
+@login_required
+def evidence_gap_analyzer(request):
+    """Evidence Gap Analyzer - input form"""
+    past_analyses = EvidenceGapAnalysis.objects.filter(
+        user=request.user
+    ).order_by('-created_at')[:5]
+
+    # Common conditions for quick select
+    common_conditions = [
+        'PTSD', 'Anxiety', 'Depression', 'Tinnitus', 'Hearing Loss',
+        'Back Pain / Lumbar Strain', 'Knee Condition', 'Shoulder Condition',
+        'Sleep Apnea', 'Migraines', 'TBI', 'GERD', 'Hypertension',
+        'Radiculopathy', 'Plantar Fasciitis', 'Carpal Tunnel'
+    ]
+
+    evidence_types = [
+        'Service Treatment Records (STRs)',
+        'VA Medical Records',
+        'Private Medical Records',
+        'Nexus Letter / Medical Opinion',
+        'Buddy Statement(s)',
+        'Personal Statement',
+        'DBQ (Disability Benefits Questionnaire)',
+        'DD-214',
+        'Personnel Records',
+        'Incident Reports',
+    ]
+
+    context = {
+        'past_analyses': past_analyses,
+        'common_conditions': common_conditions,
+        'evidence_types': evidence_types,
+    }
+    return render(request, 'agents/evidence_gap.html', context)
+
+
+@login_required
+@require_POST
+def evidence_gap_submit(request):
+    """Process evidence gap analysis"""
+    # Get conditions (could be multiple)
+    conditions = request.POST.getlist('conditions')
+    custom_conditions = request.POST.get('custom_conditions', '').strip()
+
+    if custom_conditions:
+        conditions.extend([c.strip() for c in custom_conditions.split(',') if c.strip()])
+
+    if not conditions:
+        messages.error(request, "Please select or enter at least one condition.")
+        return redirect('agents:evidence_gap')
+
+    # Get existing evidence
+    evidence = request.POST.getlist('evidence')
+    custom_evidence = request.POST.get('custom_evidence', '').strip()
+
+    if custom_evidence:
+        evidence.extend([e.strip() for e in custom_evidence.split(',') if e.strip()])
+
+    service_dates = request.POST.get('service_dates', '')
+    service_branch = request.POST.get('service_branch', '')
+
+    try:
+        # Create interaction
+        interaction = AgentInteraction.objects.create(
+            user=request.user,
+            agent_type='evidence_gap',
+            status='processing'
+        )
+
+        # Run analysis
+        analyzer = EvidenceGapAnalyzer()
+        result = analyzer.analyze(conditions, evidence, service_dates, service_branch)
+
+        # Update interaction
+        interaction.tokens_used = result.get('_tokens_used', 0)
+        interaction.cost_estimate = Decimal(str(result.get('_cost_estimate', 0)))
+        interaction.status = 'completed'
+        interaction.save()
+
+        # Save analysis
+        analysis = EvidenceGapAnalysis.objects.create(
+            interaction=interaction,
+            user=request.user,
+            claimed_conditions=conditions,
+            existing_evidence=evidence,
+            service_dates=service_dates,
+            service_branch=service_branch,
+            evidence_gaps=result.get('evidence_gaps', []),
+            strength_assessment=result.get('strength_assessment', {}),
+            recommendations=result.get('recommendations', []),
+            templates_suggested=result.get('templates_suggested', []),
+            readiness_score=result.get('readiness_score', 0),
+        )
+
+        return redirect('agents:evidence_gap_result', pk=analysis.pk)
+
+    except Exception as e:
+        logger.error(f"Evidence gap analysis error: {str(e)}")
+        if 'interaction' in locals():
+            interaction.status = 'failed'
+            interaction.error_message = str(e)
+            interaction.save()
+        messages.error(request, f"Analysis failed: {str(e)}")
+        return redirect('agents:evidence_gap')
+
+
+@login_required
+def evidence_gap_result(request, pk):
+    """Display evidence gap analysis results"""
+    analysis = get_object_or_404(
+        EvidenceGapAnalysis,
+        pk=pk,
+        user=request.user
+    )
+
+    context = {
+        'analysis': analysis,
+    }
+    return render(request, 'agents/evidence_gap_result.html', context)
+
+
+# =============================================================================
+# PERSONAL STATEMENT GENERATOR
+# =============================================================================
+
+@login_required
+def statement_generator(request):
+    """Personal Statement Generator - input form"""
+    past_statements = PersonalStatement.objects.filter(
+        user=request.user
+    ).order_by('-created_at')[:5]
+
+    context = {
+        'past_statements': past_statements,
+        'statement_types': [
+            ('initial', 'Initial Claim', 'First time claiming this condition'),
+            ('increase', 'Rating Increase', 'Condition has gotten worse'),
+            ('secondary', 'Secondary Condition', 'Caused by another service-connected condition'),
+            ('appeal', 'Appeal Statement', 'Supporting a denied claim appeal'),
+        ],
+    }
+    return render(request, 'agents/statement_generator.html', context)
+
+
+@login_required
+@require_POST
+def statement_generator_submit(request):
+    """Process personal statement generation"""
+    condition = request.POST.get('condition', '').strip()
+    statement_type = request.POST.get('statement_type', 'initial')
+    in_service_event = request.POST.get('in_service_event', '').strip()
+    current_symptoms = request.POST.get('current_symptoms', '').strip()
+    daily_impact = request.POST.get('daily_impact', '').strip()
+    work_impact = request.POST.get('work_impact', '').strip()
+    treatment_history = request.POST.get('treatment_history', '').strip()
+    worst_days = request.POST.get('worst_days', '').strip()
+
+    # Validation
+    errors = []
+    if not condition:
+        errors.append("Condition is required")
+    if not in_service_event:
+        errors.append("In-service event description is required")
+    if not current_symptoms:
+        errors.append("Current symptoms description is required")
+    if not daily_impact:
+        errors.append("Daily life impact description is required")
+
+    if errors:
+        for error in errors:
+            messages.error(request, error)
+        return redirect('agents:statement_generator')
+
+    try:
+        # Create interaction
+        interaction = AgentInteraction.objects.create(
+            user=request.user,
+            agent_type='statement_generator',
+            status='processing'
+        )
+
+        # Generate statement
+        generator = PersonalStatementGenerator()
+        result = generator.generate(
+            condition=condition,
+            in_service_event=in_service_event,
+            current_symptoms=current_symptoms,
+            daily_impact=daily_impact,
+            work_impact=work_impact,
+            treatment_history=treatment_history,
+            worst_days=worst_days,
+            statement_type=statement_type,
+        )
+
+        # Update interaction
+        interaction.tokens_used = result.get('_tokens_used', 0)
+        interaction.cost_estimate = Decimal(str(result.get('_cost_estimate', 0)))
+        interaction.status = 'completed'
+        interaction.save()
+
+        # Save statement
+        statement = PersonalStatement.objects.create(
+            interaction=interaction,
+            user=request.user,
+            condition=condition,
+            statement_type=statement_type,
+            in_service_event=in_service_event,
+            current_symptoms=current_symptoms,
+            daily_impact=daily_impact,
+            work_impact=work_impact,
+            treatment_history=treatment_history,
+            worst_days=worst_days,
+            generated_statement=result.get('statement', ''),
+        )
+
+        return redirect('agents:statement_result', pk=statement.pk)
+
+    except Exception as e:
+        logger.error(f"Statement generation error: {str(e)}")
+        if 'interaction' in locals():
+            interaction.status = 'failed'
+            interaction.error_message = str(e)
+            interaction.save()
+        messages.error(request, f"Generation failed: {str(e)}")
+        return redirect('agents:statement_generator')
+
+
+@login_required
+def statement_result(request, pk):
+    """Display generated personal statement"""
+    statement = get_object_or_404(
+        PersonalStatement,
+        pk=pk,
+        user=request.user
+    )
+
+    context = {
+        'statement': statement,
+    }
+    return render(request, 'agents/statement_result.html', context)
+
+
+@login_required
+@require_POST
+def statement_save_final(request, pk):
+    """Save user's edited final statement"""
+    statement = get_object_or_404(
+        PersonalStatement,
+        pk=pk,
+        user=request.user
+    )
+
+    final_text = request.POST.get('final_statement', '').strip()
+
+    if final_text:
+        statement.final_statement = final_text
+        statement.is_finalized = True
+        statement.save()
+        messages.success(request, "Your personal statement has been saved.")
+    else:
+        messages.error(request, "Please enter your statement text.")
+
+    return redirect('agents:statement_result', pk=pk)
+
+
+# =============================================================================
+# HISTORY VIEWS
+# =============================================================================
+
+@login_required
+def agent_history(request):
+    """View all agent interaction history"""
+    interactions = AgentInteraction.objects.filter(
+        user=request.user
+    ).select_related(
+        'decision_analysis',
+        'evidence_analysis',
+        'personal_statement'
+    ).order_by('-created_at')[:50]
+
+    context = {
+        'interactions': interactions,
+    }
+    return render(request, 'agents/history.html', context)

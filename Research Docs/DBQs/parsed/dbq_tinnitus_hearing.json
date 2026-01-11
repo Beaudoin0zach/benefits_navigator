@@ -1,0 +1,181 @@
+{
+  "dbq_name": "Ear Conditions (Including Tinnitus and Hearing Loss)",
+  "dbq_type": "examination",
+  "condition": "Ear Conditions",
+  "category": "special_senses",
+  "diagnostic_codes": ["6100", "6260"],
+  "cfr_reference": "38 CFR 4.85-4.87",
+  "last_updated": "2024-07-15",
+  "version": "v24_1",
+
+  "conditions_covered": [
+    {
+      "condition": "Tinnitus",
+      "diagnostic_code": "6260",
+      "description": "Ringing, buzzing, or other sounds in the ears"
+    },
+    {
+      "condition": "Hearing Loss",
+      "diagnostic_code": "6100",
+      "description": "Organic impairment of hearing acuity"
+    },
+    {
+      "condition": "Vestibular/Balance Disorders",
+      "diagnostic_code": "6204",
+      "description": "Peripheral vestibular disorders including vertigo"
+    },
+    {
+      "condition": "Meniere's Disease",
+      "diagnostic_code": "6205",
+      "description": "Hearing impairment with vertigo and cerebellar gait"
+    }
+  ],
+
+  "tinnitus_rating": {
+    "diagnostic_code": "6260",
+    "description": "Tinnitus is rated at a flat 10% maximum",
+    "levels": [
+      {
+        "rating": 10,
+        "criteria": "Recurrent tinnitus",
+        "keywords": ["recurrent", "persistent", "constant", "ringing", "buzzing"]
+      }
+    ],
+    "important_notes": [
+      "Maximum rating for tinnitus is 10% regardless of severity",
+      "Only ONE 10% rating is allowed even if tinnitus is in both ears",
+      "Tinnitus is subjective - veteran's description is key evidence",
+      "Often service-connected secondary to noise exposure or TBI",
+      "One of the most commonly service-connected conditions"
+    ]
+  },
+
+  "hearing_loss_rating": {
+    "diagnostic_code": "6100",
+    "description": "Hearing loss rated based on audiometric testing results",
+    "rating_method": "Hearing loss is rated using Tables VI, VIA, and VII in 38 CFR 4.85",
+    "key_measurements": {
+      "puretone_thresholds": "Measured at 1000, 2000, 3000, and 4000 Hz",
+      "speech_recognition": "Maryland CNC word list test",
+      "puretone_average": "Average of thresholds at 1000, 2000, 3000, 4000 Hz"
+    },
+    "rating_tables": {
+      "table_vi": "Converts puretone average and speech recognition to Roman numeral designation (I-XI)",
+      "table_via": "Used when speech recognition is unreliable or exceptional hearing loss patterns exist",
+      "table_vii": "Combines Roman numerals from each ear to determine percentage rating"
+    },
+    "rating_range": "0% to 100% based on combined hearing impairment levels",
+    "levels_simplified": [
+      {"rating": 0, "description": "Mild to moderate hearing loss with good speech recognition"},
+      {"rating": 10, "description": "Moderate hearing loss affecting speech understanding"},
+      {"rating": 20, "description": "Moderately severe hearing loss"},
+      {"rating": 30, "description": "Severe hearing loss significantly affecting communication"},
+      {"rating": 40, "description": "Severe to profound hearing loss"},
+      {"rating": 50, "description": "Profound hearing loss"},
+      {"rating": 60, "description": "Profound hearing loss in both ears"},
+      {"rating": 70, "description": "Near-total hearing loss"},
+      {"rating": 80, "description": "Near-total bilateral hearing loss"},
+      {"rating": 90, "description": "Total hearing loss one ear, near-total other"},
+      {"rating": 100, "description": "Total bilateral deafness"}
+    ]
+  },
+
+  "vestibular_disorders_rating": {
+    "diagnostic_code": "6204",
+    "description": "Peripheral vestibular disorders",
+    "levels": [
+      {"rating": 10, "criteria": "Occasional dizziness", "keywords": ["occasional", "dizziness"]},
+      {"rating": 30, "criteria": "Dizziness and occasional staggering", "keywords": ["staggering", "frequent dizziness"]}
+    ]
+  },
+
+  "menieres_disease_rating": {
+    "diagnostic_code": "6205",
+    "description": "Meniere's syndrome (endolymphatic hydrops)",
+    "levels": [
+      {"rating": 30, "criteria": "Hearing impairment with vertigo less than once a month, with or without tinnitus", "keywords": ["monthly vertigo"]},
+      {"rating": 60, "criteria": "Hearing impairment with attacks of vertigo and cerebellar gait occurring from 1 to 4 times a month, with or without tinnitus", "keywords": ["1-4 times monthly", "cerebellar gait"]},
+      {"rating": 100, "criteria": "Hearing impairment with attacks of vertigo and cerebellar gait occurring more than once weekly, with or without tinnitus", "keywords": ["weekly attacks", "frequent vertigo"]}
+    ]
+  },
+
+  "exam_sections": [
+    "Diagnosis",
+    "Medical History",
+    "Audiometric Testing",
+    "Speech Recognition Testing",
+    "Physical Examination",
+    "Tinnitus Evaluation",
+    "Vestibular Assessment",
+    "Functional Impact"
+  ],
+
+  "audiometric_testing_requirements": {
+    "puretone_frequencies": ["1000 Hz", "2000 Hz", "3000 Hz", "4000 Hz"],
+    "speech_recognition_test": "Maryland CNC word recognition test",
+    "testing_conditions": "Sound-treated booth required",
+    "bilateral_testing": "Both ears must be tested"
+  },
+
+  "service_connection_evidence": {
+    "tinnitus": [
+      "Military noise exposure (weapons, aircraft, vehicles, machinery)",
+      "In-service documentation of hearing issues",
+      "MOS with known noise exposure",
+      "Buddy statements about in-service symptoms",
+      "Continuous symptoms since service"
+    ],
+    "hearing_loss": [
+      "In-service audiograms showing threshold shifts",
+      "Military noise exposure history",
+      "Comparison of entrance and separation audiograms",
+      "MOS involving hazardous noise",
+      "Nexus letter connecting hearing loss to service"
+    ]
+  },
+
+  "tips_for_veterans": [
+    "Describe your tinnitus in detail - sound type, loudness, frequency",
+    "Explain how tinnitus affects sleep, concentration, and daily life",
+    "Document all military noise exposure (weapons, aircraft, machinery)",
+    "Request copies of all in-service audiograms",
+    "Describe the worst days for your hearing and tinnitus",
+    "Mention if tinnitus interferes with hearing conversations",
+    "Document any balance problems or dizziness",
+    "Report if you need hearing aids",
+    "Explain how hearing loss affects work and relationships",
+    "Get buddy statements from fellow service members about noise exposure"
+  ],
+
+  "common_mistakes": [
+    "Not describing tinnitus in enough detail",
+    "Failing to document military noise exposure",
+    "Not mentioning how hearing loss affects daily functioning",
+    "Forgetting to report balance or dizziness issues",
+    "Not requesting in-service audiogram records",
+    "Minimizing symptoms during examination"
+  ],
+
+  "secondary_service_connection": {
+    "common_primaries": [
+      {"condition": "Traumatic Brain Injury (TBI)", "connection": "TBI commonly causes both tinnitus and hearing loss"},
+      {"condition": "PTSD", "connection": "Associated with tinnitus; noise exposure often causes both"},
+      {"condition": "Acoustic trauma", "connection": "Direct cause of hearing damage and tinnitus"}
+    ],
+    "tinnitus_as_secondary": [
+      {"primary": "Hearing loss", "connection": "Tinnitus often develops with or after hearing loss"},
+      {"primary": "TBI", "connection": "Brain injury frequently causes tinnitus"},
+      {"primary": "Meniere's disease", "connection": "Tinnitus is a symptom of Meniere's"}
+    ]
+  },
+
+  "important_notes": [
+    "Tinnitus maximum rating is 10% regardless of bilateral involvement",
+    "Hearing loss ratings are determined by audiometric test results",
+    "Veterans should not wear hearing aids during VA audiometric exam",
+    "Speech recognition testing uses specific Maryland CNC word list",
+    "Tinnitus is one of the most commonly service-connected disabilities",
+    "Noise exposure MOSs include infantry, artillery, aviation, armor, maintenance",
+    "Hearing loss for VA purposes must meet specific thresholds in 38 CFR 3.385"
+  ]
+}

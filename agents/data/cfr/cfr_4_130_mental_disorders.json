@@ -1,0 +1,138 @@
+{
+  "cfr_reference": "38 CFR 4.130",
+  "title": "Schedule of Ratings - Mental Disorders",
+  "description": "General Rating Formula for Mental Disorders",
+  "last_updated": "2024",
+  "applies_to": [
+    "PTSD (9411)",
+    "Major Depressive Disorder (9434)",
+    "Generalized Anxiety Disorder (9400)",
+    "Bipolar Disorder (9432)",
+    "Schizophrenia (9201)",
+    "Panic Disorder (9412)",
+    "OCD (9404)",
+    "All other mental disorders except eating disorders"
+  ],
+
+  "general_rating_formula": {
+    "name": "General Rating Formula for Mental Disorders",
+    "note": "One rating applies to all mental disorders (except eating disorders) - cannot pyramid",
+    "levels": [
+      {
+        "rating": 0,
+        "criteria": "A mental condition has been formally diagnosed, but symptoms are not severe enough either to interfere with occupational and social functioning or to require continuous medication.",
+        "summary": "Diagnosed but asymptomatic or controlled without medication"
+      },
+      {
+        "rating": 10,
+        "criteria": "Occupational and social impairment due to mild or transient symptoms which decrease work efficiency and ability to perform occupational tasks only during periods of significant stress, or; symptoms controlled by continuous medication.",
+        "summary": "Mild symptoms, only problematic during stress, or controlled by medication"
+      },
+      {
+        "rating": 30,
+        "criteria": "Occupational and social impairment with occasional decrease in work efficiency and intermittent periods of inability to perform occupational tasks (although generally functioning satisfactorily, with routine behavior, self-care, and conversation normal), due to such symptoms as: depressed mood, anxiety, suspiciousness, panic attacks (weekly or less often), chronic sleep impairment, mild memory loss (such as forgetting names, directions, recent events).",
+        "summary": "Occasional work impairment, generally functioning satisfactorily",
+        "typical_symptoms": [
+          "Depressed mood",
+          "Anxiety",
+          "Suspiciousness",
+          "Panic attacks weekly or less often",
+          "Chronic sleep impairment",
+          "Mild memory loss"
+        ]
+      },
+      {
+        "rating": 50,
+        "criteria": "Occupational and social impairment with reduced reliability and productivity due to such symptoms as: flattened affect; circumstantial, circumlocutory, or stereotyped speech; panic attacks more than once a week; difficulty in understanding complex commands; impairment of short- and long-term memory (e.g., retention of only highly learned material, forgetting to complete tasks); impaired judgment; impaired abstract thinking; disturbances of motivation and mood; difficulty in establishing and maintaining effective work and social relationships.",
+        "summary": "Reduced reliability and productivity",
+        "typical_symptoms": [
+          "Flattened affect",
+          "Circumstantial, circumlocutory, or stereotyped speech",
+          "Panic attacks more than once a week",
+          "Difficulty understanding complex commands",
+          "Impaired short and long-term memory",
+          "Impaired judgment",
+          "Impaired abstract thinking",
+          "Disturbances of motivation and mood",
+          "Difficulty establishing and maintaining effective relationships"
+        ]
+      },
+      {
+        "rating": 70,
+        "criteria": "Occupational and social impairment, with deficiencies in most areas, such as work, school, family relations, judgment, thinking, or mood, due to such symptoms as: suicidal ideation; obsessional rituals which interfere with routine activities; speech intermittently illogical, obscure, or irrelevant; near-continuous panic or depression affecting the ability to function independently, appropriately and effectively; impaired impulse control (such as unprovoked irritability with periods of violence); spatial disorientation; neglect of personal appearance and hygiene; difficulty in adapting to stressful circumstances (including work or a worklike setting); inability to establish and maintain effective relationships.",
+        "summary": "Deficiencies in most areas of life",
+        "typical_symptoms": [
+          "Suicidal ideation",
+          "Obsessional rituals interfering with routine activities",
+          "Intermittently illogical, obscure, or irrelevant speech",
+          "Near-continuous panic or depression affecting ability to function",
+          "Impaired impulse control with periods of violence",
+          "Spatial disorientation",
+          "Neglect of personal appearance and hygiene",
+          "Difficulty adapting to stressful circumstances",
+          "Inability to establish and maintain effective relationships"
+        ]
+      },
+      {
+        "rating": 100,
+        "criteria": "Total occupational and social impairment, due to such symptoms as: gross impairment in thought processes or communication; persistent delusions or hallucinations; grossly inappropriate behavior; persistent danger of hurting self or others; intermittent inability to perform activities of daily living (including maintenance of minimal personal hygiene); disorientation to time or place; memory loss for names of close relatives, own occupation, or own name.",
+        "summary": "Total occupational and social impairment",
+        "typical_symptoms": [
+          "Gross impairment in thought processes or communication",
+          "Persistent delusions or hallucinations",
+          "Grossly inappropriate behavior",
+          "Persistent danger of hurting self or others",
+          "Intermittent inability to perform ADLs including hygiene",
+          "Disorientation to time or place",
+          "Memory loss for close relatives' names, own occupation, or own name"
+        ]
+      }
+    ]
+  },
+
+  "diagnostic_codes": {
+    "9201": "Schizophrenia",
+    "9400": "Generalized Anxiety Disorder",
+    "9403": "Specific phobia; Social anxiety disorder (social phobia)",
+    "9404": "Obsessive-compulsive disorder",
+    "9410": "Other specified anxiety disorder",
+    "9411": "Post-traumatic stress disorder",
+    "9412": "Panic disorder and/or agoraphobia",
+    "9413": "Unspecified anxiety disorder",
+    "9416": "Dissociative amnesia; Dissociative identity disorder",
+    "9417": "Depersonalization/Derealization disorder",
+    "9421": "Somatic symptom disorder",
+    "9422": "Other specified somatic symptom and related disorder",
+    "9423": "Unspecified somatic symptom and related disorder",
+    "9424": "Conversion disorder",
+    "9425": "Illness anxiety disorder",
+    "9431": "Cyclothymic disorder",
+    "9432": "Bipolar disorder",
+    "9433": "Persistent depressive disorder (Dysthymia)",
+    "9434": "Major depressive disorder",
+    "9435": "Unspecified depressive disorder",
+    "9440": "Chronic adjustment disorder"
+  },
+
+  "important_rules": [
+    "Only ONE rating is assigned for all mental health conditions combined",
+    "Cannot receive separate ratings for PTSD and depression, for example",
+    "Rating is based on level of occupational and social impairment, not just symptoms",
+    "Symptom lists are examples, not exhaustive requirements",
+    "Veteran need not have all listed symptoms to qualify for a rating level",
+    "Examiner's overall assessment of impairment level is key"
+  ],
+
+  "key_precedent_decisions": [
+    {
+      "case": "Mauerhan v. Principi",
+      "citation": "16 Vet. App. 436 (2002)",
+      "holding": "Symptoms listed in rating criteria are examples, not requirements. Other symptoms demonstrating similar level of impairment can support the rating."
+    },
+    {
+      "case": "Vazquez-Claudio v. Shinseki",
+      "citation": "713 F.3d 112 (Fed. Cir. 2013)",
+      "holding": "Symptoms must cause the level of impairment described in the rating criteria."
+    }
+  ]
+}

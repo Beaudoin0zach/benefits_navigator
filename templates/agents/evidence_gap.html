@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}Evidence Gap Analyzer - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+        <a href="{% url 'agents:home' %}" class="text-blue-600 hover:text-blue-800 text-sm mb-2 inline-block">&larr; Back to AI Agents</a>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Evidence Gap Analyzer</h1>
+        <p class="text-gray-600">
+            Find out what evidence you need to strengthen your claim before filing.
+        </p>
+    </div>
+
+    <!-- Form -->
+    <form method="post" action="{% url 'agents:evidence_gap_submit' %}" class="space-y-8">
+        {% csrf_token %}
+
+        <!-- Conditions Section -->
+        <div class="bg-white border border-gray-200 rounded-lg p-6">
+            <h2 class="font-bold text-gray-900 mb-4">What conditions are you claiming?</h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                {% for condition in common_conditions %}
+                <label class="flex items-center p-2 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                    <input type="checkbox" name="conditions" value="{{ condition }}"
+                           class="rounded border-gray-300 text-purple-600 focus:ring-purple-500">
+                    <span class="ml-2 text-sm text-gray-700">{{ condition }}</span>
+                </label>
+                {% endfor %}
+            </div>
+
+            <div>
+                <label for="custom_conditions" class="block text-sm font-medium text-gray-700 mb-1">
+                    Other conditions (comma-separated)
+                </label>
+                <input type="text" id="custom_conditions" name="custom_conditions"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+                       placeholder="e.g., Erectile Dysfunction, Sinusitis">
+            </div>
+        </div>
+
+        <!-- Evidence Section -->
+        <div class="bg-white border border-gray-200 rounded-lg p-6">
+            <h2 class="font-bold text-gray-900 mb-4">What evidence do you already have?</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                {% for evidence in evidence_types %}
+                <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                    <input type="checkbox" name="evidence" value="{{ evidence }}"
+                           class="rounded border-gray-300 text-purple-600 focus:ring-purple-500">
+                    <span class="ml-2 text-sm text-gray-700">{{ evidence }}</span>
+                </label>
+                {% endfor %}
+            </div>
+
+            <div>
+                <label for="custom_evidence" class="block text-sm font-medium text-gray-700 mb-1">
+                    Other evidence (comma-separated)
+                </label>
+                <input type="text" id="custom_evidence" name="custom_evidence"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+                       placeholder="e.g., Employment records, Spouse statement">
+            </div>
+        </div>
+
+        <!-- Service Info Section -->
+        <div class="bg-white border border-gray-200 rounded-lg p-6">
+            <h2 class="font-bold text-gray-900 mb-4">Service Information (optional)</h2>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <label for="service_dates" class="block text-sm font-medium text-gray-700 mb-1">
+                        Service Dates
+                    </label>
+                    <input type="text" id="service_dates" name="service_dates"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+                           placeholder="e.g., 2005-2009">
+                </div>
+                <div>
+                    <label for="service_branch" class="block text-sm font-medium text-gray-700 mb-1">
+                        Branch of Service
+                    </label>
+                    <select id="service_branch" name="service_branch"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500">
+                        <option value="">Select branch...</option>
+                        <option value="Army">Army</option>
+                        <option value="Navy">Navy</option>
+                        <option value="Air Force">Air Force</option>
+                        <option value="Marine Corps">Marine Corps</option>
+                        <option value="Coast Guard">Coast Guard</option>
+                        <option value="Space Force">Space Force</option>
+                        <option value="National Guard">National Guard</option>
+                        <option value="Reserves">Reserves</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit"
+                class="w-full py-4 px-6 bg-purple-600 text-white font-bold rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+            Analyze Evidence Gaps
+        </button>
+    </form>
+
+    {% if past_analyses %}
+    <!-- Past Analyses -->
+    <div class="mt-12">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Your Recent Analyses</h2>
+        <div class="space-y-3">
+            {% for analysis in past_analyses %}
+            <a href="{% url 'agents:evidence_gap_result' analysis.pk %}"
+               class="block p-4 bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <span class="font-medium text-gray-900">{{ analysis.created_at|date:"M j, Y" }}</span>
+                        <div class="text-sm text-gray-500 mt-1">
+                            {{ analysis.claimed_conditions|length }} conditions analyzed
+                            <span class="ml-2 px-2 py-0.5 bg-purple-100 text-purple-800 rounded text-xs font-medium">
+                                {{ analysis.readiness_score }}% ready
+                            </span>
+                        </div>
+                    </div>
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
