@@ -2,6 +2,43 @@
 
 {% block title %}{{ term.term }} - VA Glossary - {{ SITE_NAME }}{% endblock %}
 
+{% block meta_description %}{{ term.term }}: {{ term.plain_language|truncatewords:25 }} Learn what this VA term means in plain English.{% endblock %}
+
+{% block og_title %}{{ term.term }} - VA Terminology Definition{% endblock %}
+{% block og_description %}{{ term.plain_language|truncatewords:20 }}{% endblock %}
+{% block twitter_title %}{{ term.term }} - VA Definition{% endblock %}
+{% block twitter_description %}{{ term.plain_language|truncatewords:20 }}{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "DefinedTerm",
+    "name": "{{ term.term }}",
+    "description": "{{ term.plain_language|escapejs }}",
+    "inDefinedTermSet": {
+        "@type": "DefinedTermSet",
+        "name": "VA Terminology Glossary",
+        "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'examprep:glossary_list' %}"
+    }
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [{
+        "@type": "Question",
+        "name": "What does {{ term.term }} mean?",
+        "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "{{ term.plain_language|escapejs }}{% if term.context %} {{ term.context|escapejs }}{% endif %}"
+        }
+    }]
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="max-w-4xl mx-auto">
     <!-- Breadcrumb navigation -->

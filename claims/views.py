@@ -28,11 +28,15 @@ def document_list(request):
         is_deleted=False
     ).order_by('-created_at')
 
+    # Get current month's document count from UsageTracking (more accurate)
+    from accounts.models import UsageTracking
+
+    usage, _ = UsageTracking.objects.get_or_create(user=request.user)
+    usage.check_and_reset_monthly()  # Ensure counters are current
+
     context = {
         'documents': documents,
-        'documents_this_month': documents.filter(
-            created_at__month=request.user.date_joined.month
-        ).count() if hasattr(request.user, 'date_joined') else 0,
+        'documents_this_month': usage.documents_uploaded_this_month,
         'free_tier_limit': settings.FREE_TIER_DOCUMENTS_PER_MONTH,
         'is_premium': request.user.is_premium if hasattr(request.user, 'is_premium') else False,
     }
@@ -164,7 +168,15 @@ def document_delete(request, pk):
     )
 
     document_name = document.file_name
+    file_size = document.file_size  # Store size before deletion
+
     document.delete()  # Soft delete from SoftDeleteModel
+
+    # Release storage from usage tracking
+    if file_size > 0:
+        from accounts.models import UsageTracking
+        usage, _ = UsageTracking.objects.get_or_create(user=request.user)
+        usage.record_storage_freed(file_size)
 
     messages.success(
         request,

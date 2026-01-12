@@ -2,6 +2,74 @@
 
 {% block title %}{{ guide.title }} - C&P Exam Prep - {{ SITE_NAME }}{% endblock %}
 
+{% block meta_description %}Prepare for your {{ guide.title }} C&P exam. Learn what examiners evaluate, physical tests performed, questions to expect, and tips to document your symptoms accurately.{% endblock %}
+
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ guide.title }} - VA C&P Exam Guide{% endblock %}
+{% block og_description %}Complete preparation guide for {{ guide.title }} C&P exam. Know what to expect and how to document your symptoms.{% endblock %}
+{% block twitter_title %}{{ guide.title }} - C&P Exam Guide{% endblock %}
+{% block twitter_description %}Complete preparation guide for {{ guide.title }} C&P exam. Know what to expect.{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "{{ guide.title }}",
+    "description": "{{ guide.introduction|truncatewords:30|escapejs }}",
+    "author": {
+        "@type": "Organization",
+        "name": "{{ SITE_NAME }}"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "{{ SITE_NAME }}",
+        "url": "{{ request.scheme }}://{{ request.get_host }}/"
+    },
+    "datePublished": "{{ guide.created_at|date:'c' }}",
+    "dateModified": "{{ guide.updated_at|date:'c' }}",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "{{ request.build_absolute_uri }}"
+    },
+    "articleSection": "{{ guide.get_category_display }}",
+    "keywords": ["VA C&P exam", "{{ guide.title }}", "disability exam", "veterans benefits", "{{ guide.get_category_display }}"]
+}
+</script>
+{% if guide.preparation_tips %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Prepare for {{ guide.title }} C&P Exam",
+    "description": "Step-by-step preparation guide for your VA Compensation & Pension exam",
+    "step": [
+        {
+            "@type": "HowToStep",
+            "name": "Review What the Exam Measures",
+            "text": "Understand what symptoms and limitations the examiner will evaluate"
+        },
+        {
+            "@type": "HowToStep",
+            "name": "Prepare Your Documentation",
+            "text": "Gather medical records, symptom diary, and list of medications"
+        },
+        {
+            "@type": "HowToStep",
+            "name": "Know the Physical Tests",
+            "text": "Familiarize yourself with range of motion and functional tests"
+        },
+        {
+            "@type": "HowToStep",
+            "name": "Practice Describing Symptoms",
+            "text": "Be ready to describe your worst days and how symptoms affect daily life"
+        }
+    ]
+}
+</script>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 <div class="max-w-4xl mx-auto">
     <!-- Breadcrumb navigation -->

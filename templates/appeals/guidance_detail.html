@@ -2,6 +2,58 @@
 
 {% block title %}{{ page_title }} - {{ SITE_NAME }}{% endblock %}
 
+{% block meta_description %}Complete guide to {{ guidance.title }}. Learn step-by-step how to file, required forms ({{ guidance.va_form_number }}), deadlines, and what to expect. Average processing: {{ guidance.average_processing_days }} days.{% endblock %}
+
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ guidance.title }} - VA Appeals Guide{% endblock %}
+{% block og_description %}Step-by-step guide to {{ guidance.title }}. Forms, deadlines, and tips for success.{% endblock %}
+{% block twitter_title %}{{ guidance.title }}{% endblock %}
+{% block twitter_description %}Complete guide to {{ guidance.title }} with forms, deadlines, and success tips.{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to File {{ guidance.title }}",
+    "description": "Step-by-step guide to filing {{ guidance.title }} with the VA",
+    "estimatedCost": {
+        "@type": "MonetaryAmount",
+        "currency": "USD",
+        "value": "0"
+    },
+    "supply": [
+        {
+            "@type": "HowToSupply",
+            "name": "VA Form {{ guidance.va_form_number }}"
+        }
+    ],
+    "step": [
+        {
+            "@type": "HowToStep",
+            "name": "Gather Evidence",
+            "text": "Collect new and relevant evidence to support your appeal"
+        },
+        {
+            "@type": "HowToStep",
+            "name": "Complete Form {{ guidance.va_form_number }}",
+            "text": "Fill out the required VA form for this appeal type"
+        },
+        {
+            "@type": "HowToStep",
+            "name": "Submit Your Appeal",
+            "text": "Submit your completed form and evidence to the VA"
+        },
+        {
+            "@type": "HowToStep",
+            "name": "Track Progress",
+            "text": "Monitor your appeal status and respond to any requests"
+        }
+    ]
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="container mx-auto px-4 py-8 max-w-4xl">
     <!-- Breadcrumb -->
