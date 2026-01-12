@@ -676,6 +676,127 @@ class SupportiveMessage(models.Model):
         return result
 
 
+# =============================================================================
+# FEEDBACK MODELS
+# =============================================================================
+
+class Feedback(TimeStampedModel):
+    """
+    User feedback collected from in-app feedback widgets.
+    Supports both thumbs up/down and optional text comments.
+    """
+
+    RATING_CHOICES = [
+        ('positive', 'Positive (Thumbs Up)'),
+        ('negative', 'Negative (Thumbs Down)'),
+        ('neutral', 'Neutral'),
+    ]
+
+    CATEGORY_CHOICES = [
+        ('general', 'General Feedback'),
+        ('bug', 'Bug Report'),
+        ('feature', 'Feature Request'),
+        ('content', 'Content Issue'),
+        ('usability', 'Usability'),
+    ]
+
+    STATUS_CHOICES = [
+        ('new', 'New'),
+        ('reviewed', 'Reviewed'),
+        ('addressed', 'Addressed'),
+        ('wont_fix', "Won't Fix"),
+    ]
+
+    # Who submitted (optional - allow anonymous)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='feedback'
+    )
+
+    # What page/feature
+    page_url = models.CharField('Page URL', max_length=500)
+    page_title = models.CharField('Page Title', max_length=200, blank=True)
+
+    # The feedback itself
+    rating = models.CharField(
+        'Rating',
+        max_length=10,
+        choices=RATING_CHOICES,
+        help_text='Quick thumbs up/down rating'
+    )
+    category = models.CharField(
+        'Category',
+        max_length=20,
+        choices=CATEGORY_CHOICES,
+        default='general'
+    )
+    comment = models.TextField(
+        'Comment',
+        blank=True,
+        help_text='Optional detailed feedback'
+    )
+
+    # Metadata
+    user_agent = models.CharField('User Agent', max_length=500, blank=True)
+    session_key = models.CharField('Session Key', max_length=40, blank=True)
+
+    # Admin tracking
+    status = models.CharField(
+        'Status',
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='new'
+    )
+    admin_notes = models.TextField('Admin Notes', blank=True)
+    reviewed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='reviewed_feedback'
+    )
+    reviewed_at = models.DateTimeField('Reviewed At', null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Feedback'
+        verbose_name_plural = 'Feedback'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        user_str = self.user.email if self.user else 'Anonymous'
+        return f"{self.get_rating_display()} from {user_str} on {self.page_url}"
+
+    @classmethod
+    def get_summary_stats(cls):
+        """Get summary statistics for feedback."""
+        from django.db.models import Count
+
+        total = cls.objects.count()
+        by_rating = dict(
+            cls.objects.values('rating')
+            .annotate(count=Count('id'))
+            .values_list('rating', 'count')
+        )
+        by_status = dict(
+            cls.objects.values('status')
+            .annotate(count=Count('id'))
+            .values_list('status', 'count')
+        )
+
+        return {
+            'total': total,
+            'positive': by_rating.get('positive', 0),
+            'negative': by_rating.get('negative', 0),
+            'neutral': by_rating.get('neutral', 0),
+            'new': by_status.get('new', 0),
+            'reviewed': by_status.get('reviewed', 0),
+            'addressed': by_status.get('addressed', 0),
+        }
+
+
 class DataRetentionPolicy(models.Model):
     """
     Defines data retention policies for different data types.

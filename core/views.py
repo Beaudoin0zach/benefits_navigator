@@ -257,3 +257,53 @@ def delete_milestone(request, pk):
     return render(request, 'core/delete_milestone.html', {
         'milestone': milestone,
     })
+
+
+# =============================================================================
+# FEEDBACK VIEWS
+# =============================================================================
+
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_protect
+from .models import Feedback
+
+
+def submit_feedback(request):
+    """
+    Submit feedback via HTMX.
+    Accepts both authenticated and anonymous users.
+    """
+    if request.method != 'POST':
+        return HttpResponse(status=405)
+
+    rating = request.POST.get('rating')
+    if rating not in ['positive', 'negative', 'neutral']:
+        return HttpResponse('Invalid rating', status=400)
+
+    # Create feedback
+    feedback = Feedback.objects.create(
+        user=request.user if request.user.is_authenticated else None,
+        page_url=request.POST.get('page_url', request.META.get('HTTP_REFERER', '')),
+        page_title=request.POST.get('page_title', ''),
+        rating=rating,
+        category=request.POST.get('category', 'general'),
+        comment=request.POST.get('comment', ''),
+        user_agent=request.META.get('HTTP_USER_AGENT', '')[:500],
+        session_key=request.session.session_key or '',
+    )
+
+    return render(request, 'core/partials/feedback_thanks.html', {
+        'feedback': feedback,
+    })
+
+
+def feedback_form(request):
+    """
+    Return the expanded feedback form for adding a comment.
+    Used by HTMX when user clicks thumbs down or wants to add details.
+    """
+    return render(request, 'core/partials/feedback_form.html', {
+        'page_url': request.GET.get('page_url', ''),
+        'page_title': request.GET.get('page_title', ''),
+        'initial_rating': request.GET.get('rating', ''),
+    })

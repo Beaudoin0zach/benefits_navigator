@@ -20,4 +20,8 @@ urlpatterns = [
     path('journey/deadline/add/', views.add_deadline, name='add_deadline'),
     path('journey/deadline/<int:pk>/toggle/', views.toggle_deadline, name='toggle_deadline'),
     path('journey/deadline/<int:pk>/delete/', views.delete_deadline, name='delete_deadline'),
+
+    # Feedback
+    path('feedback/submit/', views.submit_feedback, name='submit_feedback'),
+    path('feedback/form/', views.feedback_form, name='feedback_form'),
 ]
