@@ -16,18 +16,26 @@ from core import views
 
 def health_check(request):
     """Health check endpoint for load balancers and monitoring."""
-    from django.db import connection
-    try:
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT 1")
-        db_status = "ok"
-    except Exception:
-        db_status = "error"
+    from core.health import get_full_health_status
 
-    return JsonResponse({
-        "status": "healthy" if db_status == "ok" else "degraded",
-        "database": db_status,
-    })
+    # Quick check for load balancers
+    if request.GET.get('quick') == '1':
+        from django.db import connection
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT 1")
+            db_status = "ok"
+        except Exception:
+            db_status = "error"
+        return JsonResponse({
+            "status": "healthy" if db_status == "ok" else "degraded",
+            "database": db_status,
+        })
+
+    # Full health check
+    health = get_full_health_status()
+    status_code = 200 if health['status'] == 'healthy' else 503
+    return JsonResponse(health, status=status_code)
 from accounts.views import (
     RateLimitedLoginView,
     RateLimitedSignupView,

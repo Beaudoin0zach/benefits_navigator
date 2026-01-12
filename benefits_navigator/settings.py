@@ -175,6 +175,34 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes
 CELERY_TASK_SOFT_TIME_LIMIT = 25 * 60  # 25 minutes
 
+# Celery Beat Schedule for periodic tasks
+from celery.schedules import crontab
+CELERY_BEAT_SCHEDULE = {
+    # Health monitoring
+    'record-health-metrics': {
+        'task': 'core.tasks.record_health_metrics',
+        'schedule': 300,  # every 5 minutes
+    },
+    'check-processing-health': {
+        'task': 'core.tasks.check_processing_health',
+        'schedule': 900,  # every 15 minutes
+    },
+    'cleanup-old-health-metrics': {
+        'task': 'core.tasks.cleanup_old_health_metrics',
+        'schedule': crontab(hour=3, minute=0),  # daily at 3 AM
+    },
+    # Email reminders
+    'send-daily-reminders': {
+        'task': 'core.tasks.send_all_reminders',
+        'schedule': crontab(hour=9, minute=0),  # daily at 9 AM
+    },
+    # Document cleanup
+    'cleanup-old-documents': {
+        'task': 'claims.tasks.cleanup_old_documents',
+        'schedule': crontab(hour=2, minute=0),  # daily at 2 AM
+    },
+}
+
 # ==============================================================================
 # REDIS CONFIGURATION
 # ==============================================================================
