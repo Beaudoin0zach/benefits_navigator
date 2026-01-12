@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ shared.name }} - Shared VA Rating Calculation{% endblock %}
+
+{% block meta_description %}View shared VA disability rating calculation: {{ shared.combined_rounded }}% combined rating{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6">
+        <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+            </svg>
+            <span>Shared Calculation</span>
+        </div>
+        <h1 class="text-3xl font-bold text-gray-900">{{ shared.name }}</h1>
+        <p class="text-gray-600 mt-1">
+            Shared on {{ shared.created_at|date:"F j, Y" }}
+            {% if shared.view_count > 1 %}
+            <span class="text-gray-400">| {{ shared.view_count }} views</span>
+            {% endif %}
+        </p>
+    </div>
+
+    {% if has_ratings %}
+    <!-- Combined Rating Card -->
+    <div class="bg-white shadow-lg rounded-lg p-6 mb-6">
+        <div class="text-center mb-6">
+            <div class="text-6xl font-bold text-blue-600 mb-2">{{ combined_rounded }}%</div>
+            <div class="text-gray-500">Combined VA Rating</div>
+            {% if combined_raw != combined_rounded %}
+            <div class="text-sm text-gray-400 mt-1">
+                (Actual: {{ combined_raw }}% &rarr; rounded to {{ combined_rounded }}%)
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Compensation Estimate -->
+        <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+            <h3 class="font-bold text-green-900 mb-2">Estimated Compensation</h3>
+            <div class="grid grid-cols-2 gap-4 text-center">
+                <div>
+                    <div class="text-2xl font-bold text-green-600">{{ monthly_compensation }}</div>
+                    <div class="text-sm text-green-700">Monthly</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-green-600">{{ annual_compensation }}</div>
+                    <div class="text-sm text-green-700">Annual</div>
+                </div>
+            </div>
+            {% if has_spouse or children_under_18 > 0 or dependent_parents > 0 %}
+            <p class="text-sm text-green-700 mt-3 text-center">
+                Includes:
+                {% if has_spouse %}Spouse{% endif %}
+                {% if children_under_18 > 0 %}{% if has_spouse %}, {% endif %}{{ children_under_18 }} child(ren){% endif %}
+                {% if dependent_parents > 0 %}{% if has_spouse or children_under_18 > 0 %}, {% endif %}{{ dependent_parents }} parent(s){% endif %}
+            </p>
+            {% endif %}
+        </div>
+
+        {% if bilateral_factor > 0 %}
+        <!-- Bilateral Factor -->
+        <div class="bg-purple-50 border border-purple-200 rounded-lg p-3 mb-6">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 text-purple-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span class="text-purple-800">
+                    <strong>Bilateral Factor:</strong> +{{ bilateral_factor }}% applied (10% bonus for paired limbs)
+                </span>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Individual Ratings -->
+        <div class="border-t border-gray-200 pt-4">
+            <h4 class="font-medium text-gray-700 mb-3">Individual Ratings:</h4>
+            <div class="flex flex-wrap gap-2">
+                {% for r in ratings %}
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm {% if r.is_bilateral %}bg-purple-100 text-purple-800{% else %}bg-gray-100 text-gray-800{% endif %}">
+                    {{ r.percentage }}%{% if r.description %} - {{ r.description }}{% endif %}
+                    {% if r.is_bilateral %}<span class="ml-1 text-xs">(B)</span>{% endif %}
+                </span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- VA Math Calculation Steps -->
+    {% if step_by_step %}
+    <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+        <h3 class="font-bold text-gray-900 mb-4">VA Math Calculation Steps</h3>
+        <p class="text-sm text-gray-600 mb-4">
+            The VA uses a special formula to combine multiple disabilities. Each rating is applied to your remaining "healthy" percentage:
+        </p>
+
+        {% for phase in step_by_step %}
+        {% if phase.phase == 'bilateral' %}
+        <div class="mb-4 p-3 bg-purple-50 rounded-lg">
+            <h4 class="font-medium text-purple-900 mb-2">{{ phase.description }}</h4>
+            <div class="text-sm text-purple-700 space-y-1">
+                {% for step in phase.steps %}
+                <div>{{ step.explanation }}</div>
+                {% endfor %}
+                <div class="mt-2 font-medium">
+                    Combined bilateral: {{ phase.combined|floatformat:1 }}%<br>
+                    + 10% bilateral factor: {{ phase.bilateral_factor|floatformat:1 }}%<br>
+                    = {{ phase.total_with_factor|floatformat:1 }}%
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if phase.phase == 'final' %}
+        <div class="space-y-2 text-sm">
+            {% for step in phase.steps %}
+            <div class="flex items-start p-2 {% if forloop.last %}bg-blue-50 rounded{% endif %}">
+                <span class="w-6 h-6 flex items-center justify-center bg-blue-600 text-white text-xs rounded-full mr-2 flex-shrink-0">
+                    {{ step.step }}
+                </span>
+                <div class="flex-1">
+                    <span class="text-gray-700">{{ step.explanation }}</span>
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="mt-4 p-3 bg-gray-100 rounded-lg">
+                <div class="flex justify-between items-center">
+                    <span class="font-medium text-gray-700">Final Combined (raw):</span>
+                    <span class="font-bold">{{ combined_raw }}%</span>
+                </div>
+                <div class="flex justify-between items-center mt-1">
+                    <span class="font-medium text-gray-700">Rounded to nearest 10%:</span>
+                    <span class="font-bold text-blue-600 text-lg">{{ combined_rounded }}%</span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <!-- No Ratings -->
+    <div class="bg-white shadow-md rounded-lg p-8 text-center">
+        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+        </svg>
+        <p class="text-gray-500">No ratings data available</p>
+    </div>
+    {% endif %}
+
+    <!-- Share & Actions -->
+    <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+        <h3 class="font-bold text-gray-900 mb-3">Share This Calculation</h3>
+        <div class="flex items-center gap-2">
+            <input type="text" value="{{ share_url }}" readonly id="share-url"
+                   class="flex-1 px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-600">
+            <button onclick="copyShareUrl()"
+                    class="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                </svg>
+                Copy
+            </button>
+        </div>
+        <p id="copy-feedback" class="text-sm text-green-600 mt-2 hidden">Link copied to clipboard!</p>
+    </div>
+
+    <!-- Try the Calculator -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
+        <h3 class="font-bold text-blue-900 mb-2">Calculate Your Own Rating</h3>
+        <p class="text-blue-700 mb-4">
+            Use our VA Disability Rating Calculator to calculate and share your own combined rating.
+        </p>
+        <a href="{% url 'examprep:rating_calculator' %}"
+           class="inline-block px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">
+            Go to Calculator
+        </a>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <h3 class="font-bold text-yellow-900 mb-2">Disclaimer</h3>
+        <p class="text-sm text-yellow-800">
+            This calculation is for informational purposes only. Actual VA disability compensation
+            may vary based on individual circumstances, effective dates, and current VA compensation rates.
+            This tool uses 2024 compensation rates. For official determinations, consult with a
+            VA-accredited representative or the Department of Veterans Affairs.
+        </p>
+    </div>
+</div>
+
+<script>
+function copyShareUrl() {
+    const urlInput = document.getElementById('share-url');
+    urlInput.select();
+    urlInput.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(urlInput.value).then(() => {
+        const feedback = document.getElementById('copy-feedback');
+        feedback.classList.remove('hidden');
+        setTimeout(() => {
+            feedback.classList.add('hidden');
+        }, 3000);
+    });
+}
+</script>
+{% endblock %}

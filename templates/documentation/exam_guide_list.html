@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}C&P Exam Guides - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <nav class="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
+            <a href="{% url 'documentation:search' %}" class="hover:underline">Documentation</a>
+            <span class="mx-2">/</span>
+            <span class="text-gray-900">C&P Exam Guides</span>
+        </nav>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">C&P Exam Preparation Guides</h1>
+        <p class="text-gray-600">Prepare for your Compensation & Pension examination with condition-specific guides. Learn what to expect and how to best represent your condition.</p>
+    </div>
+
+    <!-- Important Notice -->
+    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6" role="alert">
+        <div class="flex">
+            <svg class="w-5 h-5 text-blue-600 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <div>
+                <p class="font-medium text-blue-900">About C&P Exams</p>
+                <p class="text-sm text-blue-800 mt-1">A Compensation & Pension (C&P) exam is a medical examination ordered by the VA to evaluate your claimed disability. Being prepared helps ensure the examiner accurately captures the full impact of your condition.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter by Category -->
+    <div class="mb-6 bg-white p-4 rounded-lg border border-gray-200">
+        <form method="get" class="flex flex-wrap gap-4 items-center">
+            <label for="category-filter" class="font-medium text-gray-700">Filter by condition type:</label>
+            <select
+                id="category-filter"
+                name="category"
+                class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                onchange="this.form.submit()"
+            >
+                <option value="">All categories</option>
+                {% for value, label in category_choices %}
+                <option value="{{ value }}" {% if category_filter == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            {% if category_filter %}
+            <a href="{% url 'documentation:exam_guide_list' %}" class="text-blue-600 hover:underline text-sm">Clear filter</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Guides by Category -->
+    {% for category_name, guides in grouped_guides.items %}
+    <section class="mb-8" aria-labelledby="category-{{ forloop.counter }}">
+        <h2 id="category-{{ forloop.counter }}" class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+            </svg>
+            {{ category_name }}
+        </h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for guide in guides %}
+            <a href="{{ guide.get_absolute_url }}" class="block p-5 bg-white border border-gray-200 rounded-lg hover:border-green-500 hover:shadow-md transition-all">
+                <div class="flex flex-col h-full">
+                    <div class="flex-grow">
+                        <h3 class="font-semibold text-gray-900 text-lg mb-2">{{ guide.condition_name }}</h3>
+                        <p class="text-sm text-gray-600 line-clamp-3">{{ guide.what_to_expect|truncatewords:25 }}</p>
+                    </div>
+                    <div class="mt-4 flex items-center justify-between">
+                        {% if guide.dbq_form %}
+                        <span class="text-xs text-gray-500">DBQ: {{ guide.dbq_form }}</span>
+                        {% else %}
+                        <span></span>
+                        {% endif %}
+                        <span class="text-green-600 text-sm font-medium inline-flex items-center">
+                            View guide
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% empty %}
+    <div class="text-center py-12 bg-gray-50 rounded-lg">
+        <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg>
+        <h2 class="text-lg font-medium text-gray-900 mb-2">No exam guides found</h2>
+        <p class="text-gray-600">Check back later as we add more condition-specific guides.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

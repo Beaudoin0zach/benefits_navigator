@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }} - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto">
+    <!-- Invitation Card -->
+    <div class="bg-white rounded-lg shadow-md border overflow-hidden">
+        <!-- Header -->
+        <div class="bg-blue-600 px-6 py-8 text-center">
+            <svg class="w-16 h-16 mx-auto text-white mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            <h1 class="text-2xl font-bold text-white">You're Invited!</h1>
+            <p class="text-blue-100 mt-2">Join {{ invitation.organization.name }}</p>
+        </div>
+
+        <!-- Body -->
+        <div class="p-6">
+            {% if email_mismatch %}
+            <!-- Email mismatch warning -->
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                <div class="flex">
+                    <svg class="h-5 w-5 text-yellow-600 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                    <div>
+                        <p class="text-yellow-800 font-medium">Email address mismatch</p>
+                        <p class="text-yellow-700 text-sm mt-1">
+                            This invitation was sent to <strong>{{ invitation.email }}</strong>,
+                            but you're logged in as <strong>{{ request.user.email }}</strong>.
+                        </p>
+                        <p class="text-yellow-700 text-sm mt-2">
+                            You can either log in with the correct account, or accept the invitation with your current account.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Invitation details -->
+            <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                <dl class="space-y-3">
+                    <div class="flex justify-between">
+                        <dt class="text-gray-600">Organization:</dt>
+                        <dd class="font-medium text-gray-900">{{ invitation.organization.name }}</dd>
+                    </div>
+                    <div class="flex justify-between">
+                        <dt class="text-gray-600">Organization Type:</dt>
+                        <dd class="text-gray-900">{{ invitation.organization.get_org_type_display }}</dd>
+                    </div>
+                    <div class="flex justify-between">
+                        <dt class="text-gray-600">Your Role:</dt>
+                        <dd>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                {% if invitation.role == 'admin' %}bg-purple-100 text-purple-800
+                                {% elif invitation.role == 'caseworker' %}bg-blue-100 text-blue-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {{ invitation.get_role_display }}
+                            </span>
+                        </dd>
+                    </div>
+                    {% if invitation.invited_by %}
+                    <div class="flex justify-between">
+                        <dt class="text-gray-600">Invited by:</dt>
+                        <dd class="text-gray-900">{{ invitation.invited_by.full_name|default:invitation.invited_by.email }}</dd>
+                    </div>
+                    {% endif %}
+                </dl>
+            </div>
+
+            <!-- Accept form -->
+            <form method="post">
+                {% csrf_token %}
+
+                <button type="submit"
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded transition inline-flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    {% if email_mismatch %}
+                    Accept as {{ request.user.email }}
+                    {% else %}
+                    Accept Invitation
+                    {% endif %}
+                </button>
+            </form>
+
+            {% if email_mismatch %}
+            <div class="mt-4 text-center">
+                <a href="{% url 'account_logout' %}?next={{ request.path }}" class="text-blue-600 hover:underline text-sm">
+                    Log in with a different account
+                </a>
+            </div>
+            {% endif %}
+
+            <div class="mt-6 pt-6 border-t border-gray-200 text-center">
+                <p class="text-gray-500 text-sm">
+                    By accepting this invitation, you agree to be added to {{ invitation.organization.name }}.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

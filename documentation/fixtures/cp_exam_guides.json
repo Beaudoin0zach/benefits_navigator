@@ -1,0 +1,302 @@
+[
+  {
+    "model": "documentation.cpexamguidecondition",
+    "pk": 1,
+    "fields": {
+      "condition_name": "PTSD",
+      "slug": "ptsd",
+      "category": "mental_health",
+      "dbq_form": "DBQ PTSD",
+      "what_to_expect": "The PTSD C&P exam typically lasts 60-90 minutes and is conducted by a psychologist or psychiatrist. The examiner will ask detailed questions about your traumatic experiences, current symptoms, and how PTSD affects your daily life.\n\nThe exam consists of:\n1. Review of your military and medical records\n2. Discussion of your stressor events (the traumatic experiences)\n3. Assessment of your current symptoms using standardized criteria\n4. Evaluation of how symptoms impact work, relationships, and daily activities\n5. Possible psychological testing (questionnaires)",
+      "key_questions": ["Can you describe the traumatic event(s) you experienced?", "When did you first notice symptoms after the event?", "How often do you have nightmares or flashbacks?", "Do you avoid certain places, people, or situations that remind you of the trauma?", "How has your sleep been affected?", "Do you experience hypervigilance or an exaggerated startle response?", "How do your symptoms affect your work performance?", "How have your relationships been impacted?", "Do you have thoughts of self-harm or suicide?", "What treatments have you tried, and how effective were they?"],
+      "documentation_needed": ["Service treatment records showing any mental health treatment", "VA or private treatment records for PTSD", "Buddy statements from fellow service members who witnessed events or your symptoms", "Personal statement describing your stressors and symptoms", "Any documentation of the stressor event (news articles, unit records, etc.)", "List of current medications with dosages", "Records from any inpatient psychiatric treatment"],
+      "how_to_prepare": "Before your exam:\n\n1. **Review your stressor statement** - Be prepared to discuss the traumatic events in detail. You don't need to relive every moment, but the examiner needs specifics.\n\n2. **Document your symptoms** - Keep a log of nightmares, flashbacks, panic attacks, and avoidance behaviors for 2-4 weeks before the exam.\n\n3. **Note your worst days** - VA rates based on your overall condition, not your best days. Be honest about your worst symptoms.\n\n4. **Prepare examples** - Think of specific examples of how PTSD affects your work, relationships, and daily activities.\n\n5. **Bring support** - You can bring a family member or friend who can describe how your symptoms affect you.\n\n6. **Get adequate sleep** - Being well-rested helps you communicate clearly, but don't downplay sleep problems you actually have.",
+      "tips": "- Be completely honest about your symptoms - don't minimize or exaggerate\n- Describe your WORST days, not your best days\n- If you don't remember something, say so - don't guess\n- Take breaks if you need them - it's okay to ask for a pause\n- Bring a written list of symptoms if you're worried about forgetting\n- If the examiner asks about suicidal thoughts, be honest - this is confidential and helps determine severity\n- Mention ALL symptoms, even ones you think are minor\n- Describe how symptoms affect your JOB specifically - missed work, conflicts, difficulty concentrating\n- Don't be afraid to show emotion - this is expected when discussing trauma",
+      "red_flags": "- Arriving intoxicated or under the influence\n- Being hostile or uncooperative with the examiner\n- Claiming symptoms you don't actually have (this can result in denial)\n- Saying 'I'm fine' or minimizing symptoms out of habit\n- Not mentioning symptoms because you're embarrassed\n- Providing inconsistent information compared to your records\n- Refusing to discuss your stressors at all",
+      "rating_criteria_summary": "PTSD is rated under the General Rating Formula for Mental Disorders (38 CFR § 4.130, Diagnostic Code 9411):\n\n**0%** - Diagnosis but symptoms not severe enough to interfere with functioning\n\n**10%** - Occupational and social impairment due to mild or transient symptoms\n\n**30%** - Occupational and social impairment with occasional decrease in work efficiency\n\n**50%** - Reduced reliability and productivity; difficulty establishing relationships\n\n**70%** - Deficiencies in most areas (work, family, judgment, thinking, mood); difficulty adapting to stressful circumstances\n\n**100%** - Total occupational and social impairment; gross impairment in thought processes, persistent danger to self or others",
+      "is_published": true,
+      "created_at": "2026-01-11T19:00:00Z",
+      "updated_at": "2026-01-11T19:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.cpexamguidecondition",
+    "pk": 2,
+    "fields": {
+      "condition_name": "Major Depressive Disorder",
+      "slug": "major-depressive-disorder",
+      "category": "mental_health",
+      "dbq_form": "DBQ Mental Disorders",
+      "what_to_expect": "The depression C&P exam is typically 45-60 minutes with a psychologist or psychiatrist. The examiner will assess your mood, thought patterns, and how depression affects your daily functioning.\n\nThe exam includes:\n1. Review of your medical and military history\n2. Discussion of when depression symptoms began\n3. Assessment of current symptoms (mood, sleep, appetite, concentration, etc.)\n4. Evaluation of functional impairment\n5. Discussion of treatments you've tried",
+      "key_questions": ["When did you first notice symptoms of depression?", "How would you describe your mood on most days?", "How has your sleep been affected?", "Have you experienced changes in appetite or weight?", "Do you have difficulty concentrating or making decisions?", "Have you lost interest in activities you used to enjoy?", "Do you have feelings of worthlessness or excessive guilt?", "Have you had thoughts of death or suicide?", "How does depression affect your ability to work?", "How are your relationships with family and friends?"],
+      "documentation_needed": ["Mental health treatment records (VA and private)", "Service treatment records showing any mental health issues", "List of all psychiatric medications with dosages and effectiveness", "Records of any hospitalizations for depression", "Buddy statements describing observable symptoms", "Personal statement about how depression affects daily life", "Employment records showing impact on work (if applicable)"],
+      "how_to_prepare": "Before your exam:\n\n1. **Track your symptoms** - Note your mood, sleep patterns, and energy levels for 2-4 weeks\n\n2. **List your medications** - Include dosages and whether they help\n\n3. **Document functional impact** - How does depression affect work, chores, hygiene, relationships?\n\n4. **Prepare specific examples** - Days you couldn't get out of bed, activities you've stopped doing, relationship problems\n\n5. **Be honest about dark thoughts** - If you've had suicidal ideation, tell the examiner - this is confidential and clinically important",
+      "tips": "- Describe your typical day, especially on bad days\n- Don't say 'I'm fine' out of habit - describe actual symptoms\n- Mention ALL symptoms: fatigue, concentration problems, social withdrawal\n- Be specific about how long symptoms have lasted\n- If you've had suicidal thoughts, be honest - this affects your rating\n- Discuss how depression affects your job performance\n- Bring someone who can describe your symptoms from their perspective",
+      "red_flags": "- Minimizing symptoms to appear 'strong'\n- Claiming to feel fine when your records show otherwise\n- Not mentioning suicidal ideation when it's occurred\n- Being inconsistent with your medical records\n- Refusing to discuss your symptoms",
+      "rating_criteria_summary": "Depression is rated under the General Rating Formula for Mental Disorders (38 CFR § 4.130, DC 9434):\n\n**0%** - Diagnosis but symptoms controlled by medication\n\n**10%** - Mild symptoms with transient impact on functioning\n\n**30%** - Occasional decrease in work efficiency; intermittent periods of inability to perform\n\n**50%** - Reduced reliability; difficulty maintaining effective relationships\n\n**70%** - Deficiencies in most areas; suicidal ideation; difficulty adapting\n\n**100%** - Total impairment; persistent danger of hurting self or others",
+      "is_published": true,
+      "created_at": "2026-01-11T19:00:00Z",
+      "updated_at": "2026-01-11T19:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.cpexamguidecondition",
+    "pk": 3,
+    "fields": {
+      "condition_name": "Anxiety Disorder",
+      "slug": "anxiety-disorder",
+      "category": "mental_health",
+      "dbq_form": "DBQ Mental Disorders",
+      "what_to_expect": "The anxiety C&P exam typically lasts 45-60 minutes. A psychologist or psychiatrist will evaluate your anxiety symptoms, triggers, and how they impact your daily life.\n\nThe examiner will:\n1. Review your military and medical records\n2. Ask about when anxiety symptoms began\n3. Assess the frequency and severity of anxiety attacks\n4. Evaluate avoidance behaviors and triggers\n5. Determine impact on work and relationships",
+      "key_questions": ["When did you first notice anxiety symptoms?", "What triggers your anxiety?", "How often do you experience anxiety attacks or panic attacks?", "What physical symptoms do you experience (racing heart, sweating, trembling)?", "Do you avoid certain situations due to anxiety?", "How does anxiety affect your sleep?", "Can you concentrate at work when anxious?", "How has anxiety affected your relationships?", "What coping mechanisms or treatments have you tried?", "Do you take medication for anxiety? How effective is it?"],
+      "documentation_needed": ["Mental health treatment records", "Service treatment records", "List of anxiety medications and their effectiveness", "Documentation of panic attacks or ER visits for anxiety", "Buddy statements about observed anxiety symptoms", "Personal statement describing anxiety and its impact"],
+      "how_to_prepare": "Before your exam:\n\n1. **Track anxiety episodes** - Note when they occur, how long they last, and what triggers them\n\n2. **List physical symptoms** - Racing heart, sweating, trembling, shortness of breath\n\n3. **Document avoidance behaviors** - Places or situations you avoid because of anxiety\n\n4. **Note impact on daily life** - How anxiety affects work, driving, social activities\n\n5. **Prepare examples** - Specific incidents where anxiety significantly impacted you",
+      "tips": "- Be specific about frequency of anxiety episodes\n- Describe physical symptoms in detail\n- Explain what you avoid due to anxiety\n- Mention if anxiety has caused you to miss work\n- Discuss how it affects your ability to be in crowds or social situations\n- Be honest about panic attacks, even if embarrassing\n- Describe your worst episodes, not your best days",
+      "red_flags": "- Saying anxiety 'isn't that bad' when records show otherwise\n- Not mentioning panic attacks you've had\n- Being vague about symptoms\n- Claiming anxiety doesn't affect work when it does\n- Inconsistency with medical records",
+      "rating_criteria_summary": "Anxiety disorders are rated under the General Rating Formula for Mental Disorders:\n\n**0%** - Symptoms controlled by medication\n\n**10%** - Mild or transient symptoms\n\n**30%** - Occasional decrease in work efficiency\n\n**50%** - Reduced reliability and productivity; difficulty with relationships\n\n**70%** - Deficiencies in most areas; near-continuous panic or depression\n\n**100%** - Total occupational and social impairment",
+      "is_published": true,
+      "created_at": "2026-01-11T19:00:00Z",
+      "updated_at": "2026-01-11T19:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.cpexamguidecondition",
+    "pk": 4,
+    "fields": {
+      "condition_name": "Sleep Apnea",
+      "slug": "sleep-apnea",
+      "category": "respiratory",
+      "dbq_form": "DBQ Sleep Apnea",
+      "what_to_expect": "The sleep apnea C&P exam is usually brief (15-30 minutes) since the condition is primarily diagnosed through sleep studies. The examiner will review your sleep study results and ask about your treatment.\n\nThe exam focuses on:\n1. Confirming your diagnosis through sleep study records\n2. Determining if you use a CPAP or other breathing device\n3. Assessing how well treatment is working\n4. Establishing the connection to your military service",
+      "key_questions": ["When were you diagnosed with sleep apnea?", "Have you had a sleep study? What were the results?", "Do you use a CPAP machine?", "How many hours per night do you use the CPAP?", "Do you still experience daytime sleepiness despite treatment?", "How does sleep apnea affect your daily energy levels?", "When did you first notice symptoms (snoring, gasping, fatigue)?", "Did you have sleep problems during military service?", "Has your weight changed since military service?"],
+      "documentation_needed": ["Sleep study (polysomnography) results showing AHI score", "CPAP prescription and compliance records", "Service treatment records mentioning sleep issues or fatigue", "Buddy statements about snoring or breathing issues during service", "Any in-service documentation of sleep problems", "Current treatment records"],
+      "how_to_prepare": "Before your exam:\n\n1. **Get your sleep study results** - Know your AHI (Apnea-Hypopnea Index) score\n\n2. **Bring CPAP compliance data** - Most modern CPAPs track usage; bring a printout\n\n3. **Document service connection** - Gather evidence of in-service symptoms or onset\n\n4. **Note ongoing symptoms** - Even with CPAP, do you still have fatigue or other symptoms?\n\n5. **Get buddy statements** - Fellow service members who noticed snoring or witnessed apnea episodes",
+      "tips": "- Bring your sleep study results - this is the key evidence\n- Know your AHI score (number of apneas per hour)\n- If you use CPAP, demonstrate consistent usage (compliance data)\n- Mention if you still have symptoms despite CPAP use\n- Explain how you first noticed symptoms during or after service\n- Buddy statements about snoring during service are very helpful\n- If you gained weight in service, document that connection",
+      "red_flags": "- Not having a sleep study on record\n- Inconsistent CPAP usage (affects rating)\n- Claiming to use CPAP when compliance data shows otherwise\n- No evidence connecting sleep apnea to service",
+      "rating_criteria_summary": "Sleep Apnea is rated under 38 CFR § 4.97, Diagnostic Code 6847:\n\n**0%** - Asymptomatic but with documented sleep disorder breathing\n\n**30%** - Persistent daytime hypersomnolence (excessive sleepiness)\n\n**50%** - Requires use of a breathing assistance device such as CPAP\n\n**100%** - Chronic respiratory failure with carbon dioxide retention, cor pulmonale, or requires tracheostomy\n\n**Key point:** If you use a CPAP machine as prescribed, you qualify for at least 50%.",
+      "is_published": true,
+      "created_at": "2026-01-11T19:00:00Z",
+      "updated_at": "2026-01-11T19:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.cpexamguidecondition",
+    "pk": 5,
+    "fields": {
+      "condition_name": "Tinnitus",
+      "slug": "tinnitus",
+      "category": "auditory",
+      "dbq_form": "DBQ Ear Conditions",
+      "what_to_expect": "The tinnitus C&P exam is typically brief (15-20 minutes) and straightforward. The examiner will ask about your symptoms and their impact on your life.\n\nThe exam includes:\n1. Questions about when tinnitus started\n2. Description of the sounds you hear\n3. Assessment of severity and impact on daily life\n4. Connection to noise exposure in service\n5. Review of audiological records",
+      "key_questions": ["When did you first notice ringing in your ears?", "What does the sound sound like (ringing, buzzing, hissing)?", "Is it constant or intermittent?", "Which ear is affected, or is it both?", "How does tinnitus affect your sleep?", "Does it interfere with your ability to concentrate?", "What noise exposure did you have in service?", "Did you use hearing protection during service?", "Have you had any treatment for tinnitus?"],
+      "documentation_needed": ["Service treatment records showing hearing tests or complaints", "Documentation of noise exposure (MOS, duty stations, combat)", "Audiological evaluations", "Personal statement describing noise exposure and onset", "Buddy statements about shared noise exposure", "Current treatment records"],
+      "how_to_prepare": "Before your exam:\n\n1. **Document noise exposure** - List all sources of loud noise during service (weapons, machinery, aircraft, explosions)\n\n2. **Establish timeline** - When did you first notice symptoms? During or after service?\n\n3. **Describe the sound** - Is it ringing, buzzing, hissing? Constant or comes and goes?\n\n4. **Note the impact** - Does it affect sleep? Concentration? Mood?\n\n5. **Get supporting statements** - Buddies who shared the same noise exposure",
+      "tips": "- Be specific about noise exposure in service (weapons training, flight line, combat)\n- Describe how the tinnitus sounds to you\n- Explain if it's constant or intermittent\n- Mention impact on sleep and concentration\n- Tinnitus is often paired with hearing loss claims\n- The exam is usually straightforward - just be honest and consistent\n- Recurrent tinnitus qualifies for the same rating as constant tinnitus",
+      "red_flags": "- No documented noise exposure during service\n- Claiming tinnitus started before service\n- Inconsistent description of symptoms\n- Denying recreational noise exposure that could be a factor",
+      "rating_criteria_summary": "Tinnitus is rated under 38 CFR § 4.87, Diagnostic Code 6260:\n\n**10%** - Recurrent tinnitus\n\n**Important notes:**\n- 10% is the maximum schedular rating for tinnitus\n- Only ONE 10% rating is assigned, regardless of whether it affects one or both ears\n- This is one of the most commonly service-connected conditions\n- Often claimed alongside hearing loss",
+      "is_published": true,
+      "created_at": "2026-01-11T19:00:00Z",
+      "updated_at": "2026-01-11T19:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.cpexamguidecondition",
+    "pk": 6,
+    "fields": {
+      "condition_name": "Hearing Loss",
+      "slug": "hearing-loss",
+      "category": "auditory",
+      "dbq_form": "DBQ Hearing Loss and Tinnitus",
+      "what_to_expect": "The hearing loss C&P exam includes an audiological evaluation lasting about 30-45 minutes. You'll be tested in a soundproof booth.\n\nThe exam includes:\n1. Pure tone audiometry (testing hearing at different frequencies)\n2. Speech recognition testing (Maryland CNC word list)\n3. Review of your noise exposure history\n4. Comparison with in-service hearing tests\n5. Physical examination of your ears",
+      "key_questions": ["What noise exposure did you have during military service?", "Did you use hearing protection?", "When did you first notice hearing difficulties?", "Do you have trouble understanding conversations?", "Do you need to turn up the TV or radio volume?", "Do you have difficulty hearing in noisy environments?", "Have you had any ear injuries or infections?", "Do you have any recreational noise exposure (hunting, concerts)?"],
+      "documentation_needed": ["In-service audiograms (entrance and exit physicals)", "Documentation of military noise exposure (MOS, combat, equipment)", "Post-service audiograms", "Buddy statements about shared noise exposure", "Personal statement about noise exposure and hearing difficulties"],
+      "how_to_prepare": "Before your exam:\n\n1. **Gather service records** - Especially entrance and exit audiograms showing threshold shifts\n\n2. **Document noise exposure** - List specific sources: weapons, vehicles, aircraft, explosions\n\n3. **Don't wear hearing aids** - If you have them, the examiner will test without them\n\n4. **Rest your ears** - Avoid loud noise for 24 hours before the exam\n\n5. **Be honest during testing** - Only respond when you actually hear the tone",
+      "tips": "- VA uses specific criteria - puretone thresholds and speech recognition scores\n- An audiogram must meet certain thresholds to qualify as a disability\n- Be honest during the hearing test - respond only when you actually hear the tone\n- Don't guess or anticipate sounds\n- Mention all noise exposure sources during service\n- If your hearing has worsened since service, document the progression\n- Comparing entrance and exit audiograms is key evidence",
+      "red_flags": "- Inconsistent responses during the hearing test\n- Entrance audiogram showing pre-existing hearing loss\n- Significant recreational noise exposure not disclosed\n- Responses that don't match the pattern expected for your claimed condition",
+      "rating_criteria_summary": "Hearing loss is rated under 38 CFR § 4.85-4.86 using Tables VI, VIA, and VII:\n\nRatings are based on:\n1. **Puretone threshold average** (average of 1000, 2000, 3000, 4000 Hz)\n2. **Speech recognition score** (Maryland CNC test)\n\nThese two numbers create a Roman numeral for each ear (I through XI), which are then cross-referenced in Table VII for the rating percentage.\n\n**Rating range:** 0% to 100%\n\n**Note:** Hearing must meet specific thresholds to qualify. Mild hearing loss may not qualify for a compensable rating.",
+      "is_published": true,
+      "created_at": "2026-01-11T19:00:00Z",
+      "updated_at": "2026-01-11T19:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.cpexamguidecondition",
+    "pk": 7,
+    "fields": {
+      "condition_name": "Lumbar Spine (Low Back)",
+      "slug": "lumbar-spine",
+      "category": "musculoskeletal",
+      "dbq_form": "DBQ Back (Thoracolumbar Spine)",
+      "what_to_expect": "The back C&P exam typically lasts 30-45 minutes and includes both an interview and physical examination.\n\nThe exam includes:\n1. Review of your medical history and service records\n2. Discussion of your back injury and symptoms\n3. Physical examination and range of motion testing\n4. Assessment of pain, including flare-ups\n5. Neurological testing if radiculopathy is claimed",
+      "key_questions": ["How did you injure your back?", "When did the injury occur during service?", "Where exactly is your pain located?", "How would you rate your pain on a scale of 1-10?", "Does the pain radiate into your legs?", "Do you have numbness or tingling?", "What activities make your pain worse?", "How does your back condition affect your daily activities?", "Do you experience flare-ups? How often and how severe?", "What treatments have you tried?"],
+      "documentation_needed": ["Service treatment records documenting back injury or treatment", "Current medical records and imaging (X-rays, MRI)", "Documentation of any surgeries", "Physical therapy records", "Buddy statements about the injury or observed limitations", "Personal statement describing the injury and current symptoms"],
+      "how_to_prepare": "Before your exam:\n\n1. **Know your injury history** - Be ready to describe when and how the injury occurred\n\n2. **Document your worst days** - VA rates based on your overall condition, including flare-ups\n\n3. **List your limitations** - What can't you do because of your back? Bending, lifting, standing, sitting?\n\n4. **Note flare-up frequency** - How often do they occur? How long do they last? What triggers them?\n\n5. **Don't take extra pain medication** - You want the examiner to see your typical condition\n\n6. **Be prepared for range of motion testing** - You'll be asked to bend forward, backward, and side to side",
+      "tips": "- Describe your pain honestly - don't minimize it\n- Report your WORST days, not your best days\n- During range of motion testing, stop when pain begins - don't push through\n- Mention if pain increases with repetitive movement\n- Describe functional loss - what CAN'T you do because of your back?\n- If you have radiculopathy (leg pain/numbness), make sure to mention it\n- Flare-ups matter - describe their frequency, duration, and severity\n- Mention if you use assistive devices (cane, back brace)",
+      "red_flags": "- Pushing through pain during range of motion testing\n- Saying pain is 10/10 while appearing comfortable\n- No documented in-service injury\n- Inconsistency between reported symptoms and observed behavior",
+      "rating_criteria_summary": "Back conditions are rated under the General Rating Formula for Diseases and Injuries of the Spine (38 CFR § 4.71a):\n\n**10%** - Forward flexion greater than 60° but not greater than 85°, OR combined range of motion greater than 120° but not greater than 235°\n\n**20%** - Forward flexion greater than 30° but not greater than 60°, OR combined ROM greater than 120°, OR muscle spasm/guarding severe enough to result in abnormal gait or spinal contour\n\n**40%** - Forward flexion 30° or less, OR favorable ankylosis\n\n**50%** - Unfavorable ankylosis of the entire thoracolumbar spine\n\n**100%** - Unfavorable ankylosis of the entire spine\n\n**Note:** Radiculopathy (nerve pain) can be rated separately for each affected extremity.",
+      "is_published": true,
+      "created_at": "2026-01-11T19:00:00Z",
+      "updated_at": "2026-01-11T19:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.cpexamguidecondition",
+    "pk": 8,
+    "fields": {
+      "condition_name": "Cervical Spine (Neck)",
+      "slug": "cervical-spine",
+      "category": "musculoskeletal",
+      "dbq_form": "DBQ Neck (Cervical Spine)",
+      "what_to_expect": "The neck C&P exam is similar to the back exam, lasting about 30-45 minutes with both interview and physical components.\n\nThe exam includes:\n1. Medical history review\n2. Discussion of injury and current symptoms\n3. Range of motion testing (flexion, extension, rotation)\n4. Neurological assessment if upper extremity symptoms exist\n5. Palpation for muscle spasm or tenderness",
+      "key_questions": ["How did you injure your neck?", "When did this occur during service?", "Where is the pain located?", "Does pain radiate into your arms or hands?", "Do you have numbness or tingling in your arms?", "Do you have headaches related to your neck condition?", "What activities aggravate your neck pain?", "Do you experience flare-ups?", "What treatments have you received?"],
+      "documentation_needed": ["Service treatment records showing neck injury or treatment", "Current imaging (X-rays, MRI of cervical spine)", "Treatment records documenting ongoing care", "Physical therapy records", "Buddy statements about the injury", "Personal statement describing injury and limitations"],
+      "how_to_prepare": "Before your exam:\n\n1. **Document your injury** - Know exactly when and how it happened\n\n2. **Track your symptoms** - Pain levels, flare-ups, radiating symptoms\n\n3. **List functional limitations** - Difficulty driving, looking up/down, computer work\n\n4. **Note associated symptoms** - Headaches, arm pain/numbness, hand weakness\n\n5. **Don't overmedicate before the exam** - Show your typical condition",
+      "tips": "- Stop range of motion testing when pain begins\n- Mention if movement causes pain to radiate into arms\n- Describe how neck pain affects work, driving, sleeping\n- Report headaches if they're related to your neck condition\n- Mention numbness/tingling in arms or hands (radiculopathy)\n- Describe flare-ups and what triggers them\n- Bring imaging results showing degenerative changes",
+      "red_flags": "- Full range of motion but claiming severe pain\n- No in-service documentation of neck problems\n- Inconsistency between claimed severity and behavior\n- Not mentioning neurological symptoms that are in your records",
+      "rating_criteria_summary": "Cervical spine conditions are rated under the General Rating Formula for Diseases and Injuries of the Spine:\n\n**10%** - Forward flexion greater than 30° but not greater than 40°, OR combined ROM greater than 170° but not greater than 335°\n\n**20%** - Forward flexion greater than 15° but not greater than 30°, OR combined ROM not greater than 170°, OR muscle spasm/guarding causing abnormal gait or contour\n\n**30%** - Forward flexion 15° or less, OR favorable ankylosis\n\n**40%** - Unfavorable ankylosis of the entire cervical spine\n\n**100%** - Unfavorable ankylosis of the entire spine\n\n**Note:** Upper extremity radiculopathy is rated separately.",
+      "is_published": true,
+      "created_at": "2026-01-11T19:00:00Z",
+      "updated_at": "2026-01-11T19:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.cpexamguidecondition",
+    "pk": 9,
+    "fields": {
+      "condition_name": "Knee Condition",
+      "slug": "knee-condition",
+      "category": "musculoskeletal",
+      "dbq_form": "DBQ Knee and Lower Leg",
+      "what_to_expect": "The knee C&P exam typically takes 30-45 minutes and involves both discussion and physical examination.\n\nThe exam includes:\n1. Review of your injury history\n2. Range of motion testing (flexion and extension)\n3. Stability testing (ligament tests)\n4. Assessment of any instability or locking\n5. Review of imaging studies",
+      "key_questions": ["How did you injure your knee?", "When did this happen during service?", "Which knee is affected (or both)?", "Do you have pain, swelling, or stiffness?", "Does your knee give way or feel unstable?", "Does your knee lock up?", "Can you fully bend and straighten your knee?", "Do you have difficulty with stairs, kneeling, or squatting?", "Have you had any knee surgeries?", "Do you use a brace or other assistive device?"],
+      "documentation_needed": ["Service treatment records documenting knee injury", "Current imaging (X-rays, MRI)", "Surgical records if applicable", "Physical therapy records", "Records of any injections or treatments", "Documentation of assistive devices (brace, cane)"],
+      "how_to_prepare": "Before your exam:\n\n1. **Know your injury history** - Be specific about when and how the injury occurred\n\n2. **Document instability** - Does your knee give way? How often?\n\n3. **Track flare-ups** - When does pain increase? What triggers it?\n\n4. **Note functional limitations** - Stairs, squatting, kneeling, prolonged standing\n\n5. **Bring your brace** - If you use one, wear it or bring it to show the examiner",
+      "tips": "- During range of motion testing, stop when you feel pain - don't push through\n- Mention if pain increases with repetitive movement\n- Report instability honestly - the examiner will test this\n- Describe grinding, popping, or locking sensations\n- Mention swelling, especially after activity\n- Describe activities you can no longer do\n- If you had surgery, explain what was done and current symptoms\n- Both knees can be rated separately if both are service-connected",
+      "red_flags": "- Claiming instability when physical tests show stable knee\n- Full range of motion but claiming inability to bend knee\n- No documented in-service knee problems\n- Wearing a brace but never documented as needing one",
+      "rating_criteria_summary": "Knee conditions can be rated under several diagnostic codes:\n\n**Limitation of Flexion (DC 5260):**\n- 0%: Flexion limited to 60°\n- 10%: Flexion limited to 45°\n- 20%: Flexion limited to 30°\n- 30%: Flexion limited to 15°\n\n**Limitation of Extension (DC 5261):**\n- 0%: Extension limited to 5°\n- 10%: Extension limited to 10°\n- 20%: Extension limited to 15°\n- 30%: Extension limited to 20°\n- 40%: Extension limited to 30°\n- 50%: Extension limited to 45°\n\n**Instability (DC 5257):**\n- 10%: Slight instability\n- 20%: Moderate instability\n- 30%: Severe instability\n\n**Note:** Limitation of motion and instability can be rated separately for the same knee (\"separate ratings\").",
+      "is_published": true,
+      "created_at": "2026-01-11T19:00:00Z",
+      "updated_at": "2026-01-11T19:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.cpexamguidecondition",
+    "pk": 10,
+    "fields": {
+      "condition_name": "Shoulder Condition",
+      "slug": "shoulder-condition",
+      "category": "musculoskeletal",
+      "dbq_form": "DBQ Shoulder and Arm",
+      "what_to_expect": "The shoulder C&P exam takes about 30-45 minutes and includes a physical examination with range of motion testing.\n\nThe exam includes:\n1. Medical history review\n2. Range of motion testing (flexion, abduction, rotation)\n3. Strength testing\n4. Special tests for impingement and rotator cuff\n5. Review of imaging studies",
+      "key_questions": ["How did you injure your shoulder?", "Which shoulder is affected?", "Is this your dominant arm?", "Can you raise your arm overhead?", "Do you have pain reaching behind your back?", "Does your shoulder feel weak?", "Do you have difficulty sleeping on that side?", "Have you had any shoulder surgeries?", "What activities are limited by your shoulder condition?"],
+      "documentation_needed": ["Service treatment records documenting shoulder injury", "Current imaging (X-rays, MRI)", "Surgical records if applicable", "Physical therapy records", "Documentation of treatments (injections, etc.)"],
+      "how_to_prepare": "Before your exam:\n\n1. **Document your injury** - When and how did it happen?\n\n2. **Know which shoulder** - Is it your dominant or non-dominant arm? (ratings differ)\n\n3. **List functional limitations** - Reaching overhead, behind back, lifting\n\n4. **Track pain patterns** - When is it worst? What movements cause pain?\n\n5. **Note sleep impact** - Many shoulder conditions make sleeping difficult",
+      "tips": "- Dominant arm gets a higher rating than non-dominant for the same limitation\n- Stop range of motion when pain begins\n- Mention if repetitive movement increases pain\n- Describe specific activities you can't do (reaching overhead, carrying)\n- If you've had surgery, explain what was done and current symptoms\n- Mention if shoulder pain affects your sleep\n- Report any weakness or instability",
+      "red_flags": "- Claiming inability to raise arm when records show otherwise\n- Inconsistency between stated limitations and observed behavior\n- No documented in-service shoulder injury\n- Refusing to attempt range of motion testing",
+      "rating_criteria_summary": "Shoulder conditions are rated under 38 CFR § 4.71a:\n\n**Limitation of Arm Motion (DC 5201):**\n\nMajor (dominant) / Minor arm:\n- 20% / 20%: At shoulder level (90°)\n- 30% / 20%: Midway between side and shoulder level\n- 40% / 30%: Limited to 25° from side\n\n**Impairment of Humerus (DC 5202):**\n- Ratings range from 20% to 80% depending on severity\n\n**Impairment of Clavicle/Scapula (DC 5203):**\n- 10%: Malunion or nonunion without loose movement\n- 20%: Nonunion with loose movement or dislocation\n\n**Note:** The higher rating is given for the dominant (major) arm.",
+      "is_published": true,
+      "created_at": "2026-01-11T19:00:00Z",
+      "updated_at": "2026-01-11T19:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.cpexamguidecondition",
+    "pk": 11,
+    "fields": {
+      "condition_name": "Migraine Headaches",
+      "slug": "migraine-headaches",
+      "category": "neurological",
+      "dbq_form": "DBQ Headaches (including Migraine)",
+      "what_to_expect": "The migraine C&P exam typically lasts 20-30 minutes. The examiner will focus on the frequency and severity of your headaches and their impact on your ability to function.\n\nThe exam includes:\n1. Review of your headache history\n2. Discussion of frequency, duration, and severity\n3. Assessment of prostrating attacks\n4. Evaluation of impact on work and daily activities\n5. Review of treatments and their effectiveness",
+      "key_questions": ["How often do you get migraines?", "How long do they typically last?", "What symptoms accompany your migraines (aura, nausea, light sensitivity)?", "What triggers your migraines?", "Do your migraines force you to lie down in a dark room?", "How many days per month do you miss work due to migraines?", "What medications do you take for migraines?", "How effective are your treatments?", "When did you first start getting migraines?"],
+      "documentation_needed": ["Service treatment records showing headache treatment", "Current treatment records documenting frequency", "Headache diary or log (highly recommended)", "List of medications tried and their effectiveness", "Documentation of missed work due to migraines", "Buddy statements about observed migraine episodes"],
+      "how_to_prepare": "Before your exam:\n\n1. **Keep a headache diary** - Track dates, duration, severity, and what you had to do (lie down, leave work)\n\n2. **Document prostrating attacks** - These are migraines severe enough to force you to stop what you're doing\n\n3. **Calculate monthly frequency** - How many migraines per month? How many prostrating?\n\n4. **Track economic impact** - Days of work missed, reduced productivity\n\n5. **List all treatments** - Medications, injections, lifestyle changes and their effectiveness",
+      "tips": "- A headache diary is extremely valuable evidence\n- 'Prostrating' means the headache is severe enough that you must stop activities and rest\n- Be specific about frequency - 'a few times a month' is vague\n- Mention ALL symptoms: aura, nausea, vomiting, light/sound sensitivity\n- Document how migraines affect your work productivity\n- If migraines cause you to miss work, quantify how many days per month\n- Mention if migraines have worsened over time",
+      "red_flags": "- Vague descriptions of frequency ('sometimes' vs. '4-6 times per month')\n- No treatment records despite claiming severe migraines\n- Claiming daily migraines with no documentation\n- Inconsistency between claimed severity and ability to function",
+      "rating_criteria_summary": "Migraines are rated under 38 CFR § 4.124a, Diagnostic Code 8100:\n\n**0%** - Less frequent attacks\n\n**10%** - Characteristic prostrating attacks averaging one in 2 months over the last several months\n\n**30%** - Characteristic prostrating attacks occurring on average once a month over the last several months\n\n**50%** - Very frequent, completely prostrating and prolonged attacks productive of severe economic inadaptability\n\n**Key terms:**\n- 'Prostrating' = severe enough to force you to stop activities\n- 'Severe economic inadaptability' = significant impact on ability to work",
+      "is_published": true,
+      "created_at": "2026-01-11T19:00:00Z",
+      "updated_at": "2026-01-11T19:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.cpexamguidecondition",
+    "pk": 12,
+    "fields": {
+      "condition_name": "Traumatic Brain Injury (TBI)",
+      "slug": "traumatic-brain-injury",
+      "category": "neurological",
+      "dbq_form": "DBQ TBI",
+      "what_to_expect": "The TBI C&P exam is comprehensive, typically lasting 60-90 minutes. It involves cognitive testing, neurological examination, and detailed symptom assessment.\n\nThe exam includes:\n1. Review of the traumatic event(s)\n2. Cognitive assessment (memory, concentration, processing speed)\n3. Neurological examination\n4. Assessment of physical, emotional, and cognitive symptoms\n5. Review of imaging studies (CT, MRI)",
+      "key_questions": ["Describe the event(s) that caused your TBI", "Did you lose consciousness? For how long?", "Were you disoriented or confused after the event?", "Do you have memory problems?", "Do you have difficulty concentrating?", "Do you experience headaches?", "Are you sensitive to light or noise?", "Have you noticed personality changes?", "Do you have balance problems or dizziness?", "How does TBI affect your work performance?"],
+      "documentation_needed": ["Service treatment records documenting the TBI event", "Records showing loss of consciousness or altered mental status", "Brain imaging (CT, MRI)", "Neuropsychological testing results", "Current treatment records", "Buddy statements about the event and your symptoms", "Documentation of cognitive rehabilitation"],
+      "how_to_prepare": "Before your exam:\n\n1. **Document the event** - Be prepared to describe exactly what happened\n\n2. **Note all symptoms** - Memory issues, headaches, mood changes, balance problems, sleep issues\n\n3. **Track cognitive difficulties** - Examples of memory lapses, concentration problems, word-finding difficulties\n\n4. **List functional impacts** - How does TBI affect work, relationships, daily tasks?\n\n5. **Gather witness statements** - People who knew you before and after can describe changes",
+      "tips": "- TBI is rated based on 10 different facets of impairment\n- Be specific about what happened during the traumatic event\n- Describe ALL current symptoms, even seemingly minor ones\n- Memory and concentration problems are common - give specific examples\n- Mention emotional/behavioral changes (irritability, depression, anxiety)\n- Headaches related to TBI can sometimes be rated separately\n- If you have multiple TBI events, describe each one\n- Cognitive testing during the exam is important - do your best but be honest",
+      "red_flags": "- No documented head injury during service\n- Claiming loss of consciousness with no medical documentation\n- Performing well on cognitive tests while claiming severe impairment\n- Inconsistencies between reported symptoms and observed function",
+      "rating_criteria_summary": "TBI is rated under 38 CFR § 4.124a, Diagnostic Code 8045, based on three main areas:\n\n**Cognitive Impairment:**\n- Memory, concentration, executive function\n- Rated 0-70%\n\n**Emotional/Behavioral Dysfunction:**\n- Rated under mental health criteria\n\n**Physical Dysfunction:**\n- Headaches, balance issues, etc.\n- Rated under relevant diagnostic codes\n\n**Overall Rating:** Uses the highest level of impairment across 10 facets:\n- Memory/Concentration/Executive Function\n- Judgment\n- Social Interaction\n- Orientation\n- Motor Activity\n- Visual Spatial Orientation\n- Subjective Symptoms\n- Neurobehavioral Effects\n- Communication\n- Consciousness\n\nEach facet is scored 0-3, and ratings range from 0% to 100%.",
+      "is_published": true,
+      "created_at": "2026-01-11T19:00:00Z",
+      "updated_at": "2026-01-11T19:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.cpexamguidecondition",
+    "pk": 13,
+    "fields": {
+      "condition_name": "Diabetes Mellitus Type II",
+      "slug": "diabetes-mellitus",
+      "category": "endocrine",
+      "dbq_form": "DBQ Diabetes Mellitus",
+      "what_to_expect": "The diabetes C&P exam typically lasts 20-30 minutes. The examiner will review your diagnosis, treatment regimen, and any complications.\n\nThe exam includes:\n1. Review of your diagnosis and medical history\n2. Discussion of your current treatment regimen\n3. Assessment of any diabetic complications\n4. Review of lab results (A1C, blood glucose)\n5. Evaluation of activity restrictions",
+      "key_questions": ["When were you diagnosed with diabetes?", "Do you take insulin?", "How many times per day do you take insulin?", "Do you take oral medications?", "Do you have to restrict your activities due to diabetes?", "Have you experienced hypoglycemic episodes?", "Do you have any diabetic complications (neuropathy, kidney, eyes)?", "How often do you see your doctor for diabetes management?", "What is your most recent A1C level?"],
+      "documentation_needed": ["Medical records confirming diabetes diagnosis", "Lab results (A1C, blood glucose levels over time)", "Documentation of insulin prescription", "Records of diabetic complications", "Agent Orange exposure documentation (if applicable)", "Service treatment records", "List of all diabetes medications"],
+      "how_to_prepare": "Before your exam:\n\n1. **Know your treatment regimen** - Insulin (how many injections/day), oral medications, dosages\n\n2. **Get recent lab results** - A1C levels, kidney function tests\n\n3. **Document complications** - Neuropathy, retinopathy, nephropathy, etc.\n\n4. **Note activity restrictions** - Does diabetes limit what you can do?\n\n5. **Track hypoglycemic episodes** - Low blood sugar events requiring intervention",
+      "tips": "- VA ratings for diabetes are primarily based on treatment required\n- Insulin requirement is a key factor in the rating\n- Diabetic complications (neuropathy, retinopathy) are rated separately\n- Agent Orange presumptive connection applies for Vietnam veterans\n- Know your current A1C and medication regimen\n- If you require insulin, know how many injections per day\n- Mention any hospitalizations for diabetic ketoacidosis or hypoglycemia",
+      "red_flags": "- Claiming insulin use when records show only oral medications\n- Not knowing your current medications or A1C\n- Inconsistency between claimed treatment and medical records\n- Claiming complications not documented in your records",
+      "rating_criteria_summary": "Diabetes Mellitus is rated under 38 CFR § 4.119, Diagnostic Code 7913:\n\n**10%** - Manageable by diet alone\n\n**20%** - Requiring insulin and restricted diet, OR oral hypoglycemic agent and restricted diet\n\n**40%** - Requiring insulin, restricted diet, and regulation of activities\n\n**60%** - Requiring insulin, restricted diet, and regulation of activities with episodes of ketoacidosis or hypoglycemic reactions requiring one or two hospitalizations per year or twice monthly visits to a diabetic care provider, plus complications that would not be compensable if separately evaluated\n\n**100%** - Requiring more than one daily injection of insulin, restricted diet, and regulation of activities with episodes of ketoacidosis or hypoglycemic reactions requiring at least 3 hospitalizations per year or weekly visits to a diabetic care provider, plus either progressive loss of weight and strength or complications that would be compensable if separately rated\n\n**Note:** Complications like diabetic neuropathy, nephropathy, and retinopathy are rated separately.",
+      "is_published": true,
+      "created_at": "2026-01-11T19:00:00Z",
+      "updated_at": "2026-01-11T19:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.cpexamguidecondition",
+    "pk": 14,
+    "fields": {
+      "condition_name": "GERD (Acid Reflux)",
+      "slug": "gerd-acid-reflux",
+      "category": "digestive",
+      "dbq_form": "DBQ Esophageal Conditions",
+      "what_to_expect": "The GERD C&P exam is typically brief (15-20 minutes) and focuses on your symptoms and their impact on daily life.\n\nThe exam includes:\n1. Review of your diagnosis and medical history\n2. Discussion of current symptoms\n3. Assessment of treatment and its effectiveness\n4. Evaluation of impact on nutrition and weight\n5. Review of any diagnostic testing (endoscopy, pH monitoring)",
+      "key_questions": ["How often do you experience heartburn or acid reflux?", "Do you have difficulty swallowing?", "Do you regurgitate food or liquid?", "Do you have chest pain related to GERD?", "Does GERD affect your sleep?", "What medications do you take for GERD?", "Have you had an endoscopy?", "Have you experienced unintentional weight loss?", "What dietary restrictions do you follow?"],
+      "documentation_needed": ["Medical records confirming GERD diagnosis", "Endoscopy results (if available)", "pH monitoring studies (if performed)", "Documentation of medications and treatments", "Service treatment records showing GI complaints", "Records of weight changes"],
+      "how_to_prepare": "Before your exam:\n\n1. **Document symptom frequency** - How often do you have reflux? Daily? Multiple times per day?\n\n2. **List all symptoms** - Heartburn, regurgitation, difficulty swallowing, chest pain, nausea\n\n3. **Know your medications** - Names, dosages, how long you've taken them\n\n4. **Note dietary restrictions** - Foods you avoid, eating schedule changes\n\n5. **Track any weight changes** - GERD affecting nutrition can impact rating",
+      "tips": "- Be specific about how often symptoms occur\n- Mention if GERD disturbs your sleep (having to sleep elevated)\n- Describe dietary restrictions you follow because of GERD\n- Report any difficulty swallowing or food getting stuck\n- If you've had an endoscopy showing esophagitis, mention it\n- Discuss how effective your medications are\n- Mention any weight loss or nutritional impacts",
+      "red_flags": "- Claiming severe symptoms with no treatment records\n- No documentation of diagnosis\n- Inconsistency between claimed severity and treatment level",
+      "rating_criteria_summary": "GERD is typically rated by analogy under 38 CFR § 4.114:\n\n**Hiatal Hernia (DC 7346) - commonly used for GERD:**\n\n**10%** - Two or more of these symptoms of less severity: persistently recurrent epigastric distress with dysphagia, pyrosis, and regurgitation, accompanied by substernal arm or shoulder pain\n\n**30%** - Persistently recurrent epigastric distress with dysphagia, pyrosis, and regurgitation, accompanied by substernal arm or shoulder pain, productive of considerable impairment of health\n\n**60%** - Symptoms of pain, vomiting, material weight loss and hematemesis or melena with moderate anemia; or other symptom combinations productive of severe impairment of health\n\n**Key terms:**\n- Dysphagia = difficulty swallowing\n- Pyrosis = heartburn",
+      "is_published": true,
+      "created_at": "2026-01-11T19:00:00Z",
+      "updated_at": "2026-01-11T19:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.cpexamguidecondition",
+    "pk": 15,
+    "fields": {
+      "condition_name": "Irritable Bowel Syndrome (IBS)",
+      "slug": "irritable-bowel-syndrome",
+      "category": "digestive",
+      "dbq_form": "DBQ Intestinal Conditions",
+      "what_to_expect": "The IBS C&P exam is usually 20-30 minutes and focuses on your symptoms and their frequency.\n\nThe exam includes:\n1. Review of diagnosis and medical history\n2. Discussion of bowel habit changes\n3. Assessment of abdominal pain and discomfort\n4. Evaluation of impact on daily activities\n5. Review of treatments tried",
+      "key_questions": ["How often do you experience IBS symptoms?", "Do you have more constipation or diarrhea, or alternating?", "How severe is your abdominal pain or cramping?", "Do you have urgency or accidents?", "How many bowel movements do you have per day?", "What triggers your symptoms?", "How does IBS affect your ability to work?", "What treatments have you tried?", "Do you follow a specific diet for IBS?"],
+      "documentation_needed": ["Medical records confirming IBS diagnosis", "Documentation of symptoms over time", "Results of any colonoscopy or other testing", "Records of treatments and medications", "Service treatment records showing GI issues", "Documentation of impact on work or activities"],
+      "how_to_prepare": "Before your exam:\n\n1. **Track your symptoms** - Frequency, type (diarrhea/constipation), severity\n\n2. **Document episodes** - How many times per week do you have symptoms?\n\n3. **Note triggers** - Stress, foods, activities that worsen symptoms\n\n4. **List functional impacts** - Missing work, needing bathroom access, avoiding activities\n\n5. **Know your treatments** - Medications, dietary changes, their effectiveness",
+      "tips": "- Be specific about frequency and severity of episodes\n- Describe how symptoms affect your work (need to be near bathroom, missing work)\n- Mention if you've had accidents or near-accidents\n- Discuss any weight loss or nutritional concerns\n- Report how symptoms affect travel, social activities, and daily routine\n- Mention if stress worsens your symptoms (common connection to service)\n- Keep a symptom diary leading up to the exam",
+      "red_flags": "- Claiming daily severe episodes with no medical documentation\n- No treatment records for claimed severe IBS\n- Inconsistency between reported symptoms and lifestyle",
+      "rating_criteria_summary": "IBS is rated under 38 CFR § 4.114, Diagnostic Code 7319 (Irritable Colon Syndrome):\n\n**0%** - Mild: Disturbances of bowel function with occasional episodes of abdominal distress\n\n**10%** - Moderate: Frequent episodes of bowel disturbance with abdominal distress\n\n**30%** - Severe: Diarrhea, or alternating diarrhea and constipation, with more or less constant abdominal distress\n\n**Note:** For higher ratings, consider if symptoms would warrant rating under another diagnostic code (e.g., if there's documented malnutrition or significant weight loss).",
+      "is_published": true,
+      "created_at": "2026-01-11T19:00:00Z",
+      "updated_at": "2026-01-11T19:00:00Z"
+    }
+  }
+]

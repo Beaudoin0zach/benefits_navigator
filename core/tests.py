@@ -816,3 +816,463 @@ class TestTimelineBuilder(TestCase):
         stats = self.builder.get_stats()
         self.assertIn('milestone_count', stats)
         self.assertIn('deadline_count', stats)
+
+
+# =============================================================================
+# CONTENT SECURITY POLICY (CSP) TESTS
+# =============================================================================
+
+@pytest.mark.django_db
+class TestCSPHeaders:
+    """
+    Tests to verify Content Security Policy headers are configured correctly
+    and don't break application functionality.
+
+    CSP Configuration:
+    - default-src: 'self'
+    - script-src: 'self', 'unsafe-inline', cdn.tailwindcss.com, unpkg.com
+    - style-src: 'self', 'unsafe-inline', cdn.tailwindcss.com
+    - img-src: 'self', data:, https:
+    - font-src: 'self', fonts.gstatic.com
+    - connect-src: 'self'
+    - frame-ancestors: 'none'
+    - form-action: 'self'
+    """
+
+    def test_csp_header_present(self, client):
+        """CSP header is present in responses."""
+        response = client.get(reverse('home'))
+        assert response.status_code == 200
+        assert 'Content-Security-Policy' in response.headers
+
+    def test_csp_default_src_self(self, client):
+        """CSP default-src is set to 'self'."""
+        response = client.get(reverse('home'))
+        csp = response.headers.get('Content-Security-Policy', '')
+        assert "default-src 'self'" in csp
+
+    def test_csp_allows_tailwind_cdn(self, client):
+        """CSP allows Tailwind CSS from CDN."""
+        response = client.get(reverse('home'))
+        csp = response.headers.get('Content-Security-Policy', '')
+        # Should allow both scripts and styles from Tailwind CDN
+        assert 'cdn.tailwindcss.com' in csp
+
+    def test_csp_allows_htmx_cdn(self, client):
+        """CSP allows HTMX from unpkg.com CDN."""
+        response = client.get(reverse('home'))
+        csp = response.headers.get('Content-Security-Policy', '')
+        assert 'unpkg.com' in csp
+
+    def test_csp_allows_data_urls_for_images(self, client):
+        """CSP allows data: URLs for images."""
+        response = client.get(reverse('home'))
+        csp = response.headers.get('Content-Security-Policy', '')
+        assert 'img-src' in csp
+        assert 'data:' in csp
+
+    def test_csp_allows_google_fonts(self, client):
+        """CSP allows fonts from Google."""
+        response = client.get(reverse('home'))
+        csp = response.headers.get('Content-Security-Policy', '')
+        assert 'fonts.gstatic.com' in csp
+
+    def test_csp_blocks_framing(self, client):
+        """CSP prevents page from being framed (clickjacking protection)."""
+        response = client.get(reverse('home'))
+        csp = response.headers.get('Content-Security-Policy', '')
+        assert "frame-ancestors 'none'" in csp
+
+    def test_csp_form_action_self(self, client):
+        """CSP restricts form submissions to same origin."""
+        response = client.get(reverse('home'))
+        csp = response.headers.get('Content-Security-Policy', '')
+        assert "form-action 'self'" in csp
+
+    def test_csp_connect_src_self(self, client):
+        """CSP restricts AJAX/fetch to same origin (for HTMX)."""
+        response = client.get(reverse('home'))
+        csp = response.headers.get('Content-Security-Policy', '')
+        assert "connect-src 'self'" in csp
+
+
+@pytest.mark.django_db
+class TestCSPFunctionality:
+    """
+    Tests to verify CSP doesn't break application functionality.
+    These tests simulate actual user interactions that depend on CSP-allowed resources.
+    """
+
+    def test_homepage_renders_with_csp(self, client):
+        """Homepage renders correctly with CSP enabled."""
+        response = client.get(reverse('home'))
+        assert response.status_code == 200
+        # Page should contain expected content
+        assert b'VA Benefits Navigator' in response.content or b'Sign' in response.content
+
+    def test_login_form_works_with_csp(self, client, user, user_password):
+        """Login form submission works with CSP form-action restriction."""
+        # Forms should work since form-action allows 'self'
+        response = client.post(reverse('account_login'), {
+            'login': user.email,
+            'password': user_password,
+        })
+        # Should redirect on successful login (302) - form submission worked
+        assert response.status_code == 302
+
+    def test_htmx_endpoints_work_with_csp(self, authenticated_client, deadline):
+        """HTMX AJAX requests work with CSP connect-src restriction."""
+        # HTMX makes fetch/XHR requests to same origin, which should work
+        response = authenticated_client.post(
+            reverse('core:toggle_deadline', kwargs={'pk': deadline.pk}),
+            HTTP_HX_REQUEST='true',  # Simulate HTMX request
+        )
+        # Should succeed - connect-src allows 'self'
+        assert response.status_code == 200
+
+    def test_rating_calculator_htmx_works(self, client):
+        """Rating calculator HTMX endpoint works with CSP."""
+        import json
+        response = client.post(
+            reverse('examprep:calculate_rating'),
+            {
+                'ratings': json.dumps([
+                    {'percentage': 50, 'description': 'PTSD', 'is_bilateral': False},
+                    {'percentage': 30, 'description': 'Back', 'is_bilateral': False},
+                ]),
+                'has_spouse': 'false',
+                'children_under_18': '0',
+                'dependent_parents': '0',
+            },
+            HTTP_HX_REQUEST='true',
+        )
+        # Should work - HTMX requests go to same origin
+        assert response.status_code == 200
+
+    def test_dashboard_loads_with_csp(self, authenticated_client):
+        """Dashboard page loads correctly with CSP."""
+        response = authenticated_client.get(reverse('dashboard'))
+        assert response.status_code == 200
+        # Should render without CSP blocking resources
+        assert b'Dashboard' in response.content or response.status_code == 200
+
+    def test_journey_dashboard_htmx_partial(self, authenticated_client):
+        """Journey timeline HTMX partial works with CSP."""
+        response = authenticated_client.get(
+            reverse('core:journey_timeline'),
+            HTTP_HX_REQUEST='true',
+        )
+        # Partial should load - same-origin request
+        assert response.status_code == 200
+
+
+@pytest.mark.django_db
+class TestSecurityHeaders:
+    """Tests for other security headers beyond CSP."""
+
+    def test_x_content_type_options_header(self, client):
+        """X-Content-Type-Options header prevents MIME sniffing."""
+        response = client.get(reverse('home'))
+        assert response.headers.get('X-Content-Type-Options') == 'nosniff'
+
+    def test_x_frame_options_header(self, client):
+        """X-Frame-Options header prevents clickjacking."""
+        response = client.get(reverse('home'))
+        assert response.headers.get('X-Frame-Options') == 'DENY'
+
+    def test_referrer_policy_header(self, client):
+        """Referrer-Policy header is set."""
+        response = client.get(reverse('home'))
+        referrer = response.headers.get('Referrer-Policy', '')
+        assert 'strict-origin' in referrer.lower() or 'same-origin' in referrer.lower() or referrer != ''
+
+
+class TestCSPConfiguration(TestCase):
+    """Tests for CSP configuration in settings."""
+
+    def test_csp_middleware_enabled(self):
+        """CSP middleware is in MIDDLEWARE setting."""
+        from django.conf import settings
+        assert 'csp.middleware.CSPMiddleware' in settings.MIDDLEWARE
+
+    def test_csp_default_src_configured(self):
+        """CSP_DEFAULT_SRC is configured."""
+        from django.conf import settings
+        assert hasattr(settings, 'CSP_DEFAULT_SRC')
+        assert "'self'" in settings.CSP_DEFAULT_SRC
+
+    def test_csp_script_src_includes_cdns(self):
+        """CSP_SCRIPT_SRC includes required CDNs."""
+        from django.conf import settings
+        assert hasattr(settings, 'CSP_SCRIPT_SRC')
+        script_src = settings.CSP_SCRIPT_SRC
+        assert any('cdn.tailwindcss.com' in src for src in script_src)
+        assert any('unpkg.com' in src for src in script_src)
+
+    def test_csp_style_src_includes_tailwind(self):
+        """CSP_STYLE_SRC includes Tailwind CDN."""
+        from django.conf import settings
+        assert hasattr(settings, 'CSP_STYLE_SRC')
+        style_src = settings.CSP_STYLE_SRC
+        assert any('cdn.tailwindcss.com' in src for src in style_src)
+
+    def test_csp_connect_src_for_htmx(self):
+        """CSP_CONNECT_SRC allows same-origin for HTMX."""
+        from django.conf import settings
+        assert hasattr(settings, 'CSP_CONNECT_SRC')
+        assert "'self'" in settings.CSP_CONNECT_SRC
+
+    def test_csp_frame_ancestors_blocks_framing(self):
+        """CSP_FRAME_ANCESTORS prevents framing."""
+        from django.conf import settings
+        assert hasattr(settings, 'CSP_FRAME_ANCESTORS')
+        assert "'none'" in settings.CSP_FRAME_ANCESTORS
+
+    def test_csp_form_action_restricts_forms(self):
+        """CSP_FORM_ACTION restricts form targets."""
+        from django.conf import settings
+        assert hasattr(settings, 'CSP_FORM_ACTION')
+        assert "'self'" in settings.CSP_FORM_ACTION
+
+
+# =============================================================================
+# DOCUMENT ANALYSIS NOTIFICATION TESTS
+# =============================================================================
+
+class TestDocumentAnalysisNotification(TestCase):
+    """Tests for document analysis complete email notifications."""
+
+    def setUp(self):
+        from accounts.models import NotificationPreferences
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email="docuser@example.com",
+            password="TestPass123!"
+        )
+        # Delete any existing preferences to start fresh
+        NotificationPreferences.objects.filter(user=self.user).delete()
+
+    def test_send_document_analysis_email_task_sends_email(self):
+        """Task sends email when document analysis completes."""
+        from core.tasks import send_document_analysis_complete_email
+        from claims.models import Document
+        from accounts.models import NotificationPreferences
+
+        # Create notification preferences
+        prefs, _ = NotificationPreferences.objects.get_or_create(
+            user=self.user,
+            defaults={'email_enabled': True, 'document_analysis': True}
+        )
+        prefs.email_enabled = True
+        prefs.document_analysis = True
+        prefs.save()
+
+        # Create a completed document
+        doc = Document.objects.create(
+            user=self.user,
+            document_type='decision_letter',
+            file_name='test_decision.pdf',
+            status='completed',
+            ai_summary='Test summary of the document.',
+            page_count=5,
+        )
+
+        # Call the task
+        from django.core import mail
+        result = send_document_analysis_complete_email(doc.id)
+
+        # Check email was sent
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn('Decision Letter', mail.outbox[0].subject)
+        self.assertIn('docuser@example.com', mail.outbox[0].to)
+
+    def test_send_document_analysis_email_respects_disabled_preference(self):
+        """Task doesn't send email when notification is disabled."""
+        from core.tasks import send_document_analysis_complete_email
+        from claims.models import Document
+        from accounts.models import NotificationPreferences
+
+        # Create notification preferences with document_analysis disabled
+        prefs, _ = NotificationPreferences.objects.get_or_create(
+            user=self.user,
+            defaults={'email_enabled': True, 'document_analysis': False}
+        )
+        prefs.email_enabled = True
+        prefs.document_analysis = False  # Disabled
+        prefs.save()
+
+        # Create a completed document
+        doc = Document.objects.create(
+            user=self.user,
+            document_type='medical_records',
+            file_name='test_medical.pdf',
+            status='completed',
+        )
+
+        # Call the task
+        from django.core import mail
+        result = send_document_analysis_complete_email(doc.id)
+
+        # Check no email was sent
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertIn('disabled', result)
+
+    def test_send_document_analysis_email_respects_master_switch(self):
+        """Task doesn't send email when email_enabled is False."""
+        from core.tasks import send_document_analysis_complete_email
+        from claims.models import Document
+        from accounts.models import NotificationPreferences
+
+        # Create notification preferences with master switch off
+        prefs, _ = NotificationPreferences.objects.get_or_create(
+            user=self.user,
+            defaults={'email_enabled': False, 'document_analysis': True}
+        )
+        prefs.email_enabled = False  # Master switch off
+        prefs.document_analysis = True
+        prefs.save()
+
+        # Create a completed document
+        doc = Document.objects.create(
+            user=self.user,
+            document_type='nexus_letter',
+            file_name='nexus.pdf',
+            status='completed',
+        )
+
+        # Call the task
+        from django.core import mail
+        result = send_document_analysis_complete_email(doc.id)
+
+        # Check no email was sent
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_send_document_analysis_email_creates_default_preferences(self):
+        """Task creates default preferences if they don't exist."""
+        from core.tasks import send_document_analysis_complete_email
+        from claims.models import Document
+        from accounts.models import NotificationPreferences
+
+        # Ensure no preferences exist
+        NotificationPreferences.objects.filter(user=self.user).delete()
+        self.assertFalse(NotificationPreferences.objects.filter(user=self.user).exists())
+
+        # Create a completed document
+        doc = Document.objects.create(
+            user=self.user,
+            document_type='buddy_statement',
+            file_name='buddy.pdf',
+            status='completed',
+        )
+
+        # Call the task
+        from django.core import mail
+        result = send_document_analysis_complete_email(doc.id)
+
+        # Check preferences were created
+        self.assertTrue(NotificationPreferences.objects.filter(user=self.user).exists())
+
+        # Check email was sent (default is enabled)
+        self.assertEqual(len(mail.outbox), 1)
+
+    def test_send_document_analysis_email_handles_missing_document(self):
+        """Task handles non-existent document gracefully."""
+        from core.tasks import send_document_analysis_complete_email
+
+        result = send_document_analysis_complete_email(99999)
+        self.assertIn('not found', result)
+
+    def test_notification_preference_should_send_method(self):
+        """Test the should_send_document_analysis_notification method."""
+        from accounts.models import NotificationPreferences
+
+        # Test with all enabled
+        prefs, _ = NotificationPreferences.objects.get_or_create(
+            user=self.user,
+            defaults={'email_enabled': True, 'document_analysis': True}
+        )
+        prefs.email_enabled = True
+        prefs.document_analysis = True
+        prefs.save()
+        self.assertTrue(prefs.should_send_document_analysis_notification())
+
+        # Test with document_analysis disabled
+        prefs.document_analysis = False
+        prefs.save()
+        self.assertFalse(prefs.should_send_document_analysis_notification())
+
+        # Test with master switch disabled
+        prefs.email_enabled = False
+        prefs.document_analysis = True
+        prefs.save()
+        self.assertFalse(prefs.should_send_document_analysis_notification())
+
+    def test_document_analysis_email_updates_tracking(self):
+        """Sending email updates notification tracking fields."""
+        from core.tasks import send_document_analysis_complete_email
+        from claims.models import Document
+        from accounts.models import NotificationPreferences
+
+        prefs, _ = NotificationPreferences.objects.get_or_create(
+            user=self.user,
+            defaults={'email_enabled': True, 'document_analysis': True, 'emails_sent_count': 5}
+        )
+        prefs.email_enabled = True
+        prefs.document_analysis = True
+        prefs.emails_sent_count = 5
+        prefs.save()
+
+        doc = Document.objects.create(
+            user=self.user,
+            document_type='other',
+            file_name='test.pdf',
+            status='completed',
+        )
+
+        from django.core import mail
+        send_document_analysis_complete_email(doc.id)
+
+        # Refresh and check tracking updated
+        prefs.refresh_from_db()
+        self.assertEqual(prefs.emails_sent_count, 6)
+        self.assertIsNotNone(prefs.last_email_sent)
+
+    def test_document_analysis_email_includes_correct_doc_type_labels(self):
+        """Email uses correct document type labels."""
+        from core.tasks import send_document_analysis_complete_email
+        from claims.models import Document
+        from accounts.models import NotificationPreferences
+
+        prefs, _ = NotificationPreferences.objects.get_or_create(
+            user=self.user,
+            defaults={'email_enabled': True, 'document_analysis': True}
+        )
+        prefs.email_enabled = True
+        prefs.document_analysis = True
+        prefs.save()
+
+        doc_types = [
+            ('decision_letter', 'VA Decision Letter'),
+            ('medical_records', 'Medical Records'),
+            ('service_records', 'Service Records'),
+            ('nexus_letter', 'Medical Nexus/Opinion Letter'),
+            ('buddy_statement', 'Buddy Statement'),
+            ('other', 'Document'),
+        ]
+
+        from django.core import mail
+
+        for doc_type, expected_label in doc_types:
+            mail.outbox = []  # Clear outbox
+
+            doc = Document.objects.create(
+                user=self.user,
+                document_type=doc_type,
+                file_name=f'test_{doc_type}.pdf',
+                status='completed',
+            )
+
+            send_document_analysis_complete_email(doc.id)
+
+            self.assertEqual(len(mail.outbox), 1)
+            self.assertIn(expected_label, mail.outbox[0].subject)

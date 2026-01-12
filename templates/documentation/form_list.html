@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}VA Forms - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <nav class="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
+            <a href="{% url 'documentation:search' %}" class="hover:underline">Documentation</a>
+            <span class="mx-2">/</span>
+            <span class="text-gray-900">VA Forms</span>
+        </nav>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">VA Forms</h1>
+        <p class="text-gray-600">Find the right forms for your VA disability claim, with instructions and tips for each.</p>
+    </div>
+
+    <!-- Filter by Workflow Stage -->
+    <div class="mb-6 bg-white p-4 rounded-lg border border-gray-200">
+        <form method="get" class="flex flex-wrap gap-4 items-center">
+            <label for="stage-filter" class="font-medium text-gray-700">Filter by claim stage:</label>
+            <select
+                id="stage-filter"
+                name="stage"
+                class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                onchange="this.form.submit()"
+            >
+                <option value="">All stages</option>
+                {% for value, label in workflow_choices %}
+                <option value="{{ value }}" {% if workflow_stage == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            {% if workflow_stage %}
+            <a href="{% url 'documentation:form_list' %}" class="text-blue-600 hover:underline text-sm">Clear filter</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Forms by Category -->
+    {% for category in categories %}
+    <section class="mb-8" aria-labelledby="category-{{ category.slug }}">
+        <h2 id="category-{{ category.slug }}" class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+            {% if category.icon %}
+            <span class="mr-2">{{ category.icon }}</span>
+            {% endif %}
+            {{ category.name }}
+        </h2>
+        {% if category.description %}
+        <p class="text-gray-600 mb-4">{{ category.description }}</p>
+        {% endif %}
+        <div class="grid md:grid-cols-2 gap-4">
+            {% for form in category.forms.all %}
+            {% if form.is_active %}
+            <a href="{{ form.get_absolute_url }}" class="block p-4 bg-white border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-sm transition-all">
+                <div class="flex justify-between items-start">
+                    <div class="flex-grow">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="inline-block px-2 py-1 text-xs font-bold bg-blue-600 text-white rounded">{{ form.form_number }}</span>
+                            {% for stage in form.workflow_stages %}
+                            <span class="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded">{{ stage }}</span>
+                            {% endfor %}
+                        </div>
+                        <h3 class="font-medium text-gray-900">{{ form.title }}</h3>
+                        <p class="text-sm text-gray-600 mt-1">{{ form.description|truncatewords:20 }}</p>
+                    </div>
+                    <svg class="w-5 h-5 text-gray-400 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </div>
+            </a>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </section>
+    {% empty %}
+    <!-- No categories, show all forms -->
+    {% endfor %}
+
+    <!-- Uncategorized Forms -->
+    {% if uncategorized_forms %}
+    <section class="mb-8" aria-labelledby="other-forms">
+        <h2 id="other-forms" class="text-xl font-semibold text-gray-900 mb-4">Other Forms</h2>
+        <div class="grid md:grid-cols-2 gap-4">
+            {% for form in uncategorized_forms %}
+            <a href="{{ form.get_absolute_url }}" class="block p-4 bg-white border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-sm transition-all">
+                <div class="flex justify-between items-start">
+                    <div class="flex-grow">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="inline-block px-2 py-1 text-xs font-bold bg-blue-600 text-white rounded">{{ form.form_number }}</span>
+                        </div>
+                        <h3 class="font-medium text-gray-900">{{ form.title }}</h3>
+                        <p class="text-sm text-gray-600 mt-1">{{ form.description|truncatewords:20 }}</p>
+                    </div>
+                    <svg class="w-5 h-5 text-gray-400 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if not categories and not uncategorized_forms %}
+    <div class="text-center py-12 bg-gray-50 rounded-lg">
+        <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        <h2 class="text-lg font-medium text-gray-900 mb-2">No forms found</h2>
+        <p class="text-gray-600">Check back later as we add more forms to our database.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

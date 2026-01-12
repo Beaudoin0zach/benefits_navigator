@@ -1,0 +1,254 @@
+[
+  {
+    "model": "documentation.vaform",
+    "pk": 9,
+    "fields": {
+      "form_number": "21-8940",
+      "title": "Application for Increased Compensation Based on Unemployability (TDIU)",
+      "description": "Use this form to apply for Total Disability based on Individual Unemployability (TDIU) if your service-connected disabilities prevent you from maintaining substantially gainful employment.",
+      "instructions": "Complete all sections of the form:\n\n**Section I - Veteran Information**\nProvide your personal information, VA file number, and contact details.\n\n**Section II - Employment History**\nList your employment for the past 5 years, including:\n- Employer names and addresses\n- Dates of employment\n- Hours worked per week\n- Highest gross earnings per month\n- Time lost due to disability\n- Reason for leaving each job\n\n**Section III - Education and Training**\nList your educational background and any vocational training.\n\n**Section IV - Disability Information**\nIndicate which service-connected disabilities prevent you from working and explain how they affect your ability to work.\n\n**Section V - Current Income**\nReport any current income including Social Security, retirement, etc.\n\n**Certification**\nSign and date the form, certifying the information is true.",
+      "official_url": "https://www.va.gov/find-forms/about-form-21-8940/",
+      "instructions_url": "",
+      "workflow_stages": ["special_monthly"],
+      "deadline_info": "There is no deadline to file for TDIU, but earlier filing may result in earlier effective dates if granted. TDIU can be filed at any time you believe your service-connected disabilities prevent you from working.",
+      "tips": "- Be thorough about your work history - include ALL jobs, even short-term ones\n- Explain specifically how each disability affects your ability to work\n- Include any accommodations employers made for your disabilities\n- Document any jobs you lost due to disability-related issues\n- If you left a job, explain whether it was disability-related\n- Include education/training to show VA you've tried to remain employable\n- Keep records of any job applications and rejections",
+      "common_mistakes": "- Leaving employment history incomplete or vague\n- Not explaining HOW disabilities prevent work (just listing disabilities isn't enough)\n- Forgetting to include time lost from work due to disabilities\n- Not reporting all income sources\n- Failing to explain gaps in employment history\n- Not connecting job losses to service-connected conditions",
+      "category": 4,
+      "is_active": true,
+      "last_updated": "2024-01-01",
+      "created_at": "2026-01-11T21:00:00Z",
+      "updated_at": "2026-01-11T21:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.vaform",
+    "pk": 10,
+    "fields": {
+      "form_number": "21-2680",
+      "title": "Examination for Housebound Status or Permanent Need for Regular Aid and Attendance",
+      "description": "This form is completed by a physician to document the need for Aid and Attendance (A&A) or Housebound benefits. These benefits provide additional monthly compensation for veterans who need help with daily activities or are substantially confined to their home.",
+      "instructions": "This form must be completed by a licensed physician:\n\n**Part I - Veteran Information**\nBasic identifying information about the veteran.\n\n**Part II - Medical Findings**\nThe physician documents:\n- Diagnoses and conditions\n- Whether the veteran can dress/undress without assistance\n- Whether the veteran can keep themselves clean and presentable\n- Whether the veteran needs assistance with bathroom needs\n- Whether the veteran can feed themselves\n- Whether the veteran needs protection from daily hazards\n- Whether the veteran is blind or has severe visual impairment\n- Whether the veteran is bedridden\n- Whether the veteran is confined to the home\n\n**Part III - Certification**\nPhysician signs certifying the examination findings.",
+      "official_url": "https://www.va.gov/find-forms/about-form-21-2680/",
+      "instructions_url": "",
+      "workflow_stages": ["special_monthly"],
+      "deadline_info": "No specific deadline. File when you believe you qualify for Aid and Attendance or Housebound benefits. The examination should reflect your current condition.",
+      "tips": "- Have your regular doctor complete this if possible - they know your condition best\n- Make sure the doctor documents your WORST days, not your best\n- Be honest with the doctor about all assistance you need\n- If you need help with ANY daily activity, make sure it's documented\n- The doctor should explain WHY you need assistance, not just check boxes\n- If your condition fluctuates, document the frequency of bad days\n- Bring a list of all your conditions and limitations to the appointment",
+      "common_mistakes": "- Having the form completed on a 'good day' that doesn't reflect typical needs\n- Doctor not providing enough detail about functional limitations\n- Not documenting all conditions that contribute to need for assistance\n- Forgetting to mention cognitive issues that require supervision\n- Not explaining the need for protection from daily hazards",
+      "category": 4,
+      "is_active": true,
+      "last_updated": "2024-01-01",
+      "created_at": "2026-01-11T21:00:00Z",
+      "updated_at": "2026-01-11T21:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.vaform",
+    "pk": 11,
+    "fields": {
+      "form_number": "21-526b",
+      "title": "Veteran's Supplemental Claim for Compensation - Special Monthly Compensation",
+      "description": "Use this form to claim Special Monthly Compensation (SMC) for specific severe disabilities including loss of use of limbs, blindness, deafness, or need for aid and attendance at higher levels.",
+      "instructions": "This form is used for specific SMC claims:\n\n**Section I - Veteran Information**\nProvide your identifying information and VA file number.\n\n**Section II - Type of SMC Claimed**\nIndicate which type of SMC you're claiming:\n- Loss or loss of use of a hand or foot\n- Blindness or deafness\n- Loss of reproductive organ\n- Need for regular aid and attendance\n- Housebound status\n- Combinations of the above\n\n**Section III - Medical Evidence**\nDescribe the medical evidence supporting your claim and identify any medical records you're submitting.\n\n**Section IV - Certification**\nSign and date the form.",
+      "official_url": "https://www.va.gov/find-forms/about-form-21-526b/",
+      "instructions_url": "",
+      "workflow_stages": ["special_monthly"],
+      "deadline_info": "No deadline to file for SMC. However, the effective date will generally be the date VA receives your claim, so file as soon as you believe you qualify.",
+      "tips": "- SMC is additional compensation on top of your regular disability rating\n- Different SMC levels (K, L, M, N, O, P, R, S) have different requirements\n- SMC-K is commonly awarded for loss of use of a creative organ\n- SMC-S (Housebound) requires one 100% disability plus additional 60%\n- Submit medical evidence clearly showing the qualifying condition\n- VA may automatically consider SMC when rating certain conditions",
+      "common_mistakes": "- Not understanding which SMC level applies to your situation\n- Failing to provide medical evidence of loss of use\n- Not claiming SMC when already eligible based on current ratings\n- Confusing Aid and Attendance with regular SMC levels",
+      "category": 4,
+      "is_active": true,
+      "last_updated": "2024-01-01",
+      "created_at": "2026-01-11T21:00:00Z",
+      "updated_at": "2026-01-11T21:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.vaform",
+    "pk": 12,
+    "fields": {
+      "form_number": "21-686c",
+      "title": "Application Request to Add and/or Remove Dependents",
+      "description": "Use this form to add or remove dependents from your VA benefits. This includes adding a spouse, children, or dependent parents, or removing dependents due to divorce, death, or children aging out.",
+      "instructions": "Complete the sections that apply to your situation:\n\n**Section I - Veteran Information**\nYour personal and contact information.\n\n**Section II - Add Spouse**\nIf adding a spouse:\n- Spouse's full name, SSN, date of birth\n- Date and place of marriage\n- Marriage certificate required\n- If either was previously married, divorce decrees required\n\n**Section III - Add Children**\nFor each child:\n- Child's full name, SSN, date of birth\n- Birth certificate required\n- If stepchild, documentation of relationship\n- If adopted, adoption decree\n- If child is 18-23 and in school, school certification\n\n**Section IV - Add Dependent Parents**\nIf claiming dependent parents:\n- Parent's information\n- Evidence of dependency (financial)\n\n**Section V - Remove Dependents**\nReport divorces, deaths, or children no longer qualifying:\n- Date of divorce and location\n- Date of death\n- Date child married or left school",
+      "official_url": "https://www.va.gov/find-forms/about-form-21-686c/",
+      "instructions_url": "",
+      "workflow_stages": ["dependency"],
+      "deadline_info": "Report changes within 1 year to potentially receive retroactive benefits. You MUST report dependency changes promptly - failure to report a dependent's removal can result in overpayment and debt to VA.",
+      "tips": "- Add dependents as soon as possible to receive additional compensation\n- Keep copies of all marriage certificates, birth certificates, and divorce decrees\n- Children can be claimed until age 18, or 23 if in school full-time\n- Report changes promptly to avoid overpayments\n- You can submit this form online through VA.gov\n- Dependent parents must meet income requirements\n- Stepchildren count if they live with you",
+      "common_mistakes": "- Forgetting to report divorce or death of dependent (causes overpayment)\n- Not providing required documentation (marriage/birth certificates)\n- Missing the school certification for children 18-23\n- Not reporting when children turn 18 and aren't in school\n- Failing to report remarriage after divorce",
+      "category": 5,
+      "is_active": true,
+      "last_updated": "2024-01-01",
+      "created_at": "2026-01-11T21:00:00Z",
+      "updated_at": "2026-01-11T21:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.vaform",
+    "pk": 13,
+    "fields": {
+      "form_number": "21-674",
+      "title": "Request for Approval of School Attendance",
+      "description": "Use this form to certify that a child between 18 and 23 is attending school full-time, which allows them to continue as a dependent for VA benefits purposes.",
+      "instructions": "Complete this form for each child 18-23 attending school:\n\n**Section I - Veteran/Claimant Information**\nYour identifying information.\n\n**Section II - Student Information**\n- Student's full name and SSN\n- Date of birth\n- Relationship to veteran\n\n**Section III - School Information**\n- Name and address of school\n- Type of school (college, vocational, etc.)\n- Date enrollment began\n- Expected graduation date\n- Whether student is full-time\n- Course of study\n\n**Section IV - Previous Education**\nList any previous schools attended after age 18.\n\n**Section V - Certification**\nBoth the veteran and student should sign.",
+      "official_url": "https://www.va.gov/find-forms/about-form-21-674/",
+      "instructions_url": "",
+      "workflow_stages": ["dependency"],
+      "deadline_info": "Submit when your child turns 18 or begins school after 18, and resubmit each school year to maintain dependent status. Benefits stop if form is not submitted timely.",
+      "tips": "- Submit before the child's 18th birthday to avoid gaps in benefits\n- Must be resubmitted each school year or when changing schools\n- Full-time enrollment is generally required (check with school for definition)\n- Online schools and vocational training may qualify\n- Keep copies of school enrollment verification\n- VA may verify enrollment directly with the school",
+      "common_mistakes": "- Forgetting to resubmit each school year\n- Not submitting before the child turns 18\n- Failing to report when student drops below full-time status\n- Not reporting when student graduates or drops out\n- Assuming VA will automatically know about school enrollment",
+      "category": 5,
+      "is_active": true,
+      "last_updated": "2024-01-01",
+      "created_at": "2026-01-11T21:00:00Z",
+      "updated_at": "2026-01-11T21:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.vaform",
+    "pk": 14,
+    "fields": {
+      "form_number": "21-509",
+      "title": "Statement of Dependency of Parent(s)",
+      "description": "Use this form to claim a parent as a dependent for additional VA compensation. Parents must meet specific income requirements to qualify as dependents.",
+      "instructions": "Complete all sections:\n\n**Section I - Veteran Information**\nYour personal and contact information.\n\n**Section II - Parent Information**\nFor each parent claimed:\n- Full name and date of birth\n- Address\n- Whether biological, adoptive, or step-parent\n\n**Section III - Parent's Income**\nReport all of the parent's income:\n- Social Security benefits\n- Pension income\n- Employment income\n- Investment income\n- Any other income sources\n\n**Section IV - Parent's Expenses**\nReport parent's necessary living expenses:\n- Housing costs\n- Medical expenses\n- Food and utilities\n\n**Section V - Dependency Statement**\nExplain how you provide support to the parent.\n\n**Section VI - Certification**\nSign certifying the information is accurate.",
+      "official_url": "https://www.va.gov/find-forms/about-form-21-509/",
+      "instructions_url": "",
+      "workflow_stages": ["dependency"],
+      "deadline_info": "No specific deadline, but file as soon as you believe your parent qualifies to begin receiving additional compensation.",
+      "tips": "- Parent must be dependent on you for support\n- Parent's income must be below certain thresholds\n- Both biological and adoptive parents can qualify\n- Step-parents may qualify under certain circumstances\n- You may need to provide financial records proving support\n- Medical expenses can help reduce countable income\n- This benefit is less commonly claimed but can add to compensation",
+      "common_mistakes": "- Not accurately reporting parent's income\n- Failing to document the support you provide\n- Not including unreimbursed medical expenses (which reduce countable income)\n- Assuming parents don't qualify without checking income limits\n- Not updating VA when parent's financial situation changes",
+      "category": 5,
+      "is_active": true,
+      "last_updated": "2024-01-01",
+      "created_at": "2026-01-11T21:00:00Z",
+      "updated_at": "2026-01-11T21:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.vaform",
+    "pk": 15,
+    "fields": {
+      "form_number": "21-4142",
+      "title": "Authorization to Disclose Information to the Department of Veterans Affairs",
+      "description": "Use this form to authorize non-VA medical providers, hospitals, or other organizations to release your medical records to the VA in support of your claim.",
+      "instructions": "Complete a separate form for each provider:\n\n**Section I - Veteran Information**\nYour personal information, VA file number, and contact details.\n\n**Section II - Provider Information**\nFor the medical provider or facility:\n- Name of provider/facility\n- Complete address\n- Phone and fax numbers\n- Type of provider (hospital, doctor, clinic, etc.)\n\n**Section III - Information to be Released**\n- Dates of treatment (from/to)\n- Conditions treated\n- Type of records requested (all records, specific records, etc.)\n\n**Section IV - Authorization**\nSign and date the authorization. Note: This authorization is valid for 180 days from signing.\n\n**Important:** This form authorizes release TO the VA. It does not authorize VA to release your records to others.",
+      "official_url": "https://www.va.gov/find-forms/about-form-21-4142/",
+      "instructions_url": "",
+      "workflow_stages": ["evidence_submission"],
+      "deadline_info": "The authorization is valid for 180 days from the date you sign it. If VA hasn't obtained the records within that time, you may need to submit a new authorization.",
+      "tips": "- Submit a separate 4142 for each medical provider\n- Be specific about the date range of records needed\n- Include the provider's fax number - VA often faxes these requests\n- Keep copies of all authorizations you submit\n- Follow up if VA doesn't seem to have obtained the records\n- You can also request records yourself and submit them directly\n- Consider submitting 21-4142a (general release) along with this form",
+      "common_mistakes": "- Using an old or incorrect address for the provider\n- Not specifying the correct date range\n- Forgetting to sign and date the form\n- Submitting one form for multiple providers (need separate forms)\n- Not following up to ensure VA obtained the records",
+      "category": 6,
+      "is_active": true,
+      "last_updated": "2024-01-01",
+      "created_at": "2026-01-11T21:00:00Z",
+      "updated_at": "2026-01-11T21:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.vaform",
+    "pk": 16,
+    "fields": {
+      "form_number": "21-4142a",
+      "title": "General Release for Medical Provider Information to the Department of Veterans Affairs",
+      "description": "This is a general authorization form that accompanies the 21-4142. It provides broader authorization language that some medical providers require before releasing records.",
+      "instructions": "This form is typically submitted along with VA Form 21-4142:\n\n**Section I - Veteran Information**\nYour identifying information.\n\n**Section II - General Authorization**\nThis section contains standard authorization language allowing release of:\n- Medical records\n- Mental health records\n- Drug and alcohol treatment records\n- HIV/AIDS information\n- Other sensitive medical information\n\n**Section III - Signature**\nSign and date the form.\n\n**Note:** Some providers require this broader authorization language in addition to the 21-4142. Submit both forms together to ensure VA can obtain your records.",
+      "official_url": "https://www.va.gov/find-forms/about-form-21-4142a/",
+      "instructions_url": "",
+      "workflow_stages": ["evidence_submission"],
+      "deadline_info": "Same as 21-4142 - valid for 180 days from signing.",
+      "tips": "- Submit this form along with every 21-4142\n- This broader language helps with providers who have strict release policies\n- Especially important for mental health and substance abuse records\n- The general language covers most HIPAA-protected information\n- Some providers won't release records without this additional form",
+      "common_mistakes": "- Not submitting this along with the 21-4142\n- Forgetting to sign the form\n- Not realizing some providers need both forms",
+      "category": 6,
+      "is_active": true,
+      "last_updated": "2024-01-01",
+      "created_at": "2026-01-11T21:00:00Z",
+      "updated_at": "2026-01-11T21:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.vaform",
+    "pk": 17,
+    "fields": {
+      "form_number": "21-4192",
+      "title": "Request for Employment Information in Connection with Claim for Disability Benefits",
+      "description": "This form is sent to your current or former employers to gather information about your work history, accommodations, and any limitations related to your disabilities. It's often used in TDIU claims.",
+      "instructions": "This form is typically completed by your employer, not you:\n\n**Section I - Employee Information**\nVA pre-fills your information.\n\n**Section II - Employment Details**\nEmployer provides:\n- Dates of employment\n- Job title and duties\n- Hours worked per week\n- Rate of pay\n- Reason for leaving (if applicable)\n\n**Section III - Accommodations and Limitations**\nEmployer documents:\n- Any accommodations made for disabilities\n- Time missed due to disability\n- Whether performance was affected by disability\n- Any job modifications made\n\n**Section IV - Employer Certification**\nEmployer signs certifying the information.\n\n**Note:** VA sends this directly to employers. You may want to give your employer a heads up that they'll receive this form.",
+      "official_url": "https://www.va.gov/find-forms/about-form-21-4192/",
+      "instructions_url": "",
+      "workflow_stages": ["special_monthly", "evidence_submission"],
+      "deadline_info": "Employers are asked to respond within 30 days. If your employer doesn't respond, VA may make a decision based on other evidence.",
+      "tips": "- Let your employer know to expect this form\n- If you had accommodations at work, make sure your employer documents them\n- Former employers may be harder to reach - provide current contact info if possible\n- If employer doesn't respond, submit your own statement about your work\n- This form is important for TDIU claims - employer responses carry weight\n- Keep your own records of work limitations and accommodations",
+      "common_mistakes": "- Not alerting employer that VA will contact them\n- Providing outdated employer contact information\n- Not following up when employer doesn't respond\n- Relying solely on this form without providing your own work history statement",
+      "category": 6,
+      "is_active": true,
+      "last_updated": "2024-01-01",
+      "created_at": "2026-01-11T21:00:00Z",
+      "updated_at": "2026-01-11T21:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.vaform",
+    "pk": 18,
+    "fields": {
+      "form_number": "21-0779",
+      "title": "Request for Nursing Home Information in Connection with Claim for Aid and Attendance",
+      "description": "This form is used to gather information from nursing homes or assisted living facilities about a veteran's care needs in support of Aid and Attendance claims.",
+      "instructions": "This form is completed by the nursing home or care facility:\n\n**Section I - Veteran Information**\nBasic identifying information.\n\n**Section II - Facility Information**\nName, address, and contact information for the facility.\n\n**Section III - Level of Care**\nFacility documents:\n- Type of care provided (skilled nursing, assisted living, etc.)\n- Date of admission\n- Whether veteran is bedridden\n- Level of assistance needed with daily activities\n- Supervision requirements\n\n**Section IV - Cost of Care**\nMonthly cost of care and what services are included.\n\n**Section V - Certification**\nFacility representative signs.",
+      "official_url": "https://www.va.gov/find-forms/about-form-21-0779/",
+      "instructions_url": "",
+      "workflow_stages": ["special_monthly"],
+      "deadline_info": "Submit when claiming Aid and Attendance while in a nursing home or assisted living facility.",
+      "tips": "- The facility's social worker can usually help complete this form\n- Make sure the level of care documented matches your actual needs\n- This form helps establish need for Aid and Attendance benefits\n- The cost information may be relevant for VA pension claims too\n- Keep copies of all care agreements and billing statements",
+      "common_mistakes": "- Not providing complete information about care needs\n- Facility understating the level of care provided\n- Not including all services in the cost breakdown",
+      "category": 6,
+      "is_active": true,
+      "last_updated": "2024-01-01",
+      "created_at": "2026-01-11T21:00:00Z",
+      "updated_at": "2026-01-11T21:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.vaform",
+    "pk": 19,
+    "fields": {
+      "form_number": "21-22",
+      "title": "Appointment of Veterans Service Organization as Claimant's Representative",
+      "description": "Use this form to appoint a Veterans Service Organization (VSO) such as the American Legion, VFW, DAV, or others to represent you in your VA claims. VSOs provide free assistance with claims.",
+      "instructions": "Complete the form to appoint your chosen VSO:\n\n**Section I - Veteran Information**\nYour personal and contact information.\n\n**Section II - Claimant Information**\nIf someone other than the veteran is filing (surviving spouse, etc.).\n\n**Section III - Organization Selection**\nSelect the VSO you want to represent you. Common options include:\n- American Legion\n- Veterans of Foreign Wars (VFW)\n- Disabled American Veterans (DAV)\n- AMVETS\n- State VSOs\n- Many others\n\n**Section IV - Authorization**\n- Authorize VSO to access your VA records\n- Authorize VSO to change your address (optional)\n- Authorize VSO to act on your behalf\n\n**Section V - Signature**\nSign and date the form.\n\n**Note:** You can only have one VSO representative at a time. Filing a new 21-22 revokes any previous appointment.",
+      "official_url": "https://www.va.gov/find-forms/about-form-21-22/",
+      "instructions_url": "",
+      "workflow_stages": ["initial_claim", "supplemental_claim", "higher_level_review", "board_appeal"],
+      "deadline_info": "No deadline. You can appoint a VSO at any time. You can also change or revoke representation at any time.",
+      "tips": "- VSO representation is FREE - they cannot charge you\n- VSOs have access to VA systems and can help track your claim\n- You can switch VSOs at any time by filing a new 21-22\n- Consider choosing a VSO with local office for in-person help\n- Some VSOs specialize in certain types of claims\n- VSOs can attend C&P exams and BVA hearings with you\n- Having a VSO doesn't prevent you from also hiring an attorney later",
+      "common_mistakes": "- Not realizing VSO services are free\n- Not revoking old representation when switching VSOs\n- Choosing a VSO without checking for local representation\n- Forgetting to sign the form\n- Not providing VSO with copies of your evidence",
+      "category": 1,
+      "is_active": true,
+      "last_updated": "2024-01-01",
+      "created_at": "2026-01-11T21:00:00Z",
+      "updated_at": "2026-01-11T21:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.vaform",
+    "pk": 20,
+    "fields": {
+      "form_number": "21-22a",
+      "title": "Appointment of Individual as Claimant's Representative",
+      "description": "Use this form to appoint an individual (usually an attorney or claims agent) to represent you in your VA claims. Unlike VSO representation, attorneys may charge fees for their services.",
+      "instructions": "Complete the form to appoint an individual representative:\n\n**Section I - Veteran/Claimant Information**\nYour personal and contact information.\n\n**Section II - Representative Information**\nInformation about the attorney or claims agent:\n- Full name\n- Address and contact information\n- VA accreditation number\n\n**Section III - Authorization**\nAuthorize the representative to:\n- Access your VA records\n- Receive copies of correspondence\n- Act on your behalf\n\n**Section IV - Fee Agreement**\nIndicate whether there is a fee agreement. Note: Fees are limited by VA regulations.\n\n**Section V - Signature**\nSign and date the form.\n\n**Important:** Only VA-accredited attorneys and claims agents can be appointed using this form.",
+      "official_url": "https://www.va.gov/find-forms/about-form-21-22a/",
+      "instructions_url": "",
+      "workflow_stages": ["supplemental_claim", "higher_level_review", "board_appeal"],
+      "deadline_info": "No deadline to appoint representation. Can be done at any stage of the claims process.",
+      "tips": "- Verify the representative is VA-accredited before appointing\n- Understand the fee agreement before signing\n- Attorney fees are limited - usually 20-33% of past-due benefits\n- Attorneys cannot charge for initial claims, only appeals\n- You can revoke representation at any time\n- Consider VSO (free) representation first for initial claims\n- Appointing a new representative revokes the previous one",
+      "common_mistakes": "- Appointing someone who isn't VA-accredited\n- Not understanding the fee agreement\n- Not realizing attorneys can't charge for initial claims\n- Signing a fee agreement without reading it carefully\n- Not getting a copy of the fee agreement for your records",
+      "category": 2,
+      "is_active": true,
+      "last_updated": "2024-01-01",
+      "created_at": "2026-01-11T21:00:00Z",
+      "updated_at": "2026-01-11T21:00:00Z"
+    }
+  }
+]

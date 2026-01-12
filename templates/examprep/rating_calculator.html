@@ -361,5 +361,124 @@ function loadCalculation(id) {
 document.addEventListener('DOMContentLoaded', function() {
     addRating();
 });
+
+function shareCalculation() {
+    const ratings = getRatingsData();
+
+    if (ratings.length === 0) {
+        alert('Please add at least one disability rating before sharing.');
+        return;
+    }
+
+    const hasSpouse = document.getElementById('has-spouse').checked;
+    const children = document.getElementById('children').value;
+    const parents = document.getElementById('parents').value;
+
+    const formData = new FormData();
+    formData.append('ratings', JSON.stringify(ratings));
+    formData.append('has_spouse', hasSpouse);
+    formData.append('children_under_18', children);
+    formData.append('dependent_parents', parents);
+    formData.append('name', 'Shared VA Rating Calculation');
+
+    fetch('{% url "examprep:share_calculation" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const shareModal = document.getElementById('share-modal');
+            const shareUrlInput = document.getElementById('share-url-input');
+            if (shareModal && shareUrlInput) {
+                shareUrlInput.value = data.share_url;
+                shareModal.classList.remove('hidden');
+            }
+        } else {
+            alert('Error creating share link: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error creating share link. Please try again.');
+    });
+}
+
+function copyShareLink() {
+    const shareUrlInput = document.getElementById('share-url-input');
+    if (shareUrlInput) {
+        shareUrlInput.select();
+        shareUrlInput.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(shareUrlInput.value).then(() => {
+            const feedback = document.getElementById('share-copy-feedback');
+            if (feedback) {
+                feedback.classList.remove('hidden');
+                setTimeout(() => {
+                    feedback.classList.add('hidden');
+                }, 3000);
+            }
+        });
+    }
+}
+
+function exportPDF() {
+    const ratings = getRatingsData();
+
+    if (ratings.length === 0) {
+        alert('Please add at least one disability rating before exporting.');
+        return;
+    }
+
+    const hasSpouse = document.getElementById('has-spouse').checked;
+    const children = document.getElementById('children').value;
+    const parents = document.getElementById('parents').value;
+
+    // Create a hidden form and submit it to trigger file download
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '{% url "examprep:export_rating_pdf" %}';
+    form.style.display = 'none';
+
+    // CSRF token
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = 'csrfmiddlewaretoken';
+    csrfInput.value = '{{ csrf_token }}';
+    form.appendChild(csrfInput);
+
+    // Ratings data
+    const ratingsInput = document.createElement('input');
+    ratingsInput.type = 'hidden';
+    ratingsInput.name = 'ratings';
+    ratingsInput.value = JSON.stringify(ratings);
+    form.appendChild(ratingsInput);
+
+    // Dependents
+    const spouseInput = document.createElement('input');
+    spouseInput.type = 'hidden';
+    spouseInput.name = 'has_spouse';
+    spouseInput.value = hasSpouse;
+    form.appendChild(spouseInput);
+
+    const childrenInput = document.createElement('input');
+    childrenInput.type = 'hidden';
+    childrenInput.name = 'children_under_18';
+    childrenInput.value = children;
+    form.appendChild(childrenInput);
+
+    const parentsInput = document.createElement('input');
+    parentsInput.type = 'hidden';
+    parentsInput.name = 'dependent_parents';
+    parentsInput.value = parents;
+    form.appendChild(parentsInput);
+
+    // Submit the form
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+}
 </script>
 {% endblock %}

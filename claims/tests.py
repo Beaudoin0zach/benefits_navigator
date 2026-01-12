@@ -990,3 +990,649 @@ class TestDocumentWorkflow(TestCase):
         claim.save()
 
         self.assertIsNotNone(claim.days_since_submission)
+
+
+# =============================================================================
+# DOCUMENT UPLOAD END-TO-END INTEGRATION TESTS
+# =============================================================================
+
+class TestDocumentUploadEndToEnd(TestCase):
+    """End-to-end integration tests for document upload flow."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="e2e@example.com",
+            password="TestPass123!"
+        )
+        self.client = Client()
+        self.client.login(email="e2e@example.com", password="TestPass123!")
+
+    def get_test_pdf(self, size=1024, name="test.pdf"):
+        """Create a minimal valid PDF file for testing."""
+        content = b"""%PDF-1.4
+1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj
+2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj
+3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] >> endobj
+xref
+0 4
+0000000000 65535 f
+0000000009 00000 n
+0000000058 00000 n
+0000000115 00000 n
+trailer << /Size 4 /Root 1 0 R >>
+startxref
+190
+%%EOF"""
+        if len(content) < size:
+            content = content + b'\x00' * (size - len(content))
+        return SimpleUploadedFile(name, content, content_type="application/pdf")
+
+    def get_test_image(self, name="test.jpg"):
+        """Create a minimal valid JPEG file for testing."""
+        # Minimal JPEG (1x1 pixel white)
+        content = bytes([
+            0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46, 0x00,
+            0x01, 0x01, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0xFF, 0xDB,
+            0x00, 0x43, 0x00, 0x08, 0x06, 0x06, 0x07, 0x06, 0x05, 0x08, 0x07,
+            0x07, 0x07, 0x09, 0x09, 0x08, 0x0A, 0x0C, 0x14, 0x0D, 0x0C, 0x0B,
+            0x0B, 0x0C, 0x19, 0x12, 0x13, 0x0F, 0x14, 0x1D, 0x1A, 0x1F, 0x1E,
+            0x1D, 0x1A, 0x1C, 0x1C, 0x20, 0x24, 0x2E, 0x27, 0x20, 0x22, 0x2C,
+            0x23, 0x1C, 0x1C, 0x28, 0x37, 0x29, 0x2C, 0x30, 0x31, 0x34, 0x34,
+            0x34, 0x1F, 0x27, 0x39, 0x3D, 0x38, 0x32, 0x3C, 0x2E, 0x33, 0x34,
+            0x32, 0xFF, 0xC0, 0x00, 0x0B, 0x08, 0x00, 0x01, 0x00, 0x01, 0x01,
+            0x01, 0x11, 0x00, 0xFF, 0xC4, 0x00, 0x1F, 0x00, 0x00, 0x01, 0x05,
+            0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+            0x09, 0x0A, 0x0B, 0xFF, 0xC4, 0x00, 0xB5, 0x10, 0x00, 0x02, 0x01,
+            0x03, 0x03, 0x02, 0x04, 0x03, 0x05, 0x05, 0x04, 0x04, 0x00, 0x00,
+            0x01, 0x7D, 0x01, 0x02, 0x03, 0x00, 0x04, 0x11, 0x05, 0x12, 0x21,
+            0x31, 0x41, 0x06, 0x13, 0x51, 0x61, 0x07, 0x22, 0x71, 0x14, 0x32,
+            0x81, 0x91, 0xA1, 0x08, 0x23, 0x42, 0xB1, 0xC1, 0x15, 0x52, 0xD1,
+            0xF0, 0x24, 0x33, 0x62, 0x72, 0x82, 0x09, 0x0A, 0x16, 0x17, 0x18,
+            0x19, 0x1A, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2A, 0x34, 0x35, 0x36,
+            0x37, 0x38, 0x39, 0x3A, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49,
+            0x4A, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5A, 0x63, 0x64,
+            0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x73, 0x74, 0x75, 0x76, 0x77,
+            0x78, 0x79, 0x7A, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8A,
+            0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98, 0x99, 0x9A, 0xA2, 0xA3,
+            0xA4, 0xA5, 0xA6, 0xA7, 0xA8, 0xA9, 0xAA, 0xB2, 0xB3, 0xB4, 0xB5,
+            0xB6, 0xB7, 0xB8, 0xB9, 0xBA, 0xC2, 0xC3, 0xC4, 0xC5, 0xC6, 0xC7,
+            0xC8, 0xC9, 0xCA, 0xD2, 0xD3, 0xD4, 0xD5, 0xD6, 0xD7, 0xD8, 0xD9,
+            0xDA, 0xE1, 0xE2, 0xE3, 0xE4, 0xE5, 0xE6, 0xE7, 0xE8, 0xE9, 0xEA,
+            0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9, 0xFA, 0xFF,
+            0xDA, 0x00, 0x08, 0x01, 0x01, 0x00, 0x00, 0x3F, 0x00, 0xFB, 0xD5,
+            0xDB, 0x20, 0xA8, 0xF3, 0xFF, 0xD9
+        ])
+        return SimpleUploadedFile(name, content, content_type="image/jpeg")
+
+    def test_upload_page_loads_with_form(self):
+        """Upload page loads with the document upload form."""
+        response = self.client.get(reverse('claims:document_upload'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+        self.assertTemplateUsed(response, 'claims/document_upload.html')
+
+    def test_upload_page_shows_document_types(self):
+        """Upload form includes all document type options."""
+        response = self.client.get(reverse('claims:document_upload'))
+        self.assertEqual(response.status_code, 200)
+        content = response.content.decode()
+        # Check for document type options
+        self.assertIn('medical_records', content)
+        self.assertIn('decision_letter', content)
+
+    def test_document_list_empty_for_new_user(self):
+        """New user sees empty document list."""
+        response = self.client.get(reverse('claims:document_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['documents']), 0)
+
+    def test_document_list_shows_uploaded_documents(self):
+        """Document list shows user's uploaded documents."""
+        # Create test documents
+        doc1 = Document.objects.create(
+            user=self.user,
+            file_name="medical.pdf",
+            document_type="medical_records",
+            status="completed",
+        )
+        doc2 = Document.objects.create(
+            user=self.user,
+            file_name="buddy_stmt.pdf",
+            document_type="buddy_statement",
+            status="completed",
+        )
+
+        response = self.client.get(reverse('claims:document_list'))
+        self.assertEqual(response.status_code, 200)
+        documents = list(response.context['documents'])
+        self.assertEqual(len(documents), 2)
+
+    def test_document_detail_shows_metadata(self):
+        """Document detail page shows file metadata."""
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="test_doc.pdf",
+            file_size=1024000,  # ~1MB
+            document_type="medical_records",
+            status="completed",
+            ocr_text="Sample extracted text from document.",
+            ocr_confidence=95.5,
+            page_count=3,
+        )
+
+        response = self.client.get(
+            reverse('claims:document_detail', kwargs={'pk': doc.pk})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['document'], doc)
+
+    def test_document_status_polling_htmx(self):
+        """Status endpoint returns correct status for HTMX polling."""
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="processing.pdf",
+            status="processing",
+        )
+
+        response = self.client.get(
+            reverse('claims:document_status', kwargs={'pk': doc.pk}),
+            HTTP_HX_REQUEST='true'
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_document_status_transitions_reflected(self):
+        """Status endpoint reflects document status changes."""
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="status_test.pdf",
+            status="uploading",
+        )
+
+        # Check uploading status
+        response = self.client.get(
+            reverse('claims:document_status', kwargs={'pk': doc.pk}),
+            HTTP_HX_REQUEST='true'
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # Transition to processing
+        doc.mark_processing()
+
+        response = self.client.get(
+            reverse('claims:document_status', kwargs={'pk': doc.pk}),
+            HTTP_HX_REQUEST='true'
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # Complete
+        doc.mark_completed(ocr_text="Text", ocr_confidence=90.0, page_count=1)
+
+        response = self.client.get(
+            reverse('claims:document_status', kwargs={'pk': doc.pk}),
+            HTTP_HX_REQUEST='true'
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_document_delete_workflow(self):
+        """Document delete workflow soft deletes and redirects."""
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="to_delete.pdf",
+            status="completed",
+        )
+
+        response = self.client.post(
+            reverse('claims:document_delete', kwargs={'pk': doc.pk})
+        )
+        self.assertEqual(response.status_code, 302)
+
+        # Document should be soft deleted
+        doc.refresh_from_db()
+        self.assertTrue(doc.is_deleted)
+
+        # Document should not appear in list
+        response = self.client.get(reverse('claims:document_list'))
+        documents = list(response.context['documents'])
+        self.assertNotIn(doc, documents)
+
+
+class TestDocumentProcessingIntegration(TestCase):
+    """Integration tests for document processing workflow."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="processing@example.com",
+            password="TestPass123!"
+        )
+
+    def test_document_status_workflow(self):
+        """Test document status transitions through processing workflow."""
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="workflow.pdf",
+            document_type="medical_records",
+            status="uploading",
+        )
+
+        # Transition through statuses
+        self.assertEqual(doc.status, "uploading")
+        self.assertTrue(doc.is_processing)  # uploading is considered processing
+        self.assertFalse(doc.is_complete)
+
+        doc.mark_processing()
+        self.assertEqual(doc.status, "processing")
+        self.assertTrue(doc.is_processing)
+
+        doc.mark_analyzing()
+        self.assertEqual(doc.status, "analyzing")
+        self.assertTrue(doc.is_processing)
+
+        doc.mark_completed(
+            ocr_text="Extracted text content",
+            ocr_confidence=95.0,
+            page_count=3,
+        )
+        self.assertEqual(doc.status, "completed")
+        self.assertFalse(doc.is_processing)
+        self.assertTrue(doc.is_complete)
+        self.assertEqual(doc.ocr_text, "Extracted text content")
+        self.assertEqual(doc.page_count, 3)
+
+    def test_document_failure_workflow(self):
+        """Test document failure handling."""
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="fail.pdf",
+            status="processing",
+        )
+
+        doc.mark_failed("OCR engine crashed: corrupted PDF")
+        doc.refresh_from_db()
+
+        self.assertEqual(doc.status, "failed")
+        self.assertTrue(doc.has_failed)
+        self.assertIn("OCR", doc.error_message)
+        self.assertFalse(doc.is_processing)
+
+    def test_document_processing_with_ai_results(self):
+        """Test document with complete AI analysis results."""
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="analyzed.pdf",
+            document_type="medical_records",
+            status="uploading",
+        )
+
+        # Simulate OCR completion
+        doc.mark_processing()
+        doc.mark_analyzing()
+
+        # Complete with full results
+        doc.mark_completed(
+            ocr_text="Patient: John Doe\nDiagnosis: PTSD",
+            ocr_confidence=92.5,
+            page_count=5,
+        )
+
+        # Add AI results
+        doc.ai_summary = {
+            'summary': 'Medical records showing PTSD diagnosis',
+            'key_findings': ['PTSD diagnosis', 'Treatment plan'],
+        }
+        doc.ai_model_used = 'gpt-4'
+        doc.ai_tokens_used = 1500
+        doc.save()
+
+        # Verify all data persisted
+        doc.refresh_from_db()
+        self.assertEqual(doc.status, 'completed')
+        self.assertIn('PTSD', doc.ocr_text)
+        self.assertIsNotNone(doc.ai_summary)
+        self.assertEqual(doc.ai_model_used, 'gpt-4')
+        self.assertEqual(doc.ai_tokens_used, 1500)
+
+
+class TestDenialDecoderEndToEnd(TestCase):
+    """End-to-end integration tests for denial decoder workflow."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="denial@example.com",
+            password="TestPass123!"
+        )
+        self.client = Client()
+        self.client.login(email="denial@example.com", password="TestPass123!")
+
+    def test_denial_decoder_page_loads(self):
+        """Denial decoder upload page loads correctly."""
+        response = self.client.get(reverse('claims:denial_decoder'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+
+    def test_denial_decoder_status_polling(self):
+        """Denial decoder status endpoint works."""
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="denial_letter.pdf",
+            document_type="decision_letter",
+            status="processing",
+        )
+
+        response = self.client.get(
+            reverse('claims:denial_decoder_status', kwargs={'pk': doc.pk}),
+            HTTP_HX_REQUEST='true'
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_denial_decoder_completed_document(self):
+        """Completed denial decoder document displays results."""
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="denial_letter.pdf",
+            document_type="decision_letter",
+            status="completed",
+            ocr_text="Your claim for PTSD has been denied...",
+        )
+
+        # View status - should show completed
+        response = self.client.get(
+            reverse('claims:denial_decoder_status', kwargs={'pk': doc.pk}),
+            HTTP_HX_REQUEST='true'
+        )
+        self.assertEqual(response.status_code, 200)
+
+
+class TestDocumentSecurityIntegration(TestCase):
+    """Integration tests for document security features."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="security@example.com",
+            password="TestPass123!"
+        )
+        self.other_user = User.objects.create_user(
+            email="other@example.com",
+            password="TestPass123!"
+        )
+        self.client = Client()
+
+    def test_anonymous_cannot_access_documents(self):
+        """Anonymous users cannot access document views."""
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="secure.pdf",
+        )
+
+        # List
+        response = self.client.get(reverse('claims:document_list'))
+        self.assertEqual(response.status_code, 302)
+
+        # Detail
+        response = self.client.get(
+            reverse('claims:document_detail', kwargs={'pk': doc.pk})
+        )
+        self.assertEqual(response.status_code, 302)
+
+        # Upload
+        response = self.client.get(reverse('claims:document_upload'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_user_cannot_access_other_user_document_detail(self):
+        """User cannot view another user's document."""
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="private.pdf",
+        )
+
+        self.client.login(email="other@example.com", password="TestPass123!")
+
+        response = self.client.get(
+            reverse('claims:document_detail', kwargs={'pk': doc.pk})
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_user_cannot_delete_other_user_document(self):
+        """User cannot delete another user's document."""
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="protected.pdf",
+        )
+
+        self.client.login(email="other@example.com", password="TestPass123!")
+
+        response = self.client.post(
+            reverse('claims:document_delete', kwargs={'pk': doc.pk})
+        )
+        self.assertEqual(response.status_code, 404)
+
+        # Document should still exist
+        self.assertTrue(Document.objects.filter(pk=doc.pk).exists())
+
+    def test_user_cannot_poll_other_user_document_status(self):
+        """User cannot poll status of another user's document."""
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="status.pdf",
+            status="processing",
+        )
+
+        self.client.login(email="other@example.com", password="TestPass123!")
+
+        response = self.client.get(
+            reverse('claims:document_status', kwargs={'pk': doc.pk}),
+            HTTP_HX_REQUEST='true'
+        )
+        self.assertEqual(response.status_code, 404)
+
+
+class TestDocumentFormValidation(TestCase):
+    """Integration tests for document upload form validation."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="validation@example.com",
+            password="TestPass123!"
+        )
+
+    def test_form_rejects_oversized_file(self):
+        """Form rejects files over size limit."""
+        # Create mock large file
+        large_content = b'x' * (51 * 1024 * 1024)  # 51 MB
+        large_file = SimpleUploadedFile(
+            "large.pdf",
+            large_content,
+            content_type="application/pdf"
+        )
+
+        form = DocumentUploadForm(
+            data={'document_type': 'medical_records'},
+            files={'file': large_file},
+            user=self.user
+        )
+
+        self.assertFalse(form.is_valid())
+        self.assertIn('file', form.errors)
+
+    def test_form_rejects_executable(self):
+        """Form rejects executable files."""
+        exe_file = SimpleUploadedFile(
+            "malware.exe",
+            b"MZ\x90\x00" + b'\x00' * 100,  # DOS header
+            content_type="application/x-executable"
+        )
+
+        form = DocumentUploadForm(
+            data={'document_type': 'other'},
+            files={'file': exe_file},
+            user=self.user
+        )
+
+        self.assertFalse(form.is_valid())
+
+    def test_form_rejects_html_file(self):
+        """Form rejects HTML files (XSS prevention)."""
+        html_file = SimpleUploadedFile(
+            "xss.html",
+            b"<html><script>alert('xss')</script></html>",
+            content_type="text/html"
+        )
+
+        form = DocumentUploadForm(
+            data={'document_type': 'other'},
+            files={'file': html_file},
+            user=self.user
+        )
+
+        self.assertFalse(form.is_valid())
+
+    def test_form_rejects_script_extension(self):
+        """Form rejects script file extensions."""
+        for ext in ['.js', '.py', '.sh', '.bat', '.ps1']:
+            script_file = SimpleUploadedFile(
+                f"script{ext}",
+                b"malicious code",
+                content_type="text/plain"
+            )
+
+            form = DocumentUploadForm(
+                data={'document_type': 'other'},
+                files={'file': script_file},
+                user=self.user
+            )
+
+            self.assertFalse(form.is_valid(), f"Should reject {ext} files")
+
+
+class TestDocumentCompleteWorkflow(TestCase):
+    """Complete end-to-end workflow tests for document lifecycle."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="workflow@example.com",
+            password="TestPass123!"
+        )
+        self.client = Client()
+        self.client.login(email="workflow@example.com", password="TestPass123!")
+
+    def test_complete_upload_to_analysis_workflow(self):
+        """Test complete workflow from upload to viewing analysis."""
+        # 1. View upload page
+        response = self.client.get(reverse('claims:document_upload'))
+        self.assertEqual(response.status_code, 200)
+
+        # 2. Create document (simulating successful upload)
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="complete_workflow.pdf",
+            file_size=2048,
+            document_type="medical_records",
+            status="uploading",
+        )
+
+        # 3. Simulate processing workflow
+        doc.mark_processing()
+        doc.mark_analyzing()
+        doc.mark_completed(
+            ocr_text='Patient: John Doe\nCondition: PTSD diagnosed 2024-01-15',
+            ocr_confidence=92.0,
+            page_count=5,
+        )
+
+        # Add AI analysis results
+        doc.ai_summary = {
+            'summary': 'Medical records confirming PTSD diagnosis',
+            'key_findings': ['PTSD diagnosis', 'Ongoing treatment'],
+            'recommendations': ['Use for service connection claim'],
+        }
+        doc.ai_model_used = 'gpt-4'
+        doc.ai_tokens_used = 800
+        doc.save()
+
+        # 4. View document list - should show document
+        response = self.client.get(reverse('claims:document_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(doc, response.context['documents'])
+
+        # 5. View document detail with analysis
+        response = self.client.get(
+            reverse('claims:document_detail', kwargs={'pk': doc.pk})
+        )
+        self.assertEqual(response.status_code, 200)
+        detail_doc = response.context['document']
+        self.assertEqual(detail_doc.status, 'completed')
+        self.assertIsNotNone(detail_doc.ai_summary)
+
+        # 6. Delete document
+        response = self.client.post(
+            reverse('claims:document_delete', kwargs={'pk': doc.pk})
+        )
+        self.assertEqual(response.status_code, 302)
+
+        # 7. Verify soft deleted
+        doc.refresh_from_db()
+        self.assertTrue(doc.is_deleted)
+
+        # 8. Verify not in list
+        response = self.client.get(reverse('claims:document_list'))
+        self.assertNotIn(doc, response.context['documents'])
+
+    def test_multiple_documents_workflow(self):
+        """Test managing multiple documents."""
+        # Create multiple documents
+        docs = []
+        for i, doc_type in enumerate(['medical_records', 'buddy_statement', 'nexus_letter']):
+            doc = Document.objects.create(
+                user=self.user,
+                file_name=f"document_{i}.pdf",
+                document_type=doc_type,
+                status="completed",
+                ocr_text=f"Content for {doc_type}",
+            )
+            docs.append(doc)
+
+        # View list
+        response = self.client.get(reverse('claims:document_list'))
+        self.assertEqual(len(response.context['documents']), 3)
+
+        # View each detail
+        for doc in docs:
+            response = self.client.get(
+                reverse('claims:document_detail', kwargs={'pk': doc.pk})
+            )
+            self.assertEqual(response.status_code, 200)
+
+        # Delete one
+        self.client.post(
+            reverse('claims:document_delete', kwargs={'pk': docs[0].pk})
+        )
+
+        # Verify count
+        response = self.client.get(reverse('claims:document_list'))
+        self.assertEqual(len(response.context['documents']), 2)
+
+    def test_failed_document_workflow(self):
+        """Test workflow when document processing fails."""
+        # Create document that will fail
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="will_fail.pdf",
+            status="processing",
+        )
+
+        # Mark as failed
+        doc.mark_failed("Unable to extract text - file corrupted")
+
+        # View detail - should show error
+        response = self.client.get(
+            reverse('claims:document_detail', kwargs={'pk': doc.pk})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['document'].has_failed)
+
+        # Status polling should reflect failure
+        response = self.client.get(
+            reverse('claims:document_status', kwargs={'pk': doc.pk}),
+            HTTP_HX_REQUEST='true'
+        )
+        self.assertEqual(response.status_code, 200)

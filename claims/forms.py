@@ -13,15 +13,17 @@ from .models import Document
 
 logger = logging.getLogger(__name__)
 
-# Check if python-magic is available at module load time
+# python-magic is REQUIRED for secure file validation
+# It validates file content via magic bytes, not just extension/MIME header
 try:
     import magic
     MAGIC_AVAILABLE = True
 except ImportError:
     MAGIC_AVAILABLE = False
-    logger.warning(
-        "python-magic is not installed. File content validation will be limited. "
-        "Install with: pip install python-magic"
+    logger.error(
+        "SECURITY WARNING: python-magic is not installed. "
+        "File uploads will be rejected until it is installed. "
+        "Install with: pip install python-magic (or python-magic-bin on Windows)"
     )
 
 
@@ -97,18 +99,22 @@ class DocumentUploadForm(forms.ModelForm):
 
         # SECURITY: Validate actual file content using magic bytes
         # This prevents malicious files disguised with fake extensions
-        if MAGIC_AVAILABLE:
-            file.seek(0)
-            file_magic = magic.from_buffer(file.read(2048), mime=True)
-            file.seek(0)  # Reset file pointer
+        if not MAGIC_AVAILABLE:
+            # python-magic is required for secure uploads
+            raise ValidationError(
+                _('File upload is temporarily unavailable due to a server configuration issue. '
+                  'Please contact support.')
+            )
 
-            if file_magic not in allowed_types:
-                raise ValidationError(
-                    _('File content does not match expected type. '
-                      'Please ensure you are uploading a valid PDF or image file.')
-                )
-        else:
-            logger.info(f"Skipping magic byte validation for {file.name} (python-magic not available)")
+        file.seek(0)
+        file_magic = magic.from_buffer(file.read(2048), mime=True)
+        file.seek(0)  # Reset file pointer
+
+        if file_magic not in allowed_types:
+            raise ValidationError(
+                _('File content does not match expected type. '
+                  'Please ensure you are uploading a valid PDF or image file.')
+            )
 
         # Check page count for PDFs to prevent extremely large documents
         if ext == 'pdf':
@@ -119,21 +125,14 @@ class DocumentUploadForm(forms.ModelForm):
                     _(f'PDF has too many pages ({page_count}). Maximum allowed is {max_pages} pages.')
                 )
 
-        # Check user's monthly limit (if not premium)
-        if self.user and not self.user.is_premium:
-            from datetime import datetime
-            current_month_docs = Document.objects.filter(
-                user=self.user,
-                created_at__year=datetime.now().year,
-                created_at__month=datetime.now().month,
-                is_deleted=False
-            ).count()
-
-            if current_month_docs >= settings.FREE_TIER_DOCUMENTS_PER_MONTH:
+        # Check user's limits using UsageTracking (includes storage cap)
+        if self.user:
+            from accounts.models import UsageTracking
+            usage, created = UsageTracking.objects.get_or_create(user=self.user)
+            can_upload, reason = usage.can_upload_document(file.size)
+            if not can_upload:
                 raise ValidationError(
-                    _(f'You have reached your free tier limit of '
-                      f'{settings.FREE_TIER_DOCUMENTS_PER_MONTH} documents per month. '
-                      f'Please upgrade to Premium for unlimited uploads.')
+                    _(reason + ' Please upgrade to Premium for unlimited uploads.')
                 )
 
         return file
@@ -233,17 +232,21 @@ class DenialLetterUploadForm(forms.ModelForm):
             )
 
         # SECURITY: Validate via magic bytes
-        if MAGIC_AVAILABLE:
-            file.seek(0)
-            file_magic = magic.from_buffer(file.read(2048), mime=True)
-            file.seek(0)
+        if not MAGIC_AVAILABLE:
+            # python-magic is required for secure uploads
+            raise ValidationError(
+                _('File upload is temporarily unavailable due to a server configuration issue. '
+                  'Please contact support.')
+            )
 
-            if file_magic not in allowed_types:
-                raise ValidationError(
-                    _('File content does not match expected type.')
-                )
-        else:
-            logger.info(f"Skipping magic byte validation for {file.name} (python-magic not available)")
+        file.seek(0)
+        file_magic = magic.from_buffer(file.read(2048), mime=True)
+        file.seek(0)
+
+        if file_magic not in allowed_types:
+            raise ValidationError(
+                _('File content does not match expected type.')
+            )
 
         # Check page count for PDFs
         if ext == 'pdf':
@@ -254,20 +257,23 @@ class DenialLetterUploadForm(forms.ModelForm):
                     _(f'PDF has too many pages ({page_count}). Maximum allowed is {max_pages} pages.')
                 )
 
-        # Check user's monthly limit
-        if self.user and not self.user.is_premium:
-            from datetime import datetime
-            current_month_docs = Document.objects.filter(
-                user=self.user,
-                created_at__year=datetime.now().year,
-                created_at__month=datetime.now().month,
-                is_deleted=False
-            ).count()
+        # Check user's upload limits using UsageTracking
+        if self.user:
+            from accounts.models import UsageTracking
+            usage, created = UsageTracking.objects.get_or_create(user=self.user)
 
-            if current_month_docs >= settings.FREE_TIER_DOCUMENTS_PER_MONTH:
+            # Check document upload limit
+            can_upload, reason = usage.can_upload_document(file.size)
+            if not can_upload:
                 raise ValidationError(
-                    _(f'You have reached your free tier limit of '
-                      f'{settings.FREE_TIER_DOCUMENTS_PER_MONTH} documents per month.')
+                    _(reason + ' Please upgrade to Premium for unlimited uploads.')
+                )
+
+            # Also check denial decoder limit (this form is specifically for denial letters)
+            can_decode, decode_reason = usage.can_use_denial_decoder()
+            if not can_decode:
+                raise ValidationError(
+                    _(decode_reason + ' Please upgrade to Premium for unlimited denial decodes.')
                 )
 
         return file

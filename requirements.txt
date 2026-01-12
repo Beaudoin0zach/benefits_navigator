@@ -76,7 +76,13 @@ sentry-sdk==1.40.0
 django-extensions==3.2.3
 python-slugify==8.0.4
 
+# PDF Generation
+reportlab==4.0.9
+
 # Web Scraping
 playwright==1.48.0
 beautifulsoup4==4.12.3
 lxml==5.1.0
+
+# GraphQL
+strawberry-graphql[django]==0.219.0

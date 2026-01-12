@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}Upgrade to Premium - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <header class="mb-8 text-center">
+        <h1 class="text-3xl font-bold text-gray-900">Upgrade to Premium</h1>
+        <p class="text-gray-600 mt-2">Unlock unlimited access to all features</p>
+    </header>
+
+    {% if usage %}
+    <!-- Current Usage -->
+    <div class="bg-white shadow rounded-lg p-6 mb-8">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Your Current Usage</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+                <div class="text-2xl font-bold {% if usage.documents_remaining == 0 %}text-red-600{% else %}text-blue-600{% endif %}">
+                    {{ usage.documents_used }}/{{ usage.documents_limit|default:"∞" }}
+                </div>
+                <div class="text-sm text-gray-500">Documents this month</div>
+            </div>
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+                <div class="text-2xl font-bold {% if usage.storage_percentage and usage.storage_percentage > 80 %}text-red-600{% else %}text-green-600{% endif %}">
+                    {{ usage.storage_used_mb }} MB
+                </div>
+                <div class="text-sm text-gray-500">of {{ usage.storage_limit_mb|default:"Unlimited" }} MB</div>
+            </div>
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+                <div class="text-2xl font-bold {% if usage.denial_decodes_remaining == 0 %}text-red-600{% else %}text-purple-600{% endif %}">
+                    {{ usage.denial_decodes_used }}/{{ usage.denial_decodes_limit|default:"∞" }}
+                </div>
+                <div class="text-sm text-gray-500">Denial decodes</div>
+            </div>
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+                <div class="text-2xl font-bold {% if usage.ai_analyses_remaining == 0 %}text-red-600{% else %}text-indigo-600{% endif %}">
+                    {{ usage.ai_analyses_used }}/{{ usage.ai_analyses_limit|default:"∞" }}
+                </div>
+                <div class="text-sm text-gray-500">AI analyses</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Plan Comparison -->
+    <div class="grid md:grid-cols-2 gap-8 mb-8">
+        <!-- Free Plan -->
+        <div class="bg-white shadow rounded-lg overflow-hidden border-2 border-gray-200">
+            <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                <h2 class="text-xl font-bold text-gray-900">Free</h2>
+                <p class="text-3xl font-bold text-gray-900 mt-2">$0<span class="text-base font-normal text-gray-500">/month</span></p>
+            </div>
+            <div class="p-6">
+                <ul class="space-y-3">
+                    {% for feature in free_features %}
+                    <li class="flex items-start">
+                        <svg class="h-5 w-5 text-gray-400 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <span class="text-gray-600">{{ feature }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% if not usage.is_premium %}
+                <div class="mt-6">
+                    <span class="block w-full text-center px-4 py-2 border border-gray-300 text-gray-500 rounded-md">
+                        Current Plan
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Premium Plan -->
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden border-2 border-blue-500 relative">
+            <div class="absolute top-0 right-0 bg-blue-500 text-white px-3 py-1 text-sm font-medium rounded-bl-lg">
+                Recommended
+            </div>
+            <div class="px-6 py-4 bg-blue-50 border-b border-blue-200">
+                <h2 class="text-xl font-bold text-gray-900">Premium</h2>
+                <p class="text-3xl font-bold text-gray-900 mt-2">$19<span class="text-base font-normal text-gray-500">/month</span></p>
+            </div>
+            <div class="p-6">
+                <ul class="space-y-3">
+                    {% for feature in premium_features %}
+                    <li class="flex items-start">
+                        <svg class="h-5 w-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <span class="text-gray-900 font-medium">{{ feature }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div class="mt-6">
+                    {% if usage.is_premium %}
+                    <a href="{% url 'accounts:customer_portal' %}"
+                       class="block w-full text-center px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition">
+                        Manage Subscription
+                    </a>
+                    {% else %}
+                    <a href="{% url 'accounts:checkout' %}"
+                       class="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition font-medium">
+                        Upgrade Now
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Frequently Asked Questions</h2>
+        <div class="space-y-4">
+            <div>
+                <h3 class="font-medium text-gray-900">Can I cancel anytime?</h3>
+                <p class="text-gray-600 text-sm mt-1">Yes, you can cancel your subscription at any time. You'll continue to have premium access until the end of your billing period.</p>
+            </div>
+            <div>
+                <h3 class="font-medium text-gray-900">What happens to my data if I cancel?</h3>
+                <p class="text-gray-600 text-sm mt-1">Your data remains safe. You'll still be able to view your documents and analyses, but new uploads will be subject to free tier limits.</p>
+            </div>
+            <div>
+                <h3 class="font-medium text-gray-900">Is my payment secure?</h3>
+                <p class="text-gray-600 text-sm mt-1">Yes, all payments are processed securely through Stripe. We never store your credit card information.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Support -->
+    <div class="mt-8 text-center text-gray-500 text-sm">
+        Questions? Contact us at <a href="mailto:{{ SUPPORT_EMAIL }}" class="text-blue-600 hover:underline">{{ SUPPORT_EMAIL }}</a>
+    </div>
+</div>
+{% endblock %}

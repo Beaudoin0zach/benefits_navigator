@@ -1,0 +1,43 @@
+Your {{ doc_type_label }} Analysis is Complete
+============================================
+
+Hi{{ user.first_name|default:"" }},
+
+Great news! We've finished analyzing your {{ doc_type_label|lower }}. Our AI has extracted the text and generated insights to help you understand the document better.
+
+DOCUMENT DETAILS
+----------------
+Document: {{ document.file_name }}
+Type: {{ doc_type_label }}
+{% if page_count > 0 %}Pages: {{ page_count }}
+{% endif %}Status: Analysis Complete
+
+{% if has_summary %}
+WHAT'S INCLUDED
+---------------
+* Full text extracted from your document
+* AI-generated summary and key points
+* Identified conditions and claims
+* Suggested next steps
+{% endif %}
+
+VIEW YOUR RESULTS
+-----------------
+{{ site_url }}/claims/documents/{{ document.id }}/
+
+WHAT TO DO NEXT
+---------------
+1. Review the AI summary for accuracy
+2. Check that all conditions were identified
+3. Use the insights to strengthen your claim
+
+PRIVACY NOTE
+------------
+Your document is stored securely and only accessible by you. We use AI to help analyze your documents, but your personal information is never shared.
+
+---
+
+You're receiving this because you have document analysis notifications enabled.
+Update your preferences: {{ site_url }}/account/notifications/
+
+{{ site_name }} - Helping veterans navigate the VA claims process.

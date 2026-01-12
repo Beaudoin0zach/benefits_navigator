@@ -6,6 +6,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from strawberry.django.views import GraphQLView
 
 from core import views
 from accounts.views import (
@@ -13,6 +14,7 @@ from accounts.views import (
     RateLimitedSignupView,
     RateLimitedPasswordResetView,
 )
+from .schema import schema
 
 urlpatterns = [
     # Home page
@@ -20,6 +22,9 @@ urlpatterns = [
 
     # User dashboard
     path('dashboard/', views.dashboard, name='dashboard'),
+
+    # GraphQL API
+    path('graphql/', GraphQLView.as_view(schema=schema), name='graphql'),
 
     # Admin
     path('admin/', admin.site.urls),
@@ -41,9 +46,13 @@ urlpatterns = [
     path('exam-prep/', include('examprep.urls')),
     path('appeals/', include('appeals.urls')),
     path('agents/', include('agents.urls')),
+    path('docs/', include('documentation.urls', namespace='documentation')),
 ]
 
-# Serve media files in development
+# Serve static files in development
+# NOTE: Media files are NOT served directly for security reasons.
+# All document access must go through protected views at /claims/document/<pk>/download/
+# which verify authentication and ownership before serving files.
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    # DO NOT add: urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

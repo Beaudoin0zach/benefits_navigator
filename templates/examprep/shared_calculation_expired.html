@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Link Expired - VA Benefits Navigator{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto text-center py-12">
+    <svg class="w-24 h-24 mx-auto mb-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+
+    <h1 class="text-3xl font-bold text-gray-900 mb-4">Share Link Expired</h1>
+
+    <p class="text-gray-600 mb-8">
+        This shared calculation link has expired. Shared calculations from anonymous users expire after 30 days.
+    </p>
+
+    <div class="space-y-4">
+        <a href="{% url 'examprep:rating_calculator' %}"
+           class="inline-block px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">
+            Create Your Own Calculation
+        </a>
+
+        <p class="text-sm text-gray-500">
+            Need to share a calculation that won't expire?
+            <a href="{% url 'account_signup' %}" class="text-blue-600 hover:text-blue-800">Create an account</a>
+            to save and share calculations permanently.
+        </p>
+    </div>
+</div>
+{% endblock %}

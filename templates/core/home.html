@@ -151,7 +151,7 @@
                     </li>
                 </ul>
                 <a href="{% url 'examprep:guide_list' %}"
-                   class="block w-full text-center px-6 py-3 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                   class="block w-full text-center px-6 py-3 bg-green-700 text-white font-medium rounded-md hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                     Browse Exam Guides
                 </a>
             </article>
@@ -229,7 +229,7 @@
                     </li>
                 </ul>
                 <a href="{% url 'appeals:home' %}"
-                   class="block w-full text-center px-6 py-3 bg-purple-600 text-white font-medium rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                   class="block w-full text-center px-6 py-3 bg-purple-700 text-white font-medium rounded-md hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
                     Explore Appeals
                 </a>
             </article>
@@ -268,8 +268,47 @@
                     </li>
                 </ul>
                 <a href="{% url 'examprep:rating_calculator' %}"
-                   class="block w-full text-center px-6 py-3 bg-orange-600 text-white font-medium rounded-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                   class="block w-full text-center px-6 py-3 bg-orange-700 text-white font-medium rounded-md hover:bg-orange-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
                     Calculate Rating
+                </a>
+            </article>
+
+            <!-- Documentation & Forms -->
+            <article class="bg-white shadow-lg rounded-lg p-8 hover:shadow-xl transition-shadow border-t-4 border-teal-600">
+                <div class="flex items-center justify-center w-16 h-16 bg-teal-100 rounded-full mb-6 mx-auto">
+                    <svg class="w-8 h-8 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">
+                    Documentation
+                </h3>
+                <p class="text-gray-600 mb-6">
+                    Search VA forms, C&P exam guides, and legal references. Find the right forms with instructions and tips.
+                </p>
+                <ul class="space-y-2 mb-6 text-sm text-gray-700">
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        20 VA forms with instructions
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        15 C&P exam prep guides
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        20 legal case references
+                    </li>
+                </ul>
+                <a href="{% url 'documentation:search' %}"
+                   class="block w-full text-center px-6 py-3 bg-teal-700 text-white font-medium rounded-md hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
+                    Search Documentation
                 </a>
             </article>
         </div>

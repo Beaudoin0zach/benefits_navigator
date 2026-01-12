@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ guide.condition_name }} C&P Exam Guide - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Breadcrumb -->
+    <nav class="text-sm text-gray-500 mb-4" aria-label="Breadcrumb">
+        <a href="{% url 'documentation:search' %}" class="hover:underline">Documentation</a>
+        <span class="mx-2">/</span>
+        <a href="{% url 'documentation:exam_guide_list' %}" class="hover:underline">C&P Exam Guides</a>
+        <span class="mx-2">/</span>
+        <span class="text-gray-900">{{ guide.condition_name }}</span>
+    </nav>
+
+    <!-- Header -->
+    <div class="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+            <div>
+                <span class="inline-block px-3 py-1 text-sm font-medium bg-green-100 text-green-800 rounded mb-3">{{ guide.get_category_display }}</span>
+                <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ guide.condition_name }} C&P Exam Guide</h1>
+                {% if guide.dbq_form %}
+                <p class="text-gray-600">Associated DBQ Form: <strong>{{ guide.dbq_form }}</strong></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- What to Expect -->
+    <section class="bg-white rounded-lg border border-gray-200 p-6 mb-6" aria-labelledby="expect-heading">
+        <h2 id="expect-heading" class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            What to Expect During Your Exam
+        </h2>
+        <div class="prose prose-blue max-w-none">
+            {{ guide.what_to_expect|linebreaks }}
+        </div>
+    </section>
+
+    <!-- Key Questions -->
+    {% if guide.key_questions %}
+    <section class="bg-white rounded-lg border border-gray-200 p-6 mb-6" aria-labelledby="questions-heading">
+        <h2 id="questions-heading" class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Questions the Examiner May Ask
+        </h2>
+        <ul class="space-y-3">
+            {% for question in guide.key_questions %}
+            <li class="flex items-start">
+                <span class="inline-flex items-center justify-center w-6 h-6 bg-purple-100 text-purple-800 text-sm font-medium rounded-full mr-3 flex-shrink-0">{{ forloop.counter }}</span>
+                <span class="text-gray-700">{{ question }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    <!-- Documentation Needed -->
+    {% if guide.documentation_needed %}
+    <section class="bg-white rounded-lg border border-gray-200 p-6 mb-6" aria-labelledby="docs-heading">
+        <h2 id="docs-heading" class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            Documentation to Bring
+        </h2>
+        <ul class="space-y-2">
+            {% for doc in guide.documentation_needed %}
+            <li class="flex items-start">
+                <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span class="text-gray-700">{{ doc }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    <!-- How to Prepare -->
+    <section class="bg-white rounded-lg border border-gray-200 p-6 mb-6" aria-labelledby="prepare-heading">
+        <h2 id="prepare-heading" class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+            </svg>
+            How to Prepare
+        </h2>
+        <div class="prose prose-green max-w-none">
+            {{ guide.how_to_prepare|linebreaks }}
+        </div>
+    </section>
+
+    <!-- Tips -->
+    <section class="bg-green-50 rounded-lg border border-green-200 p-6 mb-6" aria-labelledby="tips-heading">
+        <h2 id="tips-heading" class="text-xl font-semibold text-green-900 mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+            </svg>
+            Helpful Tips
+        </h2>
+        <div class="prose prose-green max-w-none text-green-900">
+            {{ guide.tips|linebreaks }}
+        </div>
+    </section>
+
+    <!-- Red Flags / Things to Avoid -->
+    {% if guide.red_flags %}
+    <section class="bg-red-50 rounded-lg border border-red-200 p-6 mb-6" aria-labelledby="redflags-heading">
+        <h2 id="redflags-heading" class="text-xl font-semibold text-red-900 mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            Common Mistakes to Avoid
+        </h2>
+        <div class="prose prose-red max-w-none text-red-900">
+            {{ guide.red_flags|linebreaks }}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Rating Criteria Summary -->
+    {% if guide.rating_criteria_summary %}
+    <section class="bg-white rounded-lg border border-gray-200 p-6 mb-6" aria-labelledby="rating-heading">
+        <h2 id="rating-heading" class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/>
+            </svg>
+            How VA Rates This Condition
+        </h2>
+        <div class="prose prose-blue max-w-none">
+            {{ guide.rating_criteria_summary|linebreaks }}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Related Conditions -->
+    {% if related_conditions %}
+    <section class="bg-white rounded-lg border border-gray-200 p-6 mb-6" aria-labelledby="related-heading">
+        <h2 id="related-heading" class="text-xl font-semibold text-gray-900 mb-4">Related Conditions</h2>
+        <div class="grid md:grid-cols-2 gap-4">
+            {% for related in related_conditions %}
+            <a href="{{ related.get_absolute_url }}" class="block p-4 border border-gray-200 rounded-lg hover:border-green-500 hover:shadow-sm transition-all">
+                <span class="inline-block px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded mb-2">{{ related.get_category_display }}</span>
+                <h3 class="font-medium text-gray-900">{{ related.condition_name }}</h3>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Related Form -->
+    {% if related_form %}
+    <section class="bg-white rounded-lg border border-gray-200 p-6" aria-labelledby="form-heading">
+        <h2 id="form-heading" class="text-xl font-semibold text-gray-900 mb-4">Related VA Form</h2>
+        <a href="{{ related_form.get_absolute_url }}" class="block p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-sm transition-all">
+            <span class="inline-block px-2 py-1 text-xs font-bold bg-blue-600 text-white rounded mb-2">{{ related_form.form_number }}</span>
+            <h3 class="font-medium text-gray-900">{{ related_form.title }}</h3>
+            <p class="text-sm text-gray-600 mt-1">{{ related_form.description|truncatewords:20 }}</p>
+        </a>
+    </section>
+    {% endif %}
+</div>
+{% endblock %}

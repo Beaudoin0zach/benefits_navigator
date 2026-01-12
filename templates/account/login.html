@@ -1,0 +1,112 @@
+{% extends "allauth/layouts/entrance.html" %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock head_title %}
+
+{% block content %}
+<div class="text-center mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">{% trans "Sign In" %}</h1>
+    <p class="mt-2 text-gray-600">
+        {% blocktrans %}Don't have an account?
+        <a href="{{ signup_url }}" class="text-blue-700 hover:text-blue-800 underline font-medium">Sign up</a>
+        {% endblocktrans %}
+    </p>
+</div>
+
+<form method="post" action="{% url 'account_login' %}" class="space-y-6" novalidate>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+        <div class="p-4 bg-red-50 border border-red-200 rounded-md" role="alert">
+            <ul class="list-disc list-inside text-red-700 text-sm">
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <div>
+        <label for="id_login" class="block text-sm font-medium text-gray-700 mb-1">
+            {% trans "Email address" %} <span class="text-red-500" aria-hidden="true">*</span>
+            <span class="sr-only">(required)</span>
+        </label>
+        <input type="email"
+               name="login"
+               id="id_login"
+               autocomplete="email"
+               required
+               aria-required="true"
+               {% if form.login.errors %}aria-invalid="true" aria-describedby="login-error"{% endif %}
+               class="block w-full px-4 py-3 border {% if form.login.errors %}border-red-500{% else %}border-gray-300{% endif %} rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
+               value="{{ form.login.value|default:'' }}">
+        {% if form.login.errors %}
+            <p id="login-error" class="mt-1 text-sm text-red-600" role="alert">
+                {{ form.login.errors.0 }}
+            </p>
+        {% endif %}
+    </div>
+
+    <div>
+        <label for="id_password" class="block text-sm font-medium text-gray-700 mb-1">
+            {% trans "Password" %} <span class="text-red-500" aria-hidden="true">*</span>
+            <span class="sr-only">(required)</span>
+        </label>
+        <input type="password"
+               name="password"
+               id="id_password"
+               autocomplete="current-password"
+               required
+               aria-required="true"
+               {% if form.password.errors %}aria-invalid="true" aria-describedby="password-error"{% endif %}
+               class="block w-full px-4 py-3 border {% if form.password.errors %}border-red-500{% else %}border-gray-300{% endif %} rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base">
+        {% if form.password.errors %}
+            <p id="password-error" class="mt-1 text-sm text-red-600" role="alert">
+                {{ form.password.errors.0 }}
+            </p>
+        {% endif %}
+    </div>
+
+    <div class="flex items-center justify-between">
+        <div class="flex items-center">
+            <input type="checkbox"
+                   name="remember"
+                   id="id_remember"
+                   class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
+            <label for="id_remember" class="ml-2 block text-sm text-gray-700">
+                {% trans "Remember me" %}
+            </label>
+        </div>
+
+        <a href="{% url 'account_reset_password' %}" class="text-sm text-blue-700 hover:text-blue-800 underline">
+            {% trans "Forgot password?" %}
+        </a>
+    </div>
+
+    {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+    {% endif %}
+
+    <button type="submit"
+            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 min-h-[48px]">
+        {% trans "Sign In" %}
+    </button>
+</form>
+
+{% if SOCIALACCOUNT_ENABLED %}
+    <div class="mt-6">
+        <div class="relative">
+            <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-gray-300"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+                <span class="px-2 bg-white text-gray-500">{% trans "Or continue with" %}</span>
+            </div>
+        </div>
+
+        <div class="mt-6">
+            {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+        </div>
+    </div>
+{% endif %}
+{% endblock content %}

@@ -1,0 +1,562 @@
+[
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 47,
+    "fields": {
+      "term": "IMO (Independent Medical Opinion)",
+      "plain_language": "A medical opinion from a private doctor (not a VA examiner) supporting your claim. Often more detailed and favorable than C&P exam opinions.",
+      "context": "An IMO can be crucial when a C&P exam is negative or inadequate. Private doctors can take more time, review your full history, and write comprehensive opinions. The VA must consider IMOs as evidence.",
+      "example": "After an unfavorable C&P exam, you hire a private psychiatrist to review your records and write an IMO stating your PTSD is 'at least as likely as not' related to your combat service.",
+      "show_in_tooltips": true,
+      "order": 47,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 48,
+    "fields": {
+      "term": "ACE Exam (Acceptable Clinical Evidence)",
+      "plain_language": "A C&P exam done by reviewing your medical records only, without an in-person examination.",
+      "context": "Sometimes the VA determines an in-person exam isn't needed because your records contain enough information. ACE exams are common for clear-cut cases or when adding a secondary condition with strong documentation.",
+      "example": "You file for tinnitus with strong service records showing hearing damage. The VA does an ACE exam - the examiner reviews your records and provides an opinion without seeing you in person.",
+      "show_in_tooltips": true,
+      "order": 48,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 49,
+    "fields": {
+      "term": "QTC / VES / LHI",
+      "plain_language": "Private contractor companies that perform C&P exams on behalf of the VA. Most C&P exams are done by these contractors, not VA employees.",
+      "context": "About 93% of C&P exams are performed by contractors. QTC, VES (Veterans Evaluation Services), and LHI are the major contractors. The quality varies by individual examiner, not by company.",
+      "example": "After filing your claim, you receive a letter from VES (not the VA directly) scheduling your C&P exam at a local medical office staffed by contract examiners.",
+      "show_in_tooltips": true,
+      "order": 49,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 50,
+    "fields": {
+      "term": "Occupational Impairment",
+      "plain_language": "How your disability affects your ability to work - a key factor in mental health ratings like PTSD.",
+      "context": "Mental health conditions are rated largely based on occupational and social impairment. The rating criteria describe levels like 'occasional decrease in work efficiency' (30%) to 'total occupational impairment' (100%).",
+      "example": "For a 70% PTSD rating, you must show 'occupational impairment with deficiencies in most areas' - meaning your symptoms significantly impact your work performance, relationships, and daily functioning.",
+      "show_in_tooltips": true,
+      "order": 50,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 51,
+    "fields": {
+      "term": "Stressor",
+      "plain_language": "The traumatic event during military service that caused PTSD - combat, military sexual trauma, accidents, or other traumatic experiences.",
+      "context": "For PTSD claims, you must identify and verify your stressor. Combat stressors are easier to verify with deployment records. Non-combat stressors may need buddy statements or other corroborating evidence.",
+      "example": "Your stressor statement describes the IED attack on your convoy on March 15, 2007 in Baghdad. The VA verifies this through your unit records and deployment documentation.",
+      "show_in_tooltips": true,
+      "order": 51,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 52,
+    "fields": {
+      "term": "MST (Military Sexual Trauma)",
+      "plain_language": "Sexual assault or harassment that occurred during military service. The VA has special rules making MST-related PTSD claims easier to prove.",
+      "context": "MST claims don't require the same level of proof as other PTSD claims. 'Markers' like sudden performance drops, requests for transfer, or behavioral changes can help establish that MST occurred.",
+      "example": "A veteran's service records show excellent performance reviews until 2009, then sudden disciplinary issues and a hardship transfer request. These 'markers' support the MST claim even without an official report.",
+      "show_in_tooltips": true,
+      "order": 52,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 53,
+    "fields": {
+      "term": "PACT Act",
+      "plain_language": "The 2022 law that expanded VA benefits for veterans exposed to burn pits and other toxic substances, adding many new presumptive conditions.",
+      "context": "The PACT Act is the largest expansion of VA benefits in decades. It adds 23+ presumptive conditions for toxic exposure, extends eligibility for VA healthcare, and removes the need to prove toxic exposure for many conditions.",
+      "example": "Under the PACT Act, a veteran who served in Iraq and develops sinusitis or asthma can now claim these as presumptive conditions without needing to prove the exact exposure caused them.",
+      "show_in_tooltips": true,
+      "order": 53,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 54,
+    "fields": {
+      "term": "Burn Pit Exposure",
+      "plain_language": "Exposure to toxic smoke from open-air burn pits used to dispose of waste at military bases, especially in Iraq and Afghanistan.",
+      "context": "Burn pits burned everything from chemicals to medical waste to plastics. Veterans exposed to burn pit smoke may develop respiratory conditions, cancers, and other illnesses now covered under the PACT Act.",
+      "example": "You served at Joint Base Balad from 2006-2007 where a massive burn pit operated 24/7. You now have chronic sinusitis and constrictive bronchiolitis, both presumptive conditions under the PACT Act.",
+      "show_in_tooltips": true,
+      "order": 54,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 55,
+    "fields": {
+      "term": "Agent Orange",
+      "plain_language": "A toxic herbicide used during the Vietnam War that caused numerous health conditions in exposed veterans.",
+      "context": "Veterans who served in Vietnam, Thailand (certain bases), Korea (DMZ), or on ships in Vietnamese waters may be entitled to presumptive service connection for conditions like diabetes, heart disease, and various cancers.",
+      "example": "A Vietnam veteran develops Type 2 diabetes and Parkinson's disease. Both are presumptive conditions for Agent Orange exposure - no nexus letter needed, just proof of service in Vietnam.",
+      "show_in_tooltips": true,
+      "order": 55,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 56,
+    "fields": {
+      "term": "Gulf War Presumptive",
+      "plain_language": "Conditions that are automatically service-connected for veterans who served in the Gulf War (1990-present) in Southwest Asia.",
+      "context": "Gulf War veterans can claim 'undiagnosed illnesses' and 'medically unexplained chronic multisymptom illnesses' as presumptive. Conditions like chronic fatigue syndrome, fibromyalgia, and IBS are covered.",
+      "example": "A veteran who served in Kuwait in 2003 develops chronic fatigue syndrome and IBS with no clear medical cause. These can be claimed as Gulf War presumptives without proving specific exposure.",
+      "show_in_tooltips": true,
+      "order": 56,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 57,
+    "fields": {
+      "term": "In-Service Event",
+      "plain_language": "Something that happened during your military service that caused or contributed to your current disability.",
+      "context": "For direct service connection, you need three things: (1) current disability, (2) in-service event/injury, and (3) nexus between them. The in-service event can be an injury, illness, exposure, or traumatic experience.",
+      "example": "The in-service event for your back claim is the helicopter crash documented in your STRs from 2008. For hearing loss, it might be exposure to artillery fire without hearing protection.",
+      "show_in_tooltips": true,
+      "order": 57,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 58,
+    "fields": {
+      "term": "38 CFR",
+      "plain_language": "Title 38 of the Code of Federal Regulations - the rulebook containing all VA regulations including disability rating criteria.",
+      "context": "38 CFR Part 4 contains the VA Schedule for Rating Disabilities (VASRD). Understanding these regulations helps you know exactly what criteria apply to your condition and what evidence matters most.",
+      "example": "38 CFR 4.71a contains the rating criteria for musculoskeletal conditions. 38 CFR 4.130 covers mental health conditions. Citing specific regulations in your claim shows you understand what's required.",
+      "show_in_tooltips": true,
+      "order": 58,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 59,
+    "fields": {
+      "term": "M21-1",
+      "plain_language": "The VA's Adjudication Procedures Manual - the internal guide VA employees use to process claims.",
+      "context": "M21-1 contains detailed instructions for rating claims, evaluating evidence, and applying regulations. It's publicly available and can help you understand how VA employees should handle your claim.",
+      "example": "M21-1, Part III, Subpart iv, Chapter 4 explains how to evaluate PTSD stressors. If your claim was mishandled, citing the specific M21-1 section can strengthen your appeal.",
+      "show_in_tooltips": true,
+      "order": 59,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 60,
+    "fields": {
+      "term": "Personal Statement",
+      "plain_language": "Your own written account of your disability - how it started, how it affects you, and why it's related to service.",
+      "context": "Your statement is evidence the VA must consider. Be specific about dates, symptoms, and functional limitations. Describe your worst days, not just average days.",
+      "example": "Your personal statement describes the 2008 IED attack, your immediate symptoms, how PTSD has worsened over the years, and specifically how it affects your sleep, relationships, and ability to work.",
+      "show_in_tooltips": true,
+      "order": 60,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 61,
+    "fields": {
+      "term": "Competent Lay Evidence",
+      "plain_language": "Things you can personally observe and report about your condition - pain, symptoms, limitations - that the VA must consider as evidence.",
+      "context": "You don't need to be a doctor to describe your own symptoms. The VA must consider lay evidence about observable symptoms like pain, sleep problems, and functional limitations.",
+      "example": "You're competent to state: 'I have nightmares 4-5 times per week' or 'My knee gives out when I walk down stairs.' You're NOT competent to diagnose yourself with a specific medical condition.",
+      "show_in_tooltips": true,
+      "order": 61,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 62,
+    "fields": {
+      "term": "Continuity of Symptomatology",
+      "plain_language": "Showing you've had ongoing symptoms from service to the present day - an alternative way to prove service connection for chronic conditions.",
+      "context": "For certain chronic conditions, you can establish service connection by showing continuous symptoms since service, even without medical treatment records for every year. Lay statements can support continuity.",
+      "example": "Your STRs show back pain in 2005. Medical records are sparse until 2015, but your statement and buddy statements describe continuous back pain throughout those years. This continuity supports service connection.",
+      "show_in_tooltips": true,
+      "order": 62,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 63,
+    "fields": {
+      "term": "Increased Rating Claim",
+      "plain_language": "A claim asking the VA to raise your existing rating because your service-connected condition has gotten worse.",
+      "context": "If your condition has worsened since your last rating, file for an increase. The VA will schedule a new C&P exam to assess current severity. You can file for increase at any time.",
+      "example": "You were rated 30% for PTSD in 2018. Your symptoms have worsened significantly - more nightmares, isolation, missed work. You file an increased rating claim and the VA schedules a new C&P exam.",
+      "show_in_tooltips": true,
+      "order": 63,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 64,
+    "fields": {
+      "term": "Rating Reduction",
+      "plain_language": "When the VA lowers your disability percentage, usually after a re-examination shows improvement.",
+      "context": "The VA can reduce ratings if your condition improves, but strict rules apply. They must prove sustained improvement, not just one good exam day. Reductions have due process protections including advance notice.",
+      "example": "The VA schedules a routine exam for your knee. The examiner notes improvement. Before reducing your rating, the VA must send you a proposal letter and give you 60 days to respond with evidence.",
+      "show_in_tooltips": true,
+      "order": 64,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 65,
+    "fields": {
+      "term": "Routine Future Exam (RFE)",
+      "plain_language": "A follow-up C&P exam the VA schedules to see if your condition has improved or worsened since your last evaluation.",
+      "context": "Not all conditions get routine exams. Static conditions may be rated permanent. Conditions likely to improve get scheduled reviews, often at 2-5 year intervals. Missing an RFE can result in rating suspension.",
+      "example": "Two years after your initial PTSD rating, you receive a letter scheduling a routine future exam. The VA wants to assess whether your symptoms have changed since your last evaluation.",
+      "show_in_tooltips": true,
+      "order": 65,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 66,
+    "fields": {
+      "term": "Static Condition",
+      "plain_language": "A disability that is not expected to improve over time - often not subject to routine re-examinations.",
+      "context": "Conditions like amputations, certain scars, and some chronic diseases are considered static. The VA is less likely to schedule routine exams for static conditions and may rate them as permanent.",
+      "example": "Loss of a limb is a static condition - it won't improve. Tinnitus is typically static. These conditions usually don't require routine future examinations.",
+      "show_in_tooltips": true,
+      "order": 66,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 67,
+    "fields": {
+      "term": "Initial Rating",
+      "plain_language": "The first disability percentage assigned when the VA grants service connection for a condition.",
+      "context": "Your initial rating is based on the evidence from your claim and C&P exam. If you disagree, you can appeal within one year or file for an increase later if your condition worsens.",
+      "example": "The VA grants service connection for your PTSD with an initial rating of 50%. You believe it should be 70% based on your symptoms. You have one year to appeal the initial rating.",
+      "show_in_tooltips": true,
+      "order": 67,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 68,
+    "fields": {
+      "term": "VBMS (Veterans Benefits Management System)",
+      "plain_language": "The VA's electronic system for storing and managing claims files. Contains all documents related to your claim.",
+      "context": "Your entire claims file (C-file) is in VBMS. VSOs can access it, and you can request copies. Understanding what's in your file helps you identify missing evidence or VA errors.",
+      "example": "Your VSO logs into VBMS and finds that your nexus letter was uploaded but never reviewed by the rater. This explains why your claim was denied despite having the evidence.",
+      "show_in_tooltips": true,
+      "order": 68,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 69,
+    "fields": {
+      "term": "C-File (Claims File)",
+      "plain_language": "Your complete VA file containing all evidence, decisions, and correspondence related to your benefits claims.",
+      "context": "Your C-file includes service records, medical evidence, C&P exam reports, rating decisions, and all documents you've submitted. Reviewing it helps you understand VA decisions and identify missing evidence.",
+      "example": "You request a copy of your C-file before appealing. Reviewing it, you discover the VA never obtained your private medical records despite your authorization. This is a duty to assist error.",
+      "show_in_tooltips": true,
+      "order": 69,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 70,
+    "fields": {
+      "term": "Rating Decision",
+      "plain_language": "The official VA document explaining their decision on your claim - what was granted, denied, and why, plus your rating percentage.",
+      "context": "The rating decision explains the VA's reasoning. Read it carefully to understand why you got the rating you did or why you were denied. This information guides your appeal strategy.",
+      "example": "Your rating decision shows PTSD granted at 50%. The reasons section explains the examiner found 'occupational and social impairment with reduced reliability' - the criteria for 50%, not 70%.",
+      "show_in_tooltips": true,
+      "order": 70,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 71,
+    "fields": {
+      "term": "Code Sheet",
+      "plain_language": "A summary document showing all your service-connected conditions, their diagnostic codes, and rating percentages.",
+      "context": "The code sheet is the quick reference showing your rated conditions. It's part of your rating decision and shows which diagnostic codes apply to each condition.",
+      "example": "Your code sheet shows: PTSD (9411) - 70%, Tinnitus (6260) - 10%, Left Knee (5260) - 10%. Combined rating: 80%. Effective date: 01/15/2024.",
+      "show_in_tooltips": true,
+      "order": 71,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 72,
+    "fields": {
+      "term": "Deferred",
+      "plain_language": "When the VA delays a decision on part of your claim because they need more evidence or development.",
+      "context": "A deferred condition isn't denied - the VA just needs more time or evidence. They may schedule additional exams or request more records before deciding.",
+      "example": "Your rating decision shows: PTSD - Granted 70%, Back condition - DEFERRED pending C&P examination, Knee - Denied. The back claim will get a separate decision later.",
+      "show_in_tooltips": true,
+      "order": 72,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 73,
+    "fields": {
+      "term": "Favorable Finding",
+      "plain_language": "A decision in your favor on a specific element of your claim that the VA must honor in future decisions.",
+      "context": "Once the VA makes a favorable finding (like acknowledging an in-service event), they generally can't reverse it without clear evidence of error. This protects you in appeals.",
+      "example": "The VA denied service connection but acknowledged your in-service knee injury occurred. That's a favorable finding - in your appeal, you only need to prove nexus, not the in-service event.",
+      "show_in_tooltips": true,
+      "order": 73,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 74,
+    "fields": {
+      "term": "Legacy Appeals",
+      "plain_language": "Appeals filed before February 19, 2019 under the old VA appeals system - different rules apply than the current AMA system.",
+      "context": "The Appeals Modernization Act (AMA) created new appeal lanes in 2019. Claims decided before that date may still be in the 'legacy' system with different timelines and procedures.",
+      "example": "Your 2017 claim denial is in the legacy system. You have different appeal options than someone denied in 2024, and your appeal follows the old rules and timelines.",
+      "show_in_tooltips": true,
+      "order": 74,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 75,
+    "fields": {
+      "term": "AMA (Appeals Modernization Act)",
+      "plain_language": "The 2019 law that created the current VA appeals system with three lanes: Supplemental Claim, Higher-Level Review, and Board Appeal.",
+      "context": "AMA simplified appeals by creating clear lanes with predictable timelines. You can choose the best lane for your situation and switch lanes if needed.",
+      "example": "Under AMA, after a denial you choose: Supplemental Claim (new evidence), Higher-Level Review (same evidence, senior reviewer), or Board Appeal (Veterans Law Judge).",
+      "show_in_tooltips": true,
+      "order": 75,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 76,
+    "fields": {
+      "term": "Informal Conference",
+      "plain_language": "A phone call with a senior VA reviewer during a Higher-Level Review where you can explain errors in your claim.",
+      "context": "You can request an informal conference when filing a Higher-Level Review. It's your chance to point out specific errors - ignored evidence, wrong rating criteria, calculation mistakes.",
+      "example": "During your informal conference, you tell the reviewer: 'The decision ignored the nexus letter on page 47 of my C-file from Dr. Smith dated March 2024.'",
+      "show_in_tooltips": true,
+      "order": 76,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 77,
+    "fields": {
+      "term": "Board Hearing",
+      "plain_language": "A hearing before a Veterans Law Judge where you can present your case and answer questions about your appeal.",
+      "context": "Board hearings can be in-person in Washington DC, at your local VA office (Travel Board), or by video conference. You can have representation and submit additional evidence.",
+      "example": "You choose a video conference hearing for your Board Appeal. The Veterans Law Judge asks about your symptoms while you're at your local VA office, connected by video.",
+      "show_in_tooltips": true,
+      "order": 77,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 78,
+    "fields": {
+      "term": "CAVC (Court of Appeals for Veterans Claims)",
+      "plain_language": "Federal court where you can appeal a Board of Veterans' Appeals decision. The next level above the VA's internal appeals.",
+      "context": "If the Board denies your appeal, you have 120 days to appeal to CAVC. The court reviews whether the VA followed the law, not whether you deserve benefits. Legal representation is strongly recommended.",
+      "example": "The Board denied your appeal. You hire a veterans law attorney who files an appeal with CAVC arguing the Board ignored favorable medical evidence. The court may remand for a new decision.",
+      "show_in_tooltips": true,
+      "order": 78,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 79,
+    "fields": {
+      "term": "Extraschedular Rating",
+      "plain_language": "A rating above what the standard rating schedule allows, for cases where the schedule doesn't capture your disability's true severity.",
+      "context": "If your condition causes impairment not covered by the standard criteria, you may qualify for an extraschedular rating. These are rare and require referral to the Director of Compensation Service.",
+      "example": "Your migraines are rated 50% (the max schedular rating), but you have 20+ prostrating attacks per month versus the criteria's 'frequent' attacks. An extraschedular rating might be appropriate.",
+      "show_in_tooltips": true,
+      "order": 79,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 80,
+    "fields": {
+      "term": "Adequate Medical Examination",
+      "plain_language": "A C&P exam that meets legal requirements - thorough, based on accurate history, and supported by adequate reasoning.",
+      "context": "If a C&P exam is inadequate (incomplete, ignores evidence, lacks rationale), it shouldn't be used against you. Inadequate exams are grounds for remand on appeal.",
+      "example": "The examiner's opinion says 'not related to service' but gives no explanation why. This lacks adequate rationale. On appeal, you argue for a new exam because this one is inadequate.",
+      "show_in_tooltips": true,
+      "order": 80,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 81,
+    "fields": {
+      "term": "Probative Value",
+      "plain_language": "How persuasive or convincing a piece of evidence is - the VA weighs evidence based on its probative value.",
+      "context": "Not all evidence is equal. A detailed nexus letter from a specialist who reviewed your full history has more probative value than a brief note from a doctor who saw you once.",
+      "example": "Your private psychiatrist's detailed IMO (reviewed 500 pages of records) has high probative value. The C&P examiner's opinion (15-minute exam, no record review) has less probative value.",
+      "show_in_tooltips": true,
+      "order": 81,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 82,
+    "fields": {
+      "term": "Credibility Determination",
+      "plain_language": "The VA's assessment of whether your statements and evidence are believable and trustworthy.",
+      "context": "The VA evaluates credibility of all evidence, including your statements. Consistency between your statements, medical records, and other evidence strengthens credibility.",
+      "example": "Your statements about PTSD symptoms are consistent with your medical records, buddy statements, and employment history. This consistency supports a positive credibility determination.",
+      "show_in_tooltips": true,
+      "order": 82,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 83,
+    "fields": {
+      "term": "Worsening",
+      "plain_language": "When your service-connected condition has become more severe - grounds for filing an increased rating claim.",
+      "context": "Conditions often worsen over time. Document worsening symptoms with medical treatment, personal statements, and statements from family members who observe changes.",
+      "example": "Your 30% PTSD rating was assigned in 2018. Since then, you've been hospitalized twice, lost a job, and your marriage ended due to symptoms. These show worsening warranting an increased rating.",
+      "show_in_tooltips": true,
+      "order": 83,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 84,
+    "fields": {
+      "term": "Dependency Claim",
+      "plain_language": "Adding your spouse, children, or dependent parents to your VA benefits for additional monthly compensation.",
+      "context": "Veterans rated 30% or higher receive additional compensation for dependents. You must report changes (marriage, divorce, children) to the VA. Failure to report can result in overpayments.",
+      "example": "You're rated 70% and just got married. You file VA Form 21-686c to add your spouse. Your monthly payment increases by approximately $175 (2026 rates).",
+      "show_in_tooltips": true,
+      "order": 84,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 85,
+    "fields": {
+      "term": "Retro Pay / Back Pay",
+      "plain_language": "The lump sum payment you receive for the period between your effective date and when the VA finally approves your claim.",
+      "context": "If your claim takes months or years to process, you receive back pay from your effective date. This is why Intent to File is so important - it protects your effective date while you prepare your claim.",
+      "example": "You filed an Intent to File on January 1, 2025. Your claim was approved December 1, 2025 at 70% ($1,716/month). You receive 11 months of back pay: approximately $18,876.",
+      "show_in_tooltips": true,
+      "order": 85,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "examprep.glossaryterm",
+    "pk": 86,
+    "fields": {
+      "term": "Apportionment",
+      "plain_language": "When part of your VA disability payment goes directly to a dependent (usually an estranged spouse or child) who isn't receiving support.",
+      "context": "If you're not supporting your dependents, they can request that the VA send part of your payment directly to them. The VA will investigate and decide whether to apportion your benefits.",
+      "example": "A veteran's estranged spouse files for apportionment because the veteran isn't providing support for their children. The VA may direct a portion of the veteran's monthly payment to the spouse.",
+      "show_in_tooltips": true,
+      "order": 86,
+      "created_at": "2026-01-11T12:00:00Z",
+      "updated_at": "2026-01-11T12:00:00Z"
+    }
+  }
+]

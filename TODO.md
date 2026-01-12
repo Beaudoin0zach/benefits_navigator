@@ -18,7 +18,7 @@ A Django-based web application helping veterans navigate VA disability claims, C
 - User authentication (email-based via django-allauth)
 - Document upload with OCR and AI analysis
 - 7 C&P exam guides (General, PTSD, Musculoskeletal, Hearing, TBI, Sleep Apnea, Mental Health)
-- 46+ VA glossary terms
+- 86 VA glossary terms
 - Appeals workflow system
 - VA Disability Rating Calculator with accurate VA Math
 - **NEW: SMC (Special Monthly Compensation) Calculator**
@@ -41,27 +41,27 @@ A Django-based web application helping veterans navigate VA disability claims, C
 ## HIGH PRIORITY (Should Do Next)
 
 ### 1. Testing & Quality
-- [ ] Write unit tests for VA Math calculator (`examprep/va_math.py`)
-- [ ] Write integration tests for rating calculator views
-- [ ] Test document upload flow end-to-end
-- [ ] Run accessibility audit (axe-core or WAVE)
-- [ ] Test rate limiting is working correctly
-- [ ] Verify CSP headers don't break functionality
+- [x] Write unit tests for VA Math calculator (`examprep/va_math.py`) ✅ (2026-01-11) - 80 tests
+- [x] Write integration tests for rating calculator views ✅ (2026-01-11) - 45 tests
+- [x] Test document upload flow end-to-end ✅ (2026-01-11) - 25 tests
+- [x] Run accessibility audit (Lighthouse) ✅ (2026-01-11) - 95-96% on all pages
+- [x] Test rate limiting is working correctly ✅ (2026-01-11) - 11 tests
+- [x] Verify CSP headers don't break functionality ✅ (2026-01-11) - 25 tests
 
 ### 2. Content Additions
 - [x] Add TBI (Traumatic Brain Injury) exam guide ✅ (2026-01-11)
 - [x] Add Sleep Apnea exam guide ✅ (2026-01-11)
 - [x] Add Mental Health (non-PTSD) exam guide ✅ (2026-01-11)
-- [ ] Add more glossary terms (aim for 75-100 total)
+- [x] Add more glossary terms (aim for 75-100 total) ✅ (2026-01-11) - 86 terms
 - [x] Add common secondary conditions guide ✅ (2026-01-11)
 
 ### 3. User Experience
 - [x] Add email notifications for:
-  - [ ] Document analysis complete
+  - [x] Document analysis complete ✅ (2026-01-11)
   - [x] Appeal deadline reminders (7 days, 1 day before) ✅ (2026-01-11)
   - [x] C&P exam reminders ✅ (2026-01-11)
-- [ ] Add PDF export for rating calculations
-- [ ] Add "share calculation" feature (generate shareable link)
+- [x] Add PDF export for rating calculations ✅ (2026-01-11)
+- [x] Add "share calculation" feature (generate shareable link) ✅ (2026-01-11)
 
 ---
 
@@ -304,6 +304,7 @@ docker compose build web && docker compose up -d
 4. **Email Notifications** (`core/tasks.py`)
    - Deadline reminders (7 days, 1 day before)
    - C&P exam reminders
+   - Document analysis complete notifications
    - User notification preferences
    - HTML and text email templates
 

@@ -1,0 +1,29 @@
+You're Invited to Join {{ organization.name }}
+================================================================================
+
+Hi,
+
+{{ invited_by.full_name|default:invited_by.email }} has invited you to join {{ organization.name }}
+on {{ site_name }}.
+
+INVITATION DETAILS
+--------------------------------------------------------------------------------
+Organization: {{ organization.name }}
+Organization Type: {{ organization.get_org_type_display }}
+Your Role: {{ invitation.get_role_display }}
+Invited By: {{ invited_by.email }}
+Expires: {{ expires_at|date:"F j, Y" }}
+
+ACCEPT YOUR INVITATION
+--------------------------------------------------------------------------------
+Click the link below to accept this invitation:
+{{ accept_url }}
+
+If you don't have an account yet, you'll be prompted to create one.
+
+--------------------------------------------------------------------------------
+If you didn't expect this invitation, you can safely ignore this email.
+
+{{ site_name }}
+Helping veterans navigate the VA claims process.
+{{ site_url }}

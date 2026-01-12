@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django_extensions',
     'viewflow',  # Workflow engine for appeals
+    'strawberry.django',  # GraphQL API
 
     # Our apps
     'core.apps.CoreConfig',
@@ -62,6 +63,7 @@ INSTALLED_APPS = [
     'appeals.apps.AppealsConfig',
     'examprep.apps.ExamprepConfig',
     'agents.apps.AgentsConfig',
+    'documentation.apps.DocumentationConfig',
 ]
 
 MIDDLEWARE = [
@@ -93,7 +95,10 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'core.context_processors.site_settings',  # Custom context processor
+                'core.context_processors.site_settings',  # Site settings
+                'core.context_processors.user_usage',  # User usage tracking
+                'core.context_processors.tier_limits',  # Tier limit settings
+                'core.context_processors.feature_flags',  # Feature flags for dual-path
             ],
         },
     },
@@ -318,6 +323,24 @@ MAX_DOCUMENT_SIZE = 50 * 1024 * 1024  # 50 MB
 MAX_DOCUMENT_PAGES = 100
 
 # ==============================================================================
+# PROTECTED MEDIA SETTINGS
+# ==============================================================================
+# Media files are served through Django views that verify authentication
+# and ownership. Do NOT serve media files directly via web server.
+#
+# In production with nginx, enable X-Accel-Redirect for performance:
+#   USE_X_SENDFILE = True
+#   SENDFILE_ROOT = '/protected-media'
+#
+# Then configure nginx:
+#   location /protected-media/ {
+#       internal;
+#       alias /path/to/media/;
+#   }
+USE_X_SENDFILE = env.bool('USE_X_SENDFILE', default=False)
+SENDFILE_ROOT = env('SENDFILE_ROOT', default='')
+
+# ==============================================================================
 # LOGGING CONFIGURATION
 # ==============================================================================
 LOGGING = {
@@ -398,17 +421,58 @@ RATELIMIT_ENABLE = not DEBUG
 RATELIMIT_USE_CACHE = 'default'
 
 # ==============================================================================
+# FEATURE FLAGS
+# ==============================================================================
+# Controls progressive rollout of features for dual-path development
+# Path A = Direct-to-Veteran (B2C), Path B = VSO Platform (B2B)
+
+FEATURES = {
+    # Path A - Direct-to-Veteran (stable, enabled)
+    'freemium_limits': True,
+    'stripe_individual': True,
+    'usage_tracking': True,
+
+    # Path B - VSO Platform (progressive rollout)
+    'organizations': env.bool('FEATURE_ORGANIZATIONS', default=False),
+    'org_roles': env.bool('FEATURE_ORG_ROLES', default=False),
+    'org_invitations': env.bool('FEATURE_ORG_INVITATIONS', default=False),
+    'caseworker_assignment': env.bool('FEATURE_CASEWORKER_ASSIGNMENT', default=False),
+    'org_billing': env.bool('FEATURE_ORG_BILLING', default=False),
+    'org_admin_dashboard': env.bool('FEATURE_ORG_ADMIN', default=False),
+    'audit_export': env.bool('FEATURE_AUDIT_EXPORT', default=False),
+
+    # Shared Features
+    'doc_search': env.bool('FEATURE_DOC_SEARCH', default=True),  # Documentation search system
+
+    # Future
+    'sso_saml': env.bool('FEATURE_SSO_SAML', default=False),
+    'mfa': env.bool('FEATURE_MFA', default=False),
+}
+
+
+def feature_enabled(feature_name: str) -> bool:
+    """Check if a feature flag is enabled."""
+    return FEATURES.get(feature_name, False)
+
+
+# ==============================================================================
 # APPLICATION-SPECIFIC SETTINGS
 # ==============================================================================
 
 # Free tier limits
 FREE_TIER_DOCUMENTS_PER_MONTH = 3
 FREE_TIER_MAX_STORAGE_MB = 100
+FREE_TIER_DENIAL_DECODES_PER_MONTH = 2
+FREE_TIER_AI_ANALYSES_PER_MONTH = 5
 
 # Premium tier features
 PREMIUM_UNLIMITED_DOCUMENTS = True
+PREMIUM_UNLIMITED_DENIAL_DECODES = True
+PREMIUM_UNLIMITED_AI_ANALYSES = True
 PREMIUM_GPT4_ACCESS = False  # Enable for premium users later
 PREMIUM_PRIORITY_SUPPORT = True
+PREMIUM_SAVED_CALCULATIONS = True  # Save rating calculations
+PREMIUM_EXPORT_DATA = True  # Export data to PDF/CSV
 
 # OCR Settings
 OCR_ENGINE = env('OCR_ENGINE', default='tesseract')  # 'tesseract' or 'textract'

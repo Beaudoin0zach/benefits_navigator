@@ -168,25 +168,23 @@ class AuditMiddleware(MiddlewareMixin):
 
 class SecurityHeadersMiddleware(MiddlewareMixin):
     """
-    Add security headers to all responses.
+    Add additional security headers to all responses.
+
+    NOTE: CSP is handled by django-csp middleware (csp.middleware.CSPMiddleware)
+    configured in settings.py. Do NOT set CSP here to avoid conflicts.
+
+    NOTE: The following headers are already set via Django settings:
+    - X-Content-Type-Options (SECURE_CONTENT_TYPE_NOSNIFF)
+    - X-Frame-Options (X_FRAME_OPTIONS)
+    - Referrer-Policy (SECURE_REFERRER_POLICY)
+
+    This middleware only adds headers not covered by Django settings.
     """
 
     def process_response(self, request, response):
-        # Content Security Policy
-        response['Content-Security-Policy'] = (
-            "default-src 'self'; "
-            "script-src 'self' 'unsafe-inline' https://unpkg.com; "
-            "style-src 'self' 'unsafe-inline'; "
-            "img-src 'self' data: https:; "
-            "font-src 'self' data:; "
-            "connect-src 'self'; "
-            "frame-ancestors 'none';"
-        )
-
-        # Other security headers
-        response['X-Content-Type-Options'] = 'nosniff'
-        response['X-Frame-Options'] = 'DENY'
-        response['Referrer-Policy'] = 'strict-origin-when-cross-origin'
-        response['Permissions-Policy'] = 'geolocation=(), microphone=(), camera=()'
+        # Only add Permissions-Policy as it's not covered by Django settings
+        # This restricts access to browser features for security
+        if 'Permissions-Policy' not in response:
+            response['Permissions-Policy'] = 'geolocation=(), microphone=(), camera=()'
 
         return response
