@@ -54,6 +54,9 @@ celerybeat.pid
 .coverage
 .pytest_cache/
 htmlcov/
+tests/agents/reports/
+tests/agents/screenshots/
+tests/agents/*_report.json
 
 # Docker
 *.log
