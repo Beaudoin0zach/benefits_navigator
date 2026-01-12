@@ -41,7 +41,7 @@ A Django-based web application helping veterans navigate VA disability claims, C
 ## HIGH PRIORITY (Should Do Next)
 
 ### 0. Pilot/Test User Readiness (two core paths)
-- [ ] Define and script the two pilot funnels: **Path A** (Document upload → OCR/AI analysis → notifications → dashboard) and **Path B** (Rating calculator/exam guides → save/share → dashboard)
+- [x] Define and script the two pilot funnels ✅ (2026-01-12) - see docs/PILOT_FUNNELS.md, scripts/test_pilot_funnels.py
 - [x] Stand up a **staging environment** ✅ (2026-01-12) - DO App Platform config ready, see docs/DEPLOYMENT_DIGITALOCEAN.md
 - [x] Enable **Sentry DSN** ✅ (2026-01-12) - analytics events still TODO
 - [x] Add **in-app feedback** (thumbs/text) ✅ (2026-01-12) - widget on all pages, admin with CSV export
