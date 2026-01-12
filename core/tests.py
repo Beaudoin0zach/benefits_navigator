@@ -1361,3 +1361,72 @@ class TestSitemap(TestCase):
         response = self.client.get('/sitemap.xml')
         # This will raise an exception if XML is invalid
         ET.fromstring(response.content)
+
+
+# =============================================================================
+# META TAGS AND OPEN GRAPH TESTS
+# =============================================================================
+
+class TestMetaTags(TestCase):
+    """Tests for meta descriptions and Open Graph tags."""
+
+    def test_home_page_has_meta_description(self):
+        """Home page has custom meta description."""
+        response = self.client.get('/')
+        content = response.content.decode()
+        self.assertIn('meta name="description"', content)
+        self.assertIn('maximize VA disability ratings', content)
+
+    def test_home_page_has_og_tags(self):
+        """Home page has Open Graph tags."""
+        response = self.client.get('/')
+        content = response.content.decode()
+        self.assertIn('og:title', content)
+        self.assertIn('og:description', content)
+        self.assertIn('og:type', content)
+        self.assertIn('og:url', content)
+
+    def test_home_page_has_twitter_cards(self):
+        """Home page has Twitter Card meta tags."""
+        response = self.client.get('/')
+        content = response.content.decode()
+        self.assertIn('twitter:card', content)
+        self.assertIn('twitter:title', content)
+        self.assertIn('twitter:description', content)
+
+    def test_rating_calculator_has_meta_description(self):
+        """Rating calculator has custom meta description."""
+        response = self.client.get('/exam-prep/rating-calculator/')
+        content = response.content.decode()
+        self.assertIn('VA disability rating calculator', content)
+
+    def test_exam_guides_has_meta_description(self):
+        """Exam guides list has custom meta description."""
+        response = self.client.get('/exam-prep/')
+        content = response.content.decode()
+        self.assertIn('Compensation & Pension exam', content)
+
+    def test_glossary_has_meta_description(self):
+        """Glossary has custom meta description."""
+        response = self.client.get('/exam-prep/glossary/')
+        content = response.content.decode()
+        self.assertIn('VA terms', content)
+
+    def test_appeals_has_meta_description(self):
+        """Appeals page has custom meta description."""
+        response = self.client.get('/appeals/')
+        content = response.content.decode()
+        self.assertIn('appeals', content.lower())
+
+    def test_canonical_url_present(self):
+        """Pages have canonical URL tags."""
+        response = self.client.get('/')
+        content = response.content.decode()
+        self.assertIn('rel="canonical"', content)
+
+    def test_robots_meta_tag_present(self):
+        """Pages have robots meta tag."""
+        response = self.client.get('/')
+        content = response.content.decode()
+        self.assertIn('name="robots"', content)
+        self.assertIn('index, follow', content)

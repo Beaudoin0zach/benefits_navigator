@@ -1,7 +1,7 @@
 # VA Benefits Navigator - Comprehensive TODO List
 
-**Last Updated:** 2026-01-11
-**Updated By:** Claude Code Session
+**Last Updated:** 2026-01-12
+**Updated By:** Codex Session
 
 ---
 
@@ -40,6 +40,15 @@ A Django-based web application helping veterans navigate VA disability claims, C
 
 ## HIGH PRIORITY (Should Do Next)
 
+### 0. Pilot/Test User Readiness (two core paths)
+- [ ] Define and script the two pilot funnels: **Path A** (Document upload → OCR/AI analysis → notifications → dashboard) and **Path B** (Rating calculator/exam guides → save/share → dashboard)
+- [ ] Stand up a **staging environment** with seeded pilot accounts/personas, sanitized sample documents, and email delivery pointing to a sandbox inbox
+- [ ] Enable **Sentry DSN** and add lightweight analytics events for the two funnels (page views + key actions) so pilot issues can be traced
+- [ ] Add **in-app feedback** (thumbs/text) on key pages in both paths and an admin view/export of responses
+- [ ] Provide a visible **support channel** (support email/contact form) from dashboard and error states
+- [ ] Disable real billing for pilots, gate premium-only features, and enforce a 30-day data retention policy for tester data
+- [ ] Add health checks/alerts for Celery queue backlog and document-processing failures (timeouts, OCR errors)
+
 ### 1. Testing & Quality
 - [x] Write unit tests for VA Math calculator (`examprep/va_math.py`) ✅ (2026-01-11) - 80 tests
 - [x] Write integration tests for rating calculator views ✅ (2026-01-11) - 45 tests
@@ -75,11 +84,11 @@ A Django-based web application helping veterans navigate VA disability claims, C
 - [ ] Import ratings from VA letter (OCR)
 
 ### 5. SEO & Marketing
-- [ ] Add meta descriptions to all pages
+- [x] Add meta descriptions to all pages ✅ (2026-01-12)
 - [x] Create sitemap.xml ✅ (2026-01-12)
 - [ ] Add structured data (JSON-LD) for guides
 - [x] Create robots.txt ✅ (2026-01-12)
-- [ ] Add Open Graph tags for social sharing
+- [x] Add Open Graph tags for social sharing ✅ (2026-01-12)
 
 ### 6. Analytics & Monitoring
 - [ ] Set up Sentry error tracking (config exists, needs DSN)
