@@ -408,6 +408,47 @@ if SENTRY_DSN and not DEBUG:
 - **CSRF Protection**: Enabled on all forms
 - **Rate Limiting**: Implemented on upload endpoints
 
+See [SECURITY.md](SECURITY.md) for our security policy and how to report vulnerabilities.
+
+## AI Usage & Costs
+
+This application uses **OpenAI's API** for document analysis and denial letter decoding.
+
+### Important Notes
+
+- **You (the deployer) provide the OpenAI API key** via the `OPENAI_API_KEY` environment variable
+- End users do not need their own API keys
+- AI features use GPT-3.5-turbo by default (configurable to GPT-4 for premium users)
+- **Cost estimation**: Typical document analysis costs $0.01-0.05 per document depending on length
+- Monitor your OpenAI usage dashboard to track costs
+- Consider setting OpenAI usage limits to prevent unexpected charges
+
+### Data Privacy with AI
+
+- Document text is sent to OpenAI for analysis
+- OpenAI's data usage policy applies (they do not train on API data by default)
+- No PHI (Protected Health Information) should be uploaded to non-compliant deployments
+
+## Known Limitations
+
+Before deploying, be aware of these limitations:
+
+| Limitation | Details |
+|------------|---------|
+| **OCR Accuracy** | Tesseract OCR may struggle with handwritten text, poor quality scans, or complex layouts |
+| **Compensation Rates** | Uses 2024 VA compensation rates - requires annual update (usually December) |
+| **SMC Rates** | Special Monthly Compensation rates also need yearly verification |
+| **Bilateral Factor** | Calculator supports simple bilateral conditions, not complex multi-limb groupings |
+| **Not Legal Advice** | This tool provides educational information only, not legal or medical advice |
+| **Not VA Affiliated** | This is an independent project, not affiliated with the Department of Veterans Affairs |
+
+## Data Handling
+
+- **No PHI Intended**: This application is not designed for HIPAA compliance
+- **Demo/Staging Use**: For production deployments with real veteran data, additional security measures may be required
+- **Data Retention**: Soft-deleted documents are permanently purged after 30 days
+- **User Control**: Users can delete their documents and request account deletion at any time
+
 ## Next Steps
 
 After foundation setup (current phase):
@@ -421,18 +462,18 @@ After foundation setup (current phase):
 
 ## Contributing
 
-This is currently a solo project. Contribution guidelines TBD.
+Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before submitting PRs.
 
 ## License
 
-Proprietary - All rights reserved
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Support
 
 For issues or questions:
-- Email: support@benefitsnavigator.com
-- GitHub Issues: (to be added)
+- **GitHub Issues**: [Open an issue](https://github.com/Beaudoin0zach/benefits_navigator/issues)
+- **Security Issues**: See [SECURITY.md](SECURITY.md) for responsible disclosure
 
 ---
 
-Built with ❤️ for veterans
+Built with care for veterans
