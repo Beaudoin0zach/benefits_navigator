@@ -11,7 +11,17 @@ envs:
     value: "False"
   - key: USE_S3
     value: "False"
-  # Secrets are set via DO Console at app level
+  # Secrets - values must be set in DO Console after deploy
+  - key: SECRET_KEY
+    type: SECRET
+  - key: REDIS_URL
+    type: SECRET
+  - key: CELERY_BROKER_URL
+    type: SECRET
+  - key: OPENAI_API_KEY
+    type: SECRET
+  - key: SENTRY_DSN
+    type: SECRET
 
 services:
   # Django Web Application
