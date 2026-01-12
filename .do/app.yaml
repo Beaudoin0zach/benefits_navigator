@@ -29,21 +29,21 @@ services:
         value: ${APP_DOMAIN}
       - key: SECRET_KEY
         type: SECRET
-        value: "${SECRET_KEY}"
+        value: ${SECRET_KEY}
       - key: DATABASE_URL
         scope: RUN_TIME
         value: ${db.DATABASE_URL}
       - key: REDIS_URL
         type: SECRET
-        value: "${VALKEY_URL}"
+        value: ${VALKEY_URL}
       - key: CELERY_BROKER_URL
         type: SECRET
-        value: "${VALKEY_URL}"
+        value: ${VALKEY_URL}
       - key: OPENAI_API_KEY
         type: SECRET
-        value: "${OPENAI_API_KEY}"
+        value: ${OPENAI_API_KEY}
       - key: SENTRY_DSN
-        value: "${SENTRY_DSN}"
+        value: ${SENTRY_DSN}
       - key: USE_S3
         value: "False"
 
@@ -65,19 +65,19 @@ workers:
         value: "False"
       - key: SECRET_KEY
         type: SECRET
-        value: "${SECRET_KEY}"
+        value: ${SECRET_KEY}
       - key: DATABASE_URL
         scope: RUN_TIME
         value: ${db.DATABASE_URL}
       - key: REDIS_URL
         type: SECRET
-        value: "${VALKEY_URL}"
+        value: ${VALKEY_URL}
       - key: CELERY_BROKER_URL
         type: SECRET
-        value: "${VALKEY_URL}"
+        value: ${VALKEY_URL}
       - key: OPENAI_API_KEY
         type: SECRET
-        value: "${OPENAI_API_KEY}"
+        value: ${OPENAI_API_KEY}
 
 databases:
   - name: db
