@@ -6,6 +6,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.sitemaps.views import sitemap
+from django.views.generic import TemplateView
 from strawberry.django.views import GraphQLView
 
 from core import views
@@ -15,8 +17,17 @@ from accounts.views import (
     RateLimitedPasswordResetView,
 )
 from .schema import schema
+from .sitemaps import sitemaps
 
 urlpatterns = [
+    # SEO files
+    path('robots.txt', TemplateView.as_view(
+        template_name='robots.txt',
+        content_type='text/plain'
+    ), name='robots_txt'),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
+         name='django.contrib.sitemaps.views.sitemap'),
+
     # Home page
     path('', views.home, name='home'),
 

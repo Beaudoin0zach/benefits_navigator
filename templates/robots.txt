@@ -1,0 +1,38 @@
+# Robots.txt for VA Benefits Navigator
+# https://www.robotstxt.org/
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: {{ request.scheme }}://{{ request.get_host }}/sitemap.xml
+
+# Disallow private/authenticated areas
+Disallow: /admin/
+Disallow: /accounts/
+Disallow: /dashboard/
+Disallow: /claims/
+Disallow: /journey/
+Disallow: /my-checklists/
+Disallow: /my-appeals/
+Disallow: /graphql/
+
+# Disallow HTMX partials and API endpoints
+Disallow: /*?*
+Disallow: /*/calculate/
+Disallow: /*/toggle/
+Disallow: /*/save/
+Disallow: /*/delete/
+Disallow: /*/load/
+Disallow: /*/share/
+Disallow: /*/search/
+
+# Allow public tools and content
+Allow: /exam-prep/
+Allow: /appeals/
+Allow: /appeals/guide/
+Allow: /appeals/find-your-path/
+Allow: /docs/
+
+# Crawl delay (be nice to the server)
+Crawl-delay: 1
