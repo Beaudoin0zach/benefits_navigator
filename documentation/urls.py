@@ -3,12 +3,18 @@ URL configuration for the documentation app.
 """
 
 from django.urls import path
+from django.views.generic import TemplateView
 
 from . import views
 
 app_name = 'documentation'
 
 urlpatterns = [
+    # About / One-Pager
+    path('about/', TemplateView.as_view(
+        template_name='documentation/partials/one-pager.html'
+    ), name='about'),
+
     # Main search
     path('', views.search_view, name='search'),
 
