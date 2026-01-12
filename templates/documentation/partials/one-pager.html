@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}VA Benefits Navigator - Help Veterans Get the Benefits They Earned{% endblock %}
+
+{% block meta_description %}Free tools to help veterans navigate VA disability claims, appeals, and C&P exams. Rating calculator, denial decoder, exam guides, and more.{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-12">
+
+    <!-- Hero Section -->
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">VA Benefits Navigator</h1>
+        <p class="text-xl text-gray-600 mb-6">
+            Free tools to help veterans understand, file, and win VA disability claims
+        </p>
+        <div class="flex justify-center gap-4 flex-wrap">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                100% Free Core Features
+            </span>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                Built by Veterans, for Veterans
+            </span>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+                WCAG AA Accessible
+            </span>
+        </div>
+    </div>
+
+    <!-- Problem Statement -->
+    <div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
+        <h2 class="text-xl font-bold text-red-900 mb-3">The Problem</h2>
+        <ul class="space-y-2 text-red-800">
+            <li>&#8226; Over 30% of VA claims are denied on first submission</li>
+            <li>&#8226; Veterans wait 125+ days on average for claim decisions</li>
+            <li>&#8226; Many veterans don't know what benefits they qualify for</li>
+            <li>&#8226; VA letters and regulations are confusing and bureaucratic</li>
+            <li>&#8226; C&P exams are often the make-or-break moment, but veterans go in unprepared</li>
+        </ul>
+    </div>
+
+    <!-- Solution -->
+    <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-8">
+        <h2 class="text-xl font-bold text-green-900 mb-3">Our Solution</h2>
+        <p class="text-green-800 mb-4">
+            VA Benefits Navigator provides free, accessible tools that guide veterans through every step
+            of the claims process - from understanding what conditions qualify, to preparing for C&P exams,
+            to appealing denials.
+        </p>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Core Features</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+
+            <!-- Rating Calculator -->
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                <div class="flex items-center mb-3">
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900">VA Rating Calculator</h3>
+                </div>
+                <p class="text-gray-600 text-sm">
+                    Calculate your combined VA disability rating using official VA Math (38 CFR &sect; 4.25).
+                    Includes bilateral factor, SMC eligibility, TDIU checker, and 2024 compensation rates.
+                </p>
+            </div>
+
+            <!-- C&P Exam Guides -->
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                <div class="flex items-center mb-3">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900">C&P Exam Guides</h3>
+                </div>
+                <p class="text-gray-600 text-sm">
+                    Condition-specific guides for PTSD, TBI, Musculoskeletal, Hearing, Sleep Apnea, and Mental Health exams.
+                    Know what to expect, what to say, and what not to do.
+                </p>
+            </div>
+
+            <!-- Denial Decoder -->
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                <div class="flex items-center mb-3">
+                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900">Denial Decoder</h3>
+                </div>
+                <p class="text-gray-600 text-sm">
+                    Upload your VA denial letter and get plain-English explanations of why you were denied,
+                    relevant M21 manual sections, and specific guidance on what evidence to gather for appeal.
+                </p>
+            </div>
+
+            <!-- Secondary Conditions -->
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                <div class="flex items-center mb-3">
+                    <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mr-3">
+                        <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900">Secondary Conditions Hub</h3>
+                </div>
+                <p class="text-gray-600 text-sm">
+                    Discover 40+ documented secondary condition relationships with medical rationale,
+                    evidence tips, and nexus letter guidance. PTSD, TBI, back, knee, diabetes, and more.
+                </p>
+            </div>
+
+            <!-- Appeals Guide -->
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                <div class="flex items-center mb-3">
+                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+                        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900">Appeals Workflow</h3>
+                </div>
+                <p class="text-gray-600 text-sm">
+                    Interactive decision tree to choose the right appeal lane (HLR, Supplemental, BVA).
+                    Step-by-step guides, deadline tracking, and document management.
+                </p>
+            </div>
+
+            <!-- VA Glossary -->
+            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                <div class="flex items-center mb-3">
+                    <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center mr-3">
+                        <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900">VA Glossary</h3>
+                </div>
+                <p class="text-gray-600 text-sm">
+                    86 VA terms explained in plain English. Search or browse definitions for
+                    DBQ, nexus, BVA, TDIU, SMC, and all the acronyms veterans encounter.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works -->
+    <div class="bg-gray-50 rounded-lg p-8 mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">How It Works</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="text-center">
+                <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">1</div>
+                <h3 class="font-bold text-gray-900 mb-2">Create Free Account</h3>
+                <p class="text-gray-600 text-sm">Sign up with email. No credit card required. Your data stays private.</p>
+            </div>
+            <div class="text-center">
+                <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">2</div>
+                <h3 class="font-bold text-gray-900 mb-2">Use the Tools</h3>
+                <p class="text-gray-600 text-sm">Calculate ratings, prepare for exams, decode denials, and plan appeals.</p>
+            </div>
+            <div class="text-center">
+                <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">3</div>
+                <h3 class="font-bold text-gray-900 mb-2">Get Your Benefits</h3>
+                <p class="text-gray-600 text-sm">Submit stronger claims with better evidence and higher approval chances.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trust Indicators -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Why Veterans Trust Us</h2>
+        <div class="grid md:grid-cols-4 gap-4">
+            <div class="text-center p-4">
+                <div class="text-3xl font-bold text-blue-600 mb-1">100%</div>
+                <p class="text-gray-600 text-sm">WCAG AA Accessible</p>
+            </div>
+            <div class="text-center p-4">
+                <div class="text-3xl font-bold text-blue-600 mb-1">86</div>
+                <p class="text-gray-600 text-sm">VA Terms Explained</p>
+            </div>
+            <div class="text-center p-4">
+                <div class="text-3xl font-bold text-blue-600 mb-1">40+</div>
+                <p class="text-gray-600 text-sm">Secondary Conditions</p>
+            </div>
+            <div class="text-center p-4">
+                <div class="text-3xl font-bold text-blue-600 mb-1">7</div>
+                <p class="text-gray-600 text-sm">C&P Exam Guides</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-8">
+        <h3 class="font-bold text-yellow-900 mb-2">Important Disclaimer</h3>
+        <p class="text-yellow-800 text-sm">
+            VA Benefits Navigator provides educational information only. We are not affiliated with the VA
+            and do not provide legal or medical advice. For official claim assistance, contact an accredited
+            Veterans Service Organization (VSO) - they provide free help with claims and appeals.
+        </p>
+    </div>
+
+    <!-- CTA -->
+    <div class="text-center">
+        <a href="{% url 'account_signup' %}"
+           class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition">
+            Get Started Free
+        </a>
+        <p class="mt-4 text-gray-500 text-sm">No credit card required. Takes 30 seconds.</p>
+    </div>
+
+</div>
+{% endblock %}
