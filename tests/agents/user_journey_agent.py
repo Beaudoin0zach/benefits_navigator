@@ -72,6 +72,12 @@ class UserJourneyAgent(BaseTestAgent):
         result = self.navigate('/accounts/login/')
         results['steps'].append(('navigate_login', result.success))
 
+        # Check if already logged in (redirected to dashboard)
+        if '/dashboard' in self.page.url:
+            results['steps'].append(('already_logged_in', True))
+            results['steps'].append(('dashboard_loaded', True))
+            return results
+
         # Step 2: Fill credentials
         try:
             self.page.fill('input[name="login"]', 'e2e_test@example.com')
@@ -115,16 +121,16 @@ class UserJourneyAgent(BaseTestAgent):
             return results
 
         # Step 1: Navigate to calculator
-        result = self.navigate('/examprep/rating-calculator/')
+        result = self.navigate('/exam-prep/rating-calculator/')
         results['steps'].append(('navigate_calculator', result.success))
 
         if not result.success:
             results['success'] = False
             return results
 
-        # Step 2: Verify calculator elements
+        # Step 2: Verify calculator elements (page uses HTMX, no traditional form)
         try:
-            self.page.wait_for_selector('form, .calculator', timeout=5000)
+            self.page.wait_for_selector('input, button', timeout=5000)
             results['steps'].append(('calculator_loaded', True))
         except:
             results['steps'].append(('calculator_loaded', False))
@@ -153,10 +159,14 @@ class UserJourneyAgent(BaseTestAgent):
         # Step 1: Visit appeals page (public)
         result = self.navigate('/appeals/')
         results['steps'].append(('visit_appeals', result.success))
+        if not result.success:
+            results['success'] = False
 
         # Step 2: Check decision tree
         result = self.navigate('/appeals/find-your-path/')
         results['steps'].append(('decision_tree', result.success))
+        if not result.success:
+            results['success'] = False
 
         # Step 3: Verify interactive elements
         try:
@@ -165,8 +175,10 @@ class UserJourneyAgent(BaseTestAgent):
                 results['steps'].append(('tree_interactive', True))
             else:
                 results['steps'].append(('tree_interactive', False))
+                results['success'] = False
         except:
             results['steps'].append(('tree_interactive', False))
+            results['success'] = False
 
         # Step 4: Check guidance pages
         guidance_links = self.page.locator('a[href*="/appeals/guide/"]')
@@ -177,6 +189,7 @@ class UserJourneyAgent(BaseTestAgent):
                 results['steps'].append(('view_guidance', True))
             except:
                 results['steps'].append(('view_guidance', False))
+                results['success'] = False
         else:
             results['steps'].append(('view_guidance', 'skipped'))
 
@@ -188,11 +201,13 @@ class UserJourneyAgent(BaseTestAgent):
         results = {'steps': [], 'success': True}
 
         # Step 1: Visit exam prep
-        result = self.navigate('/examprep/')
+        result = self.navigate('/exam-prep/')
         results['steps'].append(('visit_examprep', result.success))
+        if not result.success:
+            results['success'] = False
 
         # Step 2: Check guides
-        guide_links = self.page.locator('a[href*="/examprep/guide/"]')
+        guide_links = self.page.locator('a[href*="/exam-prep/guide/"]')
         if guide_links.count() > 0:
             try:
                 guide_links.first.click()
@@ -200,16 +215,21 @@ class UserJourneyAgent(BaseTestAgent):
                 results['steps'].append(('view_guide', True))
             except:
                 results['steps'].append(('view_guide', False))
+                results['success'] = False
         else:
             results['steps'].append(('view_guide', 'skipped'))
 
         # Step 3: Check glossary
-        result = self.navigate('/examprep/glossary/')
+        result = self.navigate('/exam-prep/glossary/')
         results['steps'].append(('visit_glossary', result.success))
+        if not result.success:
+            results['success'] = False
 
         # Step 4: Check secondary conditions
-        result = self.navigate('/examprep/secondary-conditions/')
+        result = self.navigate('/exam-prep/secondary-conditions/')
         results['steps'].append(('visit_secondary', result.success))
+        if not result.success:
+            results['success'] = False
 
         return results
 
@@ -222,15 +242,20 @@ class UserJourneyAgent(BaseTestAgent):
         login_result = self.test_login_dashboard_journey()
         if not login_result['success']:
             results['success'] = False
+            results['steps'].append(('login_prerequisite', False))
             return results
 
         # Step 1: Navigate to documents
         result = self.navigate('/claims/')
         results['steps'].append(('navigate_documents', result.success))
+        if not result.success:
+            results['success'] = False
 
         # Step 2: Go to upload page
         result = self.navigate('/claims/upload/')
         results['steps'].append(('navigate_upload', result.success))
+        if not result.success:
+            results['success'] = False
 
         # Step 3: Verify upload form
         try:
@@ -239,8 +264,10 @@ class UserJourneyAgent(BaseTestAgent):
                 results['steps'].append(('upload_form', True))
             else:
                 results['steps'].append(('upload_form', False))
+                results['success'] = False
         except:
             results['steps'].append(('upload_form', False))
+            results['success'] = False
 
         return results
 

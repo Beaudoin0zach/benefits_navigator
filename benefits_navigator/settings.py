@@ -180,12 +180,24 @@ CELERY_TASK_SOFT_TIME_LIMIT = 25 * 60  # 25 minutes
 # ==============================================================================
 REDIS_URL = env('REDIS_URL', default='redis://localhost:6379/0')
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': REDIS_URL,
+# Use local memory cache in development/testing when Redis isn't available
+# Set USE_REDIS_CACHE=false to force local memory cache
+USE_REDIS_CACHE = env.bool('USE_REDIS_CACHE', default=not DEBUG)
+
+if USE_REDIS_CACHE:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': REDIS_URL,
+        }
     }
-}
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'unique-snowflake',
+        }
+    }
 
 # ==============================================================================
 # SESSION CONFIGURATION
@@ -418,7 +430,9 @@ if SENTRY_DSN and not DEBUG:
 # ==============================================================================
 # RATE LIMITING
 # ==============================================================================
-RATELIMIT_ENABLE = not DEBUG
+# Disabled in DEBUG mode by default. Can be explicitly controlled via env var
+# for testing scenarios (e.g., running browser tests against a live server)
+RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=not DEBUG)
 RATELIMIT_USE_CACHE = 'default'
 
 # ==============================================================================
