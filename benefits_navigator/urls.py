@@ -8,9 +8,26 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.sitemaps.views import sitemap
 from django.views.generic import TemplateView
+from django.http import JsonResponse
 from strawberry.django.views import GraphQLView
 
 from core import views
+
+
+def health_check(request):
+    """Health check endpoint for load balancers and monitoring."""
+    from django.db import connection
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+        db_status = "ok"
+    except Exception:
+        db_status = "error"
+
+    return JsonResponse({
+        "status": "healthy" if db_status == "ok" else "degraded",
+        "database": db_status,
+    })
 from accounts.views import (
     RateLimitedLoginView,
     RateLimitedSignupView,
@@ -20,6 +37,9 @@ from .schema import schema
 from .sitemaps import sitemaps
 
 urlpatterns = [
+    # Health check for load balancers/monitoring
+    path('health/', health_check, name='health_check'),
+
     # SEO files
     path('robots.txt', TemplateView.as_view(
         template_name='robots.txt',

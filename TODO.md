@@ -42,8 +42,8 @@ A Django-based web application helping veterans navigate VA disability claims, C
 
 ### 0. Pilot/Test User Readiness (two core paths)
 - [ ] Define and script the two pilot funnels: **Path A** (Document upload → OCR/AI analysis → notifications → dashboard) and **Path B** (Rating calculator/exam guides → save/share → dashboard)
-- [ ] Stand up a **staging environment** with seeded pilot accounts/personas, sanitized sample documents, and email delivery pointing to a sandbox inbox
-- [ ] Enable **Sentry DSN** and add lightweight analytics events for the two funnels (page views + key actions) so pilot issues can be traced
+- [x] Stand up a **staging environment** ✅ (2026-01-12) - DO App Platform config ready, see docs/DEPLOYMENT_DIGITALOCEAN.md
+- [x] Enable **Sentry DSN** ✅ (2026-01-12) - analytics events still TODO
 - [ ] Add **in-app feedback** (thumbs/text) on key pages in both paths and an admin view/export of responses
 - [ ] Provide a visible **support channel** (support email/contact form) from dashboard and error states
 - [ ] Disable real billing for pilots, gate premium-only features, and enforce a 30-day data retention policy for tester data
@@ -91,7 +91,7 @@ A Django-based web application helping veterans navigate VA disability claims, C
 - [x] Add Open Graph tags for social sharing ✅ (2026-01-12)
 
 ### 6. Analytics & Monitoring
-- [ ] Set up Sentry error tracking (config exists, needs DSN)
+- [x] Set up Sentry error tracking ✅ (2026-01-12)
 - [ ] Add usage analytics (privacy-respecting)
 - [ ] Create admin dashboard with stats
 - [ ] Monitor Celery task success/failure rates
@@ -152,8 +152,8 @@ A Django-based web application helping veterans navigate VA disability claims, C
 
 ### Infrastructure
 - [ ] Set up CI/CD pipeline (GitHub Actions)
-- [ ] Create staging environment
-- [ ] Document production deployment (Railway/Render/AWS)
+- [x] Create staging environment ✅ (2026-01-12) - DigitalOcean App Platform
+- [x] Document production deployment ✅ (2026-01-12) - docs/DEPLOYMENT_DIGITALOCEAN.md
 - [ ] Set up database backups
 - [ ] Create disaster recovery plan
 
