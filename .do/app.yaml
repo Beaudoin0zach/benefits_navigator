@@ -34,11 +34,11 @@ services:
         scope: RUN_TIME
         value: ${db.DATABASE_URL}
       - key: REDIS_URL
-        scope: RUN_TIME
-        value: ${redis.REDIS_URL}
+        type: SECRET
+        value: "${VALKEY_URL}"
       - key: CELERY_BROKER_URL
-        scope: RUN_TIME
-        value: ${redis.REDIS_URL}
+        type: SECRET
+        value: "${VALKEY_URL}"
       - key: OPENAI_API_KEY
         type: SECRET
         value: "${OPENAI_API_KEY}"
@@ -47,7 +47,8 @@ services:
       - key: USE_S3
         value: "False"
 
-  # Celery Worker
+workers:
+  # Celery Worker (background tasks)
   - name: worker
     github:
       repo: Beaudoin0zach/benefits_navigator
@@ -69,11 +70,11 @@ services:
         scope: RUN_TIME
         value: ${db.DATABASE_URL}
       - key: REDIS_URL
-        scope: RUN_TIME
-        value: ${redis.REDIS_URL}
+        type: SECRET
+        value: "${VALKEY_URL}"
       - key: CELERY_BROKER_URL
-        scope: RUN_TIME
-        value: ${redis.REDIS_URL}
+        type: SECRET
+        value: "${VALKEY_URL}"
       - key: OPENAI_API_KEY
         type: SECRET
         value: "${OPENAI_API_KEY}"
@@ -85,7 +86,6 @@ databases:
     size: db-s-dev-database
     version: "15"
 
-# Note: For Redis, you'll need to create a managed Redis cluster separately
-# and add the connection string as an environment variable, OR use the
-# DigitalOcean Managed Redis add-on when available in your region.
-# Alternative: Use Redis Cloud free tier (30MB) for staging.
+# Note: VALKEY_URL must be set as an app-level secret in App Platform settings.
+# Get the connection string from your DigitalOcean Managed Valkey database.
+# Format: rediss://default:PASSWORD@hostname:25061
