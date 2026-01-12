@@ -8,4 +8,4 @@ import pytest
 from pytest_bdd import scenarios, given, when, then
 
 # Load all scenarios from the feature file
-scenarios('features/authentication.feature')
+scenarios('authentication.feature')
