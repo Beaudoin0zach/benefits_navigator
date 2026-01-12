@@ -44,7 +44,7 @@ A Django-based web application helping veterans navigate VA disability claims, C
 - [ ] Define and script the two pilot funnels: **Path A** (Document upload → OCR/AI analysis → notifications → dashboard) and **Path B** (Rating calculator/exam guides → save/share → dashboard)
 - [x] Stand up a **staging environment** ✅ (2026-01-12) - DO App Platform config ready, see docs/DEPLOYMENT_DIGITALOCEAN.md
 - [x] Enable **Sentry DSN** ✅ (2026-01-12) - analytics events still TODO
-- [ ] Add **in-app feedback** (thumbs/text) on key pages in both paths and an admin view/export of responses
+- [x] Add **in-app feedback** (thumbs/text) ✅ (2026-01-12) - widget on all pages, admin with CSV export
 - [ ] Provide a visible **support channel** (support email/contact form) from dashboard and error states
 - [ ] Disable real billing for pilots, gate premium-only features, and enforce a 30-day data retention policy for tester data
 - [ ] Add health checks/alerts for Celery queue backlog and document-processing failures (timeouts, OCR errors)

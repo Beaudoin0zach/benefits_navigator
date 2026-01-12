@@ -1,0 +1,79 @@
+{% comment %}
+Expanded feedback form - loaded via HTMX
+{% endcomment %}
+
+<div class="flex justify-between items-start mb-3">
+    <h4 class="text-sm font-semibold text-gray-900">Tell us more</h4>
+    <button onclick="document.getElementById('feedback-expanded').classList.add('hidden'); document.getElementById('feedback-collapsed').classList.remove('hidden');"
+            class="text-gray-400 hover:text-gray-600">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+    </button>
+</div>
+
+<form hx-post="{% url 'core:submit_feedback' %}"
+      hx-target="#feedback-expanded"
+      hx-swap="innerHTML"
+      class="space-y-3">
+    {% csrf_token %}
+    <input type="hidden" name="page_url" value="{{ page_url }}">
+    <input type="hidden" name="page_title" value="{{ page_title }}">
+
+    <!-- Rating (if not pre-selected) -->
+    {% if not initial_rating %}
+    <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1">How was your experience?</label>
+        <div class="flex gap-2">
+            <label class="flex items-center gap-1 cursor-pointer">
+                <input type="radio" name="rating" value="positive" class="text-green-600 focus:ring-green-500">
+                <span class="text-sm">👍 Good</span>
+            </label>
+            <label class="flex items-center gap-1 cursor-pointer">
+                <input type="radio" name="rating" value="negative" class="text-red-600 focus:ring-red-500">
+                <span class="text-sm">👎 Bad</span>
+            </label>
+            <label class="flex items-center gap-1 cursor-pointer">
+                <input type="radio" name="rating" value="neutral" class="text-gray-600 focus:ring-gray-500">
+                <span class="text-sm">➖ Meh</span>
+            </label>
+        </div>
+    </div>
+    {% else %}
+    <input type="hidden" name="rating" value="{{ initial_rating }}">
+    {% endif %}
+
+    <!-- Category -->
+    <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1">Category</label>
+        <select name="category" class="w-full text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            <option value="general">General Feedback</option>
+            <option value="bug">Bug Report</option>
+            <option value="feature">Feature Request</option>
+            <option value="content">Content Issue</option>
+            <option value="usability">Usability</option>
+        </select>
+    </div>
+
+    <!-- Comment -->
+    <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1">Your feedback</label>
+        <textarea name="comment"
+                  rows="3"
+                  placeholder="What could we improve?"
+                  class="w-full text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+    </div>
+
+    <!-- Submit -->
+    <div class="flex justify-end gap-2">
+        <button type="button"
+                onclick="document.getElementById('feedback-expanded').classList.add('hidden'); document.getElementById('feedback-collapsed').classList.remove('hidden');"
+                class="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800">
+            Cancel
+        </button>
+        <button type="submit"
+                class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+            Send Feedback
+        </button>
+    </div>
+</form>

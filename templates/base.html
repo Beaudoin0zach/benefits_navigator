@@ -249,5 +249,10 @@
     </footer>
 
     {% block extra_js %}{% endblock %}
+
+    <!-- Feedback Widget (appears on all pages) -->
+    {% block feedback_widget %}
+    {% include 'core/partials/feedback_widget.html' %}
+    {% endblock %}
 </body>
 </html>
