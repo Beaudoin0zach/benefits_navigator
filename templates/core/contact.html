@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }} - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-2xl">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Contact Support</h1>
+    <p class="text-gray-600 mb-8">
+        Have a question, found a bug, or want to suggest a feature? We're here to help.
+    </p>
+
+    {% if errors %}
+    <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6" role="alert">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm text-red-700">
+                    Please fix the following errors:
+                </p>
+                <ul class="mt-2 list-disc list-inside text-sm text-red-700">
+                    {% for error in errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+
+            <!-- Name -->
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
+                    Your Name <span class="text-red-500">*</span>
+                </label>
+                <input type="text"
+                       id="name"
+                       name="name"
+                       value="{{ user_name|default:form_data.name|default:'' }}"
+                       required
+                       class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
+                    Email Address <span class="text-red-500">*</span>
+                </label>
+                <input type="email"
+                       id="email"
+                       name="email"
+                       value="{{ user_email|default:form_data.email|default:'' }}"
+                       required
+                       class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <!-- Category -->
+            <div>
+                <label for="category" class="block text-sm font-medium text-gray-700 mb-1">
+                    Category
+                </label>
+                <select id="category"
+                        name="category"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    {% for value, label in categories %}
+                    <option value="{{ value }}" {% if form_data.category == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Subject -->
+            <div>
+                <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">
+                    Subject <span class="text-red-500">*</span>
+                </label>
+                <input type="text"
+                       id="subject"
+                       name="subject"
+                       value="{{ form_data.subject|default:'' }}"
+                       required
+                       placeholder="Brief description of your question or issue"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <!-- Message -->
+            <div>
+                <label for="message" class="block text-sm font-medium text-gray-700 mb-1">
+                    Message <span class="text-red-500">*</span>
+                </label>
+                <textarea id="message"
+                          name="message"
+                          rows="6"
+                          required
+                          placeholder="Please describe your question, issue, or suggestion in detail..."
+                          class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ form_data.message|default:'' }}</textarea>
+            </div>
+
+            <!-- Submit -->
+            <div class="flex items-center justify-between">
+                <p class="text-sm text-gray-500">
+                    <span class="text-red-500">*</span> Required fields
+                </p>
+                <button type="submit"
+                        class="px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                    Send Message
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Alternative contact -->
+    <div class="mt-8 text-center text-gray-600">
+        <p class="mb-2">Or email us directly at:</p>
+        <a href="mailto:{{ SUPPORT_EMAIL }}" class="text-blue-600 hover:text-blue-800 font-medium">
+            {{ SUPPORT_EMAIL }}
+        </a>
+    </div>
+</div>
+{% endblock %}

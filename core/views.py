@@ -265,7 +265,9 @@ def delete_milestone(request, pk):
 
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_protect
-from .models import Feedback
+from django.core.mail import send_mail
+from django.conf import settings as django_settings
+from .models import Feedback, SupportRequest
 
 
 def submit_feedback(request):
@@ -306,4 +308,85 @@ def feedback_form(request):
         'page_url': request.GET.get('page_url', ''),
         'page_title': request.GET.get('page_title', ''),
         'initial_rating': request.GET.get('rating', ''),
+    })
+
+
+# =============================================================================
+# SUPPORT / CONTACT VIEWS
+# =============================================================================
+
+def contact(request):
+    """
+    Contact/support form for users to submit questions or issues.
+    """
+    context = {
+        'page_title': 'Contact Support',
+        'categories': SupportRequest.CATEGORY_CHOICES,
+    }
+
+    # Pre-fill user info if authenticated
+    if request.user.is_authenticated:
+        context['user_email'] = request.user.email
+        context['user_name'] = request.user.get_full_name() or request.user.email
+
+    if request.method == 'POST':
+        # Validate required fields
+        email = request.POST.get('email', '').strip()
+        name = request.POST.get('name', '').strip()
+        subject = request.POST.get('subject', '').strip()
+        message = request.POST.get('message', '').strip()
+        category = request.POST.get('category', 'general')
+
+        errors = []
+        if not email:
+            errors.append('Email is required')
+        if not name:
+            errors.append('Name is required')
+        if not subject:
+            errors.append('Subject is required')
+        if not message:
+            errors.append('Message is required')
+
+        if errors:
+            context['errors'] = errors
+            context['form_data'] = request.POST
+            return render(request, 'core/contact.html', context)
+
+        # Create support request
+        support_request = SupportRequest.objects.create(
+            user=request.user if request.user.is_authenticated else None,
+            email=email,
+            name=name,
+            category=category,
+            subject=subject,
+            message=message,
+            page_url=request.META.get('HTTP_REFERER', ''),
+            user_agent=request.META.get('HTTP_USER_AGENT', '')[:500],
+        )
+
+        # Send notification email to support team (optional)
+        try:
+            send_mail(
+                subject=f'[Support] {category}: {subject}',
+                message=f'New support request from {name} ({email}):\n\n{message}',
+                from_email=django_settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[django_settings.SUPPORT_EMAIL],
+                fail_silently=True,
+            )
+        except Exception:
+            pass  # Don't fail if email doesn't send
+
+        messages.success(
+            request,
+            'Your message has been sent. We\'ll get back to you as soon as possible.'
+        )
+        return redirect('core:contact_success')
+
+    return render(request, 'core/contact.html', context)
+
+
+def contact_success(request):
+    """Success page after submitting contact form."""
+    return render(request, 'core/contact_success.html', {
+        'page_title': 'Message Sent',
     })

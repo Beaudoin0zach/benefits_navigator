@@ -11,6 +11,7 @@ from .models import (
     DataRetentionPolicy,
     SupportiveMessage,
     Feedback,
+    SupportRequest,
 )
 
 
@@ -196,3 +197,103 @@ class FeedbackAdmin(admin.ModelAdmin):
             reviewed_by=request.user,
             reviewed_at=timezone.now()
         )
+
+
+@admin.register(SupportRequest)
+class SupportRequestAdmin(admin.ModelAdmin):
+    list_display = [
+        'created_at', 'status_badge', 'priority_badge', 'category',
+        'subject_short', 'email', 'assigned_to'
+    ]
+    list_filter = ['status', 'priority', 'category', 'created_at']
+    search_fields = ['subject', 'message', 'email', 'name']
+    date_hierarchy = 'created_at'
+    readonly_fields = [
+        'created_at', 'updated_at', 'user', 'email', 'name',
+        'category', 'subject', 'message', 'page_url', 'user_agent'
+    ]
+    raw_id_fields = ['assigned_to']
+    actions = ['mark_in_progress', 'mark_resolved', 'mark_closed', 'export_to_csv']
+
+    fieldsets = (
+        ('Request Details', {
+            'fields': ('category', 'subject', 'message')
+        }),
+        ('Submitter', {
+            'fields': ('user', 'name', 'email')
+        }),
+        ('Context', {
+            'fields': ('page_url', 'user_agent'),
+            'classes': ('collapse',)
+        }),
+        ('Admin', {
+            'fields': ('status', 'priority', 'assigned_to', 'admin_notes', 'resolved_at')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    def status_badge(self, obj):
+        colors = {
+            'new': '🔵',
+            'in_progress': '🟡',
+            'waiting': '🟠',
+            'resolved': '🟢',
+            'closed': '⚫',
+        }
+        return f"{colors.get(obj.status, '⚪')} {obj.get_status_display()}"
+    status_badge.short_description = 'Status'
+
+    def priority_badge(self, obj):
+        colors = {
+            'low': '🟢',
+            'medium': '🟡',
+            'high': '🟠',
+            'urgent': '🔴',
+        }
+        return f"{colors.get(obj.priority, '⚪')} {obj.get_priority_display()}"
+    priority_badge.short_description = 'Priority'
+
+    def subject_short(self, obj):
+        return obj.subject[:50] + '...' if len(obj.subject) > 50 else obj.subject
+    subject_short.short_description = 'Subject'
+
+    @admin.action(description='Mark as In Progress')
+    def mark_in_progress(self, request, queryset):
+        queryset.update(status='in_progress', assigned_to=request.user)
+
+    @admin.action(description='Mark as Resolved')
+    def mark_resolved(self, request, queryset):
+        queryset.update(status='resolved', resolved_at=timezone.now())
+
+    @admin.action(description='Mark as Closed')
+    def mark_closed(self, request, queryset):
+        queryset.update(status='closed')
+
+    @admin.action(description='Export to CSV')
+    def export_to_csv(self, request, queryset):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="support_requests_{timezone.now().strftime("%Y%m%d")}.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow([
+            'Date', 'Status', 'Priority', 'Category', 'Subject',
+            'Email', 'Name', 'Message', 'Assigned To'
+        ])
+
+        for req in queryset:
+            writer.writerow([
+                req.created_at.strftime('%Y-%m-%d %H:%M'),
+                req.get_status_display(),
+                req.get_priority_display(),
+                req.get_category_display(),
+                req.subject,
+                req.email,
+                req.name,
+                req.message[:500],
+                req.assigned_to.email if req.assigned_to else '',
+            ])
+
+        return response

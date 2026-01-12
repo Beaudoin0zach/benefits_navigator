@@ -24,4 +24,8 @@ urlpatterns = [
     # Feedback
     path('feedback/submit/', views.submit_feedback, name='submit_feedback'),
     path('feedback/form/', views.feedback_form, name='feedback_form'),
+
+    # Support/Contact
+    path('contact/', views.contact, name='contact'),
+    path('contact/success/', views.contact_success, name='contact_success'),
 ]
