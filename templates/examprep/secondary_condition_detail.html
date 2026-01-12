@@ -2,6 +2,33 @@
 
 {% block title %}{{ condition.condition }} - Secondary Conditions - {{ SITE_NAME }}{% endblock %}
 
+{% block meta_description %}Secondary conditions linked to {{ condition.condition }}. Find medical rationale, diagnostic codes, and evidence tips for VA secondary claims. {{ secondary_conditions|length }} connected conditions with nexus guidance.{% endblock %}
+
+{% block og_title %}{{ condition.condition }} - VA Secondary Conditions{% endblock %}
+{% block og_description %}Discover {{ secondary_conditions|length }} conditions that can be claimed secondary to {{ condition.condition }}. Medical rationale and evidence tips included.{% endblock %}
+{% block twitter_title %}{{ condition.condition }} - Secondary Conditions{% endblock %}
+{% block twitter_description %}Secondary conditions linked to {{ condition.condition }} with medical rationale and evidence tips.{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "MedicalWebPage",
+    "name": "{{ condition.condition }} Secondary Conditions",
+    "description": "{{ condition.description|default:condition.condition|escapejs }}",
+    "mainContentOfPage": {
+        "@type": "WebPageElement",
+        "cssSelector": ".secondary-conditions-list"
+    },
+    "specialty": "Veterans Health",
+    "audience": {
+        "@type": "PeopleAudience",
+        "audienceType": "Veterans"
+    }
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="max-w-4xl mx-auto">
     <!-- Breadcrumb -->

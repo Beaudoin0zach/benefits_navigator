@@ -29,6 +29,23 @@
     <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
     <link rel="canonical" href="{% block canonical %}{{ request.build_absolute_uri }}{% endblock %}">
 
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "{{ SITE_NAME }}",
+        "url": "{{ request.scheme }}://{{ request.get_host }}/",
+        "description": "{{ SITE_DESCRIPTION }}",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{{ request.scheme }}://{{ request.get_host }}/exam-prep/glossary/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+    {% block structured_data %}{% endblock %}
+
     <!-- Tailwind CSS via CDN (for MVP - move to build process later) -->
     <script src="https://cdn.tailwindcss.com"></script>
 

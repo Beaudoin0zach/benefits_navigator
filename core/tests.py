@@ -1430,3 +1430,43 @@ class TestMetaTags(TestCase):
         content = response.content.decode()
         self.assertIn('name="robots"', content)
         self.assertIn('index, follow', content)
+
+
+class TestStructuredData(TestCase):
+    """Tests for JSON-LD structured data."""
+
+    def test_home_page_has_website_schema(self):
+        """Home page has WebSite schema."""
+        response = self.client.get('/')
+        content = response.content.decode()
+        self.assertIn('application/ld+json', content)
+        self.assertIn('"@type": "WebSite"', content)
+
+    def test_home_page_has_search_action(self):
+        """Home page WebSite schema includes SearchAction."""
+        response = self.client.get('/')
+        content = response.content.decode()
+        self.assertIn('SearchAction', content)
+
+    def test_glossary_page_loads(self):
+        """Glossary list page loads correctly."""
+        response = self.client.get('/exam-prep/glossary/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_rating_calculator_has_base_schema(self):
+        """Rating calculator has base WebSite schema."""
+        response = self.client.get('/exam-prep/rating-calculator/')
+        content = response.content.decode()
+        self.assertIn('application/ld+json', content)
+        self.assertIn('@context', content)
+
+    def test_appeals_page_has_schema(self):
+        """Appeals page has structured data."""
+        response = self.client.get('/appeals/')
+        content = response.content.decode()
+        self.assertIn('application/ld+json', content)
+
+    def test_secondary_conditions_hub_loads(self):
+        """Secondary conditions hub loads correctly."""
+        response = self.client.get('/exam-prep/secondary-conditions/')
+        self.assertEqual(response.status_code, 200)
