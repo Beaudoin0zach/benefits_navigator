@@ -553,3 +553,116 @@ def _send_document_analysis_email(document) -> bool:
     except Exception as e:
         logger.error(f"Failed to send email to {user.email}: {e}")
         return False
+
+
+# =============================================================================
+# HEALTH MONITORING TASKS
+# =============================================================================
+
+@shared_task
+def record_health_metrics():
+    """
+    Record system health metrics for historical tracking.
+
+    Should be scheduled via Celery Beat (e.g., every 5 minutes).
+    """
+    from .health import record_metrics
+
+    try:
+        health = record_metrics()
+        logger.info(f"Recorded health metrics: status={health['status']}")
+        return {
+            'status': health['status'],
+            'timestamp': health['timestamp'],
+        }
+    except Exception as e:
+        logger.error(f"Failed to record health metrics: {e}")
+        return {'error': str(e)}
+
+
+@shared_task
+def check_processing_health():
+    """
+    Check for processing issues and alert if needed.
+
+    Looks for:
+    - High failure rates
+    - Documents stuck in processing
+    - Celery queue backlog
+
+    Should be scheduled via Celery Beat (e.g., every 15 minutes).
+    """
+    from .models import ProcessingFailure
+    from claims.models import Document
+
+    alerts = []
+
+    # Check failure rate in last hour
+    failure_stats = ProcessingFailure.get_failure_stats(hours=1)
+    if failure_stats['total'] >= 5:
+        alerts.append(f"High failure rate: {failure_stats['total']} failures in last hour")
+
+    # Check for documents stuck in processing
+    stuck_threshold = timezone.now() - timezone.timedelta(hours=1)
+    stuck_docs = Document.objects.filter(
+        status__in=['processing', 'analyzing'],
+        updated_at__lt=stuck_threshold
+    ).count()
+
+    if stuck_docs > 0:
+        alerts.append(f"{stuck_docs} documents stuck in processing for >1 hour")
+
+    # Check Celery queue length
+    try:
+        from .health import check_celery
+        celery_status = check_celery()
+        if celery_status.get('queue_length', 0) > 100:
+            alerts.append(f"High Celery queue: {celery_status['queue_length']} tasks waiting")
+        if celery_status.get('workers', 0) == 0:
+            alerts.append("No Celery workers available")
+    except Exception as e:
+        logger.error(f"Failed to check Celery status: {e}")
+
+    # Send alert if issues found
+    if alerts:
+        import sentry_sdk
+        alert_message = "Processing Health Alert:\n" + "\n".join(f"- {a}" for a in alerts)
+
+        try:
+            sentry_sdk.capture_message(
+                alert_message,
+                level="warning",
+                extras={
+                    'failure_stats': failure_stats,
+                    'stuck_docs': stuck_docs,
+                }
+            )
+        except Exception:
+            pass  # Sentry might not be configured
+
+        logger.warning(alert_message)
+
+    return {
+        'alerts': alerts,
+        'failure_stats': failure_stats,
+        'stuck_docs': stuck_docs,
+    }
+
+
+@shared_task
+def cleanup_old_health_metrics():
+    """
+    Clean up old health metrics to prevent database bloat.
+
+    Keeps last 30 days of metrics.
+    Should be scheduled via Celery Beat (e.g., daily).
+    """
+    from .models import SystemHealthMetric
+
+    threshold = timezone.now() - timezone.timedelta(days=30)
+    deleted, _ = SystemHealthMetric.objects.filter(
+        timestamp__lt=threshold
+    ).delete()
+
+    logger.info(f"Cleaned up {deleted} old health metrics")
+    return f"Deleted {deleted} old metrics"

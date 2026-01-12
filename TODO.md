@@ -47,7 +47,7 @@ A Django-based web application helping veterans navigate VA disability claims, C
 - [x] Add **in-app feedback** (thumbs/text) ✅ (2026-01-12) - widget on all pages, admin with CSV export
 - [x] Provide a visible **support channel** ✅ (2026-01-12) - contact form at /contact/, links in footer, dashboard, error pages
 - [ ] Disable real billing for pilots, gate premium-only features, and enforce a 30-day data retention policy for tester data
-- [ ] Add health checks/alerts for Celery queue backlog and document-processing failures (timeouts, OCR errors)
+- [x] Add health checks/alerts for Celery queue backlog and document-processing failures (timeouts, OCR errors) ✅ (2026-01-12)
 
 ### 1. Testing & Quality
 - [x] Write unit tests for VA Math calculator (`examprep/va_math.py`) ✅ (2026-01-11) - 80 tests

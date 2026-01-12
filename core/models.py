@@ -890,6 +890,171 @@ class SupportRequest(TimeStampedModel):
         self.save(update_fields=['status', 'resolved_at', 'updated_at'])
 
 
+# =============================================================================
+# HEALTH MONITORING MODELS
+# =============================================================================
+
+class SystemHealthMetric(models.Model):
+    """
+    Tracks system health metrics over time for monitoring.
+    """
+
+    METRIC_TYPE_CHOICES = [
+        ('celery_queue', 'Celery Queue Length'),
+        ('celery_workers', 'Celery Active Workers'),
+        ('document_processing', 'Document Processing'),
+        ('ocr_success', 'OCR Success Rate'),
+        ('ai_analysis', 'AI Analysis Success Rate'),
+        ('response_time', 'Response Time'),
+    ]
+
+    metric_type = models.CharField(
+        'Metric Type',
+        max_length=30,
+        choices=METRIC_TYPE_CHOICES
+    )
+    value = models.FloatField('Value')
+    timestamp = models.DateTimeField('Timestamp', auto_now_add=True)
+    details = models.JSONField('Details', default=dict, blank=True)
+
+    class Meta:
+        verbose_name = 'System Health Metric'
+        verbose_name_plural = 'System Health Metrics'
+        ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['metric_type', 'timestamp']),
+        ]
+
+    def __str__(self):
+        return f"{self.get_metric_type_display()}: {self.value} at {self.timestamp}"
+
+
+class ProcessingFailure(TimeStampedModel):
+    """
+    Tracks document processing failures for monitoring and alerting.
+    """
+
+    FAILURE_TYPE_CHOICES = [
+        ('ocr', 'OCR Failure'),
+        ('ai_analysis', 'AI Analysis Failure'),
+        ('timeout', 'Processing Timeout'),
+        ('file_error', 'File Error'),
+        ('unknown', 'Unknown Error'),
+    ]
+
+    STATUS_CHOICES = [
+        ('new', 'New'),
+        ('investigating', 'Investigating'),
+        ('resolved', 'Resolved'),
+        ('ignored', 'Ignored'),
+    ]
+
+    failure_type = models.CharField(
+        'Failure Type',
+        max_length=20,
+        choices=FAILURE_TYPE_CHOICES
+    )
+    document_id = models.IntegerField('Document ID', null=True, blank=True)
+    task_id = models.CharField('Celery Task ID', max_length=50, blank=True)
+    error_message = models.TextField('Error Message')
+    stack_trace = models.TextField('Stack Trace', blank=True)
+    retry_count = models.IntegerField('Retry Count', default=0)
+
+    # Resolution tracking
+    status = models.CharField(
+        'Status',
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='new'
+    )
+    resolved_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='resolved_failures'
+    )
+    resolution_notes = models.TextField('Resolution Notes', blank=True)
+    resolved_at = models.DateTimeField('Resolved At', null=True, blank=True)
+
+    # Alert tracking
+    alert_sent = models.BooleanField('Alert Sent', default=False)
+    alert_sent_at = models.DateTimeField('Alert Sent At', null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Processing Failure'
+        verbose_name_plural = 'Processing Failures'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"[{self.get_failure_type_display()}] {self.error_message[:50]}"
+
+    @classmethod
+    def record_failure(cls, failure_type, error_message, document_id=None,
+                       task_id='', stack_trace='', retry_count=0):
+        """Record a processing failure and optionally send alert."""
+        failure = cls.objects.create(
+            failure_type=failure_type,
+            document_id=document_id,
+            task_id=task_id,
+            error_message=error_message,
+            stack_trace=stack_trace,
+            retry_count=retry_count,
+        )
+
+        # Check if we should alert (e.g., multiple failures in short time)
+        recent_failures = cls.objects.filter(
+            failure_type=failure_type,
+            created_at__gte=timezone.now() - timezone.timedelta(hours=1),
+            alert_sent=False,
+        ).count()
+
+        if recent_failures >= 3:  # Alert threshold
+            failure.send_alert()
+
+        return failure
+
+    def send_alert(self):
+        """Send alert for this failure (via Sentry and/or email)."""
+        import sentry_sdk
+
+        # Send to Sentry
+        try:
+            sentry_sdk.capture_message(
+                f"Processing Failure Alert: {self.get_failure_type_display()}",
+                level="error",
+                extras={
+                    'failure_id': self.id,
+                    'failure_type': self.failure_type,
+                    'document_id': self.document_id,
+                    'error_message': self.error_message,
+                }
+            )
+        except Exception:
+            pass  # Sentry might not be configured
+
+        self.alert_sent = True
+        self.alert_sent_at = timezone.now()
+        self.save(update_fields=['alert_sent', 'alert_sent_at'])
+
+    @classmethod
+    def get_failure_stats(cls, hours=24):
+        """Get failure statistics for the last N hours."""
+        since = timezone.now() - timezone.timedelta(hours=hours)
+        failures = cls.objects.filter(created_at__gte=since)
+
+        return {
+            'total': failures.count(),
+            'by_type': dict(
+                failures.values('failure_type')
+                .annotate(count=models.Count('id'))
+                .values_list('failure_type', 'count')
+            ),
+            'unresolved': failures.filter(status='new').count(),
+            'alert_sent': failures.filter(alert_sent=True).count(),
+        }
+
+
 class DataRetentionPolicy(models.Model):
     """
     Defines data retention policies for different data types.

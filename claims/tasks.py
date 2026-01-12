@@ -95,6 +95,20 @@ def process_document_task(self, document_id):
         except Exception as e:
             logger.error(f"Failed to update document status: {str(e)}")
 
+        # Record failure for health monitoring
+        try:
+            import traceback
+            from core.models import ProcessingFailure
+            ProcessingFailure.record_failure(
+                failure_type='ocr' if 'ocr' in str(exc).lower() else 'document_processing',
+                error_message=str(exc),
+                stack_trace=traceback.format_exc(),
+                document_id=str(document_id),
+                task_id=self.request.id
+            )
+        except Exception as e:
+            logger.error(f"Failed to record processing failure: {str(e)}")
+
         # Retry with exponential backoff
         raise self.retry(exc=exc, countdown=60 * (2 ** self.request.retries))
 
@@ -238,6 +252,20 @@ def decode_denial_letter_task(self, document_id, user_id=None):
             document.mark_failed(f"Decoding failed: {str(exc)}")
         except Exception as e:
             logger.error(f"Failed to update document status: {str(e)}")
+
+        # Record failure for health monitoring
+        try:
+            import traceback
+            from core.models import ProcessingFailure
+            ProcessingFailure.record_failure(
+                failure_type='ai_analysis',
+                error_message=str(exc),
+                stack_trace=traceback.format_exc(),
+                document_id=str(document_id),
+                task_id=self.request.id
+            )
+        except Exception as e:
+            logger.error(f"Failed to record processing failure: {str(e)}")
 
         raise self.retry(exc=exc, countdown=60 * (2 ** self.request.retries))
 

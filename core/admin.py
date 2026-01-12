@@ -12,6 +12,8 @@ from .models import (
     SupportiveMessage,
     Feedback,
     SupportRequest,
+    SystemHealthMetric,
+    ProcessingFailure,
 )
 
 
@@ -297,3 +299,97 @@ class SupportRequestAdmin(admin.ModelAdmin):
             ])
 
         return response
+
+
+# =============================================================================
+# HEALTH MONITORING ADMIN
+# =============================================================================
+
+@admin.register(SystemHealthMetric)
+class SystemHealthMetricAdmin(admin.ModelAdmin):
+    list_display = ['timestamp', 'metric_type', 'value', 'details_preview']
+    list_filter = ['metric_type', 'timestamp']
+    date_hierarchy = 'timestamp'
+    readonly_fields = ['timestamp', 'metric_type', 'value', 'details']
+
+    def details_preview(self, obj):
+        import json
+        if obj.details:
+            return json.dumps(obj.details)[:50]
+        return '-'
+    details_preview.short_description = 'Details'
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(ProcessingFailure)
+class ProcessingFailureAdmin(admin.ModelAdmin):
+    list_display = [
+        'created_at', 'status_badge', 'failure_type', 'error_preview',
+        'document_id', 'retry_count', 'alert_sent'
+    ]
+    list_filter = ['status', 'failure_type', 'alert_sent', 'created_at']
+    search_fields = ['error_message', 'task_id', 'document_id']
+    date_hierarchy = 'created_at'
+    readonly_fields = [
+        'created_at', 'updated_at', 'failure_type', 'document_id',
+        'task_id', 'error_message', 'stack_trace', 'retry_count',
+        'alert_sent', 'alert_sent_at'
+    ]
+    raw_id_fields = ['resolved_by']
+    actions = ['mark_resolved', 'mark_ignored', 'send_alert']
+
+    fieldsets = (
+        ('Failure Details', {
+            'fields': ('failure_type', 'error_message', 'stack_trace')
+        }),
+        ('Context', {
+            'fields': ('document_id', 'task_id', 'retry_count')
+        }),
+        ('Alert', {
+            'fields': ('alert_sent', 'alert_sent_at')
+        }),
+        ('Resolution', {
+            'fields': ('status', 'resolved_by', 'resolution_notes', 'resolved_at')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    def status_badge(self, obj):
+        colors = {
+            'new': '🔴',
+            'investigating': '🟡',
+            'resolved': '🟢',
+            'ignored': '⚫',
+        }
+        return f"{colors.get(obj.status, '⚪')} {obj.get_status_display()}"
+    status_badge.short_description = 'Status'
+
+    def error_preview(self, obj):
+        return obj.error_message[:60] + '...' if len(obj.error_message) > 60 else obj.error_message
+    error_preview.short_description = 'Error'
+
+    @admin.action(description='Mark as Resolved')
+    def mark_resolved(self, request, queryset):
+        queryset.update(
+            status='resolved',
+            resolved_by=request.user,
+            resolved_at=timezone.now()
+        )
+
+    @admin.action(description='Mark as Ignored')
+    def mark_ignored(self, request, queryset):
+        queryset.update(status='ignored')
+
+    @admin.action(description='Send Alert for Selected')
+    def send_alert(self, request, queryset):
+        for failure in queryset:
+            if not failure.alert_sent:
+                failure.send_alert()
