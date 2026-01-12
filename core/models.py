@@ -797,6 +797,99 @@ class Feedback(TimeStampedModel):
         }
 
 
+class SupportRequest(TimeStampedModel):
+    """
+    Support/contact form submissions from users.
+    """
+
+    CATEGORY_CHOICES = [
+        ('general', 'General Question'),
+        ('bug', 'Bug Report'),
+        ('feature', 'Feature Request'),
+        ('account', 'Account Issue'),
+        ('billing', 'Billing Question'),
+        ('feedback', 'Feedback'),
+        ('other', 'Other'),
+    ]
+
+    PRIORITY_CHOICES = [
+        ('low', 'Low'),
+        ('medium', 'Medium'),
+        ('high', 'High'),
+        ('urgent', 'Urgent'),
+    ]
+
+    STATUS_CHOICES = [
+        ('new', 'New'),
+        ('in_progress', 'In Progress'),
+        ('waiting', 'Waiting for Response'),
+        ('resolved', 'Resolved'),
+        ('closed', 'Closed'),
+    ]
+
+    # Submitter info
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='support_requests'
+    )
+    email = models.EmailField('Email')
+    name = models.CharField('Name', max_length=100)
+
+    # Request details
+    category = models.CharField(
+        'Category',
+        max_length=20,
+        choices=CATEGORY_CHOICES,
+        default='general'
+    )
+    subject = models.CharField('Subject', max_length=200)
+    message = models.TextField('Message')
+
+    # Context
+    page_url = models.CharField('Page URL', max_length=500, blank=True)
+    user_agent = models.CharField('User Agent', max_length=500, blank=True)
+
+    # Admin tracking
+    priority = models.CharField(
+        'Priority',
+        max_length=10,
+        choices=PRIORITY_CHOICES,
+        default='medium'
+    )
+    status = models.CharField(
+        'Status',
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='new'
+    )
+    assigned_to = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='assigned_support_requests'
+    )
+    admin_notes = models.TextField('Admin Notes', blank=True)
+    resolved_at = models.DateTimeField('Resolved At', null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Support Request'
+        verbose_name_plural = 'Support Requests'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"[{self.get_status_display()}] {self.subject} - {self.email}"
+
+    def mark_resolved(self):
+        """Mark the support request as resolved."""
+        self.status = 'resolved'
+        self.resolved_at = timezone.now()
+        self.save(update_fields=['status', 'resolved_at', 'updated_at'])
+
+
 class DataRetentionPolicy(models.Model):
     """
     Defines data retention policies for different data types.

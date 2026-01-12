@@ -45,7 +45,7 @@ A Django-based web application helping veterans navigate VA disability claims, C
 - [x] Stand up a **staging environment** ✅ (2026-01-12) - DO App Platform config ready, see docs/DEPLOYMENT_DIGITALOCEAN.md
 - [x] Enable **Sentry DSN** ✅ (2026-01-12) - analytics events still TODO
 - [x] Add **in-app feedback** (thumbs/text) ✅ (2026-01-12) - widget on all pages, admin with CSV export
-- [ ] Provide a visible **support channel** (support email/contact form) from dashboard and error states
+- [x] Provide a visible **support channel** ✅ (2026-01-12) - contact form at /contact/, links in footer, dashboard, error pages
 - [ ] Disable real billing for pilots, gate premium-only features, and enforce a 30-day data retention policy for tester data
 - [ ] Add health checks/alerts for Celery queue backlog and document-processing failures (timeouts, OCR errors)
 
