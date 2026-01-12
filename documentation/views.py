@@ -80,7 +80,18 @@ def search_results_htmx(request):
 
 
 def search_forms(query):
-    """Search VA forms using PostgreSQL full-text search."""
+    """Search VA forms. Uses PostgreSQL full-text search if available, falls back to icontains."""
+    from django.db import connection
+
+    # Fall back to simple search for SQLite (tests) or if query has special chars
+    if connection.vendor != 'postgresql' or not query.replace(' ', '').isalnum():
+        return VAForm.objects.filter(is_active=True).filter(
+            Q(form_number__icontains=query) |
+            Q(title__icontains=query) |
+            Q(description__icontains=query)
+        ).order_by('form_number')
+
+    # PostgreSQL full-text search
     search_query = SearchQuery(query)
     return VAForm.objects.filter(is_active=True).annotate(
         rank=SearchRank('search_vector', search_query)
@@ -92,7 +103,15 @@ def search_forms(query):
 
 
 def search_exam_guides(query):
-    """Search C&P exam guides using PostgreSQL full-text search."""
+    """Search C&P exam guides. Uses PostgreSQL full-text search if available."""
+    from django.db import connection
+
+    if connection.vendor != 'postgresql' or not query.replace(' ', '').isalnum():
+        return CPExamGuideCondition.objects.filter(is_published=True).filter(
+            Q(condition_name__icontains=query) |
+            Q(what_to_expect__icontains=query)
+        ).order_by('condition_name')
+
     search_query = SearchQuery(query)
     return CPExamGuideCondition.objects.filter(is_published=True).annotate(
         rank=SearchRank('search_vector', search_query)
@@ -103,7 +122,16 @@ def search_exam_guides(query):
 
 
 def search_legal_references(query):
-    """Search legal references using PostgreSQL full-text search."""
+    """Search legal references. Uses PostgreSQL full-text search if available."""
+    from django.db import connection
+
+    if connection.vendor != 'postgresql' or not query.replace(' ', '').isalnum():
+        return LegalReference.objects.filter(is_active=True).filter(
+            Q(citation__icontains=query) |
+            Q(short_name__icontains=query) |
+            Q(summary__icontains=query)
+        ).order_by('citation')
+
     search_query = SearchQuery(query)
     return LegalReference.objects.filter(is_active=True).annotate(
         rank=SearchRank('search_vector', search_query)
@@ -121,12 +149,23 @@ def search_legal_references(query):
 @feature_required
 def form_list(request):
     """List all VA forms, optionally filtered by workflow stage."""
+    from django.db import connection
+
     workflow_stage = request.GET.get('stage', '')
 
     forms = VAForm.objects.filter(is_active=True)
 
     if workflow_stage:
-        forms = forms.filter(workflow_stages__contains=[workflow_stage])
+        # JSON contains lookup not supported in SQLite
+        if connection.vendor == 'postgresql':
+            forms = forms.filter(workflow_stages__contains=[workflow_stage])
+        else:
+            # Fallback: filter in Python for SQLite (tests)
+            form_ids = [
+                f.pk for f in forms
+                if workflow_stage in (f.workflow_stages or [])
+            ]
+            forms = forms.filter(pk__in=form_ids)
 
     # Group by category
     categories = DocumentCategory.objects.filter(
