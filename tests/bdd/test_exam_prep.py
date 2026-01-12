@@ -8,4 +8,4 @@ import pytest
 from pytest_bdd import scenarios
 
 # Load all scenarios from the feature file
-scenarios('features/exam_prep.feature')
+scenarios('exam_prep.feature')
