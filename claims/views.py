@@ -2,13 +2,16 @@
 Views for claims app - Document upload and management
 """
 
+import os
+import mimetypes
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse, Http404, HttpResponseForbidden
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
 
+from core.models import AuditLog
 from .models import Document
 from .forms import DocumentUploadForm, DenialLetterUploadForm
 from .tasks import process_document_task, decode_denial_letter_task
@@ -43,6 +46,11 @@ def document_upload(request):
     Handle document upload with accessible form
     Includes inline validation and clear error messages
     """
+    # Get usage info for display
+    from accounts.models import UsageTracking
+    usage, _ = UsageTracking.objects.get_or_create(user=request.user)
+    usage_summary = usage.get_usage_summary()
+
     if request.method == 'POST':
         form = DocumentUploadForm(request.POST, request.FILES, user=request.user)
 
@@ -58,6 +66,9 @@ def document_upload(request):
             document.mime_type = uploaded_file.content_type
 
             document.save()
+
+            # Record usage (count and storage)
+            usage.record_document_upload(document.file_size)
 
             # Trigger async processing
             process_document_task.delay(document.id)
@@ -82,6 +93,7 @@ def document_upload(request):
 
     context = {
         'form': form,
+        'usage': usage_summary,
     }
 
     return render(request, 'claims/document_upload.html', context)
@@ -172,6 +184,11 @@ def denial_decoder_upload(request):
     Upload VA denial letter for decoding.
     Extracts denial reasons, matches to M21 sections, and generates evidence guidance.
     """
+    # Get usage info for display
+    from accounts.models import UsageTracking
+    usage, _ = UsageTracking.objects.get_or_create(user=request.user)
+    usage_summary = usage.get_usage_summary()
+
     if request.method == 'POST':
         form = DenialLetterUploadForm(request.POST, request.FILES, user=request.user)
 
@@ -188,6 +205,10 @@ def denial_decoder_upload(request):
             document.mime_type = uploaded_file.content_type
 
             document.save()
+
+            # Record usage (document upload + denial decode)
+            usage.record_document_upload(document.file_size)
+            usage.record_denial_decode()
 
             # Trigger denial decoding task
             decode_denial_letter_task.delay(document.id)
@@ -209,6 +230,7 @@ def denial_decoder_upload(request):
 
     context = {
         'form': form,
+        'usage': usage_summary,
     }
 
     return render(request, 'claims/denial_decoder_upload.html', context)
@@ -284,3 +306,137 @@ def denial_decoder_status(request, pk):
         'has_analysis': analysis is not None,
         'has_decoding': decoding is not None,
     })
+
+
+# =============================================================================
+# Protected Media Access
+# =============================================================================
+
+@login_required
+@require_http_methods(["GET"])
+def document_download(request, pk):
+    """
+    Secure document download view.
+
+    Protects media files by:
+    1. Requiring authentication
+    2. Verifying document ownership
+    3. Audit logging the access
+    4. Serving file through Django (not direct MEDIA_URL access)
+
+    In production with nginx/apache, use X-Sendfile/X-Accel-Redirect
+    for better performance.
+    """
+    # Get document and verify ownership
+    document = get_object_or_404(
+        Document,
+        pk=pk,
+        user=request.user,
+        is_deleted=False
+    )
+
+    # Get the file path
+    if not document.file:
+        raise Http404("Document file not found")
+
+    file_path = document.file.path
+
+    # Verify file exists on disk
+    if not os.path.exists(file_path):
+        raise Http404("Document file not found on disk")
+
+    # Audit log the download
+    AuditLog.log(
+        action='document_download',
+        request=request,
+        resource_type='Document',
+        resource_id=document.id,
+        details={
+            'file_name': document.file_name,
+            'file_size': document.file_size,
+        }
+    )
+
+    # Determine content type
+    content_type, _ = mimetypes.guess_type(file_path)
+    if not content_type:
+        content_type = 'application/octet-stream'
+
+    # Check for production sendfile support
+    # In production, configure nginx with X-Accel-Redirect or apache with X-Sendfile
+    use_sendfile = getattr(settings, 'USE_X_SENDFILE', False)
+    sendfile_root = getattr(settings, 'SENDFILE_ROOT', '')
+
+    if use_sendfile and sendfile_root:
+        # Production: Use X-Sendfile/X-Accel-Redirect for nginx/apache
+        # This is more efficient as the web server handles the file transfer
+        from django.http import HttpResponse
+        response = HttpResponse(content_type=content_type)
+
+        # Calculate the internal redirect path for nginx
+        # The file path relative to SENDFILE_ROOT
+        internal_path = file_path.replace(str(settings.MEDIA_ROOT), '/protected-media')
+        response['X-Accel-Redirect'] = internal_path
+        response['Content-Disposition'] = f'attachment; filename="{document.file_name}"'
+        return response
+    else:
+        # Development: Serve file directly through Django
+        # This is slower but works without web server configuration
+        response = FileResponse(
+            open(file_path, 'rb'),
+            content_type=content_type,
+            as_attachment=True,
+            filename=document.file_name
+        )
+        return response
+
+
+@login_required
+@require_http_methods(["GET"])
+def document_view_inline(request, pk):
+    """
+    View document inline (in browser) rather than download.
+
+    Same security as document_download but sets Content-Disposition
+    to inline for PDFs/images to display in browser.
+    """
+    # Get document and verify ownership
+    document = get_object_or_404(
+        Document,
+        pk=pk,
+        user=request.user,
+        is_deleted=False
+    )
+
+    if not document.file:
+        raise Http404("Document file not found")
+
+    file_path = document.file.path
+
+    if not os.path.exists(file_path):
+        raise Http404("Document file not found on disk")
+
+    # Audit log the view
+    AuditLog.log(
+        action='document_view',
+        request=request,
+        resource_type='Document',
+        resource_id=document.id,
+        details={
+            'file_name': document.file_name,
+            'view_type': 'inline',
+        }
+    )
+
+    # Determine content type
+    content_type, _ = mimetypes.guess_type(file_path)
+    if not content_type:
+        content_type = 'application/octet-stream'
+
+    # Serve file inline (for viewing in browser)
+    response = FileResponse(
+        open(file_path, 'rb'),
+        content_type=content_type,
+    )
+    response['Content-Disposition'] = f'inline; filename="{document.file_name}"'
+    return response

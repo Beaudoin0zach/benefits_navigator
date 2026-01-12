@@ -159,6 +159,8 @@ The VA Benefits Navigator is a Django-based web application designed to help vet
 | http://localhost:8000/exam-prep/rating-calculator/ | **Rating Calculator (NEW)** |
 | http://localhost:8000/claims/ | Document Upload |
 | http://localhost:8000/appeals/ | Appeals System |
+| http://localhost:8000/accounts/organizations/ | **Organization List (NEW)** |
+| http://localhost:8000/accounts/organizations/create/ | **Create Organization (NEW)** |
 | http://localhost:8000/admin/ | Django Admin |
 | http://localhost:5555/ | Flower (Celery Monitor) |
 
@@ -307,12 +309,34 @@ See `TODO.md` for comprehensive task list. Key items:
    - `agents/data/m21_article_ids.json` (459 IDs)
    - `agents/data/toc_discovered_articles.json` (full discovery results)
 
+### Completed This Session (2026-01-11) - Path B Organizations
+1. **Organization Foundation**
+   - Organization model with plans (free/pro/enterprise)
+   - OrganizationMembership with roles (admin/caseworker/veteran)
+   - OrganizationInvitation with token-based acceptance
+   - Feature flags: `FEATURE_ORGANIZATIONS`, `FEATURE_ORG_ROLES`, `FEATURE_ORG_INVITATIONS`
+
+2. **Organization Flow**
+   - Org creation form and view
+   - Org list (user's organizations)
+   - Org dashboard with stats, members, contact info
+
+3. **Invitation System (Complete)**
+   - Send invitations by email with role assignment
+   - Manage pending invitations (list, resend, cancel)
+   - Accept invitation flow (handles auth, email mismatch)
+   - HTML + plain text email templates
+   - Rate limiting (20 invites/hour, 10 resends/hour)
+   - Audit logging for all invitation actions
+
 ### For Next Session
-1. Test AI agents with new M21 database data
-2. Consider building topic indices from scraped content
-3. Add TBI and Sleep Apnea exam guides
-4. Set up email notifications
-5. Plan production deployment
+1. **Searchable Documentation System** (see SESSION_NOTES.md)
+   - Tier 1: VA Forms + Instructions mapped to workflow
+   - Tier 1: C&P Exam Guides by condition
+   - Tier 2: Legal References (CAVC, VAOPGCPREC) with disclaimers
+2. Phase 2 Path B: Data scoping & caseworker assignment
+3. Path A: B2C onboarding flow
+4. Production deployment planning
 
 ### Gotchas to Remember
 - ~95 articles have empty/historical content (expected)

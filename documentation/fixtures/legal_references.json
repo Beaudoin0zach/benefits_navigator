@@ -1,0 +1,529 @@
+[
+  {
+    "model": "documentation.legalreference",
+    "pk": 1,
+    "fields": {
+      "reference_type": "cavc",
+      "citation": "Caluza v. Brown, 7 Vet. App. 498 (1995)",
+      "short_name": "Caluza",
+      "title": "Three Elements Required for Service Connection",
+      "summary": "This foundational case established the three essential elements required to establish service connection for a VA disability claim. The Court held that a claimant must show: (1) a current disability, (2) an in-service incurrence or aggravation of a disease or injury, and (3) a nexus (connection) between the current disability and the in-service event. This framework, known as the 'Caluza elements,' is applied to virtually every service connection claim.",
+      "key_points": [
+        "Three elements must be proven for service connection",
+        "Element 1: Current disability (medical diagnosis)",
+        "Element 2: In-service event, injury, or disease",
+        "Element 3: Nexus linking current disability to service",
+        "All three elements must be satisfied for a grant of service connection",
+        "This framework applies to direct service connection claims"
+      ],
+      "relevance": "This case applies to ALL direct service connection claims. If you're filing a claim, you need to provide evidence supporting each of these three elements. Missing any one element will result in denial. When preparing your claim, organize your evidence around these three requirements.",
+      "date_issued": "1995-06-07",
+      "url": "",
+      "related_conditions": [],
+      "is_active": true,
+      "superseded_by": null,
+      "created_at": "2026-01-11T20:00:00Z",
+      "updated_at": "2026-01-11T20:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.legalreference",
+    "pk": 2,
+    "fields": {
+      "reference_type": "cavc",
+      "citation": "Gilbert v. Derwinski, 1 Vet. App. 49 (1990)",
+      "short_name": "Gilbert",
+      "title": "Benefit of the Doubt Doctrine",
+      "summary": "This landmark case established the 'benefit of the doubt' standard in VA claims. When the evidence for and against a claim is in approximate balance (roughly 50/50), the doubt must be resolved in favor of the veteran. This means the VA cannot deny a claim simply because the evidence is evenly split - the veteran wins ties.",
+      "key_points": [
+        "When evidence is approximately balanced, veteran gets benefit of the doubt",
+        "VA must resolve reasonable doubt in favor of the claimant",
+        "Does not require evidence to be overwhelmingly in veteran's favor",
+        "Codified at 38 U.S.C. § 5107(b) and 38 C.F.R. § 3.102",
+        "Applies when there is an approximate balance of positive and negative evidence"
+      ],
+      "relevance": "This doctrine is crucial when your claim has both supporting and contradicting evidence. If you can show the evidence is at least evenly balanced, you should prevail. In appeals, always argue that any doubt should be resolved in your favor under Gilbert.",
+      "date_issued": "1990-07-17",
+      "url": "",
+      "related_conditions": [],
+      "is_active": true,
+      "superseded_by": null,
+      "created_at": "2026-01-11T20:00:00Z",
+      "updated_at": "2026-01-11T20:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.legalreference",
+    "pk": 3,
+    "fields": {
+      "reference_type": "cavc",
+      "citation": "Shedden v. Principi, 381 F.3d 1163 (Fed. Cir. 2004)",
+      "short_name": "Shedden",
+      "title": "Refinement of Service Connection Elements",
+      "summary": "This Federal Circuit case refined and clarified the Caluza elements for service connection. The court held that service connection requires: (1) medical evidence of a current disability; (2) medical or lay evidence of in-service incurrence or aggravation of a disease or injury; and (3) medical evidence of a nexus between the claimed in-service disease or injury and the current disability. Notably, this case recognized that lay evidence can satisfy the second element.",
+      "key_points": [
+        "Clarified that lay evidence can prove in-service events",
+        "Veterans can testify about injuries and symptoms they experienced",
+        "Medical evidence is required for current disability and nexus",
+        "Builds upon and refines the Caluza framework",
+        "Recognizes that not all evidence must come from medical professionals"
+      ],
+      "relevance": "This case is important because it establishes that your own testimony about what happened in service can be sufficient evidence for the second element. You don't always need military medical records to prove something happened during service - your credible lay statements can be enough.",
+      "date_issued": "2004-08-25",
+      "url": "",
+      "related_conditions": [],
+      "is_active": true,
+      "superseded_by": null,
+      "created_at": "2026-01-11T20:00:00Z",
+      "updated_at": "2026-01-11T20:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.legalreference",
+    "pk": 4,
+    "fields": {
+      "reference_type": "cavc",
+      "citation": "Jandreau v. Nicholson, 492 F.3d 1372 (Fed. Cir. 2007)",
+      "short_name": "Jandreau",
+      "title": "Lay Evidence Competency",
+      "summary": "This case significantly expanded the role of lay (non-expert) evidence in VA claims. The Federal Circuit held that lay persons are competent to testify about symptoms and conditions that are within their personal knowledge and observable by a layperson. While lay persons generally cannot provide medical diagnoses, they can describe symptoms and their observations, which may support a claim.",
+      "key_points": [
+        "Lay persons can testify about observable symptoms",
+        "Lay evidence is competent for conditions observable by laypersons",
+        "Examples: pain, hearing ringing (tinnitus), visible injuries, limitation of motion",
+        "Lay persons generally cannot provide complex medical diagnoses",
+        "But they CAN describe what they experience and observe",
+        "VA must consider lay evidence and explain if rejecting it"
+      ],
+      "relevance": "This case supports using your own statements and buddy statements as evidence. You can describe your symptoms, when they started, and how they affect you. While you can't diagnose yourself with a complex condition, you CAN say 'my ears have been ringing since basic training' or 'I've had back pain since carrying heavy equipment.'",
+      "date_issued": "2007-07-03",
+      "url": "",
+      "related_conditions": ["Tinnitus", "Hearing Loss", "Musculoskeletal conditions"],
+      "is_active": true,
+      "superseded_by": null,
+      "created_at": "2026-01-11T20:00:00Z",
+      "updated_at": "2026-01-11T20:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.legalreference",
+    "pk": 5,
+    "fields": {
+      "reference_type": "cavc",
+      "citation": "Buchanan v. Nicholson, 451 F.3d 1331 (Fed. Cir. 2006)",
+      "short_name": "Buchanan",
+      "title": "Lay Evidence Cannot Be Rejected Solely Due to Lack of Documentation",
+      "summary": "The Federal Circuit held that the VA cannot reject lay evidence solely because there is no contemporaneous medical documentation. The absence of medical records does not automatically make lay testimony incredible. The VA must assess the credibility of lay evidence on its own merits, not dismiss it simply because there are no medical records from the time period in question.",
+      "key_points": [
+        "Lack of medical records does not automatically discredit lay evidence",
+        "VA cannot reject lay statements solely because no medical records exist",
+        "Credibility must be assessed based on the evidence itself",
+        "Important for claims where in-service records are missing or incomplete",
+        "Supports veterans whose records were lost or destroyed"
+      ],
+      "relevance": "This case is particularly important if your service treatment records are incomplete or don't document your injury/condition. Many veterans didn't seek treatment for every issue during service. The VA cannot deny your claim simply because there's no medical record from service - they must consider your testimony about what happened.",
+      "date_issued": "2006-06-05",
+      "url": "",
+      "related_conditions": [],
+      "is_active": true,
+      "superseded_by": null,
+      "created_at": "2026-01-11T20:00:00Z",
+      "updated_at": "2026-01-11T20:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.legalreference",
+    "pk": 6,
+    "fields": {
+      "reference_type": "cavc",
+      "citation": "McClain v. Nicholson, 21 Vet. App. 319 (2007)",
+      "short_name": "McClain",
+      "title": "Current Disability Requirement - Timing",
+      "summary": "The Court held that the requirement for a 'current disability' is satisfied when a disability exists at the time of filing or at any point during the pendency of the claim, even if the disability resolves by the time of the decision. This means that if you had a diagnosed condition when you filed your claim, the current disability element is met even if the condition improves during the claims process.",
+      "key_points": [
+        "Current disability can exist at any time during the claims period",
+        "Disability present at filing satisfies current disability requirement",
+        "Condition doesn't need to be present at time of decision",
+        "Prevents VA from denying claims due to temporary improvement",
+        "Important for conditions that fluctuate or respond to treatment"
+      ],
+      "relevance": "This case protects you if your condition improves during the often lengthy claims process. If you had a diagnosed condition when you filed (or at any point while your claim was pending), you've met the current disability requirement. Don't let the VA deny your claim because you're doing better now than when you filed.",
+      "date_issued": "2007-08-03",
+      "url": "",
+      "related_conditions": [],
+      "is_active": true,
+      "superseded_by": null,
+      "created_at": "2026-01-11T20:00:00Z",
+      "updated_at": "2026-01-11T20:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.legalreference",
+    "pk": 7,
+    "fields": {
+      "reference_type": "cavc",
+      "citation": "Allen v. Brown, 7 Vet. App. 439 (1995)",
+      "short_name": "Allen",
+      "title": "Secondary Service Connection - Aggravation",
+      "summary": "This case established the standard for secondary service connection based on aggravation. The Court held that when a service-connected disability aggravates (permanently worsens) a non-service-connected condition, the veteran is entitled to compensation for the degree of disability over and above the pre-aggravation baseline. This created the framework for 'secondary service connection by aggravation.'",
+      "key_points": [
+        "Secondary conditions can be service-connected if aggravated by a service-connected disability",
+        "Compensation is for the degree of worsening beyond the baseline",
+        "Must establish the baseline level before aggravation",
+        "Requires medical evidence showing the aggravation",
+        "Different from secondary conditions directly caused by service-connected disability"
+      ],
+      "relevance": "If you have a condition that wasn't caused by your service-connected disability but has been made worse by it, you may be entitled to secondary service connection. For example, if your service-connected knee condition causes you to walk differently and that aggravates a pre-existing hip condition, you may receive compensation for the additional hip disability caused by the aggravation.",
+      "date_issued": "1995-01-06",
+      "url": "",
+      "related_conditions": [],
+      "is_active": true,
+      "superseded_by": null,
+      "created_at": "2026-01-11T20:00:00Z",
+      "updated_at": "2026-01-11T20:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.legalreference",
+    "pk": 8,
+    "fields": {
+      "reference_type": "cavc",
+      "citation": "Combee v. Brown, 34 F.3d 1039 (Fed. Cir. 1994)",
+      "short_name": "Combee",
+      "title": "Direct Service Connection Despite Failed Presumption",
+      "summary": "The Federal Circuit held that even when a veteran does not meet the requirements for presumptive service connection, they can still establish service connection on a direct basis. The failure to meet presumptive requirements does not preclude a claim for direct service connection. This is particularly important for conditions related to herbicide exposure, radiation, or other presumptive categories.",
+      "key_points": [
+        "Failure to qualify for presumptive service connection doesn't end the inquiry",
+        "Direct service connection remains available",
+        "Veteran can prove actual causation even without presumption",
+        "Applies to herbicide (Agent Orange), radiation, and other presumptive categories",
+        "Requires medical nexus evidence for direct connection"
+      ],
+      "relevance": "If you were exposed to Agent Orange, radiation, or another hazard but your condition isn't on the presumptive list, don't give up. You can still prove your condition was directly caused by the exposure. You'll need medical evidence linking your specific condition to the exposure, but the claim is not automatically denied just because it's not presumptive.",
+      "date_issued": "1994-09-01",
+      "url": "",
+      "related_conditions": ["Conditions related to Agent Orange", "Radiation exposure conditions"],
+      "is_active": true,
+      "superseded_by": null,
+      "created_at": "2026-01-11T20:00:00Z",
+      "updated_at": "2026-01-11T20:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.legalreference",
+    "pk": 9,
+    "fields": {
+      "reference_type": "cavc",
+      "citation": "Nieves-Rodriguez v. Peake, 22 Vet. App. 295 (2008)",
+      "short_name": "Nieves-Rodriguez",
+      "title": "Medical Opinion Adequacy Requirements",
+      "summary": "The Court established the standard for evaluating the adequacy of medical opinions. A medical opinion must be based on sufficient facts and data, be the product of reliable principles and methods, and the examiner must have reliably applied the principles to the facts. The Board must assess both the competence and credibility of medical opinions. Conclusory opinions without rationale are inadequate.",
+      "key_points": [
+        "Medical opinions must have supporting rationale",
+        "Conclusory statements without explanation are inadequate",
+        "Examiner must review relevant evidence",
+        "The 'how' and 'why' of the opinion matters",
+        "Board must assess competence and credibility of opinions",
+        "Inadequate opinions can be challenged on appeal"
+      ],
+      "relevance": "This case is crucial for challenging negative medical opinions. If a C&P examiner provides a negative opinion without adequate explanation, you can argue the opinion is inadequate under Nieves-Rodriguez. Look for opinions that don't explain their reasoning, don't address your lay evidence, or make conclusions without supporting rationale.",
+      "date_issued": "2008-12-01",
+      "url": "",
+      "related_conditions": [],
+      "is_active": true,
+      "superseded_by": null,
+      "created_at": "2026-01-11T20:00:00Z",
+      "updated_at": "2026-01-11T20:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.legalreference",
+    "pk": 10,
+    "fields": {
+      "reference_type": "cavc",
+      "citation": "DeLuca v. Brown, 8 Vet. App. 202 (1995)",
+      "short_name": "DeLuca",
+      "title": "Functional Loss in Musculoskeletal Ratings",
+      "summary": "The Court held that when evaluating musculoskeletal disabilities, the VA must consider functional loss due to pain, weakness, fatigability, and incoordination. Range of motion measurements alone are insufficient - the rating must account for additional functional impairment during flare-ups and with repeated use. This requires examiners to estimate additional loss of motion during flare-ups.",
+      "key_points": [
+        "Musculoskeletal ratings must consider functional loss",
+        "Factors: pain, weakness, fatigability, incoordination",
+        "Range of motion alone is not sufficient",
+        "Must consider additional limitation during flare-ups",
+        "Must consider impairment with repeated use",
+        "Examiner should estimate additional functional loss"
+      ],
+      "relevance": "If you have a joint or spine condition, make sure your C&P exam addresses functional loss. Tell the examiner about your flare-ups - how often they occur, how severe they are, and how much additional limitation you experience. The VA must consider this additional impairment when assigning your rating, not just your range of motion on exam day.",
+      "date_issued": "1995-11-08",
+      "url": "",
+      "related_conditions": ["Back conditions", "Knee conditions", "Shoulder conditions", "All musculoskeletal conditions"],
+      "is_active": true,
+      "superseded_by": null,
+      "created_at": "2026-01-11T20:00:00Z",
+      "updated_at": "2026-01-11T20:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.legalreference",
+    "pk": 11,
+    "fields": {
+      "reference_type": "cavc",
+      "citation": "Sharp v. Shulkin, 29 Vet. App. 26 (2017)",
+      "short_name": "Sharp",
+      "title": "Flare-Up Documentation Requirements",
+      "summary": "The Court clarified the VA's duty regarding flare-ups in musculoskeletal examinations. When a veteran reports flare-ups, the examiner must estimate the additional functional loss during flare-ups or explain why such an estimate cannot be provided. Simply stating that an opinion would be 'speculative' without explanation is inadequate. The examiner must elicit sufficient information about flare-ups to form an opinion.",
+      "key_points": [
+        "Examiners must estimate functional loss during flare-ups",
+        "Cannot simply say opinion would be speculative",
+        "Must explain why estimate cannot be provided if that's the case",
+        "Examiner must ask about flare-up frequency, duration, and severity",
+        "Strengthens DeLuca requirements for flare-up assessment",
+        "Inadequate flare-up opinions can be basis for remand"
+      ],
+      "relevance": "This case strengthens your ability to get proper consideration of flare-ups. If your examiner didn't ask about or address your flare-ups, or simply said they couldn't estimate additional loss without explanation, the examination may be inadequate. On appeal, argue that the exam didn't comply with Sharp.",
+      "date_issued": "2017-01-24",
+      "url": "",
+      "related_conditions": ["Back conditions", "Knee conditions", "All musculoskeletal conditions"],
+      "is_active": true,
+      "superseded_by": null,
+      "created_at": "2026-01-11T20:00:00Z",
+      "updated_at": "2026-01-11T20:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.legalreference",
+    "pk": 12,
+    "fields": {
+      "reference_type": "cavc",
+      "citation": "Correia v. McDonald, 28 Vet. App. 158 (2016)",
+      "short_name": "Correia",
+      "title": "Range of Motion Testing Requirements",
+      "summary": "The Court held that adequate joint examinations must include range of motion testing in active motion, passive motion, weight-bearing, and non-weight-bearing positions (where applicable). The examination must also test the opposite joint for comparison. Failure to conduct these tests renders an examination inadequate for rating purposes.",
+      "key_points": [
+        "Must test active and passive range of motion",
+        "Must test weight-bearing and non-weight-bearing (where applicable)",
+        "Must test the opposite joint for comparison",
+        "Failure to do so makes exam inadequate",
+        "Applies to all joint examinations",
+        "Can be basis for remand if exam is non-compliant"
+      ],
+      "relevance": "If your joint examination didn't include all required testing (active/passive, weight-bearing/non-weight-bearing, and the opposite joint), the exam may be inadequate. Check your exam report for these measurements. If they're missing, you may have grounds to request a new examination.",
+      "date_issued": "2016-07-05",
+      "url": "",
+      "related_conditions": ["Knee conditions", "Ankle conditions", "All joint conditions"],
+      "is_active": true,
+      "superseded_by": null,
+      "created_at": "2026-01-11T20:00:00Z",
+      "updated_at": "2026-01-11T20:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.legalreference",
+    "pk": 13,
+    "fields": {
+      "reference_type": "cavc",
+      "citation": "Shade v. Shinseki, 24 Vet. App. 110 (2010)",
+      "short_name": "Shade",
+      "title": "New and Material Evidence Standard",
+      "summary": "The Court held that the threshold for determining what constitutes 'new and material evidence' to reopen a previously denied claim is low. Evidence is considered material if it relates to an unestablished fact necessary for the claim and raises a reasonable possibility of substantiating the claim. The evidence need not conclusively prove the claim, just provide a reasonable possibility.",
+      "key_points": [
+        "Low threshold for reopening previously denied claims",
+        "New evidence must relate to previously unestablished fact",
+        "Must raise 'reasonable possibility' of substantiating claim",
+        "Does not need to conclusively prove the claim",
+        "Evidence is evaluated assuming its credibility",
+        "Easier to reopen claims than many veterans realize"
+      ],
+      "relevance": "If you were previously denied and are filing to reopen your claim, you don't need overwhelming new evidence. You just need evidence that relates to why you were denied before and raises a reasonable possibility of success. This could be a new medical opinion, buddy statements, or treatment records that weren't previously considered.",
+      "date_issued": "2010-11-02",
+      "url": "",
+      "related_conditions": [],
+      "is_active": true,
+      "superseded_by": null,
+      "created_at": "2026-01-11T20:00:00Z",
+      "updated_at": "2026-01-11T20:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.legalreference",
+    "pk": 14,
+    "fields": {
+      "reference_type": "cavc",
+      "citation": "Mittleider v. West, 11 Vet. App. 181 (1998)",
+      "short_name": "Mittleider",
+      "title": "Separating Service-Connected and Non-Service-Connected Symptoms",
+      "summary": "The Court held that when it is not possible to separate the effects of service-connected and non-service-connected conditions, all symptoms must be attributed to the service-connected condition. The VA cannot use speculation to reduce ratings by attributing symptoms to non-service-connected conditions when the effects cannot be clearly distinguished.",
+      "key_points": [
+        "If symptoms cannot be separated, all must be attributed to service-connected condition",
+        "VA cannot speculate to reduce ratings",
+        "Benefit of the doubt applies to symptom attribution",
+        "Important when veteran has multiple conditions affecting same body system",
+        "Prevents VA from arbitrarily reducing compensation"
+      ],
+      "relevance": "If you have both service-connected and non-service-connected conditions affecting the same area (e.g., service-connected back condition plus age-related arthritis), and the symptoms can't be clearly separated, the VA must attribute all symptoms to the service-connected condition. Don't let the VA reduce your rating by claiming some symptoms are from a non-service-connected cause without clear medical evidence.",
+      "date_issued": "1998-06-17",
+      "url": "",
+      "related_conditions": [],
+      "is_active": true,
+      "superseded_by": null,
+      "created_at": "2026-01-11T20:00:00Z",
+      "updated_at": "2026-01-11T20:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.legalreference",
+    "pk": 15,
+    "fields": {
+      "reference_type": "vaopgcprec",
+      "citation": "VAOPGCPREC 23-97",
+      "short_name": "VAOPGCPREC 23-97",
+      "title": "Separate Ratings for Knee Arthritis and Instability",
+      "summary": "The VA General Counsel held that a veteran can receive separate ratings for knee arthritis (limitation of motion) and knee instability under different diagnostic codes. These are considered separate disabilities that can be rated individually. This opinion established the principle of 'separate ratings' for knees that many veterans benefit from.",
+      "key_points": [
+        "Knee arthritis (DC 5003/5010) and instability (DC 5257) are separate disabilities",
+        "Can receive compensation for both conditions in the same knee",
+        "Each disability rated under its own diagnostic code",
+        "Significantly increases potential compensation for knee conditions",
+        "Also applies to limitation of flexion and extension (separate ratings possible)"
+      ],
+      "relevance": "If you have both knee arthritis and instability in the same knee, you should receive two separate ratings. Many veterans only get one. Check your rating decision - if you have both conditions documented but only one rating, you may be entitled to an additional rating for the other condition.",
+      "date_issued": "1997-07-01",
+      "url": "",
+      "related_conditions": ["Knee conditions", "Arthritis"],
+      "is_active": true,
+      "superseded_by": null,
+      "created_at": "2026-01-11T20:00:00Z",
+      "updated_at": "2026-01-11T20:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.legalreference",
+    "pk": 16,
+    "fields": {
+      "reference_type": "vaopgcprec",
+      "citation": "VAOPGCPREC 9-98",
+      "short_name": "VAOPGCPREC 9-98",
+      "title": "Separate Ratings for Flexion and Extension Limitations",
+      "summary": "The VA General Counsel held that separate ratings may be assigned for limitation of flexion and limitation of extension of the same leg. If a veteran has compensable limitation of both flexion and extension of the knee, two separate ratings can be assigned under diagnostic codes 5260 and 5261 respectively.",
+      "key_points": [
+        "Limitation of flexion (DC 5260) and extension (DC 5261) are separate disabilities",
+        "Can receive two ratings for the same knee",
+        "Each limitation rated under its own diagnostic code",
+        "Expands upon VAOPGCPREC 23-97",
+        "Requires compensable limitation in both directions"
+      ],
+      "relevance": "If you have significant limitation of both bending and straightening your knee, you may be entitled to two separate ratings. This is often overlooked. Review your examination - if you have limited flexion AND limited extension, make sure you're receiving separate ratings for each.",
+      "date_issued": "1998-08-14",
+      "url": "",
+      "related_conditions": ["Knee conditions"],
+      "is_active": true,
+      "superseded_by": null,
+      "created_at": "2026-01-11T20:00:00Z",
+      "updated_at": "2026-01-11T20:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.legalreference",
+    "pk": 17,
+    "fields": {
+      "reference_type": "cavc",
+      "citation": "Stegall v. West, 11 Vet. App. 268 (1998)",
+      "short_name": "Stegall",
+      "title": "Compliance with Remand Orders",
+      "summary": "The Court held that when the Board remands a case for specific development actions, the agency must comply substantially with the remand directives. A remand confers upon the veteran the right to compliance with the remand orders. If the agency fails to comply, the veteran is entitled to another remand to ensure compliance.",
+      "key_points": [
+        "VA must comply with Board remand instructions",
+        "Veteran has a right to remand compliance",
+        "Non-compliance requires another remand",
+        "Ensures Board directives are followed",
+        "Important for enforcing proper development of claims"
+      ],
+      "relevance": "If the Board previously remanded your case with specific instructions that weren't followed, you can argue for another remand under Stegall. Review your remand orders and compare them to what actually happened. If the VA didn't do what the Board ordered, point this out in your appeal.",
+      "date_issued": "1998-06-26",
+      "url": "",
+      "related_conditions": [],
+      "is_active": true,
+      "superseded_by": null,
+      "created_at": "2026-01-11T20:00:00Z",
+      "updated_at": "2026-01-11T20:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.legalreference",
+    "pk": 18,
+    "fields": {
+      "reference_type": "cavc",
+      "citation": "Rice v. Shinseki, 22 Vet. App. 447 (2009)",
+      "short_name": "Rice",
+      "title": "TDIU as Part of Increased Rating Claims",
+      "summary": "The Court held that a claim for Total Disability based on Individual Unemployability (TDIU) is part of an increased rating claim when unemployability is raised by the record. If evidence suggests the veteran cannot work due to service-connected disabilities during an increased rating claim, the VA must consider TDIU even if not explicitly claimed.",
+      "key_points": [
+        "TDIU claim is part of increased rating claim when raised by record",
+        "VA must consider TDIU if evidence suggests unemployability",
+        "Does not require formal TDIU application",
+        "Evidence of unemployability triggers VA's duty to consider TDIU",
+        "Important for veterans who may not know about TDIU"
+      ],
+      "relevance": "If you're seeking an increased rating and have evidence that you can't work due to your service-connected conditions, the VA should automatically consider TDIU. You don't always need to file a separate claim. If your records show unemployability but TDIU wasn't addressed, this may be an error.",
+      "date_issued": "2009-05-06",
+      "url": "",
+      "related_conditions": [],
+      "is_active": true,
+      "superseded_by": null,
+      "created_at": "2026-01-11T20:00:00Z",
+      "updated_at": "2026-01-11T20:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.legalreference",
+    "pk": 19,
+    "fields": {
+      "reference_type": "cavc",
+      "citation": "Esteban v. Brown, 6 Vet. App. 259 (1994)",
+      "short_name": "Esteban",
+      "title": "Separate Ratings for Different Symptomatology",
+      "summary": "The Court established that separate ratings may be assigned for distinct manifestations of the same injury if no symptomatology overlaps. This is known as the Esteban rule against pyramiding exceptions. While the same symptoms cannot be rated twice (pyramiding), different symptoms from the same injury can receive separate ratings.",
+      "key_points": [
+        "Separate ratings allowed for distinct manifestations",
+        "Key test: no overlapping symptomatology",
+        "Prevents pyramiding while allowing appropriate compensation",
+        "Applies when one injury causes multiple distinct disabilities",
+        "Each disability rated based on its unique symptoms"
+      ],
+      "relevance": "If your service-connected injury causes multiple distinct problems, you may be entitled to separate ratings for each. For example, a facial injury causing both disfigurement and nerve damage could warrant separate ratings. The key is that the symptoms being rated don't overlap.",
+      "date_issued": "1994-03-17",
+      "url": "",
+      "related_conditions": [],
+      "is_active": true,
+      "superseded_by": null,
+      "created_at": "2026-01-11T20:00:00Z",
+      "updated_at": "2026-01-11T20:00:00Z"
+    }
+  },
+  {
+    "model": "documentation.legalreference",
+    "pk": 20,
+    "fields": {
+      "reference_type": "cavc",
+      "citation": "Kahana v. Shinseki, 24 Vet. App. 428 (2011)",
+      "short_name": "Kahana",
+      "title": "Negative Evidence and Silence of Records",
+      "summary": "The Court addressed when the absence of evidence (silence of records) can be considered negative evidence. Silence in service treatment records is not always evidence against a claim. The Board must explain why it finds the absence of records to be probative, considering factors like whether treatment would normally be expected and documented.",
+      "key_points": [
+        "Silence of records is not automatically negative evidence",
+        "Must explain why absence of records is probative",
+        "Consider whether treatment would normally be documented",
+        "Important when service records don't show claimed condition",
+        "Prevents automatic denial based solely on lack of records"
+      ],
+      "relevance": "If your claim was denied because your service records don't mention your condition, this case may help. The VA cannot simply say 'no records, no service connection.' They must explain why the absence of records is meaningful - for example, would you have actually sought treatment for that issue? Many conditions weren't documented because service members didn't report them.",
+      "date_issued": "2011-07-21",
+      "url": "",
+      "related_conditions": [],
+      "is_active": true,
+      "superseded_by": null,
+      "created_at": "2026-01-11T20:00:00Z",
+      "updated_at": "2026-01-11T20:00:00Z"
+    }
+  }
+]

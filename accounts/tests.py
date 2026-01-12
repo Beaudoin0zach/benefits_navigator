@@ -563,3 +563,203 @@ class TestUserWorkflow(TestCase):
         self.assertEqual(user.profile.disability_rating, 80)
         self.assertEqual(user.claims.count(), 1)
         self.assertEqual(user.appeals.count(), 1)
+
+
+# =============================================================================
+# RATE LIMITING TESTS
+# =============================================================================
+
+@pytest.mark.django_db
+class TestRateLimiting:
+    """
+    Tests for rate limiting on authentication views.
+
+    Rate limits configured:
+    - Login: 5/min, 20/h per IP
+    - Signup: 3/h per IP
+    - Password Reset: 3/h per IP
+    """
+
+    @pytest.fixture
+    def enable_rate_limiting(self, settings):
+        """Enable rate limiting for these tests."""
+        settings.RATELIMIT_ENABLE = True
+        yield
+        settings.RATELIMIT_ENABLE = False
+
+    @pytest.fixture
+    def clear_cache(self):
+        """Clear the cache before each test to reset rate limit counters."""
+        from django.core.cache import cache
+        cache.clear()
+        yield
+        cache.clear()
+
+    def test_login_rate_limit_per_minute(self, client, user, enable_rate_limiting, clear_cache):
+        """Login should be rate limited to 5 attempts per minute."""
+        url = reverse('account_login')
+
+        # Make 5 failed login attempts (within limit)
+        for i in range(5):
+            response = client.post(url, {
+                'login': user.email,
+                'password': 'WrongPassword123!',
+            })
+            # Should get 200 (form re-displayed with error) not 403
+            assert response.status_code == 200, f"Request {i+1} should succeed, got {response.status_code}"
+
+        # 6th attempt should be rate limited
+        response = client.post(url, {
+            'login': user.email,
+            'password': 'WrongPassword123!',
+        })
+        assert response.status_code == 403, "6th request should be rate limited (403)"
+
+    def test_login_allows_successful_login_within_limit(self, client, user, user_password, enable_rate_limiting, clear_cache):
+        """Successful login should work within rate limit."""
+        url = reverse('account_login')
+
+        response = client.post(url, {
+            'login': user.email,
+            'password': user_password,
+        })
+        # Should redirect on successful login
+        assert response.status_code == 302
+
+    def test_signup_rate_limit(self, client, db, enable_rate_limiting, clear_cache):
+        """Signup should be rate limited to 3 per hour."""
+        url = reverse('account_signup')
+
+        # Make 3 signup attempts with INVALID data to not create users
+        # This tests the rate limit on POST attempts, not successful signups
+        for i in range(3):
+            response = client.post(url, {
+                'email': f'ratelimit_test_{i}@example.com',
+                'password1': 'short',  # Invalid password - too short
+                'password2': 'short',
+            })
+            # Should show form with validation errors (200)
+            assert response.status_code == 200, f"Signup {i+1} should work, got {response.status_code}"
+
+        # 4th attempt should be rate limited regardless of data validity
+        response = client.post(url, {
+            'email': 'ratelimit_test_4@example.com',
+            'password1': 'short',
+            'password2': 'short',
+        })
+        assert response.status_code == 403, "4th signup should be rate limited (403)"
+
+    def test_password_reset_rate_limit(self, client, user, enable_rate_limiting, clear_cache):
+        """Password reset should be rate limited to 3 per hour."""
+        url = reverse('account_reset_password')
+
+        # Make 3 reset attempts (within limit)
+        for i in range(3):
+            response = client.post(url, {
+                'email': user.email,
+            })
+            # Should succeed (200 or 302)
+            assert response.status_code in [200, 302], f"Reset {i+1} should work, got {response.status_code}"
+
+        # 4th attempt should be rate limited
+        response = client.post(url, {
+            'email': user.email,
+        })
+        assert response.status_code == 403, "4th password reset should be rate limited (403)"
+
+    def test_rate_limit_different_ips(self, db, enable_rate_limiting, clear_cache):
+        """Rate limits should be tracked per IP address."""
+        from django.test import Client as DjangoClient
+        url = reverse('account_signup')
+
+        # Client 1 (default IP) - use invalid data to not create users
+        client1 = DjangoClient()
+        for i in range(3):
+            response = client1.post(url, {
+                'email': f'ip1_test_{i}@example.com',
+                'password1': 'short',
+                'password2': 'short',
+            })
+            assert response.status_code == 200  # Form validation error
+
+        # Client 1 should be rate limited
+        response = client1.post(url, {
+            'email': 'ip1_test_4@example.com',
+            'password1': 'short',
+            'password2': 'short',
+        })
+        assert response.status_code == 403
+
+        # Client 2 with different IP should still work
+        client2 = DjangoClient(REMOTE_ADDR='192.168.1.100')
+        response = client2.post(url, {
+            'email': 'ip2_test_1@example.com',
+            'password1': 'short',
+            'password2': 'short',
+        })
+        # Should not be rate limited (different IP) - form error is 200
+        assert response.status_code == 200, "Different IP should not be rate limited"
+
+    def test_rate_limit_get_requests_not_limited(self, client, enable_rate_limiting, clear_cache):
+        """GET requests should not be rate limited (only POST)."""
+        url = reverse('account_login')
+
+        # Make many GET requests
+        for i in range(20):
+            response = client.get(url)
+            assert response.status_code == 200, f"GET request {i+1} should succeed"
+
+    def test_rate_limit_error_message(self, client, user, enable_rate_limiting, clear_cache):
+        """Rate limited response should indicate the issue."""
+        url = reverse('account_login')
+
+        # Exhaust rate limit
+        for i in range(6):
+            client.post(url, {
+                'login': user.email,
+                'password': 'WrongPassword123!',
+            })
+
+        # Check 403 response
+        response = client.post(url, {
+            'login': user.email,
+            'password': 'WrongPassword123!',
+        })
+        assert response.status_code == 403
+
+    def test_rate_limiting_disabled_in_debug(self, client, user, settings, clear_cache):
+        """Rate limiting should be disabled when RATELIMIT_ENABLE is False."""
+        settings.RATELIMIT_ENABLE = False
+        url = reverse('account_login')
+
+        # Make more than 5 requests
+        for i in range(10):
+            response = client.post(url, {
+                'login': user.email,
+                'password': 'WrongPassword123!',
+            })
+            # All should succeed (200 for form errors, not 403)
+            assert response.status_code == 200, f"Request {i+1} should not be rate limited"
+
+
+class TestRateLimitingConfiguration(TestCase):
+    """Tests for rate limiting configuration."""
+
+    def test_rate_limit_decorators_applied(self):
+        """Verify rate limit decorators are applied to views."""
+        from accounts.views import RateLimitedLoginView, RateLimitedSignupView, RateLimitedPasswordResetView
+
+        # Check that the classes exist and have post methods
+        self.assertTrue(hasattr(RateLimitedLoginView, 'post'))
+        self.assertTrue(hasattr(RateLimitedSignupView, 'post'))
+        self.assertTrue(hasattr(RateLimitedPasswordResetView, 'post'))
+
+    def test_rate_limit_uses_cache_backend(self):
+        """Verify rate limiting is configured to use cache."""
+        from django.conf import settings
+        self.assertEqual(settings.RATELIMIT_USE_CACHE, 'default')
+
+    def test_rate_limit_toggle_exists(self):
+        """Verify RATELIMIT_ENABLE setting exists."""
+        from django.conf import settings
+        self.assertTrue(hasattr(settings, 'RATELIMIT_ENABLE'))

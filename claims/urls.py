@@ -15,6 +15,10 @@ urlpatterns = [
     path('document/<int:pk>/status/', views.document_status, name='document_status'),
     path('document/<int:pk>/delete/', views.document_delete, name='document_delete'),
 
+    # Protected media access (authentication required)
+    path('document/<int:pk>/download/', views.document_download, name='document_download'),
+    path('document/<int:pk>/view/', views.document_view_inline, name='document_view'),
+
     # Denial Decoder
     path('decode/', views.denial_decoder_upload, name='denial_decoder'),
     path('decode/<int:pk>/', views.denial_decoder_result, name='denial_decoder_result'),

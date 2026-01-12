@@ -65,6 +65,13 @@ def process_document_task(self, document_id):
 
         logger.info(f"Document {document_id} processed successfully in {duration:.2f} seconds")
 
+        # Send email notification (async)
+        try:
+            from core.tasks import send_document_analysis_complete_email
+            send_document_analysis_complete_email.delay(document_id)
+        except Exception as e:
+            logger.warning(f"Failed to queue email notification for document {document_id}: {e}")
+
         return {
             'document_id': document_id,
             'status': 'completed',
@@ -202,6 +209,13 @@ def decode_denial_letter_task(self, document_id, user_id=None):
         # Mark document complete
         duration = time.time() - start_time
         document.mark_completed(duration=duration)
+
+        # Send email notification (async)
+        try:
+            from core.tasks import send_document_analysis_complete_email
+            send_document_analysis_complete_email.delay(document_id)
+        except Exception as e:
+            logger.warning(f"Failed to queue email notification for document {document_id}: {e}")
 
         return {
             'document_id': document_id,

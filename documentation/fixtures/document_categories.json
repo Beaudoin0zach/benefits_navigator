@@ -1,0 +1,74 @@
+[
+  {
+    "model": "documentation.documentcategory",
+    "pk": 1,
+    "fields": {
+      "name": "Initial Claims",
+      "slug": "initial-claims",
+      "description": "Forms used to start a new VA disability compensation claim or establish an intent to file.",
+      "icon": "document-plus",
+      "order": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "documentation.documentcategory",
+    "pk": 2,
+    "fields": {
+      "name": "Appeals & Decision Review",
+      "slug": "appeals-decision-review",
+      "description": "Forms for appealing VA decisions through Supplemental Claims, Higher-Level Review, or Board Appeals.",
+      "icon": "scale",
+      "order": 2,
+      "is_active": true
+    }
+  },
+  {
+    "model": "documentation.documentcategory",
+    "pk": 3,
+    "fields": {
+      "name": "Supporting Statements",
+      "slug": "supporting-statements",
+      "description": "Forms for submitting personal statements, buddy statements, and supporting evidence for your claim.",
+      "icon": "document-text",
+      "order": 3,
+      "is_active": true
+    }
+  },
+  {
+    "model": "documentation.documentcategory",
+    "pk": 4,
+    "fields": {
+      "name": "Special Programs",
+      "slug": "special-programs",
+      "description": "Forms for special VA programs including TDIU (Individual Unemployability), Special Monthly Compensation, and Aid & Attendance.",
+      "icon": "star",
+      "order": 4,
+      "is_active": true
+    }
+  },
+  {
+    "model": "documentation.documentcategory",
+    "pk": 5,
+    "fields": {
+      "name": "Dependency & Benefits",
+      "slug": "dependency-benefits",
+      "description": "Forms for adding dependents, requesting additional benefits, and updating your personal information.",
+      "icon": "users",
+      "order": 5,
+      "is_active": true
+    }
+  },
+  {
+    "model": "documentation.documentcategory",
+    "pk": 6,
+    "fields": {
+      "name": "Medical Evidence",
+      "slug": "medical-evidence",
+      "description": "Forms for submitting medical evidence, authorizing release of medical records, and requesting VA examinations.",
+      "icon": "clipboard-document-list",
+      "order": 6,
+      "is_active": true
+    }
+  }
+]

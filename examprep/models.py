@@ -513,3 +513,150 @@ class EvidenceChecklist(TimeStampedModel):
                 categories[category] = []
             categories[category].append(item)
         return categories
+
+
+class SharedCalculation(TimeStampedModel):
+    """
+    Shareable rating calculation with unique token.
+    Allows anyone (logged in or anonymous) to share their calculation.
+    """
+    import secrets
+
+    # Unique share token
+    share_token = models.CharField(
+        'Share Token',
+        max_length=32,
+        unique=True,
+        db_index=True,
+        help_text='Unique token for sharing this calculation'
+    )
+
+    # Optional link to user if logged in
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='shared_calculations'
+    )
+
+    # Optional link to saved calculation if created from one
+    saved_calculation = models.ForeignKey(
+        'SavedRatingCalculation',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='shares'
+    )
+
+    # Calculation name
+    name = models.CharField(
+        'Name',
+        max_length=100,
+        default='Shared VA Rating Calculation'
+    )
+
+    # Individual ratings stored as JSON
+    ratings = models.JSONField(
+        'Disability Ratings',
+        default=list,
+        help_text='List of individual disability ratings'
+    )
+
+    # Calculated results
+    combined_raw = models.FloatField('Combined (raw)', default=0)
+    combined_rounded = models.IntegerField('Combined (rounded)', default=0)
+    bilateral_factor = models.FloatField('Bilateral Factor', default=0)
+
+    # Dependent info
+    has_spouse = models.BooleanField('Has Spouse', default=False)
+    children_under_18 = models.IntegerField('Children Under 18', default=0)
+    dependent_parents = models.IntegerField('Dependent Parents', default=0)
+
+    # Estimated compensation
+    estimated_monthly = models.FloatField('Estimated Monthly', default=0)
+
+    # Expiration (optional - for cleanup)
+    expires_at = models.DateTimeField(
+        'Expires At',
+        null=True,
+        blank=True,
+        help_text='When this share link expires'
+    )
+
+    # View tracking
+    view_count = models.PositiveIntegerField('View Count', default=0)
+
+    class Meta:
+        verbose_name = 'Shared Calculation'
+        verbose_name_plural = 'Shared Calculations'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.name} - {self.combined_rounded}% (token: {self.share_token[:8]}...)"
+
+    def save(self, *args, **kwargs):
+        if not self.share_token:
+            import secrets
+            self.share_token = secrets.token_urlsafe(16)
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('examprep:shared_calculation', kwargs={'token': self.share_token})
+
+    @property
+    def is_expired(self):
+        """Check if this share link has expired."""
+        if not self.expires_at:
+            return False
+        from django.utils import timezone
+        return timezone.now() > self.expires_at
+
+    def increment_views(self):
+        """Increment view count."""
+        self.view_count += 1
+        self.save(update_fields=['view_count'])
+
+    @classmethod
+    def create_from_data(
+        cls,
+        ratings,
+        combined_raw,
+        combined_rounded,
+        bilateral_factor,
+        estimated_monthly,
+        has_spouse=False,
+        children_under_18=0,
+        dependent_parents=0,
+        name='Shared VA Rating Calculation',
+        user=None,
+        saved_calculation=None,
+        expires_in_days=30,
+    ):
+        """
+        Create a new shared calculation from calculation data.
+        
+        Args:
+            expires_in_days: Number of days until link expires (None for no expiry)
+        """
+        from django.utils import timezone
+        from datetime import timedelta
+
+        expires_at = None
+        if expires_in_days:
+            expires_at = timezone.now() + timedelta(days=expires_in_days)
+
+        return cls.objects.create(
+            user=user,
+            saved_calculation=saved_calculation,
+            name=name,
+            ratings=ratings,
+            combined_raw=combined_raw,
+            combined_rounded=combined_rounded,
+            bilateral_factor=bilateral_factor,
+            estimated_monthly=estimated_monthly,
+            has_spouse=has_spouse,
+            children_under_18=children_under_18,
+            dependent_parents=dependent_parents,
+            expires_at=expires_at,
+        )

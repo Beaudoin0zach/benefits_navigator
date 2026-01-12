@@ -33,6 +33,8 @@ urlpatterns = [
     path('rating-calculator/saved/', views.saved_calculations, name='saved_calculations'),
     path('rating-calculator/saved/<int:pk>/delete/', views.delete_calculation, name='delete_calculation'),
     path('rating-calculator/saved/<int:pk>/load/', views.load_calculation, name='load_calculation'),
+    path('rating-calculator/export-pdf/', views.export_rating_pdf, name='export_rating_pdf'),
+    path('rating-calculator/saved/<int:pk>/export-pdf/', views.export_saved_rating_pdf, name='export_saved_rating_pdf'),
 
     # Evidence Checklists
     path('evidence-checklist/', views.evidence_checklist_list, name='evidence_checklist_list'),
@@ -54,4 +56,9 @@ urlpatterns = [
     path('secondary-conditions/', views.secondary_conditions_hub, name='secondary_conditions_hub'),
     path('secondary-conditions/search/', views.secondary_conditions_search, name='secondary_conditions_search'),
     path('secondary-conditions/<slug:condition_slug>/', views.secondary_condition_detail, name='secondary_condition_detail'),
+
+    # Share Calculation
+    path('rating-calculator/share/', views.share_calculation, name='share_calculation'),
+    path('rating-calculator/saved/<int:pk>/share/', views.share_saved_calculation, name='share_saved_calculation'),
+    path('shared/<str:token>/', views.view_shared_calculation, name='shared_calculation'),
 ]

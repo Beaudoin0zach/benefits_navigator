@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Analysis Complete - {{ site_name }}</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f3f4f6;">
+    <table role="presentation" style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <table role="presentation" style="width: 100%; max-width: 600px; border-collapse: collapse;">
+                    <!-- Header -->
+                    <tr>
+                        <td style="background-color: #059669; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+                            <div style="background-color: rgba(255,255,255,0.2); width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center;">
+                                <span style="font-size: 28px;">&#10003;</span>
+                            </div>
+                            <h1 style="color: #ffffff; font-size: 24px; margin: 0;">Analysis Complete</h1>
+                            <p style="color: rgba(255,255,255,0.9); font-size: 16px; margin: 10px 0 0 0;">Your {{ doc_type_label }} is ready to view</p>
+                        </td>
+                    </tr>
+
+                    <!-- Body -->
+                    <tr>
+                        <td style="background-color: #ffffff; padding: 40px 30px;">
+                            <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+                                Hi{{ user.first_name|default:"" }},
+                            </p>
+
+                            <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">
+                                Great news! We've finished analyzing your {{ doc_type_label|lower }}. Our AI has extracted the text and generated insights to help you understand the document better.
+                            </p>
+
+                            <!-- Document Summary Box -->
+                            <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f9fafb; border-radius: 8px; margin-bottom: 25px;">
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                                            <tr>
+                                                <td style="padding: 8px 0; color: #6b7280; font-size: 14px; width: 120px;">Document:</td>
+                                                <td style="padding: 8px 0; color: #111827; font-size: 14px; font-weight: bold;">{{ document.file_name|truncatechars:40 }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">Type:</td>
+                                                <td style="padding: 8px 0; color: #111827; font-size: 14px;">{{ doc_type_label }}</td>
+                                            </tr>
+                                            {% if page_count > 0 %}
+                                            <tr>
+                                                <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">Pages:</td>
+                                                <td style="padding: 8px 0; color: #111827; font-size: 14px;">{{ page_count }}</td>
+                                            </tr>
+                                            {% endif %}
+                                            <tr>
+                                                <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">Status:</td>
+                                                <td style="padding: 8px 0;">
+                                                    <span style="display: inline-block; background-color: #d1fae5; color: #065f46; font-size: 12px; font-weight: bold; padding: 4px 12px; border-radius: 12px;">Analysis Complete</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            {% if has_summary %}
+                            <!-- What We Found -->
+                            <div style="margin-bottom: 25px;">
+                                <h3 style="color: #111827; font-size: 16px; margin: 0 0 15px 0;">What's Included:</h3>
+                                <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                                    <tr><td style="padding: 6px 0; color: #374151; font-size: 14px;">&#10003; Full text extracted from your document</td></tr>
+                                    <tr><td style="padding: 6px 0; color: #374151; font-size: 14px;">&#10003; AI-generated summary and key points</td></tr>
+                                    <tr><td style="padding: 6px 0; color: #374151; font-size: 14px;">&#10003; Identified conditions and claims</td></tr>
+                                    <tr><td style="padding: 6px 0; color: #374151; font-size: 14px;">&#10003; Suggested next steps</td></tr>
+                                </table>
+                            </div>
+                            {% endif %}
+
+                            <!-- CTA Button -->
+                            <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td align="center" style="padding: 10px 0 30px 0;">
+                                        <a href="{{ site_url }}/claims/documents/{{ document.id }}/" style="display: inline-block; background-color: #2563eb; color: #ffffff; text-decoration: none; padding: 14px 30px; border-radius: 6px; font-size: 16px; font-weight: bold;">View Analysis Results</a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Helpful Tips -->
+                            <div style="background-color: #eff6ff; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                                <h4 style="color: #1e40af; font-size: 14px; margin: 0 0 10px 0;">What to do next:</h4>
+                                <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                                    <tr><td style="padding: 4px 0; color: #1e40af; font-size: 13px;">1. Review the AI summary for accuracy</td></tr>
+                                    <tr><td style="padding: 4px 0; color: #1e40af; font-size: 13px;">2. Check that all conditions were identified</td></tr>
+                                    <tr><td style="padding: 4px 0; color: #1e40af; font-size: 13px;">3. Use the insights to strengthen your claim</td></tr>
+                                </table>
+                            </div>
+
+                            <!-- Privacy Note -->
+                            <div style="background-color: #f9fafb; border-radius: 8px; padding: 15px;">
+                                <p style="color: #6b7280; font-size: 12px; margin: 0; line-height: 1.5;">
+                                    <strong>Privacy Note:</strong> Your document is stored securely and only accessible by you. We use AI to help analyze your documents, but your personal information is never shared.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #f9fafb; padding: 25px 30px; text-align: center; border-radius: 0 0 8px 8px; border-top: 1px solid #e5e7eb;">
+                            <p style="color: #6b7280; font-size: 12px; margin: 0 0 10px 0;">
+                                You're receiving this because you have document analysis notifications enabled.
+                            </p>
+                            <p style="color: #6b7280; font-size: 12px; margin: 0;">
+                                <a href="{{ site_url }}/account/notifications/" style="color: #2563eb; text-decoration: underline;">Update notification preferences</a>
+                            </p>
+                            <p style="color: #9ca3af; font-size: 11px; margin: 20px 0 0 0;">
+                                {{ site_name }} - Helping veterans navigate the VA claims process.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

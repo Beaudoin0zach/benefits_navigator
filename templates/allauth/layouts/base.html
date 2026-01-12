@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% block head_title %}{% endblock head_title %} - {{ SITE_NAME }}{% endblock title %}
+
+{% block content %}
+<main id="main-content" role="main" class="flex-grow">
+    <div class="max-w-md mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        {% if messages %}
+            <div class="mb-6" role="alert" aria-live="polite">
+                {% for message in messages %}
+                    <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-50 text-red-800{% elif message.tags == 'success' %}bg-green-50 text-green-800{% else %}bg-blue-50 text-blue-800{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="bg-white shadow-lg rounded-lg p-8">
+            {% block inner_content %}{% endblock inner_content %}
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -452,3 +452,104 @@ def send_all_reminders():
         'deadlines': deadline_result,
         'exams': exam_result,
     }
+
+
+@shared_task
+def send_document_analysis_complete_email(document_id: int):
+    """
+    Send email notification when document analysis is complete.
+
+    Called from claims/tasks.py after process_document_task or
+    decode_denial_letter_task completes successfully.
+    """
+    from claims.models import Document
+    from accounts.models import NotificationPreferences
+
+    try:
+        document = Document.objects.select_related('user').get(id=document_id)
+        user = document.user
+
+        # Get user's notification preferences
+        try:
+            prefs = user.notification_preferences
+        except NotificationPreferences.DoesNotExist:
+            prefs = NotificationPreferences.objects.create(user=user)
+
+        # Check if user wants document analysis notifications
+        if not prefs.should_send_document_analysis_notification():
+            logger.info(f"User {user.email} has disabled document analysis notifications")
+            return "Notification disabled by user preferences"
+
+        # Send the email
+        success = _send_document_analysis_email(document)
+
+        if success:
+            # Update notification tracking
+            prefs.last_email_sent = timezone.now()
+            prefs.emails_sent_count += 1
+            prefs.save(update_fields=['last_email_sent', 'emails_sent_count', 'updated_at'])
+
+            logger.info(f"Sent document analysis complete email to {user.email} for document {document_id}")
+            return f"Email sent to {user.email}"
+
+        return "Email sending failed"
+
+    except Document.DoesNotExist:
+        logger.error(f"Document {document_id} not found")
+        return "Document not found"
+    except Exception as e:
+        logger.error(f"Error sending document analysis email for {document_id}: {e}")
+        return f"Error: {e}"
+
+
+def _send_document_analysis_email(document) -> bool:
+    """
+    Send a document analysis complete email to the user.
+
+    Returns True if email was sent successfully, False otherwise.
+    """
+    user = document.user
+
+    # Determine document type label for email (matches Document.DOCUMENT_TYPE_CHOICES)
+    doc_type_labels = {
+        'medical_records': 'Medical Records',
+        'service_records': 'Service Records',
+        'decision_letter': 'VA Decision Letter',
+        'buddy_statement': 'Buddy Statement',
+        'lay_statement': 'Lay Statement',
+        'nexus_letter': 'Medical Nexus/Opinion Letter',
+        'employment_records': 'Employment Records',
+        'personal_statement': 'Personal Statement',
+        'other': 'Document',
+    }
+    doc_type_label = doc_type_labels.get(document.document_type, 'Document')
+
+    # Build email context
+    context = {
+        'user': user,
+        'document': document,
+        'doc_type_label': doc_type_label,
+        'has_summary': bool(document.ai_summary),
+        'page_count': document.page_count or 0,
+        'site_name': getattr(settings, 'SITE_NAME', 'Benefits Navigator'),
+        'site_url': getattr(settings, 'SITE_URL', 'https://benefitsnavigator.com'),
+    }
+
+    # Render email templates
+    subject = f"Your {doc_type_label} Analysis is Ready"
+    text_content = render_to_string('emails/document_analysis_complete.txt', context)
+    html_content = render_to_string('emails/document_analysis_complete.html', context)
+
+    try:
+        send_mail(
+            subject=subject,
+            message=text_content,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            html_message=html_content,
+            fail_silently=False,
+        )
+        return True
+    except Exception as e:
+        logger.error(f"Failed to send email to {user.email}: {e}")
+        return False

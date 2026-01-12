@@ -108,6 +108,12 @@
                                 Appeals Guidance
                             </a>
                         </li>
+                        <li>
+                            <a href="/docs/" class="hover:underline focus:underline"
+                               {% if request.resolver_match.app_name == 'documentation' %}aria-current="page"{% endif %}>
+                                Documentation
+                            </a>
+                        </li>
                         {% if user.is_authenticated %}
                         <li>
                             <a href="/journey/" class="hover:underline focus:underline"

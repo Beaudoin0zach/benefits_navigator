@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Q
 
-from .models import ExamGuidance, GlossaryTerm, ExamChecklist, SavedRatingCalculation, EvidenceChecklist
+from .models import ExamGuidance, GlossaryTerm, ExamChecklist, SavedRatingCalculation, EvidenceChecklist, SharedCalculation
 from .forms import ExamChecklistForm
 from .va_math import (
     DisabilityRating,
@@ -972,3 +972,325 @@ def secondary_conditions_search(request):
         'query': query,
     }
     return render(request, 'examprep/partials/secondary_conditions_results.html', context)
+
+
+# =============================================================================
+# PDF EXPORT VIEWS
+# =============================================================================
+
+def export_rating_pdf(request):
+    """
+    Generate PDF export of rating calculation from POST data.
+    Accessible to all users (doesn't require login).
+    """
+    if request.method != 'POST':
+        return HttpResponse(status=405)
+
+    try:
+        from .services.pdf_generator import generate_rating_pdf
+
+        # Parse ratings from form data
+        ratings_json = request.POST.get('ratings', '[]')
+        ratings_data = json.loads(ratings_json)
+
+        # Parse dependent info
+        has_spouse = request.POST.get('has_spouse') == 'true'
+        children = int(request.POST.get('children_under_18', 0))
+        parents = int(request.POST.get('dependent_parents', 0))
+
+        # Convert to DisabilityRating objects and calculate
+        ratings = []
+        for r in ratings_data:
+            percentage = int(r.get('percentage', 0))
+            if percentage > 0:
+                ratings.append(DisabilityRating(
+                    percentage=percentage,
+                    description=r.get('description', ''),
+                    is_bilateral=r.get('is_bilateral', False)
+                ))
+
+        if not ratings:
+            return HttpResponse("No ratings to export", status=400)
+
+        # Calculate combined rating
+        result = calculate_combined_rating(ratings)
+
+        # Calculate compensation
+        monthly = estimate_monthly_compensation(
+            result.combined_rounded,
+            spouse=has_spouse,
+            children_under_18=children,
+            dependent_parents=parents
+        )
+
+        # Generate PDF
+        pdf_bytes = generate_rating_pdf(
+            ratings=ratings_data,
+            combined_raw=round(result.combined_raw, 2),
+            combined_rounded=result.combined_rounded,
+            bilateral_factor=round(result.bilateral_factor_applied, 2),
+            monthly_compensation=format_currency(monthly),
+            annual_compensation=format_currency(monthly * 12),
+            step_by_step=result.step_by_step,
+            has_spouse=has_spouse,
+            children_under_18=children,
+            dependent_parents=parents,
+            calculation_name=request.POST.get('name', 'VA Rating Calculation'),
+        )
+
+        # Create response
+        response = HttpResponse(pdf_bytes, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="va-rating-calculation.pdf"'
+        return response
+
+    except (json.JSONDecodeError, ValueError, TypeError) as e:
+        return HttpResponse(f"Error generating PDF: {str(e)}", status=400)
+    except Exception as e:
+        return HttpResponse(f"Error generating PDF: {str(e)}", status=500)
+
+
+@login_required
+def export_saved_rating_pdf(request, pk):
+    """
+    Generate PDF export of a saved rating calculation.
+    Only the owner can export their saved calculations.
+    """
+    calculation = get_object_or_404(
+        SavedRatingCalculation,
+        pk=pk,
+        user=request.user
+    )
+
+    try:
+        from .services.pdf_generator import generate_rating_pdf
+
+        # Recalculate to get step_by_step data
+        ratings = []
+        for r in calculation.ratings:
+            percentage = int(r.get('percentage', 0))
+            if percentage > 0:
+                ratings.append(DisabilityRating(
+                    percentage=percentage,
+                    description=r.get('description', ''),
+                    is_bilateral=r.get('is_bilateral', False)
+                ))
+
+        if ratings:
+            result = calculate_combined_rating(ratings)
+            step_by_step = result.step_by_step
+        else:
+            step_by_step = []
+
+        # Generate PDF
+        pdf_bytes = generate_rating_pdf(
+            ratings=calculation.ratings,
+            combined_raw=calculation.combined_raw,
+            combined_rounded=calculation.combined_rounded,
+            bilateral_factor=calculation.bilateral_factor,
+            monthly_compensation=format_currency(calculation.estimated_monthly),
+            annual_compensation=format_currency(calculation.estimated_monthly * 12),
+            step_by_step=step_by_step,
+            has_spouse=calculation.has_spouse,
+            children_under_18=calculation.children_under_18,
+            dependent_parents=calculation.dependent_parents,
+            calculation_name=calculation.name,
+        )
+
+        # Create response
+        filename = f"va-rating-{calculation.name.lower().replace(' ', '-')}.pdf"
+        response = HttpResponse(pdf_bytes, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
+
+    except Exception as e:
+        messages.error(request, f"Error generating PDF: {str(e)}")
+        return redirect('examprep:rating_calculator')
+
+
+# =============================================================================
+# SHARE CALCULATION VIEWS
+# =============================================================================
+
+def share_calculation(request):
+    """
+    Create a shareable link for a rating calculation.
+    Works for both logged-in and anonymous users.
+    POST only - creates a new SharedCalculation.
+    """
+    if request.method != 'POST':
+        return HttpResponse(status=405)
+
+    try:
+        # Parse ratings from form data
+        ratings_json = request.POST.get('ratings', '[]')
+        ratings_data = json.loads(ratings_json)
+
+        # Parse dependent info
+        has_spouse = request.POST.get('has_spouse') == 'true'
+        children = int(request.POST.get('children_under_18', 0))
+        parents = int(request.POST.get('dependent_parents', 0))
+        name = request.POST.get('name', 'Shared VA Rating Calculation')
+
+        # Convert to DisabilityRating objects and calculate
+        ratings = []
+        for r in ratings_data:
+            percentage = int(r.get('percentage', 0))
+            if percentage > 0:
+                ratings.append(DisabilityRating(
+                    percentage=percentage,
+                    description=r.get('description', ''),
+                    is_bilateral=r.get('is_bilateral', False)
+                ))
+
+        if not ratings:
+            return JsonResponse({'error': 'No ratings to share'}, status=400)
+
+        # Calculate combined rating
+        result = calculate_combined_rating(ratings)
+
+        # Calculate compensation
+        monthly = estimate_monthly_compensation(
+            result.combined_rounded,
+            spouse=has_spouse,
+            children_under_18=children,
+            dependent_parents=parents
+        )
+
+        # Create shared calculation
+        user = request.user if request.user.is_authenticated else None
+        shared = SharedCalculation.create_from_data(
+            ratings=ratings_data,
+            combined_raw=round(result.combined_raw, 2),
+            combined_rounded=result.combined_rounded,
+            bilateral_factor=round(result.bilateral_factor_applied, 2),
+            estimated_monthly=monthly,
+            has_spouse=has_spouse,
+            children_under_18=children,
+            dependent_parents=parents,
+            name=name,
+            user=user,
+            expires_in_days=30,
+        )
+
+        # Build the share URL
+        share_url = request.build_absolute_uri(shared.get_absolute_url())
+
+        return JsonResponse({
+            'success': True,
+            'share_url': share_url,
+            'token': shared.share_token,
+            'expires_in_days': 30,
+        })
+
+    except (json.JSONDecodeError, ValueError, TypeError) as e:
+        return JsonResponse({'error': f'Invalid data: {str(e)}'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': f'Error creating share link: {str(e)}'}, status=500)
+
+
+@login_required
+def share_saved_calculation(request, pk):
+    """
+    Create a shareable link for a saved calculation.
+    Only the owner can share their saved calculations.
+    """
+    calculation = get_object_or_404(
+        SavedRatingCalculation,
+        pk=pk,
+        user=request.user
+    )
+
+    # Check if a share already exists for this saved calculation
+    existing_share = SharedCalculation.objects.filter(
+        saved_calculation=calculation,
+        expires_at__isnull=True  # Look for non-expiring shares
+    ).first()
+
+    if existing_share and not existing_share.is_expired:
+        # Return existing share link
+        share_url = request.build_absolute_uri(existing_share.get_absolute_url())
+        return JsonResponse({
+            'success': True,
+            'share_url': share_url,
+            'token': existing_share.share_token,
+            'existing': True,
+        })
+
+    # Create new shared calculation from saved one
+    shared = SharedCalculation.create_from_data(
+        ratings=calculation.ratings,
+        combined_raw=calculation.combined_raw,
+        combined_rounded=calculation.combined_rounded,
+        bilateral_factor=calculation.bilateral_factor,
+        estimated_monthly=calculation.estimated_monthly,
+        has_spouse=calculation.has_spouse,
+        children_under_18=calculation.children_under_18,
+        dependent_parents=calculation.dependent_parents,
+        name=calculation.name,
+        user=request.user,
+        saved_calculation=calculation,
+        expires_in_days=None,  # Saved calculation shares don't expire
+    )
+
+    share_url = request.build_absolute_uri(shared.get_absolute_url())
+
+    return JsonResponse({
+        'success': True,
+        'share_url': share_url,
+        'token': shared.share_token,
+        'existing': False,
+    })
+
+
+def view_shared_calculation(request, token):
+    """
+    View a shared calculation by its token.
+    Public view - no login required.
+    """
+    shared = get_object_or_404(SharedCalculation, share_token=token)
+
+    # Check if expired
+    if shared.is_expired:
+        return render(request, 'examprep/shared_calculation_expired.html', {
+            'expired': True,
+        })
+
+    # Increment view count (only once per session)
+    session_key = f'viewed_share_{token}'
+    if not request.session.get(session_key):
+        shared.increment_views()
+        request.session[session_key] = True
+
+    # Recalculate step-by-step for display
+    ratings = []
+    for r in shared.ratings:
+        percentage = int(r.get('percentage', 0))
+        if percentage > 0:
+            ratings.append(DisabilityRating(
+                percentage=percentage,
+                description=r.get('description', ''),
+                is_bilateral=r.get('is_bilateral', False)
+            ))
+
+    step_by_step = []
+    if ratings:
+        result = calculate_combined_rating(ratings)
+        step_by_step = result.step_by_step
+
+    context = {
+        'shared': shared,
+        'ratings': shared.ratings,
+        'combined_raw': shared.combined_raw,
+        'combined_rounded': shared.combined_rounded,
+        'bilateral_factor': shared.bilateral_factor,
+        'monthly_compensation': format_currency(shared.estimated_monthly),
+        'annual_compensation': format_currency(shared.estimated_monthly * 12),
+        'has_spouse': shared.has_spouse,
+        'children_under_18': shared.children_under_18,
+        'dependent_parents': shared.dependent_parents,
+        'step_by_step': step_by_step,
+        'share_url': request.build_absolute_uri(),
+        'has_ratings': bool(ratings),
+    }
+
+    return render(request, 'examprep/shared_calculation.html', context)
