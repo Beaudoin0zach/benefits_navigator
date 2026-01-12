@@ -1276,3 +1276,88 @@ class TestDocumentAnalysisNotification(TestCase):
 
             self.assertEqual(len(mail.outbox), 1)
             self.assertIn(expected_label, mail.outbox[0].subject)
+
+
+# =============================================================================
+# SITEMAP AND ROBOTS.TXT TESTS
+# =============================================================================
+
+class TestRobotsTxt(TestCase):
+    """Tests for robots.txt"""
+
+    def test_robots_txt_accessible(self):
+        """robots.txt is accessible."""
+        response = self.client.get('/robots.txt')
+        self.assertEqual(response.status_code, 200)
+
+    def test_robots_txt_content_type(self):
+        """robots.txt has correct content type."""
+        response = self.client.get('/robots.txt')
+        self.assertEqual(response['Content-Type'], 'text/plain')
+
+    def test_robots_txt_contains_sitemap(self):
+        """robots.txt references sitemap.xml."""
+        response = self.client.get('/robots.txt')
+        self.assertIn(b'Sitemap:', response.content)
+        self.assertIn(b'sitemap.xml', response.content)
+
+    def test_robots_txt_disallows_admin(self):
+        """robots.txt disallows admin access."""
+        response = self.client.get('/robots.txt')
+        self.assertIn(b'Disallow: /admin/', response.content)
+
+    def test_robots_txt_disallows_accounts(self):
+        """robots.txt disallows accounts/private areas."""
+        response = self.client.get('/robots.txt')
+        self.assertIn(b'Disallow: /accounts/', response.content)
+        self.assertIn(b'Disallow: /dashboard/', response.content)
+        self.assertIn(b'Disallow: /claims/', response.content)
+
+    def test_robots_txt_allows_public_content(self):
+        """robots.txt allows public content areas."""
+        response = self.client.get('/robots.txt')
+        self.assertIn(b'Allow: /exam-prep/', response.content)
+        self.assertIn(b'Allow: /appeals/', response.content)
+
+
+class TestSitemap(TestCase):
+    """Tests for sitemap.xml"""
+
+    def test_sitemap_accessible(self):
+        """sitemap.xml is accessible."""
+        response = self.client.get('/sitemap.xml')
+        self.assertEqual(response.status_code, 200)
+
+    def test_sitemap_content_type(self):
+        """sitemap.xml has correct content type."""
+        response = self.client.get('/sitemap.xml')
+        self.assertIn('xml', response['Content-Type'])
+
+    def test_sitemap_contains_urls(self):
+        """sitemap.xml contains URL entries."""
+        response = self.client.get('/sitemap.xml')
+        content = response.content.decode()
+        self.assertIn('<urlset', content)
+        self.assertIn('<url>', content)
+        self.assertIn('<loc>', content)
+
+    def test_sitemap_contains_static_pages(self):
+        """sitemap.xml includes static pages."""
+        response = self.client.get('/sitemap.xml')
+        content = response.content.decode()
+        # Check for key static pages
+        self.assertIn('/exam-prep/', content)
+        self.assertIn('/appeals/', content)
+
+    def test_sitemap_contains_rating_calculator(self):
+        """sitemap.xml includes rating calculator."""
+        response = self.client.get('/sitemap.xml')
+        content = response.content.decode()
+        self.assertIn('rating-calculator', content)
+
+    def test_sitemap_valid_xml(self):
+        """sitemap.xml is valid XML."""
+        import xml.etree.ElementTree as ET
+        response = self.client.get('/sitemap.xml')
+        # This will raise an exception if XML is invalid
+        ET.fromstring(response.content)

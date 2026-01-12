@@ -76,9 +76,9 @@ A Django-based web application helping veterans navigate VA disability claims, C
 
 ### 5. SEO & Marketing
 - [ ] Add meta descriptions to all pages
-- [ ] Create sitemap.xml
+- [x] Create sitemap.xml ✅ (2026-01-12)
 - [ ] Add structured data (JSON-LD) for guides
-- [ ] Create robots.txt
+- [x] Create robots.txt ✅ (2026-01-12)
 - [ ] Add Open Graph tags for social sharing
 
 ### 6. Analytics & Monitoring
