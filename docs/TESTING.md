@@ -117,6 +117,9 @@ Feature: VA Disability Rating Calculator
 Autonomous agents in `tests/agents/`.
 
 ```bash
+# Start server with test-friendly settings (disables rate limiting, uses local cache)
+RATELIMIT_ENABLE=false USE_REDIS_CACHE=false python manage.py runserver &
+
 # Run all agents
 python -m tests.agents.run_all_agents
 
@@ -128,6 +131,8 @@ python -m tests.agents.chaos_agent
 # Run in headed mode
 python -m tests.agents.run_all_agents --headed
 ```
+
+**Important:** Agent tests require a running Django server. Use the environment variables above to avoid rate limiting and Redis dependency issues.
 
 **Available Agents:**
 
@@ -295,3 +300,25 @@ Before releasing to test users, run:
 
 1. Increase timeout: Edit `max_pages` in agent constructor
 2. Check server is responding: `curl http://localhost:8000`
+
+### Agent Tests Failing with Connection/Rate Limit Errors
+
+1. Start server with rate limiting disabled: `RATELIMIT_ENABLE=false python manage.py runserver`
+2. If Redis not running, use local cache: `USE_REDIS_CACHE=false python manage.py runserver`
+3. Combined: `RATELIMIT_ENABLE=false USE_REDIS_CACHE=false python manage.py runserver`
+
+### Test User Login Failing
+
+1. Ensure test user exists and email is verified:
+   ```bash
+   python manage.py shell -c "
+   from django.contrib.auth import get_user_model
+   from allauth.account.models import EmailAddress
+   User = get_user_model()
+   user, _ = User.objects.get_or_create(email='e2e_test@example.com', defaults={'password': 'unused'})
+   user.set_password('E2ETestPassword123!')
+   user.save()
+   EmailAddress.objects.get_or_create(user=user, email=user.email, defaults={'verified': True, 'primary': True})
+   print('Test user ready')
+   "
+   ```
