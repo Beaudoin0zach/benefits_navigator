@@ -3,6 +3,16 @@ region: nyc
 features:
   - buildpack-stack=ubuntu-22
 
+# App-level environment variables (inherited by all components)
+envs:
+  - key: DJANGO_SETTINGS_MODULE
+    value: benefits_navigator.settings
+  - key: DEBUG
+    value: "False"
+  - key: USE_S3
+    value: "False"
+  # Secrets are set via DO Console at app level
+
 services:
   # Django Web Application
   - name: web
@@ -21,31 +31,11 @@ services:
       initial_delay_seconds: 30
       period_seconds: 10
     envs:
-      - key: DJANGO_SETTINGS_MODULE
-        value: benefits_navigator.settings
-      - key: DEBUG
-        value: "False"
       - key: ALLOWED_HOSTS
         value: ${APP_DOMAIN}
-      - key: SECRET_KEY
-        type: SECRET
-        value: ${SECRET_KEY}
       - key: DATABASE_URL
         scope: RUN_TIME
         value: ${db.DATABASE_URL}
-      - key: REDIS_URL
-        type: SECRET
-        value: ${VALKEY_URL}
-      - key: CELERY_BROKER_URL
-        type: SECRET
-        value: ${VALKEY_URL}
-      - key: OPENAI_API_KEY
-        type: SECRET
-        value: ${OPENAI_API_KEY}
-      - key: SENTRY_DSN
-        value: ${SENTRY_DSN}
-      - key: USE_S3
-        value: "False"
 
 workers:
   # Celery Worker (background tasks)
@@ -59,25 +49,9 @@ workers:
     instance_size_slug: basic-xxs
     run_command: celery -A benefits_navigator worker -l info --concurrency=2
     envs:
-      - key: DJANGO_SETTINGS_MODULE
-        value: benefits_navigator.settings
-      - key: DEBUG
-        value: "False"
-      - key: SECRET_KEY
-        type: SECRET
-        value: ${SECRET_KEY}
       - key: DATABASE_URL
         scope: RUN_TIME
         value: ${db.DATABASE_URL}
-      - key: REDIS_URL
-        type: SECRET
-        value: ${VALKEY_URL}
-      - key: CELERY_BROKER_URL
-        type: SECRET
-        value: ${VALKEY_URL}
-      - key: OPENAI_API_KEY
-        type: SECRET
-        value: ${OPENAI_API_KEY}
 
 databases:
   - name: db
@@ -86,6 +60,8 @@ databases:
     size: db-s-dev-database
     version: "15"
 
-# Note: VALKEY_URL must be set as an app-level secret in App Platform settings.
-# Get the connection string from your DigitalOcean Managed Valkey database.
-# Format: rediss://default:PASSWORD@hostname:25061
+# Secrets to set in DO Console (App-Level Environment Variables):
+# - SECRET_KEY
+# - VALKEY_URL (also as REDIS_URL and CELERY_BROKER_URL)
+# - OPENAI_API_KEY
+# - SENTRY_DSN
