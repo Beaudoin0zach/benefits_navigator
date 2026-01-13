@@ -21,12 +21,15 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # SECURITY WARNING: keep the secret key used in production secret!
 # In production, this MUST be set via environment variable
 # For staging, we allow a default key if DO Console fails to pass secrets
-SECRET_KEY = env('SECRET_KEY', default='***ROTATED_FALLBACK_KEY***')
-if not SECRET_KEY or SECRET_KEY.startswith('django-insecure'):
-    import warnings
+STAGING_FALLBACK_KEY = '***ROTATED_FALLBACK_KEY***'
+SECRET_KEY = env('SECRET_KEY', default='') or STAGING_FALLBACK_KEY
+
+import warnings
+if not SECRET_KEY or SECRET_KEY == STAGING_FALLBACK_KEY or SECRET_KEY.startswith('django-insecure'):
     if not env.bool('DEBUG', default=False) and not env.bool('STAGING', default=False):
         raise ValueError("SECRET_KEY must be set in production!")
     warnings.warn("Using insecure SECRET_KEY - set SECRET_KEY in .env for production")
+    SECRET_KEY = STAGING_FALLBACK_KEY  # Ensure we have a valid key
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
