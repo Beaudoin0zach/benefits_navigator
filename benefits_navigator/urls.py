@@ -18,21 +18,22 @@ def health_check(request):
     """Health check endpoint for load balancers and monitoring."""
     from core.health import get_full_health_status
 
-    # Quick check for load balancers
+    # Quick check for load balancers - always returns 200 (liveness)
     if request.GET.get('quick') == '1':
         from django.db import connection
         try:
             with connection.cursor() as cursor:
                 cursor.execute("SELECT 1")
             db_status = "ok"
-        except Exception:
-            db_status = "error"
+        except Exception as e:
+            db_status = f"error: {str(e)[:50]}"
+        # Always return 200 for liveness - app is running
         return JsonResponse({
             "status": "healthy" if db_status == "ok" else "degraded",
             "database": db_status,
-        })
+        }, status=200)
 
-    # Full health check
+    # Full health check (for monitoring)
     health = get_full_health_status()
     status_code = 200 if health['status'] == 'healthy' else 503
     return JsonResponse(health, status=status_code)

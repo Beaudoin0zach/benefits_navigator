@@ -39,9 +39,10 @@ services:
     routes:
       - path: /
     health_check:
-      http_path: /health/
-      initial_delay_seconds: 30
-      period_seconds: 10
+      http_path: /health/?quick=1
+      initial_delay_seconds: 60
+      period_seconds: 15
+      timeout_seconds: 10
     envs:
       - key: ALLOWED_HOSTS
         value: "*"
@@ -60,6 +61,23 @@ workers:
     instance_count: 1
     instance_size_slug: basic-xxs
     run_command: celery -A benefits_navigator worker -l info --concurrency=2
+    envs:
+      - key: DATABASE_URL
+        scope: RUN_TIME
+        value: ${db.DATABASE_URL}
+
+jobs:
+  # Run migrations before deploying new code
+  - name: migrate
+    github:
+      repo: Beaudoin0zach/benefits_navigator
+      branch: main
+      deploy_on_push: true
+    dockerfile_path: Dockerfile.prod
+    kind: PRE_DEPLOY
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    run_command: python manage.py migrate --noinput
     envs:
       - key: DATABASE_URL
         scope: RUN_TIME
