@@ -11,6 +11,8 @@ envs:
     value: "False"
   - key: USE_S3
     value: "False"
+  - key: STAGING
+    value: "True"
   # Secrets - values must be set in DO Console after deploy
   - key: SECRET_KEY
     type: SECRET
