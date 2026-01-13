@@ -270,12 +270,15 @@ CSP_CONNECT_SRC = ("'self'",)
 CSP_FRAME_ANCESTORS = ("'none'",)
 CSP_FORM_ACTION = ("'self'",)
 
-# Production-only settings
+# Production-only settings (skip SSL redirect in staging - DO handles SSL at edge)
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-    SECURE_HSTS_SECONDS = 31536000  # 1 year
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
+    # Only enable SSL redirect in production, not staging
+    # DO App Platform handles SSL termination and uses HTTP for internal health checks
+    STAGING = env.bool('STAGING', default=False)
+    SECURE_SSL_REDIRECT = not STAGING
+    SECURE_HSTS_SECONDS = 31536000 if not STAGING else 0  # 1 year in prod
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = not STAGING
+    SECURE_HSTS_PRELOAD = not STAGING
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
     # Stricter CSP in production
