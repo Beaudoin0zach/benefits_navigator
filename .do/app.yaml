@@ -44,7 +44,7 @@ services:
       period_seconds: 10
     envs:
       - key: ALLOWED_HOSTS
-        value: "${APP_DOMAIN},.ondigitalocean.app,localhost,127.0.0.1"
+        value: "*"
       - key: DATABASE_URL
         scope: RUN_TIME
         value: ${db.DATABASE_URL}
