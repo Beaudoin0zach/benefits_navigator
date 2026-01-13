@@ -31,7 +31,12 @@ if not SECRET_KEY or SECRET_KEY.startswith('django-insecure'):
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
+# ALLOWED_HOSTS - special handling for staging/production
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
+
+# In staging mode, allow all hosts to handle DO App Platform internal IPs
+if env.bool('STAGING', default=False):
+    ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
