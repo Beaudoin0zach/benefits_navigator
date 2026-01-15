@@ -3,8 +3,15 @@ Django settings for benefits_navigator project.
 """
 
 import os
+import ssl
 from pathlib import Path
 import environ
+
+# DEBUG: Print Redis env vars at startup to diagnose DO App Platform issue
+_raw_redis = os.environ.get('REDIS_URL', 'NOT_SET')
+_raw_celery = os.environ.get('CELERY_BROKER_URL', 'NOT_SET')
+print(f"DEBUG ENV: REDIS_URL starts with: {_raw_redis[:30] if _raw_redis != 'NOT_SET' else 'NOT_SET'}...")
+print(f"DEBUG ENV: CELERY_BROKER_URL starts with: {_raw_celery[:30] if _raw_celery != 'NOT_SET' else 'NOT_SET'}...")
 
 # Initialize environment variables
 env = environ.Env(
@@ -195,6 +202,16 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes
 CELERY_TASK_SOFT_TIME_LIMIT = 25 * 60  # 25 minutes
 
+# SSL configuration for Celery when using rediss:// (SSL) connections
+# Required for DigitalOcean Managed Redis/Valkey
+if CELERY_BROKER_URL.startswith('rediss://'):
+    CELERY_BROKER_USE_SSL = {
+        'ssl_cert_reqs': ssl.CERT_REQUIRED,
+    }
+    CELERY_REDIS_BACKEND_USE_SSL = {
+        'ssl_cert_reqs': ssl.CERT_REQUIRED,
+    }
+
 # Celery Beat Schedule for periodic tasks
 from celery.schedules import crontab
 CELERY_BEAT_SCHEDULE = {
@@ -226,17 +243,25 @@ CELERY_BEAT_SCHEDULE = {
 # ==============================================================================
 # REDIS CONFIGURATION
 # ==============================================================================
-REDIS_URL = env('REDIS_URL', default='redis://localhost:6379/0')
+REDIS_URL = env('REDIS_URL', default='') or 'redis://localhost:6379/0'
 
 # Use local memory cache in development/testing when Redis isn't available
 # Set USE_REDIS_CACHE=false to force local memory cache
 USE_REDIS_CACHE = env.bool('USE_REDIS_CACHE', default=not DEBUG)
 
 if USE_REDIS_CACHE:
+    # Configure Redis cache with SSL support for rediss:// connections
+    _redis_cache_options = {}
+    if REDIS_URL.startswith('rediss://'):
+        _redis_cache_options = {
+            'ssl_cert_reqs': ssl.CERT_REQUIRED,
+        }
+
     CACHES = {
         'default': {
             'BACKEND': 'django.core.cache.backends.redis.RedisCache',
             'LOCATION': REDIS_URL,
+            'OPTIONS': _redis_cache_options,
         }
     }
 else:
