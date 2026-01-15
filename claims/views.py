@@ -59,6 +59,9 @@ def document_upload(request):
         form = DocumentUploadForm(request.POST, request.FILES, user=request.user)
 
         if form.is_valid():
+            # Save AI processing consent
+            form.save_consent()
+
             # Create document instance
             document = form.save(commit=False)
             document.user = request.user
@@ -205,6 +208,9 @@ def denial_decoder_upload(request):
         form = DenialLetterUploadForm(request.POST, request.FILES, user=request.user)
 
         if form.is_valid():
+            # Save AI processing consent
+            form.save_consent()
+
             # Create document instance
             document = form.save(commit=False)
             document.user = request.user

@@ -8,7 +8,7 @@ We take security seriously. If you discover a security vulnerability in VA Benef
 
 **DO NOT** open a public GitHub issue for security vulnerabilities.
 
-Instead, please email security concerns to: **[security@your-domain.com]** (update with actual contact)
+Instead, please email security concerns to: **security@benefitsnavigator.com**
 
 Or use GitHub's private vulnerability reporting feature if enabled.
 

@@ -125,6 +125,19 @@ class UserProfile(TimeStampedModel):
     )
     bio = models.TextField('Biography', blank=True, help_text='Optional personal information')
 
+    # Consent tracking
+    ai_processing_consent = models.BooleanField(
+        'AI processing consent',
+        default=False,
+        help_text='User has consented to AI/OCR processing of their documents'
+    )
+    ai_consent_date = models.DateTimeField(
+        'AI consent date',
+        null=True,
+        blank=True,
+        help_text='When the user provided AI processing consent'
+    )
+
     class Meta:
         verbose_name = 'User Profile'
         verbose_name_plural = 'User Profiles'
