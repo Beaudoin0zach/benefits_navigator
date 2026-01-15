@@ -7,12 +7,6 @@ import ssl
 from pathlib import Path
 import environ
 
-# DEBUG: Print Redis env vars at startup to diagnose DO App Platform issue
-_raw_redis = os.environ.get('REDIS_URL', 'NOT_SET')
-_raw_celery = os.environ.get('CELERY_BROKER_URL', 'NOT_SET')
-print(f"DEBUG ENV: REDIS_URL starts with: {_raw_redis[:30] if _raw_redis != 'NOT_SET' else 'NOT_SET'}...")
-print(f"DEBUG ENV: CELERY_BROKER_URL starts with: {_raw_celery[:30] if _raw_celery != 'NOT_SET' else 'NOT_SET'}...")
-
 # Initialize environment variables
 env = environ.Env(
     DEBUG=(bool, True),
@@ -201,6 +195,7 @@ CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes
 CELERY_TASK_SOFT_TIME_LIMIT = 25 * 60  # 25 minutes
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True  # Retry broker connection on startup (Celery 6.0+ default)
 
 # SSL configuration for Celery when using rediss:// (SSL) connections
 # Required for DigitalOcean Managed Redis/Valkey
