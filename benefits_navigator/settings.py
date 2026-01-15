@@ -183,9 +183,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CELERY CONFIGURATION
 # ==============================================================================
 # Use REDIS_URL as fallback for Celery settings
-_redis_url = env('REDIS_URL', default='redis://localhost:6379/0')
-CELERY_BROKER_URL = env('CELERY_BROKER_URL', default=_redis_url)
-CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default=_redis_url)
+# Handle empty strings from DO Console secrets
+_redis_url = env('REDIS_URL', default='') or 'redis://localhost:6379/0'
+CELERY_BROKER_URL = env('CELERY_BROKER_URL', default='') or _redis_url
+CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default='') or _redis_url
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
