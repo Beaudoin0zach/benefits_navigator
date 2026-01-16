@@ -58,6 +58,7 @@ def process_document_task(self, document_id):
         document.ai_summary = ai_result['analysis']
         document.ai_model_used = ai_result['model']
         document.ai_tokens_used = ai_result['tokens_used']
+        document.save(update_fields=['ai_summary', 'ai_model_used', 'ai_tokens_used'])
 
         # Calculate processing duration
         duration = time.time() - start_time
