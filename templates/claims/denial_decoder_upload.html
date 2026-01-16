@@ -106,6 +106,32 @@
             {% endif %}
         </div>
 
+        <!-- AI Processing Consent -->
+        {% if form.ai_consent and not form.ai_consent.is_hidden %}
+        <div class="mb-6 bg-amber-50 border border-amber-200 rounded-lg p-4">
+            <div class="flex items-start">
+                <div class="flex items-center h-5 mt-1">
+                    {% render_field form.ai_consent class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" %}
+                </div>
+                <div class="ml-3">
+                    <label for="{{ form.ai_consent.id_for_label }}" class="text-sm font-medium text-gray-900">
+                        {{ form.ai_consent.label }}
+                    </label>
+                    {% if form.ai_consent.help_text %}
+                    <p id="ai-consent-help" class="mt-1 text-sm text-gray-600">
+                        {{ form.ai_consent.help_text }}
+                    </p>
+                    {% endif %}
+                    {% if form.ai_consent.errors %}
+                    <p class="mt-2 text-sm text-red-600" role="alert">
+                        {{ form.ai_consent.errors.0 }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
         <!-- Submit button -->
         <div class="flex items-center justify-between pt-4">
             <a href="{% url 'claims:document_list' %}" class="text-sm font-medium text-gray-600 hover:text-gray-800 hover:underline focus:underline">
