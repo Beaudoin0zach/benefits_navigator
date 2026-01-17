@@ -59,11 +59,13 @@ workers:
     instance_count: 1
     instance_size_slug: basic-xxs
     run_command: celery -A benefits_navigator worker -l info --concurrency=2
-    # Worker needs its own Redis secrets (DO doesn't inherit app-level secrets to workers)
+    # Worker needs explicit secrets (DO doesn't inherit app-level secrets to workers)
     envs:
       - key: REDIS_URL
         type: SECRET
       - key: CELERY_BROKER_URL
+        type: SECRET
+      - key: OPENAI_API_KEY
         type: SECRET
 
 jobs:
