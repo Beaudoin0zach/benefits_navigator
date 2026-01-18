@@ -166,6 +166,257 @@ DO App Platform does NOT inherit app-level secrets to workers. These must be set
 
 ---
 
+## Document & Media Storage
+
+### Storage Locations
+
+| Environment | Storage | Path |
+|-------------|---------|------|
+| Local | Filesystem | `./media/documents/user_{id}/{uuid}.{ext}` |
+| Staging | Filesystem | `/app/media/documents/user_{id}/{uuid}.{ext}` |
+| Production | S3 (optional) | `s3://{bucket}/media/documents/user_{id}/{uuid}.{ext}` |
+
+### Current Configuration
+
+Staging uses local filesystem storage (`USE_S3=False`). Files are stored on the app container's ephemeral filesystem.
+
+> **Warning:** Files on DO App Platform are **not persistent** across deployments. For production, enable S3 storage.
+
+### File Restrictions
+
+| Setting | Value |
+|---------|-------|
+| Max file size | 50 MB |
+| Max pages | 100 |
+| Allowed types | PDF, JPEG, PNG, TIFF |
+
+### Enable S3 Storage (Production)
+
+1. Create S3 bucket with private ACL
+2. Set environment variables:
+```bash
+USE_S3=True
+AWS_ACCESS_KEY_ID=<key>
+AWS_SECRET_ACCESS_KEY=<secret>
+AWS_STORAGE_BUCKET_NAME=<bucket-name>
+AWS_S3_REGION_NAME=us-east-1
+```
+
+### Protected Media Access
+
+Documents are **not** served directly via URL. All access goes through Django views that verify:
+- User is authenticated
+- User owns the document (or has org access)
+
+Download endpoint: `/claims/document/<pk>/download/`
+
+---
+
+## Health Check Details
+
+### Endpoints
+
+| Endpoint | Purpose | Response |
+|----------|---------|----------|
+| `/health/` | Liveness check (load balancer) | `{"status": "ok"}` |
+| `/health/?full=1` | Full system health | Detailed JSON |
+
+### Full Health Check Components
+
+The `/health/?full=1` endpoint checks:
+
+| Component | What it checks |
+|-----------|----------------|
+| Database | PostgreSQL connection (SELECT 1) |
+| Redis | Cache read/write test |
+| Celery | Worker count, active tasks, queue length |
+| Document Processing | Success rate over last 24 hours |
+| Failures | Recent processing failure count |
+
+### Response Format
+```json
+{
+  "status": "healthy|degraded|unhealthy",
+  "timestamp": "2024-01-15T12:00:00Z",
+  "checks": {
+    "database": {"status": "healthy", "message": "..."},
+    "redis": {"status": "healthy", "message": "..."},
+    "celery": {"status": "healthy", "workers": 1, "queue_length": 0},
+    "document_processing": {"status": "healthy", "success_rate": 98.5},
+    "failures": {"status": "healthy", "total": 0}
+  }
+}
+```
+
+### DO App Platform Health Check Config
+
+```yaml
+health_check:
+  http_path: /health/
+  initial_delay_seconds: 30
+  period_seconds: 10
+```
+
+The simple `/health/` endpoint is used (not `?full=1`) to avoid heavy checks on every probe.
+
+---
+
+## Scaling
+
+### Current Instance Sizes
+
+| Component | Size | vCPU | RAM | Monthly Cost |
+|-----------|------|------|-----|--------------|
+| Web | basic-xxs | 0.5 | 512MB | ~$5 |
+| Worker | basic-xxs | 0.5 | 512MB | ~$5 |
+| Migrate Job | basic-xxs | 0.5 | 512MB | Per-run |
+
+### Celery Concurrency
+
+Current: `--concurrency=2` (2 concurrent tasks per worker)
+
+### Scale Horizontally (More Instances)
+
+Update `.do/app.yaml`:
+```yaml
+services:
+  - name: web
+    instance_count: 2  # Increase from 1
+
+workers:
+  - name: worker
+    instance_count: 2  # Increase from 1
+```
+
+Apply:
+```bash
+doctl apps update 2119eba2-07b6-405f-a962-d40dd6956137 --spec .do/app.yaml
+```
+
+### Scale Vertically (Larger Instances)
+
+Available sizes (DO App Platform):
+| Slug | vCPU | RAM | Monthly |
+|------|------|-----|---------|
+| basic-xxs | 0.5 | 512MB | ~$5 |
+| basic-xs | 1 | 1GB | ~$10 |
+| basic-s | 1 | 2GB | ~$20 |
+| basic-m | 2 | 4GB | ~$40 |
+| professional-xs | 1 | 1GB | ~$12 |
+| professional-s | 1 | 2GB | ~$25 |
+
+Update in `.do/app.yaml`:
+```yaml
+services:
+  - name: web
+    instance_size_slug: basic-xs  # Upgrade from basic-xxs
+```
+
+### Increase Celery Concurrency
+
+For CPU-bound tasks, increase concurrency:
+```yaml
+workers:
+  - name: worker
+    run_command: celery -A benefits_navigator worker -l info --concurrency=4
+```
+
+---
+
+## Running Migrations Manually
+
+### Automatic Migrations
+
+Migrations run automatically via the `migrate` PRE_DEPLOY job on every deployment.
+
+### If Migrate Job Fails
+
+1. Check job logs:
+```bash
+doctl apps logs 2119eba2-07b6-405f-a962-d40dd6956137 migrate
+```
+
+2. Run migrations manually via console:
+```bash
+doctl apps console 2119eba2-07b6-405f-a962-d40dd6956137 web
+# Then in the console:
+python manage.py migrate --noinput
+```
+
+3. Or connect directly to database and run SQL:
+```bash
+# Generate migration SQL locally
+python manage.py sqlmigrate <app_name> <migration_name>
+
+# Then run SQL in staging database
+PGPASSWORD=<DB_PASSWORD> psql \
+  -h benefits-nav-db-do-user-29214045-0.j.db.ondigitalocean.com \
+  -p 25060 -U doadmin -d benefits_navigator \
+  -c "<SQL from above>"
+```
+
+### Check Migration Status
+
+```bash
+doctl apps console 2119eba2-07b6-405f-a962-d40dd6956137 web
+# Then:
+python manage.py showmigrations
+```
+
+---
+
+## Remote Shell Access
+
+### Django Shell (Staging)
+
+```bash
+# Open console to web service
+doctl apps console 2119eba2-07b6-405f-a962-d40dd6956137 web
+
+# Then run Django shell
+python manage.py shell
+```
+
+### Run One-Off Commands
+
+```bash
+doctl apps console 2119eba2-07b6-405f-a962-d40dd6956137 web
+
+# Examples:
+python manage.py createsuperuser
+python manage.py collectstatic --noinput
+python manage.py check --deploy
+```
+
+### Worker Shell
+
+```bash
+doctl apps console 2119eba2-07b6-405f-a962-d40dd6956137 worker
+```
+
+### Execute Single Command
+
+For quick commands without interactive console:
+```bash
+# This feature requires DO App Platform CLI support
+# Alternative: Use the web console in DO Dashboard
+```
+
+### Local Development Shell
+
+```bash
+# Django shell
+docker compose exec web python manage.py shell
+
+# Database shell
+docker exec -it benefits_nav_db psql -U benefits_user -d benefits_navigator
+
+# Celery shell (inspect tasks)
+docker compose exec celery celery -A benefits_navigator inspect active
+```
+
+---
+
 ## Common Issues & Fixes
 
 ### AI analysis not saving
