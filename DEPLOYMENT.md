@@ -207,6 +207,173 @@ if CELERY_BROKER_URL.startswith('rediss://'):
 
 ---
 
+## Rollback Procedures
+
+### Staging (DigitalOcean App Platform)
+
+#### List recent deployments
+```bash
+doctl apps list-deployments 2119eba2-07b6-405f-a962-d40dd6956137 --format ID,Phase,CreatedAt,UpdatedAt
+```
+
+#### Rollback to a previous deployment
+```bash
+# Get deployment ID from list above, then:
+doctl apps create-deployment 2119eba2-07b6-405f-a962-d40dd6956137 --wait
+```
+
+> **Note:** DO App Platform doesn't have native rollback. To revert:
+> 1. Identify the last working commit in GitHub
+> 2. Revert or reset to that commit
+> 3. Push to trigger new deployment
+
+#### Quick revert via Git
+```bash
+# Find the last working commit
+git log --oneline -10
+
+# Revert the bad commit (creates new commit)
+git revert <bad-commit-hash>
+git push origin main
+
+# OR reset to previous state (rewrites history - use with caution)
+git reset --hard <good-commit-hash>
+git push origin main --force
+```
+
+#### Rollback database migrations
+If a deployment included a bad migration:
+```bash
+# Connect to staging database
+PGPASSWORD=<DB_PASSWORD> psql \
+  -h benefits-nav-db-do-user-29214045-0.j.db.ondigitalocean.com \
+  -p 25060 -U doadmin -d benefits_navigator
+
+# Check migration history
+SELECT * FROM django_migrations ORDER BY applied DESC LIMIT 10;
+```
+
+Then locally:
+```bash
+# Identify the migration to rollback to
+python manage.py showmigrations
+
+# Generate reverse migration SQL (review before running!)
+python manage.py sqlmigrate <app_name> <migration_name> --backwards
+```
+
+> **Warning:** Always backup the database before rolling back migrations. Some migrations are not reversible.
+
+### Local Development
+
+```bash
+# Reset to previous state
+git checkout <commit-hash>
+docker compose down
+docker compose build
+docker compose up -d
+```
+
+---
+
+## Database Backup & Restore
+
+### Staging (DigitalOcean Managed Database)
+
+#### Automatic Backups
+DigitalOcean Managed Databases include automatic daily backups with 7-day retention.
+
+**View backups in DO Console:**
+https://cloud.digitalocean.com/databases/benefits-nav-db/backups
+
+#### Manual Backup (pg_dump)
+```bash
+# Full database backup
+PGPASSWORD=<DB_PASSWORD> pg_dump \
+  -h benefits-nav-db-do-user-29214045-0.j.db.ondigitalocean.com \
+  -p 25060 -U doadmin -d benefits_navigator \
+  --format=custom --no-owner \
+  -f benefits_navigator_$(date +%Y%m%d_%H%M%S).dump
+
+# Data-only backup (no schema)
+PGPASSWORD=<DB_PASSWORD> pg_dump \
+  -h benefits-nav-db-do-user-29214045-0.j.db.ondigitalocean.com \
+  -p 25060 -U doadmin -d benefits_navigator \
+  --format=custom --no-owner --data-only \
+  -f benefits_navigator_data_$(date +%Y%m%d_%H%M%S).dump
+```
+
+#### Restore from Backup
+
+**Restore to staging (destructive):**
+```bash
+# WARNING: This will overwrite existing data
+PGPASSWORD=<DB_PASSWORD> pg_restore \
+  -h benefits-nav-db-do-user-29214045-0.j.db.ondigitalocean.com \
+  -p 25060 -U doadmin -d benefits_navigator \
+  --clean --no-owner \
+  benefits_navigator_20240115_120000.dump
+```
+
+**Restore to a fresh database:**
+```bash
+# Create new database first via DO Console, then:
+PGPASSWORD=<DB_PASSWORD> pg_restore \
+  -h benefits-nav-db-do-user-29214045-0.j.db.ondigitalocean.com \
+  -p 25060 -U doadmin -d benefits_navigator_restore \
+  --no-owner \
+  benefits_navigator_20240115_120000.dump
+```
+
+#### Point-in-Time Recovery
+For critical data loss within the last 7 days, contact DigitalOcean support or use the Console to restore from a specific backup point.
+
+### Local Development
+
+#### Backup local database
+```bash
+docker exec benefits_nav_db pg_dump \
+  -U benefits_user -d benefits_navigator \
+  --format=custom \
+  -f /tmp/local_backup.dump
+
+# Copy from container
+docker cp benefits_nav_db:/tmp/local_backup.dump ./local_backup.dump
+```
+
+#### Restore to local database
+```bash
+# Copy backup into container
+docker cp ./local_backup.dump benefits_nav_db:/tmp/local_backup.dump
+
+# Restore (destructive)
+docker exec benefits_nav_db pg_restore \
+  -U benefits_user -d benefits_navigator \
+  --clean --no-owner \
+  /tmp/local_backup.dump
+```
+
+#### Clone staging data to local
+```bash
+# Dump staging
+PGPASSWORD=<DB_PASSWORD> pg_dump \
+  -h benefits-nav-db-do-user-29214045-0.j.db.ondigitalocean.com \
+  -p 25060 -U doadmin -d benefits_navigator \
+  --format=custom --no-owner \
+  -f staging_clone.dump
+
+# Restore to local
+docker cp staging_clone.dump benefits_nav_db:/tmp/staging_clone.dump
+docker exec benefits_nav_db pg_restore \
+  -U benefits_user -d benefits_navigator \
+  --clean --no-owner \
+  /tmp/staging_clone.dump
+```
+
+> **Note:** Scrub sensitive data after cloning staging to local if needed.
+
+---
+
 ## Key URLs
 
 ### Staging
