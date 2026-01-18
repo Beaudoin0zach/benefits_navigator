@@ -906,3 +906,157 @@ doctl apps logs 2119eba2-07b6-405f-a962-d40dd6956137 --type build
 - Organization billing (future)
 
 Feature flags in `benefits_navigator/settings.py` control which path is active.
+
+---
+
+## Monitoring & Alerting
+
+### Sentry (Error Tracking)
+
+Sentry captures unhandled exceptions and errors in both Django and Celery.
+
+**Configuration:**
+- DSN set via `SENTRY_DSN` environment variable
+- Only active when `DEBUG=False`
+- Integrations: Django, Celery
+- PII disabled (`send_default_pii=False`)
+- Sample rate: 10% of transactions traced
+
+**Setup Sentry:**
+1. Create project at https://sentry.io
+2. Get DSN from project settings
+3. Set in DO Console: `SENTRY_DSN=https://xxx@xxx.ingest.sentry.io/xxx`
+
+**Alert Configuration (in Sentry Dashboard):**
+- Go to Alerts → Create Alert Rule
+- Recommended alerts:
+  - Error frequency > 10/hour
+  - New issue in production
+  - Celery task failures
+
+### DigitalOcean Monitoring
+
+DO App Platform provides built-in metrics:
+
+**View in Console:**
+https://cloud.digitalocean.com/apps/2119eba2-07b6-405f-a962-d40dd6956137/insights
+
+**Available Metrics:**
+- CPU usage per component
+- Memory usage per component
+- Request latency (p50, p95, p99)
+- Request count
+- Restart count
+
+**Set Up Alerts:**
+1. Go to Settings → Alerts in DO Console
+2. Configure thresholds for:
+   - CPU > 80%
+   - Memory > 80%
+   - Restart count > 3
+
+### Health Check Monitoring
+
+For external uptime monitoring, use the health endpoint:
+
+```
+URL: https://benefits-navigator-staging-3o4rq.ondigitalocean.app/health/
+Expected: {"status": "ok"}
+Frequency: Every 1-5 minutes
+```
+
+Services: UptimeRobot (free), Pingdom, Better Uptime
+
+---
+
+## Secret Rotation
+
+### When to Rotate
+
+- Immediately if compromised
+- After team member departure
+- Periodically (recommended: every 90 days for production)
+
+### SECRET_KEY Rotation
+
+1. Generate new key:
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(50))"
+```
+
+2. Update in DO Console (Settings → App-Level Environment Variables)
+
+3. Redeploy to apply:
+```bash
+doctl apps create-deployment 2119eba2-07b6-405f-a962-d40dd6956137
+```
+
+> **Note:** Rotating SECRET_KEY invalidates all existing sessions. Users will need to log in again.
+
+### DATABASE_URL Rotation
+
+1. Reset password in DO Database Console
+2. Update `DATABASE_URL` in DO App Console
+3. Redeploy
+
+### OPENAI_API_KEY Rotation
+
+1. Generate new key at https://platform.openai.com/api-keys
+2. Update in DO Console (both app-level AND worker-level)
+3. Revoke old key in OpenAI dashboard
+4. Redeploy
+
+### REDIS_URL / CELERY_BROKER_URL Rotation
+
+1. Reset password in DO Database Console (Valkey)
+2. Update both `REDIS_URL` and `CELERY_BROKER_URL` at:
+   - App-level environment variables
+   - Worker-level environment variables
+3. Redeploy
+
+### Local Development
+
+Update `.env` file and restart containers:
+```bash
+docker compose down
+docker compose up -d
+```
+
+---
+
+## Cost Overview
+
+### Current Staging Costs (Estimated)
+
+| Resource | Type | Monthly Cost |
+|----------|------|--------------|
+| Web Service | basic-xxs (0.5 vCPU, 512MB) | ~$5 |
+| Worker | basic-xxs (0.5 vCPU, 512MB) | ~$5 |
+| PostgreSQL | db-s-1vcpu-1gb | ~$15 |
+| Valkey (Redis) | db-s-1vcpu-1gb | ~$15 |
+| **Total** | | **~$40/month** |
+
+### Production Estimates
+
+| Scenario | Web | Worker | DB | Redis | Total |
+|----------|-----|--------|-----|-------|-------|
+| Low traffic | basic-xs ×1 | basic-xs ×1 | 1vCPU/1GB | 1vCPU/1GB | ~$50/mo |
+| Medium traffic | basic-s ×2 | basic-s ×2 | 2vCPU/4GB | 2vCPU/4GB | ~$150/mo |
+| High traffic | professional-s ×4 | professional-s ×4 | 4vCPU/8GB | 4vCPU/8GB | ~$400/mo |
+
+### Additional Costs
+
+| Service | Cost |
+|---------|------|
+| OpenAI API | ~$0.002/1K tokens (GPT-3.5-turbo) |
+| S3 Storage | ~$0.023/GB/month |
+| Sentry | Free tier: 5K errors/month |
+| Domain | ~$12/year |
+
+### Cost Optimization Tips
+
+1. **Use basic-xxs for staging** - Sufficient for testing
+2. **Scale workers based on queue** - Don't over-provision
+3. **Monitor OpenAI usage** - Set billing limits in OpenAI dashboard
+4. **Use S3 lifecycle policies** - Archive/delete old documents
+5. **Review DO bandwidth** - First 1TB outbound free, then $0.01/GB
