@@ -142,12 +142,16 @@ doctl databases connection d13ae1d1-e114-4174-999c-be584026ec14 --output json
 | DJANGO_SETTINGS_MODULE | Plain | `benefits_navigator.settings` |
 | DEBUG | Plain | `False` |
 | STAGING | Plain | `True` |
+| ALLOWED_HOSTS | Plain | Hardcoded in app.yaml (never use `*`) |
 | SECRET_KEY | Secret | Django secret key |
+| FIELD_ENCRYPTION_KEY | Secret | PII encryption key (separate from SECRET_KEY) |
 | DATABASE_URL | Secret | PostgreSQL connection string |
 | REDIS_URL | Secret | Valkey connection string |
 | CELERY_BROKER_URL | Secret | Valkey connection string |
 | OPENAI_API_KEY | Secret | OpenAI API key |
 | SENTRY_DSN | Secret | Sentry error tracking |
+
+> **Security Note:** `ALLOWED_HOSTS` is hardcoded in `.do/app.yaml` to prevent misconfiguration. `FIELD_ENCRYPTION_KEY` must be a dedicated key separate from `SECRET_KEY` for defense in depth.
 
 ### Path B Feature Flags
 | Variable | Value | Description |
@@ -173,14 +177,26 @@ DO App Platform does NOT inherit app-level secrets to workers. These must be set
 | Environment | Storage | Path |
 |-------------|---------|------|
 | Local | Filesystem | `./media/documents/user_{id}/{uuid}.{ext}` |
-| Staging | Filesystem | `/app/media/documents/user_{id}/{uuid}.{ext}` |
-| Production | S3 (optional) | `s3://{bucket}/media/documents/user_{id}/{uuid}.{ext}` |
+| Staging (testing) | Filesystem (ephemeral) | `/app/media/documents/user_{id}/{uuid}.{ext}` |
+| Staging/Production (users) | S3 (**required**) | `s3://{bucket}/media/documents/user_{id}/{uuid}.{ext}` |
 
 ### Current Configuration
 
 Staging uses local filesystem storage (`USE_S3=False`). Files are stored on the app container's ephemeral filesystem.
 
-> **Warning:** Files on DO App Platform are **not persistent** across deployments. For production, enable S3 storage.
+> **⚠️ CRITICAL: Ephemeral Storage Limitations**
+>
+> Files on DO App Platform are **deleted on every deployment**. This means:
+> - All uploaded documents are lost when you push new code
+> - Users will see "file not found" errors for previously uploaded documents
+> - This is acceptable for testing only
+>
+> **Before any user-facing rollout (including beta/pilot), you MUST:**
+> 1. Enable S3 storage (`USE_S3=True`)
+> 2. Configure AWS credentials
+> 3. Migrate any existing files to S3
+>
+> See "Enable S3 Storage" section below.
 
 ### File Restrictions
 
@@ -992,6 +1008,28 @@ doctl apps create-deployment 2119eba2-07b6-405f-a962-d40dd6956137
 ```
 
 > **Note:** Rotating SECRET_KEY invalidates all existing sessions. Users will need to log in again.
+
+### FIELD_ENCRYPTION_KEY Rotation
+
+Used for encrypting PII (VA file numbers, DOB, etc.). Separate from SECRET_KEY for defense in depth.
+
+1. Generate new key:
+```bash
+python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+```
+
+2. Update in DO Console (Settings → App-Level Environment Variables)
+
+3. Redeploy to apply:
+```bash
+doctl apps create-deployment 2119eba2-07b6-405f-a962-d40dd6956137
+```
+
+> **Warning:** Rotating FIELD_ENCRYPTION_KEY will make existing encrypted data unreadable. You must either:
+> - Re-encrypt all PII data with the new key (requires migration script), or
+> - Keep the old key available for decryption during a transition period
+>
+> For most cases, avoid rotating this key unless it's compromised.
 
 ### DATABASE_URL Rotation
 

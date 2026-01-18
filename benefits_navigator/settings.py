@@ -20,27 +20,67 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# In production, this MUST be set via environment variable
-# For staging, we allow a default key if DO Console fails to pass secrets
-STAGING_FALLBACK_KEY = '***ROTATED_FALLBACK_KEY***'
-SECRET_KEY = env('SECRET_KEY', default='') or STAGING_FALLBACK_KEY
-
+# SECRET_KEY MUST be set via environment variable in ALL non-local environments
 import warnings
-if not SECRET_KEY or SECRET_KEY == STAGING_FALLBACK_KEY or SECRET_KEY.startswith('django-insecure'):
-    if not env.bool('DEBUG', default=False) and not env.bool('STAGING', default=False):
-        raise ValueError("SECRET_KEY must be set in production!")
-    warnings.warn("Using insecure SECRET_KEY - set SECRET_KEY in .env for production")
-    SECRET_KEY = STAGING_FALLBACK_KEY  # Ensure we have a valid key
+
+SECRET_KEY = env('SECRET_KEY', default='')
+
+# Only allow empty/insecure SECRET_KEY in local DEBUG mode
+if not SECRET_KEY or SECRET_KEY.startswith('django-insecure'):
+    if env.bool('DEBUG', default=False) and not env.bool('STAGING', default=False):
+        # Local development only - generate a random key for this session
+        import secrets
+        SECRET_KEY = secrets.token_urlsafe(50)
+        warnings.warn(
+            "SECRET_KEY not set - using random key for this session. "
+            "Set SECRET_KEY in .env for persistent sessions."
+        )
+    else:
+        # Staging and production MUST have SECRET_KEY set
+        raise ValueError(
+            "SECRET_KEY environment variable is required in staging/production! "
+            "Generate one with: python -c \"import secrets; print(secrets.token_urlsafe(50))\""
+        )
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-# ALLOWED_HOSTS - special handling for staging/production
+# Field-level encryption key for PII (VA file numbers, DOB, etc.)
+# Generate with: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+# MUST be set in staging/production - no fallback allowed for defense in depth
+FIELD_ENCRYPTION_KEY = env('FIELD_ENCRYPTION_KEY', default=None)
+
+# Require dedicated encryption key in non-local environments
+if not FIELD_ENCRYPTION_KEY:
+    if env.bool('DEBUG', default=False) and not env.bool('STAGING', default=False):
+        # Local development only - derive from SECRET_KEY (acceptable for dev)
+        import hashlib
+        import base64
+        FIELD_ENCRYPTION_KEY = base64.urlsafe_b64encode(
+            hashlib.sha256(SECRET_KEY.encode()).digest()
+        ).decode()
+        warnings.warn(
+            "FIELD_ENCRYPTION_KEY not set - deriving from SECRET_KEY for local dev. "
+            "Set FIELD_ENCRYPTION_KEY in production for defense in depth."
+        )
+    else:
+        # Staging and production MUST have dedicated encryption key
+        raise ValueError(
+            "FIELD_ENCRYPTION_KEY environment variable is required in staging/production! "
+            "Generate one with: python -c \"from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())\""
+        )
+
+# ALLOWED_HOSTS - MUST be explicitly set in staging/production
+# Never use '*' in any deployed environment
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
-# In staging mode, allow all hosts to handle DO App Platform internal IPs
-if env.bool('STAGING', default=False):
-    ALLOWED_HOSTS = ['*']
+# Validate ALLOWED_HOSTS in non-debug mode
+if not env.bool('DEBUG', default=False):
+    if not ALLOWED_HOSTS or '*' in ALLOWED_HOSTS:
+        raise ValueError(
+            "ALLOWED_HOSTS must be explicitly set in staging/production! "
+            "Example: ALLOWED_HOSTS=myapp.ondigitalocean.app,myapp.com"
+        )
 
 # Application definition
 INSTALLED_APPS = [
@@ -75,6 +115,7 @@ INSTALLED_APPS = [
     'examprep.apps.ExamprepConfig',
     'agents.apps.AgentsConfig',
     'documentation.apps.DocumentationConfig',
+    'vso.apps.VsoConfig',
 ]
 
 MIDDLEWARE = [
@@ -110,6 +151,7 @@ TEMPLATES = [
                 'core.context_processors.user_usage',  # User usage tracking
                 'core.context_processors.tier_limits',  # Tier limit settings
                 'core.context_processors.feature_flags',  # Feature flags for dual-path
+                'core.context_processors.vso_access',  # VSO staff access
             ],
         },
     },
@@ -568,3 +610,4 @@ TESSERACT_CMD = env('TESSERACT_CMD', default='/usr/bin/tesseract')
 SITE_NAME = 'VA Benefits Navigator'
 SITE_DESCRIPTION = 'AI-powered assistance for VA disability claims and appeals'
 SUPPORT_EMAIL = 'support@benefitsnavigator.com'
+SITE_URL = env('SITE_URL', default='http://localhost:8000')

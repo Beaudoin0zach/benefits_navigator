@@ -26,6 +26,8 @@ envs:
     type: SECRET
   - key: SENTRY_DSN
     type: SECRET
+  - key: FIELD_ENCRYPTION_KEY
+    type: SECRET
 
 services:
   # Django Web Application
@@ -45,8 +47,9 @@ services:
       initial_delay_seconds: 30
       period_seconds: 10
     envs:
+      # Explicit allowed hosts - never use wildcard in deployed environments
       - key: ALLOWED_HOSTS
-        value: "*"
+        value: "benefits-navigator-staging-3o4rq.ondigitalocean.app"
 
 workers:
   # Celery Worker (background tasks)
@@ -83,7 +86,12 @@ jobs:
 
 # Secrets to set in DO Console (App-Level Environment Variables):
 # - SECRET_KEY (generate with: python -c "import secrets; print(secrets.token_urlsafe(50))")
+# - FIELD_ENCRYPTION_KEY (generate with: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())")
 # - DATABASE_URL (***ROTATED_DATABASE_URL***
 # - REDIS_URL / CELERY_BROKER_URL (***ROTATED_REDIS_URL***
 # - OPENAI_API_KEY
 # - SENTRY_DSN
+#
+# SECURITY NOTES:
+# - ALLOWED_HOSTS is hardcoded above - update when domain changes, never use "*"
+# - FIELD_ENCRYPTION_KEY is separate from SECRET_KEY for defense in depth
