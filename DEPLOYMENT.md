@@ -374,6 +374,229 @@ docker exec benefits_nav_db pg_restore \
 
 ---
 
+## CI/CD Pipeline
+
+### Current Setup
+
+Deployments are handled automatically by DigitalOcean App Platform:
+
+| Trigger | Action |
+|---------|--------|
+| Push to `main` | Auto-deploy to staging |
+| Pull request | No automated checks (recommended to add) |
+
+Configuration: `.do/app.yaml` with `deploy_on_push: true`
+
+### Deployment Flow
+
+```
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│  Push to     │────▶│  DO App      │────▶│  Build &     │
+│  main branch │     │  Platform    │     │  Deploy      │
+└──────────────┘     └──────────────┘     └──────────────┘
+                                                 │
+                     ┌───────────────────────────┼───────────────────────────┐
+                     ▼                           ▼                           ▼
+              ┌─────────────┐            ┌─────────────┐            ┌─────────────┐
+              │   Migrate   │            │    Web      │            │   Worker    │
+              │   (Job)     │            │  (Django)   │            │  (Celery)   │
+              └─────────────┘            └─────────────┘            └─────────────┘
+                     │
+                     ▼
+              PRE_DEPLOY
+              (runs first)
+```
+
+### Recommended: GitHub Actions Workflow
+
+Create `.github/workflows/ci.yml` to run tests before merging:
+
+```yaml
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  PYTHON_VERSION: "3.11"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install dependencies
+        run: |
+          pip install ruff
+      - name: Run linter
+        run: ruff check .
+
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_pass
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest-django pytest-cov
+      - name: Run tests
+        env:
+          DATABASE_URL: postgres://test_user:test_pass@localhost:5432/test_db
+          REDIS_URL: redis://localhost:6379/0
+          CELERY_BROKER_URL: redis://localhost:6379/0
+          SECRET_KEY: test-secret-key-not-for-production
+          DEBUG: "True"
+        run: |
+          pytest --cov=. --cov-report=xml -m "not e2e and not slow"
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: false
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_pass
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest-playwright
+          playwright install chromium --with-deps
+      - name: Run E2E tests
+        env:
+          DATABASE_URL: postgres://test_user:test_pass@localhost:5432/test_db
+          REDIS_URL: redis://localhost:6379/0
+          SECRET_KEY: test-secret-key-not-for-production
+        run: |
+          pytest -m e2e --headed=false
+```
+
+### Running Tests Locally
+
+```bash
+# Unit tests only
+docker compose exec web pytest -m "not e2e and not slow"
+
+# All tests including slow
+docker compose exec web pytest -m "not e2e"
+
+# E2E tests (requires Playwright)
+docker compose exec web pytest -m e2e
+
+# With coverage
+docker compose exec web pytest --cov=. --cov-report=html
+```
+
+### Branch Protection (Recommended)
+
+Configure in GitHub repo settings (`Settings > Branches > Add rule`):
+
+| Setting | Value |
+|---------|-------|
+| Branch name pattern | `main` |
+| Require pull request | ✓ |
+| Require status checks | ✓ (select `lint` and `test` jobs) |
+| Require branches up to date | ✓ |
+| Include administrators | Optional |
+
+### Manual Deployment
+
+If auto-deploy is disabled or you need to trigger manually:
+
+```bash
+# Via doctl
+doctl apps create-deployment 2119eba2-07b6-405f-a962-d40dd6956137
+
+# Force rebuild (clears build cache)
+doctl apps create-deployment 2119eba2-07b6-405f-a962-d40dd6956137 --force-rebuild
+```
+
+### Disable Auto-Deploy
+
+To require manual deployments, update `.do/app.yaml`:
+
+```yaml
+services:
+  - name: web
+    github:
+      deploy_on_push: false  # Changed from true
+```
+
+Then apply:
+```bash
+doctl apps update 2119eba2-07b6-405f-a962-d40dd6956137 --spec .do/app.yaml
+```
+
+### Monitoring Deployments
+
+```bash
+# Watch deployment progress
+doctl apps list-deployments 2119eba2-07b6-405f-a962-d40dd6956137 --format ID,Phase,Progress,CreatedAt
+
+# Get deployment details
+doctl apps get-deployment 2119eba2-07b6-405f-a962-d40dd6956137 <deployment-id>
+
+# View build logs
+doctl apps logs 2119eba2-07b6-405f-a962-d40dd6956137 --type build
+```
+
+---
+
 ## Key URLs
 
 ### Staging
