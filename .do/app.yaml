@@ -82,7 +82,7 @@ jobs:
     kind: PRE_DEPLOY
     instance_count: 1
     instance_size_slug: basic-xxs
-    run_command: python manage.py migrate --noinput
+    run_command: python manage.py migrate --noinput --skip-checks
     # Job needs explicit secrets (DO doesn't inherit app-level secrets to jobs)
     envs:
       - key: FIELD_ENCRYPTION_KEY
