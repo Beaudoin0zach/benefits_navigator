@@ -1,0 +1,652 @@
+{% extends 'base.html' %}
+
+{% block title %}Rating Analysis Results - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+    <!-- Header -->
+    <header class="mb-8">
+        <nav class="text-sm mb-4">
+            <a href="{% url 'claims:document_list' %}" class="text-blue-600 hover:text-blue-800">Documents</a>
+            <span class="mx-2 text-gray-400">/</span>
+            <a href="{% url 'claims:rating_analyzer' %}" class="text-blue-600 hover:text-blue-800">Rating Analyzer</a>
+            <span class="mx-2 text-gray-400">/</span>
+            <span class="text-gray-600">Results</span>
+        </nav>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Rating Analysis Results</h1>
+        <p class="text-gray-600">{{ document.file_name }}</p>
+    </header>
+
+    <!-- Status section with HTMX polling -->
+    <div id="status-container"
+         hx-get="{% url 'claims:rating_analyzer_status' document.pk %}"
+         hx-trigger="{% if document.is_processing %}every 3s{% endif %}"
+         hx-swap="innerHTML">
+        {% include 'claims/partials/rating_analyzer_status.html' %}
+    </div>
+
+    <!-- Results (shown when complete) -->
+    {% if document.is_complete and analysis %}
+    <div class="space-y-8">
+        <!-- AI Confidence Score -->
+        {% if analysis.overall_confidence %}
+        <div class="bg-white shadow rounded-lg p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-900">Analysis Confidence</h2>
+                    <p class="text-sm text-gray-500">How reliable is this AI analysis?</p>
+                </div>
+                <div class="flex items-center">
+                    <div class="relative w-16 h-16">
+                        <svg class="w-16 h-16 transform -rotate-90">
+                            <circle cx="32" cy="32" r="28" stroke="#e5e7eb" stroke-width="4" fill="none"/>
+                            <circle cx="32" cy="32" r="28"
+                                    stroke="{% if analysis.overall_confidence >= 85 %}#10b981{% elif analysis.overall_confidence >= 70 %}#f59e0b{% elif analysis.overall_confidence >= 50 %}#f97316{% else %}#ef4444{% endif %}"
+                                    stroke-width="4" fill="none"
+                                    stroke-dasharray="{% widthratio analysis.overall_confidence 100 175.9 %} 175.9"
+                                    stroke-linecap="round"/>
+                        </svg>
+                        <span class="absolute inset-0 flex items-center justify-center text-lg font-bold
+                            {% if analysis.overall_confidence >= 85 %}text-green-600
+                            {% elif analysis.overall_confidence >= 70 %}text-yellow-600
+                            {% elif analysis.overall_confidence >= 50 %}text-orange-600
+                            {% else %}text-red-600{% endif %}">
+                            {{ analysis.overall_confidence }}%
+                        </span>
+                    </div>
+                    <div class="ml-4">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                            {% if analysis.overall_confidence >= 85 %}bg-green-100 text-green-800
+                            {% elif analysis.overall_confidence >= 70 %}bg-yellow-100 text-yellow-800
+                            {% elif analysis.overall_confidence >= 50 %}bg-orange-100 text-orange-800
+                            {% else %}bg-red-100 text-red-800{% endif %}">
+                            {% if analysis.overall_confidence >= 85 %}High Confidence
+                            {% elif analysis.overall_confidence >= 70 %}Medium Confidence
+                            {% elif analysis.overall_confidence >= 50 %}Low Confidence
+                            {% else %}Very Low Confidence{% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            {% if analysis.confidence_breakdown %}
+            <div class="grid grid-cols-3 gap-4 mb-4">
+                <div class="text-center p-3 bg-gray-50 rounded-lg">
+                    <div class="text-2xl font-bold text-gray-700">{{ analysis.confidence_breakdown.extraction_quality|default:0 }}%</div>
+                    <div class="text-xs text-gray-500">Extraction Quality</div>
+                </div>
+                <div class="text-center p-3 bg-gray-50 rounded-lg">
+                    <div class="text-2xl font-bold text-gray-700">{{ analysis.confidence_breakdown.document_completeness|default:0 }}%</div>
+                    <div class="text-xs text-gray-500">Document Completeness</div>
+                </div>
+                <div class="text-center p-3 bg-gray-50 rounded-lg">
+                    <div class="text-2xl font-bold text-gray-700">{{ analysis.confidence_breakdown.analysis_reliability|default:0 }}%</div>
+                    <div class="text-xs text-gray-500">Analysis Reliability</div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if analysis.confidence_factors %}
+            <div class="space-y-2">
+                {% for factor in analysis.confidence_factors %}
+                <div class="flex items-start text-sm
+                    {% if factor.type == 'warning' %}text-amber-700 bg-amber-50
+                    {% elif factor.type == 'limitation' %}text-red-700 bg-red-50
+                    {% else %}text-blue-700 bg-blue-50{% endif %} p-2 rounded">
+                    <svg class="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        {% if factor.type == 'warning' or factor.type == 'limitation' %}
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        {% else %}
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                        {% endif %}
+                    </svg>
+                    <span>{{ factor.message }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if analysis.overall_confidence < 70 %}
+            <div class="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                <div class="flex items-start">
+                    <svg class="h-5 w-5 text-amber-500 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                    <div>
+                        <p class="text-sm font-medium text-amber-800">Lower confidence analysis</p>
+                        <p class="text-sm text-amber-700 mt-1">
+                            This analysis has lower confidence than usual. We recommend consulting with a
+                            <a href="#" class="underline font-medium">Veterans Service Organization (VSO)</a>
+                            or accredited claims agent to verify these findings.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Combined Rating Summary -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-semibold text-gray-900">Current Ratings Summary</h2>
+                {% if analysis.combined_rating %}
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-blue-600">{{ analysis.combined_rating }}%</div>
+                    <div class="text-sm text-gray-500">Combined Rating</div>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if analysis.conditions %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Condition</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DC Code</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Effective Date</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for condition in analysis.conditions %}
+                        <tr>
+                            <td class="px-4 py-3 text-sm text-gray-900">{{ condition.name }}</td>
+                            <td class="px-4 py-3">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium
+                                    {% if condition.rating_percentage == 0 %}bg-gray-100 text-gray-800
+                                    {% elif condition.rating_percentage <= 20 %}bg-yellow-100 text-yellow-800
+                                    {% elif condition.rating_percentage <= 50 %}bg-orange-100 text-orange-800
+                                    {% else %}bg-red-100 text-red-800{% endif %}">
+                                    {{ condition.rating_percentage }}%
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-500 font-mono">{{ condition.diagnostic_code|default:"-" }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-500">{{ condition.effective_date|default:"-" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Deadline Tracker -->
+        {% if analysis.deadline_tracker %}
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Appeal Deadlines</h2>
+
+            {% if analysis.has_appeal_deadline_passed %}
+            <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg mb-4">
+                <div class="flex">
+                    <svg class="h-5 w-5 text-yellow-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                    <div>
+                        <p class="font-medium text-yellow-800">Appeal deadline has passed</p>
+                        <p class="text-sm text-yellow-700 mt-1">
+                            You can still file a <strong>Supplemental Claim</strong> at any time with new and relevant evidence.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="p-4 bg-red-50 border border-red-200 rounded-lg mb-4">
+                <div class="flex items-center">
+                    <svg class="h-5 w-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="font-medium text-red-800">
+                        {{ analysis.days_until_deadline }} days remaining to appeal
+                    </span>
+                </div>
+                <p class="text-sm text-red-700 mt-2">
+                    Deadline: {{ analysis.deadline_tracker.appeal_deadline }}
+                </p>
+            </div>
+            {% endif %}
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="p-4 bg-gray-50 rounded-lg">
+                    <h4 class="font-medium text-gray-900">Higher-Level Review</h4>
+                    <p class="text-sm text-gray-600 mt-1">
+                        {% if analysis.deadline_tracker.hlr_available %}
+                        <span class="text-green-600">Available</span> - Same evidence, different reviewer
+                        {% else %}
+                        <span class="text-red-600">Not Available</span>
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-lg">
+                    <h4 class="font-medium text-gray-900">Supplemental Claim</h4>
+                    <p class="text-sm text-gray-600 mt-1">
+                        <span class="text-green-600">Always Available</span> - Requires new evidence
+                    </p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-lg">
+                    <h4 class="font-medium text-gray-900">Board Appeal</h4>
+                    <p class="text-sm text-gray-600 mt-1">
+                        {% if analysis.deadline_tracker.board_appeal_available %}
+                        <span class="text-green-600">Available</span> - Longer wait, hearing option
+                        {% else %}
+                        <span class="text-red-600">Not Available</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Increase Opportunities -->
+        {% if analysis.increase_opportunities %}
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <div class="px-6 py-4 bg-green-50 border-b border-green-100">
+                <h2 class="text-xl font-semibold text-green-800">
+                    Increase Opportunities ({{ analysis.increase_opportunities|length }})
+                </h2>
+                <p class="text-sm text-green-600 mt-1">
+                    Potential ways to increase your rating
+                </p>
+            </div>
+
+            <div class="divide-y divide-gray-200">
+                {% for opportunity in analysis.increase_opportunities %}
+                <div class="p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900">{{ opportunity.condition }}</h3>
+                            <p class="text-sm text-gray-500">
+                                Current: <span class="font-semibold">{{ opportunity.current_rating }}%</span>
+                                {% if opportunity.target_rating %}
+                                &rarr; Target: <span class="font-semibold text-green-600">{{ opportunity.target_rating }}%</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        {% if opportunity.current_diagnostic_code %}
+                        <span class="text-sm font-mono text-gray-400">{{ opportunity.current_diagnostic_code }}</span>
+                        {% endif %}
+                    </div>
+
+                    {% if opportunity.strategy %}
+                    <div class="mb-4 p-3 bg-blue-50 rounded-lg">
+                        <h4 class="text-sm font-medium text-blue-800 mb-1">Strategy</h4>
+                        <p class="text-sm text-blue-700">{{ opportunity.strategy }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if opportunity.dual_rating_opportunity %}
+                    <div class="mb-4 p-3 bg-purple-50 rounded-lg">
+                        <h4 class="text-sm font-medium text-purple-800 mb-1">Dual Rating Opportunity</h4>
+                        <p class="text-sm text-purple-700">{{ opportunity.dual_rating_opportunity }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if opportunity.key_symptoms_to_document %}
+                    <div class="mb-4">
+                        <h4 class="text-sm font-medium text-gray-900 mb-2">Symptoms to Document</h4>
+                        <ul class="list-disc pl-5 space-y-1 text-sm text-gray-700">
+                            {% for symptom in opportunity.key_symptoms_to_document %}
+                            <li>{{ symptom }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    {% if opportunity.evidence_needed %}
+                    <div class="mb-4">
+                        <h4 class="text-sm font-medium text-gray-900 mb-2">Evidence Needed</h4>
+                        <ul class="list-disc pl-5 space-y-1 text-sm text-gray-700">
+                            {% for evidence in opportunity.evidence_needed %}
+                            <li>{{ evidence }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    {% if opportunity.secondary_conditions_to_claim %}
+                    <div class="p-3 bg-yellow-50 rounded-lg">
+                        <h4 class="text-sm font-medium text-yellow-800 mb-1">Secondary Conditions to Consider</h4>
+                        <ul class="list-disc pl-5 text-sm text-yellow-700">
+                            {% for condition in opportunity.secondary_conditions_to_claim %}
+                            <li>{{ condition }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Secondary Conditions -->
+        {% if analysis.secondary_conditions %}
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <div class="px-6 py-4 bg-yellow-50 border-b border-yellow-100">
+                <h2 class="text-xl font-semibold text-yellow-800">
+                    Secondary Conditions to Consider ({{ analysis.secondary_conditions|length }})
+                </h2>
+                <p class="text-sm text-yellow-600 mt-1">
+                    Conditions caused by your service-connected disabilities
+                </p>
+            </div>
+
+            <div class="divide-y divide-gray-200">
+                {% for secondary in analysis.secondary_conditions %}
+                <div class="p-6">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900">{{ secondary.potential_condition }}</h3>
+                            <p class="text-sm text-gray-500">
+                                Connect to: <span class="font-medium">{{ secondary.connect_to }}</span>
+                            </p>
+                        </div>
+                        {% if secondary.typical_rating_range %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                            {{ secondary.typical_rating_range }}
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    {% if secondary.medical_rationale %}
+                    <p class="text-sm text-gray-700 mb-3">
+                        <span class="font-medium">Medical Rationale:</span> {{ secondary.medical_rationale }}
+                    </p>
+                    {% endif %}
+
+                    {% if secondary.evidence_needed %}
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-900 mb-1">Evidence Needed:</h4>
+                        <ul class="list-disc pl-5 text-sm text-gray-600">
+                            {% for evidence in secondary.evidence_needed %}
+                            <li>{{ evidence }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- VSO prompt for secondary conditions -->
+            {% if analysis.secondary_conditions|length > 2 %}
+            <div class="p-6 bg-yellow-50 border-t border-yellow-100">
+                <div class="flex items-center">
+                    <svg class="h-5 w-5 text-yellow-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                    </svg>
+                    <p class="text-sm text-yellow-800">
+                        <strong>Multiple secondary conditions to explore.</strong>
+                        A VSO can help you prioritize which claims to file first and gather the right evidence.
+                        <a href="https://www.va.gov/vso/" target="_blank" rel="noopener noreferrer" class="underline font-medium">Find a VSO near you</a>
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Rating Errors -->
+        {% if analysis.rating_errors %}
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <div class="px-6 py-4 bg-red-50 border-b border-red-100">
+                <h2 class="text-xl font-semibold text-red-800">
+                    Potential Rating Errors ({{ analysis.rating_errors|length }})
+                </h2>
+                <p class="text-sm text-red-600 mt-1">
+                    Issues that may warrant review or appeal
+                </p>
+            </div>
+
+            <div class="divide-y divide-gray-200">
+                {% for error in analysis.rating_errors %}
+                <div class="p-6">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900">{{ error.condition }}</h3>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
+                                {% if error.error_type == 'legal' %}bg-red-100 text-red-800
+                                {% elif error.error_type == 'factual' %}bg-orange-100 text-orange-800
+                                {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                                {{ error.error_type|title }} Error
+                            </span>
+                        </div>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
+                            {% if error.strength == 'strong' %}bg-green-100 text-green-800
+                            {% elif error.strength == 'moderate' %}bg-yellow-100 text-yellow-800
+                            {% else %}bg-gray-100 text-gray-800{% endif %}">
+                            {{ error.strength|title }} Case
+                        </span>
+                    </div>
+
+                    <p class="text-sm text-gray-700 mb-2">{{ error.description }}</p>
+
+                    {% if error.remedy %}
+                    <p class="text-sm">
+                        <span class="font-medium text-gray-900">Recommended Remedy:</span>
+                        <span class="text-blue-600">{{ error.remedy }}</span>
+                    </p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- VSO prompt for rating errors -->
+            {% if analysis.rating_errors|length > 1 %}
+            <div class="p-6 bg-blue-50 border-t border-blue-100">
+                <div class="flex items-center">
+                    <svg class="h-5 w-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <p class="text-sm text-blue-800">
+                        <strong>Multiple potential errors identified.</strong>
+                        A VSO can help you determine the best approach to address these issues.
+                        <a href="https://www.va.gov/vso/" target="_blank" rel="noopener noreferrer" class="underline font-medium">Find a VSO near you</a>
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Benefits Unlocked -->
+        {% if analysis.benefits_unlocked %}
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <div class="px-6 py-4 bg-blue-50 border-b border-blue-100">
+                <h2 class="text-xl font-semibold text-blue-800">
+                    Benefits Unlocked at {{ analysis.combined_rating }}%
+                </h2>
+                <p class="text-sm text-blue-600 mt-1">
+                    Benefits you're eligible for at your current rating
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
+                {% for benefit in analysis.benefits_unlocked %}
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <h3 class="font-medium text-gray-900">{{ benefit.benefit }}</h3>
+                    <p class="text-sm text-gray-600 mt-1">{{ benefit.eligibility_basis }}</p>
+                    {% if benefit.how_to_claim %}
+                    <p class="text-sm text-blue-600 mt-2">{{ benefit.how_to_claim }}</p>
+                    {% endif %}
+                    {% if benefit.estimated_value %}
+                    <p class="text-sm font-medium text-green-600 mt-1">{{ benefit.estimated_value }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- C&P Exam Prep Tips -->
+        {% if analysis.exam_prep_tips %}
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <div class="px-6 py-4 bg-purple-50 border-b border-purple-100">
+                <h2 class="text-xl font-semibold text-purple-800">
+                    C&P Exam Preparation Tips
+                </h2>
+                <p class="text-sm text-purple-600 mt-1">
+                    How to prepare for future Compensation & Pension exams
+                </p>
+            </div>
+
+            <div class="divide-y divide-gray-200">
+                {% for tip in analysis.exam_prep_tips %}
+                <details class="p-6">
+                    <summary class="cursor-pointer font-medium text-gray-900 hover:text-blue-600">
+                        {{ tip.condition }} - {{ tip.exam_type|default:"C&P Exam" }}
+                    </summary>
+                    <div class="mt-4 space-y-4">
+                        {% if tip.what_examiner_looks_for %}
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-900 mb-1">What the Examiner Looks For:</h4>
+                            <ul class="list-disc pl-5 text-sm text-gray-700">
+                                {% for item in tip.what_examiner_looks_for %}
+                                <li>{{ item }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        {% if tip.do_before_exam %}
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-900 mb-1">Before the Exam:</h4>
+                            <ul class="list-disc pl-5 text-sm text-gray-700">
+                                {% for item in tip.do_before_exam %}
+                                <li>{{ item }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        {% if tip.common_mistakes %}
+                        <div class="p-3 bg-yellow-50 rounded-lg">
+                            <h4 class="text-sm font-medium text-yellow-800 mb-1">Common Mistakes to Avoid:</h4>
+                            <ul class="list-disc pl-5 text-sm text-yellow-700">
+                                {% for mistake in tip.common_mistakes %}
+                                <li>{{ mistake }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        {% if tip.documentation_to_bring %}
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-900 mb-1">Documentation to Bring:</h4>
+                            <ul class="list-disc pl-5 text-sm text-gray-700">
+                                {% for doc in tip.documentation_to_bring %}
+                                <li>{{ doc }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                </details>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Priority Actions -->
+        {% if analysis.priority_actions %}
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <div class="px-6 py-4 bg-green-50 border-b border-green-100">
+                <h2 class="text-xl font-semibold text-green-800">
+                    Priority Actions
+                </h2>
+                <p class="text-sm text-green-600 mt-1">
+                    What to do next, in order of importance
+                </p>
+            </div>
+
+            <ol class="divide-y divide-gray-200">
+                {% for action in analysis.priority_actions|slice:":5" %}
+                <li class="p-6 flex items-start">
+                    <span class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full
+                        {% if action.priority <= 2 %}bg-red-100 text-red-800
+                        {% elif action.priority <= 4 %}bg-yellow-100 text-yellow-800
+                        {% else %}bg-gray-100 text-gray-800{% endif %}
+                        font-bold text-lg mr-4">
+                        {{ action.priority }}
+                    </span>
+                    <div class="flex-1">
+                        <p class="font-medium text-gray-900">{{ action.action }}</p>
+                        {% if action.why %}
+                        <p class="text-sm text-gray-600 mt-1">{{ action.why }}</p>
+                        {% endif %}
+                        <div class="mt-2 flex items-center space-x-4 text-xs">
+                            {% if action.deadline %}
+                            <span class="text-red-600 font-medium">Deadline: {{ action.deadline }}</span>
+                            {% endif %}
+                            {% if action.difficulty %}
+                            <span class="inline-flex items-center px-2 py-0.5 rounded
+                                {% if action.difficulty == 'easy' %}bg-green-100 text-green-800
+                                {% elif action.difficulty == 'moderate' %}bg-yellow-100 text-yellow-800
+                                {% else %}bg-red-100 text-red-800{% endif %}">
+                                {{ action.difficulty|title }}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ol>
+        </div>
+        {% endif %}
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap gap-4">
+            <a href="{% url 'claims:rating_analyzer' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Analyze Another Decision
+            </a>
+            <a href="{% url 'claims:document_list' %}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                View All Documents
+            </a>
+        </div>
+
+        <!-- VSO Consultation Prompt - Complex Situations -->
+        {% if analysis.increase_opportunities|length > 2 or analysis.secondary_conditions|length > 2 or analysis.rating_errors %}
+        {% include 'components/vso_consultation_prompt.html' with reason='complex_case' %}
+        {% elif analysis.overall_confidence and analysis.overall_confidence < 70 %}
+        {% include 'components/vso_consultation_prompt.html' with reason='low_confidence' %}
+        {% elif analysis.deadline_tracker and not analysis.has_appeal_deadline_passed and analysis.days_until_deadline and analysis.days_until_deadline <= 60 %}
+        {% include 'components/vso_consultation_prompt.html' with reason='appeal_deadline' %}
+        {% endif %}
+
+        <!-- Disclaimer -->
+        <div class="p-4 bg-gray-50 rounded-lg text-sm text-gray-600">
+            <p class="font-medium text-gray-700 mb-1">Disclaimer</p>
+            <p>
+                This analysis is for informational purposes only and does not constitute legal advice.
+                Consider consulting with a Veterans Service Organization (VSO) or VA-accredited attorney
+                for personalized advice about your specific situation.
+            </p>
+        </div>
+    </div>
+
+    {% elif document.has_failed %}
+    <!-- Error State -->
+    <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                </svg>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">Analysis Failed</h3>
+                <p class="mt-2 text-sm text-red-700">
+                    {{ document.error_message|default:"An error occurred during analysis. Please try uploading again." }}
+                </p>
+                <div class="mt-4">
+                    <a href="{% url 'claims:rating_analyzer' %}" class="text-sm font-medium text-red-600 hover:text-red-500">
+                        Try Again &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

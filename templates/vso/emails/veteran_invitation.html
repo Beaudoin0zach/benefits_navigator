@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You're Invited</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #1f2937; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="background-color: #1e40af; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 24px;">You're Invited!</h1>
+    </div>
+
+    <div style="background-color: #ffffff; padding: 30px; border: 1px solid #e5e7eb; border-top: none;">
+        <p style="font-size: 16px; margin-top: 0;">
+            <strong>{{ invitation.organization.name }}</strong> wants to help you with your VA benefits claim.
+        </p>
+
+        <p>
+            {{ invitation.invited_by.get_full_name|default:invitation.invited_by.email }} has invited you to join their caseload.
+            {% if case_title %}
+            They've started a case titled "<strong>{{ case_title }}</strong>" for you.
+            {% endif %}
+        </p>
+
+        <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="margin-top: 0; color: #1f2937;">What you'll get:</h3>
+            <ul style="margin: 0; padding-left: 20px;">
+                <li>A dedicated caseworker to help with your claim</li>
+                <li>Secure document sharing</li>
+                <li>AI-powered analysis of your VA documents</li>
+                <li>Progress tracking and updates</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{ accept_url }}"
+               style="display: inline-block; background-color: #2563eb; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">
+                Accept Invitation
+            </a>
+        </div>
+
+        <p style="color: #6b7280; font-size: 14px;">
+            This invitation expires in {{ expires_days }} days. If you have questions, contact
+            {{ invitation.organization.contact_email|default:invitation.invited_by.email }}.
+        </p>
+
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
+
+        <p style="color: #9ca3af; font-size: 12px; margin-bottom: 0;">
+            If you didn't expect this invitation, you can safely ignore this email.
+            <br><br>
+            If the button doesn't work, copy and paste this link into your browser:<br>
+            <a href="{{ accept_url }}" style="color: #2563eb; word-break: break-all;">{{ accept_url }}</a>
+        </p>
+    </div>
+
+    <div style="text-align: center; padding: 20px; color: #9ca3af; font-size: 12px;">
+        <p style="margin: 0;">
+            This email was sent by {{ invitation.organization.name }} via Benefits Navigator.
+        </p>
+    </div>
+</body>
+</html>

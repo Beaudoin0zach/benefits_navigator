@@ -1,0 +1,24 @@
+You're Invited!
+
+{{ invitation.organization.name }} wants to help you with your VA benefits claim.
+
+{{ invitation.invited_by.get_full_name|default:invitation.invited_by.email }} has invited you to join their caseload.{% if case_title %} They've started a case titled "{{ case_title }}" for you.{% endif %}
+
+WHAT YOU'LL GET:
+- A dedicated caseworker to help with your claim
+- Secure document sharing
+- AI-powered analysis of your VA documents
+- Progress tracking and updates
+
+ACCEPT YOUR INVITATION:
+{{ accept_url }}
+
+This invitation expires in {{ expires_days }} days.
+
+If you have questions, contact {{ invitation.organization.contact_email|default:invitation.invited_by.email }}.
+
+---
+
+If you didn't expect this invitation, you can safely ignore this email.
+
+This email was sent by {{ invitation.organization.name }} via Benefits Navigator.

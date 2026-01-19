@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}Invitations - {{ organization.name }} - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <header class="mb-6">
+        <div class="flex justify-between items-center">
+            <div>
+                <nav class="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
+                    <a href="{% url 'vso:dashboard' %}" class="hover:underline">Dashboard</a>
+                    <span class="mx-2">/</span>
+                    <span>Invitations</span>
+                </nav>
+                <h1 class="text-2xl font-bold text-gray-900">Veteran Invitations</h1>
+            </div>
+            <a href="{% url 'vso:invite_veteran' %}"
+               class="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Invite Veteran
+            </a>
+        </div>
+    </header>
+
+    <!-- Pending Invitations -->
+    <div class="bg-white rounded-lg shadow mb-8">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Pending Invitations</h2>
+            <p class="text-sm text-gray-500">Invitations waiting for veteran acceptance</p>
+        </div>
+
+        {% if pending_invitations %}
+        <div class="divide-y divide-gray-200">
+            {% for invite in pending_invitations %}
+            <div class="px-6 py-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="font-medium text-gray-900">{{ invite.email }}</p>
+                        <p class="text-sm text-gray-500 mt-1">
+                            Invited by {{ invite.invited_by.get_full_name|default:invite.invited_by.email }}
+                            on {{ invite.created_at|date:"M d, Y" }}
+                        </p>
+                        <p class="text-xs text-gray-400 mt-1">
+                            Expires {{ invite.expires_at|date:"M d, Y" }}
+                        </p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <form method="post" action="{% url 'vso:resend_invitation' token=invite.token %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded">
+                                Resend
+                            </button>
+                        </form>
+                        <form method="post" action="{% url 'vso:cancel_invitation' token=invite.token %}" class="inline"
+                              onsubmit="return confirm('Are you sure you want to cancel this invitation?');">
+                            {% csrf_token %}
+                            <button type="submit" class="px-3 py-1 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 rounded">
+                                Cancel
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="px-6 py-12 text-center text-gray-500">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            <p class="mt-2 font-medium">No pending invitations</p>
+            <p class="text-sm">Invite a veteran to get started.</p>
+            <a href="{% url 'vso:invite_veteran' %}" class="mt-4 inline-block text-blue-600 hover:text-blue-800">
+                Send an invitation &rarr;
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Recent Invitations -->
+    {% if recent_invitations %}
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Recent History</h2>
+            <p class="text-sm text-gray-500">Accepted and expired invitations from the last 30 days</p>
+        </div>
+
+        <div class="divide-y divide-gray-200">
+            {% for invite in recent_invitations %}
+            <div class="px-6 py-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="font-medium text-gray-900">{{ invite.email }}</p>
+                        <p class="text-sm text-gray-500 mt-1">
+                            Invited {{ invite.created_at|date:"M d, Y" }}
+                        </p>
+                    </div>
+                    <div>
+                        {% if invite.accepted_at %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            Accepted {{ invite.accepted_at|date:"M d" }}
+                        </span>
+                        {% elif invite.is_expired %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            Expired
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

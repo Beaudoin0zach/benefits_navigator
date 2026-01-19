@@ -76,6 +76,7 @@ urlpatterns = [
     path('appeals/', include('appeals.urls')),
     path('agents/', include('agents.urls')),
     path('docs/', include('documentation.urls', namespace='documentation')),
+    path('vso/', include('vso.urls', namespace='vso')),
 ]
 
 # Serve static files in development

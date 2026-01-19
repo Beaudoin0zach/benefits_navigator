@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+
+{% block title %}VSO Dashboard - {{ organization.name }} - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <header class="mb-8">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">{{ organization.name }}</h1>
+                <p class="text-gray-600 mt-1">VSO Dashboard</p>
+            </div>
+            <a href="{% url 'vso:case_create' %}"
+               class="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                New Case
+            </a>
+        </div>
+    </header>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-500">Total Cases</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ total_cases }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-green-100 text-green-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-500">Open Cases</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ open_cases }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-500">Win Rate</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ win_rate|floatformat:0 }}%</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-500">Won Cases</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ won_cases }} / {{ total_closed }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left Column: Priority Cases & My Cases -->
+        <div class="lg:col-span-2 space-y-8">
+            <!-- Priority Cases -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Priority Cases</h2>
+                    <p class="text-sm text-gray-500">Urgent or overdue cases requiring attention</p>
+                </div>
+                <div class="divide-y divide-gray-200">
+                    {% for case in priority_cases %}
+                    <a href="{% url 'vso:case_detail' pk=case.pk %}" class="block hover:bg-gray-50 focus:bg-gray-50 px-6 py-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-sm font-medium text-gray-900">{{ case.title }}</h3>
+                                <p class="text-sm text-gray-500 mt-1">{{ case.veteran.email }}</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                {% if case.priority == 'urgent' %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    Urgent
+                                </span>
+                                {% endif %}
+                                {% if case.is_overdue %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                                    Overdue
+                                </span>
+                                {% endif %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                    {{ case.get_status_display }}
+                                </span>
+                            </div>
+                        </div>
+                        {% if case.next_action_date %}
+                        <p class="text-xs text-gray-500 mt-2">Next action: {{ case.next_action_date }}</p>
+                        {% endif %}
+                    </a>
+                    {% empty %}
+                    <div class="px-6 py-8 text-center text-gray-500">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <p class="mt-2">No priority cases at this time.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if priority_cases %}
+                <div class="px-6 py-3 bg-gray-50 border-t border-gray-200">
+                    <a href="{% url 'vso:case_list' %}?priority=urgent" class="text-sm font-medium text-blue-600 hover:text-blue-800">
+                        View all priority cases &rarr;
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- My Cases -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">My Cases</h2>
+                    <p class="text-sm text-gray-500">Cases assigned to you</p>
+                </div>
+                <div class="divide-y divide-gray-200">
+                    {% for case in my_cases %}
+                    <a href="{% url 'vso:case_detail' pk=case.pk %}" class="block hover:bg-gray-50 focus:bg-gray-50 px-6 py-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-sm font-medium text-gray-900">{{ case.title }}</h3>
+                                <p class="text-sm text-gray-500 mt-1">{{ case.veteran.email }}</p>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                {{ case.get_status_display }}
+                            </span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">{{ case.days_open }} days open</p>
+                    </a>
+                    {% empty %}
+                    <div class="px-6 py-8 text-center text-gray-500">
+                        <p>No cases assigned to you.</p>
+                        <a href="{% url 'vso:case_list' %}" class="text-blue-600 hover:text-blue-800 mt-2 inline-block">
+                            View all cases &rarr;
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if my_cases %}
+                <div class="px-6 py-3 bg-gray-50 border-t border-gray-200">
+                    <a href="{% url 'vso:case_list' %}?assigned_to=me" class="text-sm font-medium text-blue-600 hover:text-blue-800">
+                        View all my cases &rarr;
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Right Column: Recent Activity & Quick Links -->
+        <div class="space-y-8">
+            <!-- Recent Activity -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Recent Activity</h2>
+                </div>
+                <div class="divide-y divide-gray-200 max-h-96 overflow-y-auto">
+                    {% for note in recent_notes %}
+                    <div class="px-6 py-3">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-gray-200">
+                                    <span class="text-xs font-medium text-gray-600">
+                                        {{ note.author.first_name.0|default:note.author.email.0|upper }}
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="ml-3 flex-1">
+                                <p class="text-sm text-gray-900">
+                                    <span class="font-medium">{{ note.author.get_full_name|default:note.author.email }}</span>
+                                    added a {{ note.get_note_type_display|lower }}
+                                </p>
+                                <p class="text-sm text-gray-500">{{ note.subject }}</p>
+                                <p class="text-xs text-gray-400 mt-1">
+                                    <a href="{% url 'vso:case_detail' pk=note.case.pk %}" class="hover:underline">
+                                        {{ note.case.title }}
+                                    </a>
+                                    &middot; {{ note.created_at|timesince }} ago
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="px-6 py-8 text-center text-gray-500">
+                        <p>No recent activity.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Quick Actions</h2>
+                </div>
+                <div class="p-4 space-y-2">
+                    <a href="{% url 'vso:invite_veteran' %}"
+                       class="block px-4 py-3 rounded-lg border border-green-200 bg-green-50 hover:bg-green-100 focus:bg-green-100 text-sm font-medium text-green-700">
+                        Invite a Veteran
+                    </a>
+                    <a href="{% url 'vso:case_create' %}"
+                       class="block px-4 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 focus:bg-gray-50 text-sm font-medium text-gray-700">
+                        Create New Case
+                    </a>
+                    <a href="{% url 'vso:invitations' %}"
+                       class="block px-4 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 focus:bg-gray-50 text-sm font-medium text-gray-700">
+                        Manage Invitations
+                    </a>
+                    <a href="{% url 'vso:case_list' %}"
+                       class="block px-4 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 focus:bg-gray-50 text-sm font-medium text-gray-700">
+                        View All Cases
+                    </a>
+                    <a href="{% url 'vso:case_list' %}?status=intake"
+                       class="block px-4 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 focus:bg-gray-50 text-sm font-medium text-gray-700">
+                        Intake Queue ({{ status_counts.intake|default:0 }})
+                    </a>
+                </div>
+            </div>
+
+            <!-- Status Breakdown -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Case Status</h2>
+                </div>
+                <div class="p-4">
+                    <dl class="space-y-2">
+                        {% for status, label in status_choices %}
+                        <div class="flex justify-between text-sm">
+                            <dt class="text-gray-500">{{ label }}</dt>
+                            <dd class="font-medium text-gray-900">{{ status_counts|default_if_none:0 }}</dd>
+                        </div>
+                        {% endfor %}
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
