@@ -1,0 +1,119 @@
+{% comment %}
+VSO Consultation Prompt Component
+
+Usage:
+    {% include 'components/vso_consultation_prompt.html' with reason='complex_case' %}
+
+Available reasons:
+- low_confidence: Analysis confidence is low
+- complex_case: Multiple conditions or complex situation
+- appeal_deadline: Appeal deadline is approaching
+- rating_error: Potential rating error identified
+- secondary_conditions: Multiple secondary conditions to consider
+- high_stakes: High potential rating increase
+{% endcomment %}
+
+<div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-5 mb-6">
+    <div class="flex items-start">
+        <div class="flex-shrink-0">
+            <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+        </div>
+        <div class="ml-4 flex-1">
+            <h3 class="text-lg font-semibold text-blue-900">Consider Consulting a VSO</h3>
+
+            {% if reason == 'low_confidence' %}
+            <p class="mt-1 text-sm text-blue-800">
+                This analysis has lower confidence than usual. A Veterans Service Organization (VSO)
+                can provide expert review and help verify these findings at no cost to you.
+            </p>
+            {% elif reason == 'complex_case' %}
+            <p class="mt-1 text-sm text-blue-800">
+                Your case involves multiple conditions that may interact in complex ways.
+                A VSO representative can help you navigate the best strategy for maximizing your benefits.
+            </p>
+            {% elif reason == 'appeal_deadline' %}
+            <p class="mt-1 text-sm text-blue-800">
+                Your appeal deadline is approaching. A VSO can help you file the right type of appeal
+                and ensure you don't miss important deadlines.
+            </p>
+            {% elif reason == 'rating_error' %}
+            <p class="mt-1 text-sm text-blue-800">
+                We've identified potential errors in your rating decision. A VSO can review your case
+                and help you file the appropriate correction or appeal.
+            </p>
+            {% elif reason == 'secondary_conditions' %}
+            <p class="mt-1 text-sm text-blue-800">
+                There are multiple secondary conditions you may be able to claim. A VSO can help you
+                gather the right evidence and file properly linked claims.
+            </p>
+            {% elif reason == 'high_stakes' %}
+            <p class="mt-1 text-sm text-blue-800">
+                There's significant potential to increase your rating. Given the complexity involved,
+                working with a VSO can help ensure you present the strongest possible case.
+            </p>
+            {% else %}
+            <p class="mt-1 text-sm text-blue-800">
+                Veterans Service Organizations (VSOs) provide free, expert assistance with VA claims.
+                They can help you navigate the claims process and maximize your benefits.
+            </p>
+            {% endif %}
+
+            <div class="mt-4 space-y-3">
+                <div class="flex items-center text-sm text-blue-700">
+                    <svg class="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span><strong>Free service</strong> - VSOs never charge veterans for claims assistance</span>
+                </div>
+                <div class="flex items-center text-sm text-blue-700">
+                    <svg class="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span><strong>Expert guidance</strong> - Accredited representatives know VA regulations</span>
+                </div>
+                <div class="flex items-center text-sm text-blue-700">
+                    <svg class="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span><strong>Better outcomes</strong> - Claims filed with VSO help often have higher success rates</span>
+                </div>
+            </div>
+
+            <div class="mt-4 flex flex-wrap gap-3">
+                <a href="https://www.va.gov/vso/" target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    Find a VSO Near You
+                </a>
+                <a href="https://www.benefits.va.gov/vso/varo.asp" target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center px-4 py-2 border border-blue-300 text-sm font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                    VA Regional Offices
+                </a>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-blue-200">
+                <details class="text-sm">
+                    <summary class="cursor-pointer text-blue-600 hover:text-blue-800 font-medium">
+                        Popular VSO organizations
+                    </summary>
+                    <ul class="mt-2 space-y-1 text-blue-700 pl-4">
+                        <li><a href="https://www.dav.org/" target="_blank" rel="noopener noreferrer" class="hover:underline">Disabled American Veterans (DAV)</a></li>
+                        <li><a href="https://www.legion.org/" target="_blank" rel="noopener noreferrer" class="hover:underline">American Legion</a></li>
+                        <li><a href="https://www.vfw.org/" target="_blank" rel="noopener noreferrer" class="hover:underline">Veterans of Foreign Wars (VFW)</a></li>
+                        <li><a href="https://www.pva.org/" target="_blank" rel="noopener noreferrer" class="hover:underline">Paralyzed Veterans of America</a></li>
+                        <li><a href="https://www.amvets.org/" target="_blank" rel="noopener noreferrer" class="hover:underline">AMVETS</a></li>
+                        <li><a href="https://www.vva.org/" target="_blank" rel="noopener noreferrer" class="hover:underline">Vietnam Veterans of America</a></li>
+                    </ul>
+                </details>
+            </div>
+        </div>
+    </div>
+</div>

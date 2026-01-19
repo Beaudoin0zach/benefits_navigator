@@ -80,3 +80,40 @@ def feature_flags(request):
     return {
         'features': get_enabled_features(),
     }
+
+
+def vso_access(request):
+    """
+    Add VSO access information to template context.
+
+    Available as:
+    - {{ is_vso_staff }} - True if user is VSO admin or caseworker
+    - {{ user_organization }} - The user's primary organization (if VSO staff)
+
+    Usage in templates:
+        {% if is_vso_staff %}
+            <a href="{% url 'vso:dashboard' %}">VSO Portal</a>
+        {% endif %}
+    """
+    if not request.user.is_authenticated:
+        return {
+            'is_vso_staff': False,
+            'user_organization': None,
+        }
+
+    try:
+        membership = request.user.memberships.filter(
+            role__in=['admin', 'caseworker'],
+            is_active=True,
+            organization__is_active=True
+        ).select_related('organization').first()
+
+        return {
+            'is_vso_staff': membership is not None,
+            'user_organization': membership.organization if membership else None,
+        }
+    except Exception:
+        return {
+            'is_vso_staff': False,
+            'user_organization': None,
+        }

@@ -8,6 +8,7 @@ from django.utils import timezone
 from datetime import date
 
 from core.models import TimeStampedModel
+from core.encryption import EncryptedCharField, EncryptedDateField
 
 
 class UserManager(BaseUserManager):
@@ -110,12 +111,17 @@ class UserProfile(TimeStampedModel):
         choices=BRANCH_CHOICES,
         blank=True
     )
-    date_of_birth = models.DateField('Date of birth', null=True, blank=True)
-    va_file_number = models.CharField(
-        'VA file number',
-        max_length=20,
+    date_of_birth = EncryptedDateField(
+        'Date of birth',
+        null=True,
         blank=True,
-        help_text='Optional - Your VA claim number'
+        help_text='Encrypted for privacy'
+    )
+    va_file_number = EncryptedCharField(
+        'VA file number',
+        max_length=255,  # Larger to accommodate encrypted data
+        blank=True,
+        help_text='Optional - Your VA claim number (encrypted)'
     )
     disability_rating = models.IntegerField(
         'Current disability rating (%)',

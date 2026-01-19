@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+
+{% block title %}Cases - {{ organization.name }} - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <header class="mb-6">
+        <div class="flex justify-between items-center">
+            <div>
+                <nav class="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
+                    <a href="{% url 'vso:dashboard' %}" class="hover:underline">Dashboard</a>
+                    <span class="mx-2">/</span>
+                    <span>Cases</span>
+                </nav>
+                <h1 class="text-2xl font-bold text-gray-900">All Cases</h1>
+            </div>
+            <a href="{% url 'vso:case_create' %}"
+               class="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                New Case
+            </a>
+        </div>
+    </header>
+
+    <!-- Filters -->
+    <div class="bg-white rounded-lg shadow mb-6 p-4">
+        <form method="get" class="flex flex-wrap gap-4 items-end">
+            <!-- Search -->
+            <div class="flex-1 min-w-[200px]">
+                <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                <input type="text" name="q" id="search" value="{{ current_filters.q|default:'' }}"
+                       placeholder="Search by name, email, or description"
+                       class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            </div>
+
+            <!-- Status Filter -->
+            <div>
+                <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select name="status" id="status" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <option value="">All Statuses</option>
+                    {% for value, label in status_choices %}
+                    <option value="{{ value }}" {% if current_filters.status == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Priority Filter -->
+            <div>
+                <label for="priority" class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                <select name="priority" id="priority" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <option value="">All Priorities</option>
+                    {% for value, label in priority_choices %}
+                    <option value="{{ value }}" {% if current_filters.priority == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Assigned To Filter -->
+            <div>
+                <label for="assigned_to" class="block text-sm font-medium text-gray-700 mb-1">Assigned To</label>
+                <select name="assigned_to" id="assigned_to" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <option value="">All</option>
+                    <option value="me" {% if current_filters.assigned_to == 'me' %}selected{% endif %}>My Cases</option>
+                    <option value="unassigned" {% if current_filters.assigned_to == 'unassigned' %}selected{% endif %}>Unassigned</option>
+                    {% for membership in caseworkers %}
+                    <option value="{{ membership.user.id }}" {% if current_filters.assigned_to == membership.user.id|stringformat:"s" %}selected{% endif %}>
+                        {{ membership.user.get_full_name|default:membership.user.email }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="flex space-x-2">
+                <button type="submit" class="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700">
+                    Filter
+                </button>
+                <a href="{% url 'vso:case_list' %}" class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">
+                    Clear
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Cases Table -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Case
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Veteran
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Status
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Priority
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Assigned To
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Days Open
+                    </th>
+                    <th scope="col" class="relative px-6 py-3">
+                        <span class="sr-only">Actions</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for case in cases %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4">
+                        <a href="{% url 'vso:case_detail' pk=case.pk %}" class="text-blue-600 hover:text-blue-900 font-medium">
+                            {{ case.title }}
+                        </a>
+                        {% if case.conditions %}
+                        <p class="text-xs text-gray-500 mt-1">
+                            {{ case.conditions|length }} condition{{ case.conditions|length|pluralize }}
+                        </p>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm text-gray-900">
+                            {{ case.veteran.get_full_name|default:case.veteran.email }}
+                        </div>
+                        <div class="text-xs text-gray-500">{{ case.veteran.email }}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                            {% if case.status == 'closed_won' %}bg-green-100 text-green-800
+                            {% elif case.status == 'closed_denied' %}bg-red-100 text-red-800
+                            {% elif case.status == 'on_hold' %}bg-gray-100 text-gray-800
+                            {% else %}bg-blue-100 text-blue-800{% endif %}">
+                            {{ case.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                            {% if case.priority == 'urgent' %}bg-red-100 text-red-800
+                            {% elif case.priority == 'high' %}bg-orange-100 text-orange-800
+                            {% else %}bg-gray-100 text-gray-800{% endif %}">
+                            {{ case.get_priority_display }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-500">
+                        {{ case.assigned_to.get_full_name|default:case.assigned_to.email|default:"Unassigned" }}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-500">
+                        {% if case.is_overdue %}
+                        <span class="text-red-600 font-medium">{{ case.days_open }} days</span>
+                        {% else %}
+                        {{ case.days_open }} days
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-right text-sm font-medium">
+                        <a href="{% url 'vso:case_detail' pk=case.pk %}" class="text-blue-600 hover:text-blue-900">
+                            View
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="px-6 py-12 text-center text-gray-500">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <p class="mt-2 font-medium">No cases found</p>
+                        <p class="text-sm">Try adjusting your filters or create a new case.</p>
+                        <a href="{% url 'vso:case_create' %}" class="mt-4 inline-block text-blue-600 hover:text-blue-800">
+                            Create new case &rarr;
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <nav class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200" aria-label="Pagination">
+            <div class="hidden sm:block">
+                <p class="text-sm text-gray-700">
+                    Showing <span class="font-medium">{{ page_obj.start_index }}</span> to
+                    <span class="font-medium">{{ page_obj.end_index }}</span> of
+                    <span class="font-medium">{{ page_obj.paginator.count }}</span> results
+                </p>
+            </div>
+            <div class="flex-1 flex justify-between sm:justify-end">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}&status={{ current_filters.status|default:'' }}&priority={{ current_filters.priority|default:'' }}&assigned_to={{ current_filters.assigned_to|default:'' }}&q={{ current_filters.q|default:'' }}"
+                   class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    Previous
+                </a>
+                {% endif %}
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&status={{ current_filters.status|default:'' }}&priority={{ current_filters.priority|default:'' }}&assigned_to={{ current_filters.assigned_to|default:'' }}&q={{ current_filters.q|default:'' }}"
+                   class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    Next
+                </a>
+                {% endif %}
+            </div>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

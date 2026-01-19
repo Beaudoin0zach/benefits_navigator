@@ -7,6 +7,7 @@ Models for storing agent interactions, analyses, and generated content.
 from django.db import models
 from django.conf import settings
 from core.models import TimeStampedModel
+from core.encryption import EncryptedCharField
 
 
 class AgentInteraction(TimeStampedModel):
@@ -18,6 +19,7 @@ class AgentInteraction(TimeStampedModel):
         ('decision_analyzer', 'Decision Letter Analyzer'),
         ('evidence_gap', 'Evidence Gap Analyzer'),
         ('statement_generator', 'Personal Statement Generator'),
+        ('rating_analyzer', 'Rating Decision Analyzer'),
     ]
 
     STATUS_CHOICES = [
@@ -284,6 +286,270 @@ class PersonalStatement(TimeStampedModel):
         text = self.final_statement or self.generated_statement
         self.word_count = len(text.split()) if text else 0
         super().save(*args, **kwargs)
+
+
+class RatingAnalysis(TimeStampedModel):
+    """
+    Stores actionable analysis of VA rating decisions.
+
+    This model captures the enhanced analysis that goes beyond basic
+    extraction to identify increase opportunities, secondary conditions,
+    potential errors, and strategic next steps.
+    """
+    interaction = models.OneToOneField(
+        AgentInteraction,
+        on_delete=models.CASCADE,
+        related_name='rating_analysis',
+        null=True,
+        blank=True
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='rating_analyses'
+    )
+
+    # Input
+    document = models.ForeignKey(
+        'claims.Document',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text='Linked uploaded document'
+    )
+    raw_text = models.TextField(help_text='OCR-extracted text from rating decision')
+    decision_date = models.DateField(null=True, blank=True)
+
+    # Extracted Data (from extraction phase)
+    veteran_name = models.CharField(max_length=200, blank=True)
+    file_number = EncryptedCharField(
+        max_length=255,  # Larger to accommodate encrypted data
+        blank=True,
+        help_text='VA file number (encrypted)'
+    )
+    combined_rating = models.IntegerField(null=True, blank=True, help_text='Combined disability rating percentage')
+    monthly_compensation = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text='Monthly compensation amount'
+    )
+
+    # Extracted conditions with ratings
+    # Format: [{"name": "...", "diagnostic_code": "DC XXXX", "rating_percentage": 30,
+    #          "effective_date": "YYYY-MM-DD", "rating_criteria_cited": "...",
+    #          "criteria_for_next_higher": "...", "service_connection_type": "direct|secondary|presumptive"}]
+    conditions = models.JSONField(
+        'Rated Conditions',
+        default=list,
+        help_text='List of conditions with ratings and diagnostic codes'
+    )
+    evidence_list = models.JSONField(
+        'Evidence Reviewed',
+        default=list,
+        help_text='List of evidence VA reviewed'
+    )
+
+    # Analysis Results
+    # Format: [{"condition": "...", "current_rating": 10, "target_rating": 20,
+    #          "strategy": "...", "key_symptoms_to_document": [...],
+    #          "dual_rating_opportunity": "...", "evidence_needed": [...]}]
+    increase_opportunities = models.JSONField(
+        'Increase Opportunities',
+        default=list,
+        help_text='Opportunities to increase ratings for each condition'
+    )
+
+    # Format: [{"potential_condition": "...", "connect_to": "...",
+    #          "medical_rationale": "...", "evidence_needed": [...], "typical_rating_range": "..."}]
+    secondary_conditions = models.JSONField(
+        'Secondary Conditions',
+        default=list,
+        help_text='Potential secondary conditions to claim'
+    )
+
+    # Format: [{"condition": "...", "error_type": "procedural|factual|legal",
+    #          "description": "...", "remedy": "...", "strength": "strong|moderate|weak"}]
+    rating_errors = models.JSONField(
+        'Potential Rating Errors',
+        default=list,
+        help_text='Potential errors in the rating decision'
+    )
+
+    # Format: [{"condition": "...", "current_effective_date": "...",
+    #          "potential_earlier_date": "...", "basis": "...", "evidence_needed": [...]}]
+    effective_date_issues = models.JSONField(
+        'Effective Date Issues',
+        default=list,
+        help_text='Potential issues with effective dates'
+    )
+
+    # Deadline tracking
+    # Format: {"decision_date": "...", "appeal_deadline": "...", "appeal_deadline_passed": bool,
+    #         "days_remaining": int, "hlr_available": bool, "supplemental_claim_note": "..."}
+    deadline_tracker = models.JSONField(
+        'Deadline Tracker',
+        default=dict,
+        help_text='Appeal deadlines and availability'
+    )
+
+    # Format: [{"benefit": "...", "eligibility_basis": "...", "how_to_claim": "...", "estimated_value": "..."}]
+    benefits_unlocked = models.JSONField(
+        'Benefits Unlocked',
+        default=list,
+        help_text='Benefits veteran is eligible for at current rating'
+    )
+
+    # Format: [{"condition": "...", "exam_type": "...", "what_examiner_looks_for": [...],
+    #          "do_before_exam": [...], "common_mistakes": [...], "documentation_to_bring": [...]}]
+    exam_prep_tips = models.JSONField(
+        'Exam Prep Tips',
+        default=list,
+        help_text='C&P exam preparation guidance'
+    )
+
+    # Format: [{"priority": 1, "action": "...", "why": "...", "deadline": "...", "difficulty": "easy|moderate|complex"}]
+    priority_actions = models.JSONField(
+        'Priority Actions',
+        default=list,
+        help_text='Prioritized list of recommended actions'
+    )
+
+    # Simple markdown analysis (alternative output format)
+    markdown_analysis = models.TextField(
+        'Markdown Analysis',
+        blank=True,
+        help_text='Human-readable markdown-formatted analysis'
+    )
+
+    # AI Confidence Scoring
+    # Overall confidence in the analysis quality (0-100)
+    overall_confidence = models.IntegerField(
+        'Overall Confidence',
+        default=0,
+        help_text='AI confidence score for overall analysis quality (0-100)'
+    )
+    # Format: {"extraction_quality": 85, "document_completeness": 70, "analysis_reliability": 80}
+    confidence_breakdown = models.JSONField(
+        'Confidence Breakdown',
+        default=dict,
+        help_text='Detailed confidence scores for different aspects'
+    )
+    # Factors that may affect analysis quality
+    confidence_factors = models.JSONField(
+        'Confidence Factors',
+        default=list,
+        help_text='Factors that influenced confidence scoring'
+    )
+
+    # Processing metadata
+    processing_time_seconds = models.FloatField(
+        'Processing Time',
+        default=0,
+        help_text='Time taken to analyze the rating decision'
+    )
+    tokens_used = models.IntegerField(
+        'Tokens Used',
+        default=0,
+        help_text='Total OpenAI tokens used'
+    )
+    cost_estimate = models.DecimalField(
+        'Cost Estimate',
+        max_digits=10,
+        decimal_places=6,
+        default=0,
+        help_text='Estimated API cost'
+    )
+
+    class Meta:
+        verbose_name = 'Rating Analysis'
+        verbose_name_plural = 'Rating Analyses'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        rating_str = f"{self.combined_rating}%" if self.combined_rating else "Unknown"
+        return f"Rating Analysis ({rating_str}) - {self.user.email} - {self.created_at.date()}"
+
+    @property
+    def condition_count(self):
+        """Number of rated conditions."""
+        return len(self.conditions) if self.conditions else 0
+
+    @property
+    def increase_opportunity_count(self):
+        """Number of increase opportunities identified."""
+        return len(self.increase_opportunities) if self.increase_opportunities else 0
+
+    @property
+    def secondary_condition_count(self):
+        """Number of potential secondary conditions identified."""
+        return len(self.secondary_conditions) if self.secondary_conditions else 0
+
+    @property
+    def has_appeal_deadline_passed(self):
+        """Check if the 1-year appeal window has closed."""
+        if self.deadline_tracker:
+            return self.deadline_tracker.get('appeal_deadline_passed', True)
+        return True
+
+    @property
+    def days_until_deadline(self):
+        """Days remaining until appeal deadline."""
+        if self.deadline_tracker:
+            return self.deadline_tracker.get('days_remaining')
+        return None
+
+    def get_priority_actions(self, limit=5):
+        """Return top priority actions."""
+        actions = self.priority_actions or []
+        sorted_actions = sorted(actions, key=lambda x: x.get('priority', 99))
+        return sorted_actions[:limit]
+
+    def get_critical_actions(self):
+        """Return actions that have deadlines or are marked critical."""
+        actions = self.priority_actions or []
+        return [a for a in actions if a.get('deadline') or a.get('priority', 99) <= 2]
+
+    @property
+    def confidence_level(self):
+        """Return confidence level as a human-readable string."""
+        if self.overall_confidence >= 85:
+            return 'high'
+        elif self.overall_confidence >= 70:
+            return 'medium'
+        elif self.overall_confidence >= 50:
+            return 'low'
+        else:
+            return 'very_low'
+
+    @property
+    def confidence_display(self):
+        """Return confidence with display label."""
+        labels = {
+            'high': 'High Confidence',
+            'medium': 'Medium Confidence',
+            'low': 'Low Confidence',
+            'very_low': 'Very Low Confidence'
+        }
+        return labels.get(self.confidence_level, 'Unknown')
+
+    def get_confidence_warnings(self):
+        """Return any warnings based on confidence factors."""
+        warnings = []
+        factors = self.confidence_factors or []
+
+        for factor in factors:
+            if factor.get('type') == 'warning':
+                warnings.append(factor.get('message', ''))
+
+        if self.overall_confidence < 70:
+            warnings.append(
+                'This analysis has lower confidence. Consider consulting a VSO '
+                'or accredited claims agent for verification.'
+            )
+
+        return warnings
 
 
 class M21ManualSection(TimeStampedModel):

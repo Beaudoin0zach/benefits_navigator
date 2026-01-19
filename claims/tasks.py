@@ -14,6 +14,57 @@ from .services.ai_service import AIService
 logger = logging.getLogger(__name__)
 
 
+class AIConsentError(Exception):
+    """Raised when user has not consented to AI processing."""
+    pass
+
+
+def verify_ai_consent(user) -> bool:
+    """
+    Verify that a user has consented to AI processing.
+
+    This is a defense-in-depth check. Consent should also be verified
+    at the view/form level before tasks are queued.
+
+    Args:
+        user: User instance to check
+
+    Returns:
+        True if user has consented, False otherwise
+
+    Raises:
+        AIConsentError: If user has not consented (for use in tasks)
+    """
+    if not user:
+        return False
+
+    try:
+        profile = user.profile
+        return bool(profile.ai_processing_consent)
+    except Exception:
+        # No profile or profile access error
+        return False
+
+
+def require_ai_consent(user):
+    """
+    Require AI consent or raise an error.
+
+    Use this in tasks to enforce consent before processing.
+
+    Args:
+        user: User instance to check
+
+    Raises:
+        AIConsentError: If user has not consented
+    """
+    if not verify_ai_consent(user):
+        raise AIConsentError(
+            f"User {user.id if user else 'unknown'} has not consented to AI processing. "
+            "AI analysis cannot proceed without consent."
+        )
+
+
 @shared_task(bind=True, max_retries=3)
 def process_document_task(self, document_id):
     """
@@ -24,12 +75,18 @@ def process_document_task(self, document_id):
 
     This task is accessible-aware: it updates status fields that
     are announced to screen readers via ARIA live regions
+
+    SECURITY: Requires user to have consented to AI processing.
     """
     start_time = time.time()
 
     try:
         # Get document
         document = Document.objects.get(id=document_id)
+
+        # SECURITY: Verify AI consent before processing
+        require_ai_consent(document.user)
+
         document.mark_processing()
 
         logger.info(f"Starting OCR processing for document {document_id}")
@@ -85,6 +142,17 @@ def process_document_task(self, document_id):
         logger.error(f"Document {document_id} not found")
         raise
 
+    except AIConsentError as exc:
+        # Don't retry on consent errors - this is a permanent failure
+        logger.error(f"AI consent not granted for document {document_id}: {str(exc)}")
+        try:
+            document = Document.objects.get(id=document_id)
+            document.mark_failed("AI processing consent required. Please enable AI processing in your privacy settings.")
+        except Exception as e:
+            logger.error(f"Failed to update document status: {str(e)}")
+        # Don't retry - consent must be granted first
+        raise
+
     except Exception as exc:
         logger.error(f"Error processing document {document_id}: {str(exc)}", exc_info=True)
 
@@ -124,6 +192,8 @@ def decode_denial_letter_task(self, document_id, user_id=None):
     4. Evidence guidance generation
 
     Creates DecisionLetterAnalysis and DenialDecoding records.
+
+    SECURITY: Requires user to have consented to AI processing.
     """
     from agents.models import AgentInteraction, DecisionLetterAnalysis, DenialDecoding
     from agents.services import DecisionLetterAnalyzer, DenialDecoderService
@@ -134,6 +204,9 @@ def decode_denial_letter_task(self, document_id, user_id=None):
         # Get document
         document = Document.objects.get(id=document_id)
         user = document.user
+
+        # SECURITY: Verify AI consent before processing
+        require_ai_consent(user)
 
         # Step 1: OCR if not already done
         if not document.ocr_text:
@@ -245,12 +318,212 @@ def decode_denial_letter_task(self, document_id, user_id=None):
         logger.error(f"Document {document_id} not found")
         raise
 
+    except AIConsentError as exc:
+        # Don't retry on consent errors - this is a permanent failure
+        logger.error(f"AI consent not granted for document {document_id}: {str(exc)}")
+        try:
+            document = Document.objects.get(id=document_id)
+            document.mark_failed("AI processing consent required. Please enable AI processing in your privacy settings.")
+        except Exception as e:
+            logger.error(f"Failed to update document status: {str(e)}")
+        # Don't retry - consent must be granted first
+        raise
+
     except Exception as exc:
         logger.error(f"Error decoding denial letter {document_id}: {str(exc)}", exc_info=True)
 
         try:
             document = Document.objects.get(id=document_id)
             document.mark_failed(f"Decoding failed: {str(exc)}")
+        except Exception as e:
+            logger.error(f"Failed to update document status: {str(e)}")
+
+        # Record failure for health monitoring
+        try:
+            import traceback
+            from core.models import ProcessingFailure
+            ProcessingFailure.record_failure(
+                failure_type='ai_analysis',
+                error_message=str(exc),
+                stack_trace=traceback.format_exc(),
+                document_id=str(document_id),
+                task_id=self.request.id
+            )
+        except Exception as e:
+            logger.error(f"Failed to record processing failure: {str(e)}")
+
+        raise self.retry(exc=exc, countdown=60 * (2 ** self.request.retries))
+
+
+@shared_task(bind=True, max_retries=3)
+def analyze_rating_decision_task(self, document_id, user_id=None, use_simple_format=False):
+    """
+    Analyze a VA rating decision document for actionable insights.
+
+    This task provides enhanced analysis beyond basic extraction:
+    1. OCR extraction (if not already done)
+    2. Structured data extraction (conditions, ratings, dates)
+    3. Strategic analysis (increase opportunities, secondary conditions, errors)
+    4. Priority action recommendations
+
+    Creates RatingAnalysis record with comprehensive insights.
+
+    Args:
+        document_id: ID of the uploaded Document
+        user_id: Optional user ID (defaults to document owner)
+        use_simple_format: If True, generate markdown instead of structured JSON
+
+    SECURITY: Requires user to have consented to AI processing.
+    """
+    from agents.models import AgentInteraction, RatingAnalysis
+    from claims.services.rating_analysis_service import (
+        RatingDecisionAnalyzer,
+        SimpleRatingAnalyzer,
+    )
+
+    start_time = time.time()
+
+    try:
+        # Get document
+        document = Document.objects.get(id=document_id)
+        user = document.user
+
+        # SECURITY: Verify AI consent before processing
+        require_ai_consent(user)
+
+        # Step 1: OCR if not already done
+        if not document.ocr_text:
+            document.mark_processing()
+            logger.info(f"Starting OCR for rating decision {document_id}")
+
+            ocr_service = OCRService()
+            ocr_result = ocr_service.extract_text(document.file.path)
+
+            document.ocr_text = ocr_result['text']
+            document.ocr_confidence = ocr_result.get('confidence', None)
+            document.page_count = ocr_result.get('page_count', 0)
+            document.save(update_fields=['ocr_text', 'ocr_confidence', 'page_count'])
+
+            logger.info(f"OCR complete: {len(ocr_result['text'])} characters")
+
+        # Step 2: Analyze the rating decision
+        document.mark_analyzing()
+        logger.info(f"Analyzing rating decision {document_id}")
+
+        if use_simple_format:
+            # Simple markdown format
+            analyzer = SimpleRatingAnalyzer()
+            markdown_analysis, tokens_used = analyzer.analyze(document.ocr_text)
+
+            # Create interaction record
+            interaction = AgentInteraction.objects.create(
+                user=user,
+                agent_type='rating_analyzer',
+                status='completed',
+                tokens_used=tokens_used,
+                cost_estimate=analyzer.estimate_cost(tokens_used)
+            )
+
+            # Create analysis record with markdown
+            analysis = RatingAnalysis.objects.create(
+                interaction=interaction,
+                user=user,
+                document=document,
+                raw_text=document.ocr_text,
+                markdown_analysis=markdown_analysis,
+                tokens_used=tokens_used,
+                cost_estimate=analyzer.estimate_cost(tokens_used),
+                processing_time_seconds=time.time() - start_time
+            )
+
+        else:
+            # Full structured analysis
+            analyzer = RatingDecisionAnalyzer()
+            result = analyzer.analyze(document.ocr_text)
+
+            # Create interaction record
+            interaction = AgentInteraction.objects.create(
+                user=user,
+                agent_type='rating_analyzer',
+                status='completed',
+                tokens_used=result.tokens_used,
+                cost_estimate=result.cost_estimate
+            )
+
+            # Parse decision date from extracted data
+            decision_date = _parse_date(result.extracted_data.get('decision_date'))
+
+            # Create analysis record with full structured data
+            analysis = RatingAnalysis.objects.create(
+                interaction=interaction,
+                user=user,
+                document=document,
+                raw_text=document.ocr_text,
+                decision_date=decision_date,
+                veteran_name=result.extracted_data.get('veteran_name', ''),
+                file_number=result.extracted_data.get('file_number', ''),
+                combined_rating=result.extracted_data.get('combined_rating'),
+                monthly_compensation=result.extracted_data.get('monthly_compensation'),
+                conditions=result.extracted_data.get('conditions', []),
+                evidence_list=result.extracted_data.get('evidence_list', []),
+                increase_opportunities=result.analysis.get('increase_opportunities', []),
+                secondary_conditions=result.analysis.get('secondary_conditions', []),
+                rating_errors=result.analysis.get('rating_errors', []),
+                effective_date_issues=result.analysis.get('effective_date_issues', []),
+                deadline_tracker=result.analysis.get('deadline_tracker', {}),
+                benefits_unlocked=result.analysis.get('benefits_unlocked', []),
+                exam_prep_tips=result.analysis.get('exam_prep_tips', []),
+                priority_actions=result.analysis.get('priority_actions', []),
+                tokens_used=result.tokens_used,
+                cost_estimate=result.cost_estimate,
+                processing_time_seconds=time.time() - start_time
+            )
+
+        logger.info(f"Rating analysis complete for document {document_id}")
+
+        # Mark document complete
+        duration = time.time() - start_time
+        document.mark_completed(duration=duration)
+
+        # Send email notification (async)
+        try:
+            from core.tasks import send_document_analysis_complete_email
+            send_document_analysis_complete_email.delay(document_id)
+        except Exception as e:
+            logger.warning(f"Failed to queue email notification for document {document_id}: {e}")
+
+        return {
+            'document_id': document_id,
+            'analysis_id': analysis.id,
+            'combined_rating': analysis.combined_rating,
+            'condition_count': analysis.condition_count,
+            'increase_opportunities': analysis.increase_opportunity_count,
+            'secondary_conditions': analysis.secondary_condition_count,
+            'status': 'completed',
+            'duration': duration,
+        }
+
+    except Document.DoesNotExist:
+        logger.error(f"Document {document_id} not found")
+        raise
+
+    except AIConsentError as exc:
+        # Don't retry on consent errors - this is a permanent failure
+        logger.error(f"AI consent not granted for document {document_id}: {str(exc)}")
+        try:
+            document = Document.objects.get(id=document_id)
+            document.mark_failed("AI processing consent required. Please enable AI processing in your privacy settings.")
+        except Exception as e:
+            logger.error(f"Failed to update document status: {str(e)}")
+        # Don't retry - consent must be granted first
+        raise
+
+    except Exception as exc:
+        logger.error(f"Error analyzing rating decision {document_id}: {str(exc)}", exc_info=True)
+
+        try:
+            document = Document.objects.get(id=document_id)
+            document.mark_failed(f"Rating analysis failed: {str(exc)}")
         except Exception as e:
             logger.error(f"Failed to update document status: {str(e)}")
 

@@ -298,6 +298,37 @@ def privacy_settings(request):
     return render(request, 'accounts/privacy_settings.html', context)
 
 
+@login_required
+@require_POST
+def toggle_ai_consent(request):
+    """
+    Toggle AI processing consent for the user.
+    """
+    action = request.POST.get('action')
+    profile = request.user.profile
+
+    if action == 'grant':
+        profile.ai_processing_consent = True
+        profile.ai_consent_date = timezone.now()
+        profile.save()
+        messages.success(
+            request,
+            'You have granted consent for AI document processing. '
+            'Your uploaded documents can now be analyzed using AI.'
+        )
+    elif action == 'revoke':
+        profile.ai_processing_consent = False
+        profile.ai_consent_date = None
+        profile.save()
+        messages.info(
+            request,
+            'You have revoked consent for AI document processing. '
+            'New documents will not be processed by AI. Existing analysis results remain available.'
+        )
+
+    return redirect('accounts:privacy_settings')
+
+
 # =============================================================================
 # SUBSCRIPTION / STRIPE VIEWS
 # =============================================================================

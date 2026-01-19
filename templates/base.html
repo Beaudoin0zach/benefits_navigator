@@ -167,6 +167,14 @@
                                 Dashboard
                             </a>
                         </li>
+                        {% if is_vso_staff %}
+                        <li>
+                            <a href="{% url 'vso:dashboard' %}" class="hover:underline focus:underline bg-green-700 px-3 py-1 rounded"
+                               {% if request.resolver_match.app_name == 'vso' %}aria-current="page"{% endif %}>
+                                VSO Portal
+                            </a>
+                        </li>
+                        {% endif %}
                         <li>
                             <a href="/accounts/logout/" class="hover:underline focus:underline">
                                 Logout

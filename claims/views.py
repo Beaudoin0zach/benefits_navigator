@@ -14,7 +14,7 @@ from django.conf import settings
 from core.models import AuditLog
 from .models import Document
 from .forms import DocumentUploadForm, DenialLetterUploadForm
-from .tasks import process_document_task, decode_denial_letter_task
+from .tasks import process_document_task, decode_denial_letter_task, analyze_rating_decision_task
 
 
 @login_required
@@ -458,3 +458,198 @@ def document_view_inline(request, pk):
     )
     response['Content-Disposition'] = f'inline; filename="{document.file_name}"'
     return response
+
+
+# =============================================================================
+# Rating Analyzer Views
+# =============================================================================
+
+@login_required
+def rating_analyzer_upload(request):
+    """
+    Upload VA rating decision for enhanced analysis.
+    Identifies increase opportunities, secondary conditions, errors, and deadlines.
+    """
+    from accounts.models import UsageTracking
+    usage, _ = UsageTracking.objects.get_or_create(user=request.user)
+    usage_summary = usage.get_usage_summary()
+
+    if request.method == 'POST':
+        # Reuse the DenialLetterUploadForm since it's the same file validation
+        form = DenialLetterUploadForm(request.POST, request.FILES, user=request.user)
+
+        if form.is_valid():
+            # Save AI processing consent
+            form.save_consent()
+
+            # Create document instance
+            document = form.save(commit=False)
+            document.user = request.user
+            document.document_type = 'decision_letter'
+
+            # Set file metadata
+            uploaded_file = request.FILES['file']
+            document.file_name = uploaded_file.name
+            document.file_size = uploaded_file.size
+            document.mime_type = uploaded_file.content_type
+
+            document.save()
+
+            # Record usage
+            usage.record_document_upload(document.file_size)
+
+            # Trigger rating analysis task (structured JSON format)
+            analyze_rating_decision_task.delay(document.id, use_simple_format=False)
+
+            messages.success(
+                request,
+                f'Rating decision "{document.file_name}" uploaded successfully. '
+                'Analysis in progress - this may take 1-2 minutes.'
+            )
+
+            return redirect('claims:rating_analyzer_result', pk=document.id)
+        else:
+            messages.error(
+                request,
+                'There were errors in your upload. Please review the form below.'
+            )
+    else:
+        form = DenialLetterUploadForm(user=request.user)
+
+    context = {
+        'form': form,
+        'usage': usage_summary,
+    }
+
+    return render(request, 'claims/rating_analyzer_upload.html', context)
+
+
+@login_required
+def rating_analyzer_result(request, pk):
+    """
+    Display rating analysis results.
+    Shows increase opportunities, secondary conditions, deadlines, and priority actions.
+    """
+    document = get_object_or_404(
+        Document,
+        pk=pk,
+        user=request.user,
+        is_deleted=False
+    )
+
+    # Get associated rating analysis
+    rating_analysis = None
+    from agents.models import RatingAnalysis
+    rating_analysis = RatingAnalysis.objects.filter(
+        document=document,
+        user=request.user
+    ).first()
+
+    context = {
+        'document': document,
+        'analysis': rating_analysis,
+    }
+
+    return render(request, 'claims/rating_analyzer_result.html', context)
+
+
+@login_required
+@require_http_methods(["GET"])
+def rating_analyzer_status(request, pk):
+    """
+    HTMX endpoint to check rating analysis status.
+    Returns status fragment for polling during processing.
+    """
+    document = get_object_or_404(
+        Document,
+        pk=pk,
+        user=request.user,
+        is_deleted=False
+    )
+
+    # Check for rating analysis
+    rating_analysis = None
+    from agents.models import RatingAnalysis
+    rating_analysis = RatingAnalysis.objects.filter(
+        document=document,
+        user=request.user
+    ).first()
+
+    context = {
+        'document': document,
+        'analysis': rating_analysis,
+    }
+
+    if request.headers.get('HX-Request'):
+        return render(request, 'claims/partials/rating_analyzer_status.html', context)
+
+    return JsonResponse({
+        'status': document.status,
+        'is_processing': document.is_processing,
+        'is_complete': document.is_complete,
+        'has_analysis': rating_analysis is not None,
+        'combined_rating': rating_analysis.combined_rating if rating_analysis else None,
+        'condition_count': rating_analysis.condition_count if rating_analysis else 0,
+    })
+
+
+@login_required
+def document_share(request, pk):
+    """
+    Share a document with the veteran's assigned VSO.
+    Veterans can share their documents with their active VSO case.
+    """
+    document = get_object_or_404(
+        Document,
+        pk=pk,
+        user=request.user,
+        is_deleted=False
+    )
+
+    # Get active cases where this user is the veteran
+    from vso.models import VeteranCase, SharedDocument
+
+    active_cases = VeteranCase.objects.filter(
+        veteran=request.user
+    ).exclude(
+        status__startswith='closed'
+    ).select_related('organization', 'assigned_to')
+
+    if request.method == 'POST':
+        case_id = request.POST.get('case_id')
+        include_ai_analysis = request.POST.get('include_ai_analysis') == 'on'
+
+        if not case_id:
+            messages.error(request, 'Please select a case to share with.')
+            return redirect('claims:document_share', pk=pk)
+
+        case = get_object_or_404(VeteranCase, pk=case_id, veteran=request.user)
+
+        # Check if already shared
+        if SharedDocument.objects.filter(case=case, document=document).exists():
+            messages.warning(request, 'This document is already shared with this case.')
+            return redirect('claims:document_detail', pk=pk)
+
+        # Create the share
+        SharedDocument.objects.create(
+            case=case,
+            document=document,
+            shared_by=request.user,
+            include_ai_analysis=include_ai_analysis,
+            status='pending'
+        )
+
+        messages.success(
+            request,
+            f'Document shared with {case.organization.name}. '
+            f'Your caseworker will be notified.'
+        )
+
+        return redirect('claims:document_detail', pk=pk)
+
+    context = {
+        'document': document,
+        'active_cases': active_cases,
+    }
+
+    return render(request, 'claims/document_share.html', context)

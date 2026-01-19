@@ -10,6 +10,7 @@ app_name = 'accounts'
 urlpatterns = [
     # Privacy & Data Management
     path('privacy/', views.privacy_settings, name='privacy_settings'),
+    path('privacy/ai-consent/', views.toggle_ai_consent, name='toggle_ai_consent'),
     path('export/', views.data_export, name='data_export'),
     path('delete/', views.account_deletion, name='account_deletion'),
 

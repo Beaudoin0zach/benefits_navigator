@@ -23,4 +23,12 @@ urlpatterns = [
     path('decode/', views.denial_decoder_upload, name='denial_decoder'),
     path('decode/<int:pk>/', views.denial_decoder_result, name='denial_decoder_result'),
     path('decode/<int:pk>/status/', views.denial_decoder_status, name='denial_decoder_status'),
+
+    # Rating Analyzer
+    path('rating-analyzer/', views.rating_analyzer_upload, name='rating_analyzer'),
+    path('rating-analyzer/<int:pk>/', views.rating_analyzer_result, name='rating_analyzer_result'),
+    path('rating-analyzer/<int:pk>/status/', views.rating_analyzer_status, name='rating_analyzer_status'),
+
+    # Document Sharing with VSO
+    path('document/<int:pk>/share/', views.document_share, name='document_share'),
 ]

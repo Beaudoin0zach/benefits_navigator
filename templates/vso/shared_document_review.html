@@ -1,0 +1,311 @@
+{% extends 'base.html' %}
+
+{% block title %}Review Document - {{ document.file_name }} - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <header class="mb-6">
+        <nav class="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
+            <a href="{% url 'vso:dashboard' %}" class="hover:underline">Dashboard</a>
+            <span class="mx-2">/</span>
+            <a href="{% url 'vso:case_detail' pk=case.pk %}" class="hover:underline">{{ case.title|truncatechars:30 }}</a>
+            <span class="mx-2">/</span>
+            <span>Review Document</span>
+        </nav>
+        <div class="flex justify-between items-start">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">{{ document.file_name }}</h1>
+                <p class="text-gray-600 mt-1">
+                    {{ document.get_document_type_display }} &middot;
+                    Shared {{ shared_document.shared_at|timesince }} ago
+                </p>
+            </div>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                {% if shared_document.status == 'reviewed' %}bg-green-100 text-green-800
+                {% elif shared_document.status == 'action_needed' %}bg-yellow-100 text-yellow-800
+                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                {{ shared_document.get_status_display }}
+            </span>
+        </div>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content - Analysis -->
+        <div class="lg:col-span-2 space-y-6">
+            {% if analysis_data %}
+
+            <!-- Rating Analysis -->
+            {% if analysis_data.rating %}
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200 bg-blue-50">
+                    <h2 class="text-lg font-semibold text-blue-900">Rating Decision Analysis</h2>
+                    <p class="text-sm text-blue-700">AI-extracted information from rating decision</p>
+                </div>
+                <div class="p-6 space-y-6">
+                    <!-- Combined Rating -->
+                    {% if analysis_data.rating.combined_rating %}
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Combined Rating</p>
+                            <p class="text-3xl font-bold text-gray-900">{{ analysis_data.rating.combined_rating }}%</p>
+                        </div>
+                        {% if analysis_data.rating.effective_date %}
+                        <div class="text-right">
+                            <p class="text-sm font-medium text-gray-500">Effective Date</p>
+                            <p class="text-lg text-gray-900">{{ analysis_data.rating.effective_date|date:"M d, Y" }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Conditions -->
+                    {% if analysis_data.rating.conditions %}
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-900 mb-3">Rated Conditions</h3>
+                        <div class="space-y-2">
+                            {% for condition in analysis_data.rating.conditions %}
+                            <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                                <div>
+                                    <p class="font-medium text-gray-900">{{ condition.name }}</p>
+                                    {% if condition.diagnostic_code %}
+                                    <p class="text-xs text-gray-500">DC {{ condition.diagnostic_code }}</p>
+                                    {% endif %}
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium
+                                        {% if condition.rating >= 50 %}bg-green-100 text-green-800
+                                        {% elif condition.rating >= 30 %}bg-yellow-100 text-yellow-800
+                                        {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                        {{ condition.rating }}%
+                                    </span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Increase Opportunities -->
+                    {% if analysis_data.rating.increase_opportunities %}
+                    <div class="border-t border-gray-200 pt-6">
+                        <h3 class="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+                            <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                            </svg>
+                            Increase Opportunities
+                        </h3>
+                        <ul class="space-y-2">
+                            {% for opp in analysis_data.rating.increase_opportunities %}
+                            <li class="flex items-start p-3 bg-green-50 border border-green-200 rounded-lg">
+                                <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"/>
+                                </svg>
+                                <span class="text-sm text-green-800">{{ opp }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <!-- Priority Actions -->
+                    {% if analysis_data.rating.priority_actions %}
+                    <div class="border-t border-gray-200 pt-6">
+                        <h3 class="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+                            <svg class="w-5 h-5 text-orange-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Priority Actions
+                        </h3>
+                        <ol class="space-y-2">
+                            {% for action in analysis_data.rating.priority_actions %}
+                            <li class="flex items-start p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-orange-200 text-orange-800 text-sm font-bold rounded-full mr-3">
+                                    {{ forloop.counter }}
+                                </span>
+                                <span class="text-sm text-orange-800">{{ action }}</span>
+                            </li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Denial Decoding -->
+            {% if analysis_data.denial %}
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200 bg-red-50">
+                    <h2 class="text-lg font-semibold text-red-900">Denial Analysis</h2>
+                    <p class="text-sm text-red-700">AI-decoded denial reasons and appeal guidance</p>
+                </div>
+                <div class="p-6 space-y-6">
+                    {% if analysis_data.denial.denied_conditions %}
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-900 mb-3">Denied Conditions</h3>
+                        <div class="space-y-3">
+                            {% for condition in analysis_data.denial.denied_conditions %}
+                            <div class="p-4 border border-red-200 rounded-lg">
+                                <p class="font-medium text-gray-900">{{ condition.name }}</p>
+                                {% if condition.denial_reason %}
+                                <p class="text-sm text-gray-600 mt-1">{{ condition.denial_reason }}</p>
+                                {% endif %}
+                                {% if condition.m21_reference %}
+                                <p class="text-xs text-blue-600 mt-2">M21-1: {{ condition.m21_reference }}</p>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if analysis_data.denial.recommended_appeal_path %}
+                    <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <h3 class="text-sm font-semibold text-blue-900 mb-2">Recommended Appeal Path</h3>
+                        <p class="text-blue-800">{{ analysis_data.denial.recommended_appeal_path }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if analysis_data.denial.evidence_needed %}
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-900 mb-3">Evidence Needed</h3>
+                        <ul class="space-y-2">
+                            {% for evidence in analysis_data.denial.evidence_needed %}
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-gray-400 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span class="text-sm text-gray-700">{{ evidence }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Raw Document Text -->
+            {% if document.ocr_text %}
+            <div class="bg-white rounded-lg shadow">
+                <details class="group">
+                    <summary class="px-6 py-4 cursor-pointer list-none border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-lg font-semibold text-gray-900">Extracted Text</h2>
+                            <svg class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </summary>
+                    <div class="p-6">
+                        <div class="bg-gray-50 p-4 rounded-md max-h-96 overflow-y-auto">
+                            <pre class="whitespace-pre-wrap text-sm text-gray-700 font-mono">{{ document.ocr_text }}</pre>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            {% endif %}
+
+            {% else %}
+            <!-- No Analysis Available -->
+            <div class="bg-white rounded-lg shadow p-8 text-center">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <p class="mt-4 text-gray-500">
+                    {% if shared_document.include_ai_analysis %}
+                    No AI analysis is available for this document yet.
+                    {% else %}
+                    The veteran chose not to share AI analysis for this document.
+                    {% endif %}
+                </p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar - Review Form -->
+        <div class="space-y-6">
+            <!-- Document Info -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Document Info</h2>
+                </div>
+                <div class="p-6">
+                    <dl class="space-y-3">
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Type</dt>
+                            <dd class="text-gray-900">{{ document.get_document_type_display }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Uploaded</dt>
+                            <dd class="text-gray-900">{{ document.created_at|date:"M d, Y" }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Size</dt>
+                            <dd class="text-gray-900">{{ document.file_size_mb }} MB</dd>
+                        </div>
+                        {% if document.page_count %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Pages</dt>
+                            <dd class="text-gray-900">{{ document.page_count }}</dd>
+                        </div>
+                        {% endif %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Shared by</dt>
+                            <dd class="text-gray-900">{{ shared_document.shared_by.get_full_name|default:shared_document.shared_by.email|default:"Veteran" }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Review Form -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Your Review</h2>
+                </div>
+                <form method="post" class="p-6 space-y-4">
+                    {% csrf_token %}
+
+                    <div>
+                        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <select name="status" id="status"
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            {% for value, label in status_choices %}
+                            <option value="{{ value }}" {% if shared_document.status == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="review_notes" class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                        <textarea name="review_notes" id="review_notes" rows="6"
+                                  placeholder="Add your notes about this document..."
+                                  class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ shared_document.review_notes }}</textarea>
+                        <p class="mt-1 text-xs text-gray-500">These notes are for internal use only.</p>
+                    </div>
+
+                    <button type="submit"
+                            class="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Save Review
+                    </button>
+                </form>
+
+                {% if shared_document.reviewed_by %}
+                <div class="px-6 pb-6 pt-2 text-xs text-gray-500">
+                    Last reviewed by {{ shared_document.reviewed_by.get_full_name|default:shared_document.reviewed_by.email }}
+                    on {{ shared_document.reviewed_at|date:"M d, Y" }}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Case Link -->
+            <div class="text-center">
+                <a href="{% url 'vso:case_detail' pk=case.pk %}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                    &larr; Back to Case
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
