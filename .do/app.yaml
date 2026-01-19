@@ -50,6 +50,9 @@ services:
       # Explicit allowed hosts - never use wildcard in deployed environments
       - key: ALLOWED_HOSTS
         value: "benefits-navigator-staging-3o4rq.ondigitalocean.app"
+      # Web needs explicit FIELD_ENCRYPTION_KEY (DO doesn't inherit app-level secrets)
+      - key: FIELD_ENCRYPTION_KEY
+        type: SECRET
 
 workers:
   # Celery Worker (background tasks)
@@ -69,6 +72,8 @@ workers:
       - key: CELERY_BROKER_URL
         type: SECRET
       - key: OPENAI_API_KEY
+        type: SECRET
+      - key: FIELD_ENCRYPTION_KEY
         type: SECRET
 
 jobs:
