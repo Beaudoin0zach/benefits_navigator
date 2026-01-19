@@ -32,8 +32,10 @@ COPY . /app/
 # Create directories
 RUN mkdir -p /app/media/documents /app/staticfiles /app/logs
 
-# Collect static files (use dummy secret for build, real one at runtime)
-RUN SECRET_KEY=build-time-dummy-key python manage.py collectstatic --noinput --clear || true
+# Collect static files (use dummy secrets for build, real ones at runtime)
+# DEBUG=True bypasses FIELD_ENCRYPTION_KEY requirement during build
+RUN SECRET_KEY=build-time-dummy-key DEBUG=True STAGING=False \
+    python manage.py collectstatic --noinput --clear || true
 
 # Create non-root user for security
 RUN adduser --disabled-password --gecos '' appuser && \
