@@ -12,14 +12,18 @@ Celery + Redis for async document processing. PostgreSQL database. Stripe for su
 - Treat all user data as sensitive. Avoid logging PII.
 - Never store raw prompts/responses containing PII unless explicitly required and securely handled.
 - Assume prompt injection is possible; sanitize/validate any model outputs before using them.
-  - All user input goes through `sanitize_user_input()` in `agents/services.py`
+  - All user input goes through `sanitize_input()` from `agents/ai_gateway.py`
+  - Use Pydantic schemas from `agents/schemas.py` for response validation
 - Prefer small, test-backed changes. Avoid broad refactors.
 - PII fields (`va_file_number`, `date_of_birth`) use `EncryptedCharField` from `core/encryption.py`
 
 ## How to work (required workflow)
 1. Find the exact entry points for Path A and Path B (routes/views/templates).
 2. Identify the boundary contract(s) between the paths and any shared modules.
-3. Use the existing `BaseAgent` class in `agents/services.py` for all OpenAI calls.
+3. Use the **AI Gateway** (`agents/ai_gateway.py`) for all OpenAI calls:
+   - `gateway.complete()` for raw completions
+   - `gateway.complete_structured()` for Pydantic-validated responses
+   - Returns `Result[T]` types — check `result.is_success` before accessing value
 4. Before changing logic, add tests:
    - path-level tests (URLs/views)
    - unit tests for eligibility/routing logic
@@ -63,9 +67,10 @@ Celery + Redis for async document processing. PostgreSQL database. Stripe for su
 - `accounts/models.py`: `UsageTracking`, `Subscription`
 
 ### OpenAI Usage
+- All calls go through **AI Gateway** (`agents/ai_gateway.py`)
 - `agents/services.py`: `DecisionLetterAnalyzer`, `DenialDecoderService`, `EvidenceGapAnalyzer`, `PersonalStatementGenerator`
 - `claims/services/ai_service.py`: Document analysis
-- All calls go through `BaseAgent._call_openai()` which tracks tokens and costs
+- Gateway provides: timeout (60s), retry (3x exponential backoff), Result types, Pydantic validation
 
 ### Outputs (what the user gets)
 - OCR text extraction with confidence scores
@@ -119,16 +124,51 @@ Celery + Redis for async document processing. PostgreSQL database. Stripe for su
 | `core/encryption.py` | `EncryptedCharField`, `EncryptedDateField` for PII |
 | `core/middleware.py` | `AuditMiddleware` (logs sensitive operations), `SecurityHeadersMiddleware` |
 | `core/context_processors.py` | `user_usage()`, `feature_flags()`, `vso_access()` |
-| `agents/services.py` | `BaseAgent` class — all OpenAI calls centralized here |
+| `agents/ai_gateway.py` | **AIGateway** — centralized OpenAI calls with retry, timeout, validation |
+| `agents/schemas.py` | Pydantic schemas for all AI response types |
+| `agents/services.py` | `BaseAgent` class — uses AIGateway internally |
 | `agents/m21_matcher.py` | M21 manual section matching for denial analysis |
 
+### AI Gateway Architecture
+```
+┌─────────────────────────────────────────────────────────┐
+│                      AI Gateway                          │
+│  - sanitize_input()     - 60s timeout                   │
+│  - Result[T] types      - 3x retry with backoff         │
+│  - Pydantic validation  - Token/cost tracking           │
+└─────────────────────────────────────────────────────────┘
+                          │
+        ┌─────────────────┼─────────────────┐
+        ▼                 ▼                 ▼
+   BaseAgent         AIService      RatingDecisionAnalyzer
+   (agents/)         (claims/)           (claims/)
+```
+
+**Usage:**
+```python
+from agents.ai_gateway import get_gateway, sanitize_input
+from agents.schemas import DecisionLetterAnalysisResponse
+
+gateway = get_gateway()
+result = gateway.complete_structured(
+    system_prompt="...",
+    user_prompt=sanitize_input(user_text),
+    response_schema=DecisionLetterAnalysisResponse,
+)
+if result.is_success:
+    analysis = result.value.data  # Validated Pydantic model
+else:
+    handle_error(result.error)    # GatewayError with code, message
+```
+
 ### Request/Response Schemas
-- **OpenAI calls:** All return `tuple[str, int]` (response_text, token_count)
-- **Agent outputs:** Parsed to JSON, stored in model-specific fields
+- **OpenAI calls:** Return `Result[CompletionResponse]` or `Result[StructuredResponse[T]]`
+- **Agent outputs:** Validated via Pydantic schemas in `agents/schemas.py`
 - **Document processing:** Status progression: `uploading` → `processing` → `analyzing` → `completed`/`failed`
 
 ### Where Parsing/Validation Occurs
-- `agents/services.py`: JSON parsing of OpenAI responses, `sanitize_user_input()` for prompt injection protection
+- `agents/ai_gateway.py`: Input sanitization, JSON extraction, Pydantic validation
+- `agents/services.py`: Agent-specific prompt building, uses gateway
 - `claims/tasks.py`: Document status updates, error handling
 - `vso/views.py`: Permission checks for organization membership
 
@@ -171,6 +211,8 @@ pytest -n auto            # Parallel execution
 - `premium_user` — User with active premium subscription
 - `authenticated_client` — Logged-in client
 - `premium_client` — Premium logged-in client
+- `mock_ai_gateway` — Mocked OpenAI client for gateway
+- `ai_gateway` — Gateway instance with mocked client
 
 ---
 
