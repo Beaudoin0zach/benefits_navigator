@@ -191,6 +191,59 @@ def processing_document(db, user, sample_pdf):
     return doc
 
 
+@pytest.fixture
+def document_with_file(db, user, tmp_path, settings):
+    """
+    Create a test document with an actual file on disk.
+    Used for testing file download/view operations.
+    """
+    from claims.models import Document
+    import os
+
+    # Set MEDIA_ROOT to temp path for this test
+    settings.MEDIA_ROOT = str(tmp_path)
+
+    # Create the documents directory
+    user_doc_dir = tmp_path / "documents" / f"user_{user.id}"
+    user_doc_dir.mkdir(parents=True, exist_ok=True)
+
+    # Create the actual file on disk
+    file_name = "test_file_on_disk.pdf"
+    file_path = user_doc_dir / file_name
+
+    # Write minimal PDF content
+    pdf_content = b"""%PDF-1.4
+1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj
+2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj
+3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] >> endobj
+xref
+0 4
+0000000000 65535 f
+0000000009 00000 n
+0000000058 00000 n
+0000000115 00000 n
+trailer << /Size 4 /Root 1 0 R >>
+startxref
+190
+%%EOF"""
+
+    with open(file_path, 'wb') as f:
+        f.write(pdf_content)
+
+    # Create the Document object pointing to this file
+    doc = Document.objects.create(
+        user=user,
+        file=f"documents/user_{user.id}/{file_name}",
+        file_name=file_name,
+        file_size=len(pdf_content),
+        mime_type="application/pdf",
+        document_type="decision_letter",
+        status="completed",
+    )
+
+    return doc
+
+
 # =============================================================================
 # CLAIMS FIXTURES
 # =============================================================================

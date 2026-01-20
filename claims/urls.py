@@ -19,6 +19,10 @@ urlpatterns = [
     path('document/<int:pk>/download/', views.document_download, name='document_download'),
     path('document/<int:pk>/view/', views.document_view_inline, name='document_view'),
 
+    # Signed URL access (time-limited, no session required after validation)
+    path('document/s/<str:token>/download/', views.document_download_signed, name='document_download_signed'),
+    path('document/s/<str:token>/view/', views.document_view_signed, name='document_view_signed'),
+
     # Denial Decoder
     path('decode/', views.denial_decoder_upload, name='denial_decoder'),
     path('decode/<int:pk>/', views.denial_decoder_result, name='denial_decoder_result'),
