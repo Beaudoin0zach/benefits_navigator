@@ -1470,3 +1470,371 @@ class TestStructuredData(TestCase):
         """Secondary conditions hub loads correctly."""
         response = self.client.get('/exam-prep/secondary-conditions/')
         self.assertEqual(response.status_code, 200)
+
+
+# =============================================================================
+# SIGNED URL TESTS
+# =============================================================================
+
+class TestSignedURLGenerator(TestCase):
+    """Tests for the SignedURLGenerator utility."""
+
+    def setUp(self):
+        from core.signed_urls import SignedURLGenerator
+        self.generator = SignedURLGenerator(secret_key='test-secret-key')
+        self.user = User.objects.create_user(
+            email="signedurl@example.com",
+            password="TestPass123!"
+        )
+
+    def test_generate_token_returns_string(self):
+        """generate_token returns a non-empty string."""
+        token = self.generator.generate_token(
+            resource_type='document',
+            resource_id=123,
+            user_id=456,
+            action='download',
+        )
+        self.assertIsInstance(token, str)
+        self.assertTrue(len(token) > 0)
+
+    def test_token_contains_signature(self):
+        """Token contains a signature component."""
+        token = self.generator.generate_token(
+            resource_type='document',
+            resource_id=123,
+            user_id=456,
+        )
+        self.assertIn('.', token)
+        parts = token.split('.')
+        self.assertEqual(len(parts), 2)
+
+    def test_validate_token_returns_data(self):
+        """validate_token returns expected data for valid token."""
+        token = self.generator.generate_token(
+            resource_type='document',
+            resource_id=123,
+            user_id=456,
+            action='download',
+        )
+        data = self.generator.validate_token(token)
+        self.assertEqual(data['resource_type'], 'document')
+        self.assertEqual(data['resource_id'], 123)
+        self.assertEqual(data['user_id'], 456)
+        self.assertEqual(data['action'], 'download')
+
+    def test_validate_token_raises_on_tampered_signature(self):
+        """validate_token raises InvalidTokenError for tampered signature."""
+        from core.signed_urls import InvalidTokenError
+
+        token = self.generator.generate_token(
+            resource_type='document',
+            resource_id=123,
+            user_id=456,
+        )
+        # Tamper with the signature
+        parts = token.split('.')
+        tampered_token = parts[0] + '.tampered_signature'
+
+        with self.assertRaises(InvalidTokenError):
+            self.generator.validate_token(tampered_token)
+
+    def test_validate_token_raises_on_expired(self):
+        """validate_token raises TokenExpiredError for expired token."""
+        from core.signed_urls import TokenExpiredError
+        import time
+
+        # Generate token with very short expiration
+        token = self.generator.generate_token(
+            resource_type='document',
+            resource_id=123,
+            user_id=456,
+            expires_minutes=0,  # Will be 0 minutes, essentially expired
+        )
+
+        # Wait a moment to ensure expiration
+        time.sleep(0.1)
+
+        with self.assertRaises(TokenExpiredError):
+            self.generator.validate_token(token)
+
+    def test_validate_token_raises_on_invalid_format(self):
+        """validate_token raises InvalidTokenError for malformed token."""
+        from core.signed_urls import InvalidTokenError
+
+        with self.assertRaises(InvalidTokenError):
+            self.generator.validate_token('not-a-valid-token')
+
+        with self.assertRaises(InvalidTokenError):
+            self.generator.validate_token('')
+
+    def test_generate_url_creates_valid_path(self):
+        """generate_url creates a URL with the token."""
+        url = self.generator.generate_url(
+            resource_type='document',
+            resource_id=123,
+            user_id=456,
+            action='download',
+        )
+        self.assertIn('/claims/document/s/', url)
+        self.assertIn('/download/', url)
+
+    def test_generate_url_view_action(self):
+        """generate_url with view action creates view URL."""
+        url = self.generator.generate_url(
+            resource_type='document',
+            resource_id=123,
+            user_id=456,
+            action='view',
+        )
+        self.assertIn('/view/', url)
+
+    def test_token_with_extra_data(self):
+        """Token can include extra data."""
+        token = self.generator.generate_token(
+            resource_type='document',
+            resource_id=123,
+            user_id=456,
+            extra_data={'vso_id': 789},
+        )
+        data = self.generator.validate_token(token)
+        self.assertIsNotNone(data['extra_data'])
+        self.assertEqual(data['extra_data']['vso_id'], 789)
+
+    def test_max_expiration_enforced(self):
+        """Expiration time is capped at MAX_EXPIRES_MINUTES."""
+        # Request 48 hours (2880 minutes) - should be capped at 24 hours (1440)
+        token = self.generator.generate_token(
+            resource_type='document',
+            resource_id=123,
+            user_id=456,
+            expires_minutes=2880,
+        )
+        data = self.generator.validate_token(token)
+
+        import time
+        max_expected = int(time.time()) + (1440 * 60) + 5  # 24 hours + 5 second buffer
+        self.assertLessEqual(data['expires_at'], max_expected)
+
+
+class TestSignedURLConvenienceFunctions(TestCase):
+    """Tests for signed URL convenience functions."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="convenience@example.com",
+            password="TestPass123!"
+        )
+
+    def test_get_signed_url_generator_returns_singleton(self):
+        """get_signed_url_generator returns the same instance."""
+        from core.signed_urls import get_signed_url_generator
+
+        gen1 = get_signed_url_generator()
+        gen2 = get_signed_url_generator()
+        self.assertIs(gen1, gen2)
+
+    def test_generate_signed_url_function(self):
+        """generate_signed_url convenience function works."""
+        from core.signed_urls import generate_signed_url
+
+        url = generate_signed_url(
+            resource_type='document',
+            resource_id=123,
+            user_id=456,
+            action='download',
+            expires_minutes=30,
+        )
+        self.assertIn('/claims/document/s/', url)
+
+    def test_validate_signed_token_function(self):
+        """validate_signed_token convenience function works."""
+        from core.signed_urls import generate_signed_url, validate_signed_token, get_signed_url_generator
+
+        generator = get_signed_url_generator()
+        token = generator.generate_token(
+            resource_type='document',
+            resource_id=123,
+            user_id=456,
+        )
+
+        data = validate_signed_token(token)
+        self.assertEqual(data['resource_id'], 123)
+
+
+@pytest.mark.django_db
+class TestSignedURLViews:
+    """Tests for signed URL access views."""
+
+    def test_signed_download_with_valid_token(self, client, user, document_with_file):
+        """Valid signed URL allows download without login."""
+        from core.signed_urls import get_signed_url_generator
+
+        generator = get_signed_url_generator()
+        token = generator.generate_token(
+            resource_type='document',
+            resource_id=document_with_file.pk,
+            user_id=document_with_file.user_id,
+            action='download',
+        )
+
+        response = client.get(f'/claims/document/s/{token}/download/')
+        assert response.status_code == 200
+
+    def test_signed_view_with_valid_token(self, client, user, document_with_file):
+        """Valid signed URL allows inline view without login."""
+        from core.signed_urls import get_signed_url_generator
+
+        generator = get_signed_url_generator()
+        token = generator.generate_token(
+            resource_type='document',
+            resource_id=document_with_file.pk,
+            user_id=document_with_file.user_id,
+            action='view',
+        )
+
+        response = client.get(f'/claims/document/s/{token}/view/')
+        assert response.status_code == 200
+
+    def test_signed_download_with_expired_token(self, client, document_with_file):
+        """Expired token returns forbidden."""
+        from core.signed_urls import get_signed_url_generator
+
+        generator = get_signed_url_generator()
+        token = generator.generate_token(
+            resource_type='document',
+            resource_id=document_with_file.pk,
+            user_id=document_with_file.user_id,
+            action='download',
+            expires_minutes=0,  # Already expired
+        )
+
+        import time
+        time.sleep(0.1)
+
+        response = client.get(f'/claims/document/s/{token}/download/')
+        assert response.status_code == 403
+        assert b'expired' in response.content
+
+    def test_signed_download_with_invalid_token(self, client):
+        """Invalid token returns forbidden."""
+        response = client.get('/claims/document/s/invalid-token/download/')
+        assert response.status_code == 403
+        assert b'Invalid' in response.content
+
+    def test_signed_download_wrong_action(self, client, document_with_file):
+        """Token with wrong action type returns forbidden."""
+        from core.signed_urls import get_signed_url_generator
+
+        generator = get_signed_url_generator()
+        # Generate view token but try to use it for download
+        token = generator.generate_token(
+            resource_type='document',
+            resource_id=document_with_file.pk,
+            user_id=document_with_file.user_id,
+            action='view',  # Wrong action
+        )
+
+        response = client.get(f'/claims/document/s/{token}/download/')
+        assert response.status_code == 403
+        assert b'Invalid link type' in response.content
+
+    def test_signed_download_wrong_resource_type(self, client, document_with_file):
+        """Token with wrong resource type returns forbidden."""
+        from core.signed_urls import get_signed_url_generator
+
+        generator = get_signed_url_generator()
+        token = generator.generate_token(
+            resource_type='not_document',  # Wrong type
+            resource_id=document_with_file.pk,
+            user_id=document_with_file.user_id,
+            action='download',
+        )
+
+        response = client.get(f'/claims/document/s/{token}/download/')
+        assert response.status_code == 403
+        assert b'Invalid resource type' in response.content
+
+    def test_signed_download_nonexistent_document(self, client, user):
+        """Token for nonexistent document returns 404."""
+        from core.signed_urls import get_signed_url_generator
+
+        generator = get_signed_url_generator()
+        token = generator.generate_token(
+            resource_type='document',
+            resource_id=99999,  # Doesn't exist
+            user_id=user.pk,
+            action='download',
+        )
+
+        response = client.get(f'/claims/document/s/{token}/download/')
+        assert response.status_code == 404
+
+    def test_signed_download_creates_audit_log(self, client, document_with_file):
+        """Signed download creates audit log entry."""
+        from core.signed_urls import get_signed_url_generator
+
+        generator = get_signed_url_generator()
+        token = generator.generate_token(
+            resource_type='document',
+            resource_id=document_with_file.pk,
+            user_id=document_with_file.user_id,
+            action='download',
+        )
+
+        response = client.get(f'/claims/document/s/{token}/download/')
+        assert response.status_code == 200
+
+        # Check audit log was created
+        log = AuditLog.objects.filter(
+            action='document_download',
+            resource_type='Document',
+            resource_id=document_with_file.pk,
+        ).first()
+        assert log is not None
+        assert log.details.get('access_type') == 'signed_url'
+
+
+class TestDocumentModelSignedURLMethods(TestCase):
+    """Tests for Document model signed URL methods."""
+
+    def setUp(self):
+        from claims.models import Document
+        self.user = User.objects.create_user(
+            email="docmodel@example.com",
+            password="TestPass123!"
+        )
+        self.document = Document.objects.create(
+            user=self.user,
+            file_name='test.pdf',
+            document_type='decision_letter',
+            status='completed',
+        )
+
+    def test_get_signed_download_url(self):
+        """get_signed_download_url returns a valid signed URL."""
+        url = self.document.get_signed_download_url()
+        self.assertIn('/claims/document/s/', url)
+        self.assertIn('/download/', url)
+
+    def test_get_signed_view_url(self):
+        """get_signed_view_url returns a valid signed URL."""
+        url = self.document.get_signed_view_url()
+        self.assertIn('/claims/document/s/', url)
+        self.assertIn('/view/', url)
+
+    def test_signed_urls_are_different(self):
+        """Download and view signed URLs are different."""
+        download_url = self.document.get_signed_download_url()
+        view_url = self.document.get_signed_view_url()
+        self.assertNotEqual(download_url, view_url)
+
+    def test_signed_url_custom_expiration(self):
+        """Custom expiration time is respected."""
+        # Generate with short expiration
+        url_5min = self.document.get_signed_download_url(expires_minutes=5)
+        # Generate with longer expiration
+        url_60min = self.document.get_signed_download_url(expires_minutes=60)
+
+        # URLs should be different due to different expiration timestamps
+        self.assertNotEqual(url_5min, url_60min)

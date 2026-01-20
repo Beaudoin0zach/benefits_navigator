@@ -461,6 +461,172 @@ def document_view_inline(request, pk):
 
 
 # =============================================================================
+# Signed URL Access (Token-based, no session required)
+# =============================================================================
+
+@require_http_methods(["GET"])
+def document_download_signed(request, token):
+    """
+    Download document using signed URL token.
+
+    Allows time-limited access without requiring active session.
+    Token includes user ID, resource ID, action, and expiration.
+    Used for sharing links that work across browser tabs/sessions.
+    """
+    from core.signed_urls import (
+        get_signed_url_generator,
+        TokenExpiredError,
+        InvalidTokenError
+    )
+
+    generator = get_signed_url_generator()
+
+    try:
+        token_data = generator.validate_token(token)
+    except TokenExpiredError:
+        return HttpResponseForbidden("This download link has expired. Please request a new link.")
+    except InvalidTokenError:
+        return HttpResponseForbidden("Invalid download link.")
+
+    # Verify action type
+    if token_data.get('action') != 'download':
+        return HttpResponseForbidden("Invalid link type.")
+
+    # Verify resource type
+    if token_data.get('resource_type') != 'document':
+        return HttpResponseForbidden("Invalid resource type.")
+
+    # Get the document
+    resource_id = token_data.get('resource_id')
+    user_id = token_data.get('user_id')
+
+    try:
+        document = Document.objects.get(
+            pk=resource_id,
+            user_id=user_id,
+            is_deleted=False
+        )
+    except Document.DoesNotExist:
+        raise Http404("Document not found")
+
+    if not document.file:
+        raise Http404("Document file not found")
+
+    file_path = document.file.path
+
+    if not os.path.exists(file_path):
+        raise Http404("Document file not found on disk")
+
+    # Audit log the download (use document owner since token-based access)
+    AuditLog.log(
+        action='document_download',
+        request=request,
+        user=document.user,
+        resource_type='Document',
+        resource_id=document.id,
+        details={
+            'file_name': document.file_name,
+            'file_size': document.file_size,
+            'access_type': 'signed_url',
+        }
+    )
+
+    # Determine content type
+    content_type, _ = mimetypes.guess_type(file_path)
+    if not content_type:
+        content_type = 'application/octet-stream'
+
+    # Serve file
+    response = FileResponse(
+        open(file_path, 'rb'),
+        content_type=content_type,
+        as_attachment=True,
+        filename=document.file_name
+    )
+    return response
+
+
+@require_http_methods(["GET"])
+def document_view_signed(request, token):
+    """
+    View document inline using signed URL token.
+
+    Allows time-limited inline viewing without requiring active session.
+    Same as document_download_signed but serves inline instead of attachment.
+    """
+    from core.signed_urls import (
+        get_signed_url_generator,
+        TokenExpiredError,
+        InvalidTokenError
+    )
+
+    generator = get_signed_url_generator()
+
+    try:
+        token_data = generator.validate_token(token)
+    except TokenExpiredError:
+        return HttpResponseForbidden("This view link has expired. Please request a new link.")
+    except InvalidTokenError:
+        return HttpResponseForbidden("Invalid view link.")
+
+    # Verify action type
+    if token_data.get('action') != 'view':
+        return HttpResponseForbidden("Invalid link type.")
+
+    # Verify resource type
+    if token_data.get('resource_type') != 'document':
+        return HttpResponseForbidden("Invalid resource type.")
+
+    # Get the document
+    resource_id = token_data.get('resource_id')
+    user_id = token_data.get('user_id')
+
+    try:
+        document = Document.objects.get(
+            pk=resource_id,
+            user_id=user_id,
+            is_deleted=False
+        )
+    except Document.DoesNotExist:
+        raise Http404("Document not found")
+
+    if not document.file:
+        raise Http404("Document file not found")
+
+    file_path = document.file.path
+
+    if not os.path.exists(file_path):
+        raise Http404("Document file not found on disk")
+
+    # Audit log the view (use document owner since token-based access)
+    AuditLog.log(
+        action='document_view',
+        request=request,
+        user=document.user,
+        resource_type='Document',
+        resource_id=document.id,
+        details={
+            'file_name': document.file_name,
+            'view_type': 'inline',
+            'access_type': 'signed_url',
+        }
+    )
+
+    # Determine content type
+    content_type, _ = mimetypes.guess_type(file_path)
+    if not content_type:
+        content_type = 'application/octet-stream'
+
+    # Serve file inline
+    response = FileResponse(
+        open(file_path, 'rb'),
+        content_type=content_type,
+    )
+    response['Content-Disposition'] = f'inline; filename="{document.file_name}"'
+    return response
+
+
+# =============================================================================
 # Rating Analyzer Views
 # =============================================================================
 

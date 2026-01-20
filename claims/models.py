@@ -190,6 +190,52 @@ class Document(TimeStampedModel, SoftDeleteModel):
         self.processed_at = timezone.now()
         self.save(update_fields=['status', 'error_message', 'processed_at'])
 
+    def get_signed_download_url(self, expires_minutes: int = 30, request=None) -> str:
+        """
+        Generate a time-limited signed URL for downloading this document.
+
+        Args:
+            expires_minutes: How long the URL is valid (default 30 minutes)
+            request: Django request object (for absolute URLs)
+
+        Returns:
+            Signed URL string
+        """
+        from core.signed_urls import get_signed_url_generator
+
+        generator = get_signed_url_generator()
+        return generator.generate_url(
+            resource_type='document',
+            resource_id=self.pk,
+            user_id=self.user_id,
+            action='download',
+            expires_minutes=expires_minutes,
+            request=request
+        )
+
+    def get_signed_view_url(self, expires_minutes: int = 30, request=None) -> str:
+        """
+        Generate a time-limited signed URL for viewing this document inline.
+
+        Args:
+            expires_minutes: How long the URL is valid (default 30 minutes)
+            request: Django request object (for absolute URLs)
+
+        Returns:
+            Signed URL string
+        """
+        from core.signed_urls import get_signed_url_generator
+
+        generator = get_signed_url_generator()
+        return generator.generate_url(
+            resource_type='document',
+            resource_id=self.pk,
+            user_id=self.user_id,
+            action='view',
+            expires_minutes=expires_minutes,
+            request=request
+        )
+
 
 class Claim(TimeStampedModel, SoftDeleteModel):
     """
