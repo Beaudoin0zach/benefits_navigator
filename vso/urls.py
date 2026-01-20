@@ -8,6 +8,9 @@ from . import views
 app_name = 'vso'
 
 urlpatterns = [
+    # Organization selection (for multi-org users)
+    path('select-org/', views.select_organization, name='select_organization'),
+
     # Dashboard
     path('', views.dashboard, name='dashboard'),
 

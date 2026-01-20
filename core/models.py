@@ -389,10 +389,25 @@ class AuditLog(models.Model):
         # AI analysis
         ('ai_analysis', 'AI Analysis'),
         ('denial_decode', 'Denial Decode'),
+        ('ai_decision_analyzer', 'Decision Letter Analysis'),
+        ('ai_evidence_gap', 'Evidence Gap Analysis'),
+        ('ai_statement_generator', 'Statement Generation'),
+
+        # VSO operations
+        ('vso_case_create', 'Case Created'),
+        ('vso_case_view', 'Case Viewed'),
+        ('vso_case_update', 'Case Updated'),
+        ('vso_document_share', 'Document Shared'),
+        ('vso_document_review', 'Document Reviewed'),
+        ('vso_note_add', 'Case Note Added'),
+        ('vso_invitation_sent', 'Invitation Sent'),
+        ('vso_invitation_accept', 'Invitation Accepted'),
 
         # Profile changes
         ('profile_update', 'Profile Update'),
         ('account_delete', 'Account Delete Request'),
+        ('ai_consent_grant', 'AI Consent Granted'),
+        ('ai_consent_revoke', 'AI Consent Revoked'),
 
         # Admin actions
         ('admin_action', 'Admin Action'),

@@ -2,6 +2,8 @@
 Views for AI Agents
 """
 
+from functools import wraps
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -11,6 +13,7 @@ from decimal import Decimal
 import json
 import logging
 
+from core.models import AuditLog
 from .models import (
     AgentInteraction,
     DecisionLetterAnalysis,
@@ -24,6 +27,46 @@ from .services import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+# =============================================================================
+# AI CONSENT ENFORCEMENT
+# =============================================================================
+
+def check_ai_consent(user):
+    """
+    Check if user has consented to AI processing.
+
+    Args:
+        user: User instance to check
+
+    Returns:
+        bool: True if user has AI processing consent
+    """
+    try:
+        return bool(user.profile.ai_processing_consent)
+    except Exception:
+        return False
+
+
+def require_ai_consent_view(view_func):
+    """
+    Decorator for views that require AI processing consent.
+
+    Redirects to privacy settings if consent not granted.
+    Use this on any view that will trigger OpenAI API calls.
+    """
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not check_ai_consent(request.user):
+            messages.warning(
+                request,
+                "AI processing consent is required to use this feature. "
+                "Please grant consent in your privacy settings to continue."
+            )
+            return redirect('accounts:privacy_settings')
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
 
 
 def agents_home(request):
@@ -76,6 +119,7 @@ def decision_analyzer(request):
 
 @login_required
 @require_POST
+@require_ai_consent_view
 def decision_analyzer_submit(request):
     """Process decision letter analysis"""
     letter_text = request.POST.get('letter_text', '').strip()
@@ -141,6 +185,20 @@ def decision_analyzer_submit(request):
             appeal_deadline=appeal_deadline,
         )
 
+        # Audit log: AI decision analyzer run
+        AuditLog.log(
+            action='ai_decision_analyzer',
+            request=request,
+            resource_type='DecisionLetterAnalysis',
+            resource_id=analysis.pk,
+            details={
+                'tokens_used': interaction.tokens_used,
+                'conditions_granted_count': len(result.get('conditions_granted', [])),
+                'conditions_denied_count': len(result.get('conditions_denied', [])),
+            },
+            success=True
+        )
+
         return redirect('agents:decision_analyzer_result', pk=analysis.pk)
 
     except Exception as e:
@@ -149,6 +207,17 @@ def decision_analyzer_submit(request):
             interaction.status = 'failed'
             interaction.error_message = str(e)
             interaction.save()
+
+        # Audit log: AI decision analyzer failure
+        AuditLog.log(
+            action='ai_decision_analyzer',
+            request=request,
+            resource_type='DecisionLetterAnalysis',
+            details={'error_type': type(e).__name__},
+            success=False,
+            error_message=str(e)[:500]
+        )
+
         messages.error(request, f"Analysis failed: {str(e)}")
         return redirect('agents:decision_analyzer')
 
@@ -210,6 +279,7 @@ def evidence_gap_analyzer(request):
 
 @login_required
 @require_POST
+@require_ai_consent_view
 def evidence_gap_submit(request):
     """Process evidence gap analysis"""
     # Get conditions (could be multiple)
@@ -266,6 +336,20 @@ def evidence_gap_submit(request):
             readiness_score=result.get('readiness_score', 0),
         )
 
+        # Audit log: AI evidence gap analyzer run
+        AuditLog.log(
+            action='ai_evidence_gap',
+            request=request,
+            resource_type='EvidenceGapAnalysis',
+            resource_id=analysis.pk,
+            details={
+                'tokens_used': interaction.tokens_used,
+                'conditions_count': len(conditions),
+                'readiness_score': result.get('readiness_score', 0),
+            },
+            success=True
+        )
+
         return redirect('agents:evidence_gap_result', pk=analysis.pk)
 
     except Exception as e:
@@ -274,6 +358,17 @@ def evidence_gap_submit(request):
             interaction.status = 'failed'
             interaction.error_message = str(e)
             interaction.save()
+
+        # Audit log: AI evidence gap analyzer failure
+        AuditLog.log(
+            action='ai_evidence_gap',
+            request=request,
+            resource_type='EvidenceGapAnalysis',
+            details={'error_type': type(e).__name__, 'conditions_count': len(conditions)},
+            success=False,
+            error_message=str(e)[:500]
+        )
+
         messages.error(request, f"Analysis failed: {str(e)}")
         return redirect('agents:evidence_gap')
 
@@ -318,6 +413,7 @@ def statement_generator(request):
 
 @login_required
 @require_POST
+@require_ai_consent_view
 def statement_generator_submit(request):
     """Process personal statement generation"""
     condition = request.POST.get('condition', '').strip()
@@ -387,6 +483,20 @@ def statement_generator_submit(request):
             generated_statement=result.get('statement', ''),
         )
 
+        # Audit log: AI statement generator run
+        AuditLog.log(
+            action='ai_statement_generator',
+            request=request,
+            resource_type='PersonalStatement',
+            resource_id=statement.pk,
+            details={
+                'tokens_used': interaction.tokens_used,
+                'condition': condition,
+                'statement_type': statement_type,
+            },
+            success=True
+        )
+
         return redirect('agents:statement_result', pk=statement.pk)
 
     except Exception as e:
@@ -395,6 +505,17 @@ def statement_generator_submit(request):
             interaction.status = 'failed'
             interaction.error_message = str(e)
             interaction.save()
+
+        # Audit log: AI statement generator failure
+        AuditLog.log(
+            action='ai_statement_generator',
+            request=request,
+            resource_type='PersonalStatement',
+            details={'error_type': type(e).__name__, 'condition': condition},
+            success=False,
+            error_message=str(e)[:500]
+        )
+
         messages.error(request, f"Generation failed: {str(e)}")
         return redirect('agents:statement_generator')
 
