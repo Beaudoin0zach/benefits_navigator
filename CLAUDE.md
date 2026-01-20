@@ -263,3 +263,79 @@ ALLOWED_HOSTS
 | Tasks | `core/tasks.py` | Maintenance, reminders |
 | Security | `core/encryption.py` | Field-level encryption |
 | Security | `core/middleware.py` | Audit logging, security headers |
+| Security | `core/signed_urls.py` | HMAC-SHA256 signed URLs for media |
+
+---
+
+# Security Hardening (implemented)
+
+## Rate Limiting
+All rate limits use `django_ratelimit` with user-based keys:
+
+| Endpoint | Rate | File |
+|----------|------|------|
+| Login | 5/min + 20/hr (IP) | `accounts/views.py` |
+| Signup | 3/hr (IP) | `accounts/views.py` |
+| Password Reset | 3/hr (IP) | `accounts/views.py` |
+| Document Upload | 10/min | `claims/views.py` |
+| Status Polling | 60/min | `claims/views.py` |
+| AI Agent Submit | 20/hr | `agents/views.py` |
+
+## Signed URLs for Media Access
+Protected file access uses time-limited cryptographically signed URLs:
+
+```python
+from core.signed_urls import get_signed_url_generator
+
+generator = get_signed_url_generator()
+url = generator.generate_url(
+    resource_type='document',
+    resource_id=doc.pk,
+    user_id=doc.user_id,
+    action='download',  # or 'view'
+    expires_minutes=30,
+)
+```
+
+- HMAC-SHA256 signing with Django SECRET_KEY
+- Default 30 min expiration, max 24 hours
+- Routes: `/claims/document/s/<token>/download/`, `/claims/document/s/<token>/view/`
+
+## GraphQL PII Redaction
+`benefits_navigator/schema.py` redacts PII from `document_analysis` resolver:
+
+- SSN patterns (xxx-xx-xxxx, xxx xx xxxx, xxxxxxxxx)
+- VA file numbers (8-9 digits, C-prefixed)
+- Phone numbers, credit cards, labeled DOB
+- Text truncation: 50KB OCR, 10KB AI summary
+
+## VSO Multi-Org Scoping
+Users with multiple organization memberships must explicitly select:
+
+```python
+from vso.views import get_user_organization, requires_org_selection
+
+if requires_org_selection(user, request):
+    return redirect('vso:select_organization')
+
+org = get_user_organization(user, org_slug=slug, request=request)
+```
+
+## Audit Logging
+`core/models.AuditLog` tracks sensitive operations:
+
+- Document: upload, view, download, delete, share
+- AI: analysis runs, consent grant/revoke
+- VSO: case create/view/update, document review, notes
+- Auth: login, logout, password changes
+
+## HTMX Polling
+Status endpoints use 5-second polling with early-exit:
+
+- Templates: `hx-trigger="{% if document.is_processing %}load, every 5s{% endif %}"`
+- Views: Return `HX-Refresh: true` header when complete
+
+## Remaining Security TODOs
+- [ ] MFA for staff accounts (requires `django-allauth-2fa`)
+- [ ] Object storage migration (S3/DO Spaces)
+- [ ] Additional invitation verification (beyond email matching)
