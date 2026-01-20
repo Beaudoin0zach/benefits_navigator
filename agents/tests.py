@@ -994,3 +994,130 @@ class TestAgentWorkflow(TestCase):
         # Verify
         self.assertTrue(statement.is_finalized)
         self.assertEqual(interaction.status, "completed")
+
+
+# =============================================================================
+# AI CONSENT ENFORCEMENT TESTS
+# =============================================================================
+
+@pytest.mark.agent
+class TestAIConsentEnforcement(TestCase):
+    """Tests for AI consent enforcement in agent views."""
+
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            email="consent_test@example.com",
+            password="TestPass123!"
+        )
+        self.client.login(username="consent_test@example.com", password="TestPass123!")
+
+    def test_decision_analyzer_submit_without_consent_redirects(self):
+        """Decision analyzer submit redirects to privacy settings without consent."""
+        # Ensure user has no AI consent
+        self.user.profile.ai_processing_consent = False
+        self.user.profile.save()
+
+        response = self.client.post(
+            reverse('agents:decision_analyzer_submit'),
+            {'letter_text': 'Test decision letter content with enough text to pass validation.'},
+        )
+
+        # Should redirect to privacy settings
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('privacy', response.url)
+
+    def test_decision_analyzer_submit_with_consent_processes(self):
+        """Decision analyzer submit processes with consent granted."""
+        # Grant AI consent
+        self.user.profile.ai_processing_consent = True
+        self.user.profile.save()
+
+        response = self.client.post(
+            reverse('agents:decision_analyzer_submit'),
+            {'letter_text': 'This is a short text'},  # Too short, will redirect with error
+        )
+
+        # Should redirect to decision_analyzer (validation error), not privacy settings
+        self.assertEqual(response.status_code, 302)
+        self.assertNotIn('privacy', response.url)
+
+    def test_evidence_gap_submit_without_consent_redirects(self):
+        """Evidence gap submit redirects to privacy settings without consent."""
+        self.user.profile.ai_processing_consent = False
+        self.user.profile.save()
+
+        response = self.client.post(
+            reverse('agents:evidence_gap_submit'),
+            {'conditions': ['PTSD']},
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('privacy', response.url)
+
+    def test_evidence_gap_submit_with_consent_processes(self):
+        """Evidence gap submit processes with consent granted."""
+        self.user.profile.ai_processing_consent = True
+        self.user.profile.save()
+
+        response = self.client.post(
+            reverse('agents:evidence_gap_submit'),
+            {},  # Missing conditions, will redirect with error
+        )
+
+        # Should redirect to evidence_gap (validation error), not privacy settings
+        self.assertEqual(response.status_code, 302)
+        self.assertNotIn('privacy', response.url)
+
+    def test_statement_generator_submit_without_consent_redirects(self):
+        """Statement generator submit redirects to privacy settings without consent."""
+        self.user.profile.ai_processing_consent = False
+        self.user.profile.save()
+
+        response = self.client.post(
+            reverse('agents:statement_generator_submit'),
+            {
+                'condition': 'PTSD',
+                'statement_type': 'initial',
+                'in_service_event': 'Combat',
+                'current_symptoms': 'Nightmares',
+                'daily_impact': 'Difficulty sleeping',
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('privacy', response.url)
+
+    def test_statement_generator_submit_with_consent_processes(self):
+        """Statement generator submit processes with consent granted."""
+        self.user.profile.ai_processing_consent = True
+        self.user.profile.save()
+
+        response = self.client.post(
+            reverse('agents:statement_generator_submit'),
+            {},  # Missing fields, will redirect with error
+        )
+
+        # Should redirect to statement_generator (validation error), not privacy settings
+        self.assertEqual(response.status_code, 302)
+        self.assertNotIn('privacy', response.url)
+
+    def test_consent_check_handles_missing_profile(self):
+        """Consent check handles user without profile gracefully."""
+        from agents.views import check_ai_consent
+
+        # Create user without profile (delete the auto-created one)
+        new_user = User.objects.create_user(
+            email="no_profile@example.com",
+            password="TestPass123!"
+        )
+        # Delete the auto-created profile
+        if hasattr(new_user, 'profile'):
+            new_user.profile.delete()
+
+        # Refresh from DB
+        new_user.refresh_from_db()
+
+        # Should return False, not raise exception
+        result = check_ai_consent(new_user)
+        self.assertFalse(result)

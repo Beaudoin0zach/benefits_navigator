@@ -12,6 +12,7 @@ from django.db.models import Q, Count
 from django.utils import timezone
 
 from accounts.models import Organization, OrganizationMembership
+from core.models import AuditLog
 from .models import (
     VeteranCase, CaseNote, SharedDocument,
     SharedAnalysis, CaseChecklist, ChecklistItem
@@ -39,10 +40,94 @@ def is_vso_member(user, org_slug=None):
     return memberships.exists()
 
 
-def get_user_organization(user, org_slug=None):
-    """Get the user's active organization (or specific one by slug)."""
-    membership = get_user_organization_membership(user, roles=Roles.VSO_STAFF)
-    return membership.organization if membership else None
+def get_user_staff_memberships(user):
+    """
+    Get all VSO staff memberships for a user.
+
+    Returns:
+        QuerySet of OrganizationMembership objects where user is admin/caseworker
+    """
+    if not user.is_authenticated:
+        return OrganizationMembership.objects.none()
+
+    return user.memberships.filter(
+        role__in=['admin', 'caseworker'],
+        is_active=True,
+        organization__is_active=True
+    ).select_related('organization')
+
+
+def get_user_organization(user, org_slug=None, request=None):
+    """
+    Get the user's active organization with explicit selection for multi-org users.
+
+    Security: When user belongs to multiple organizations, require explicit selection
+    via org_slug parameter or session to prevent ambiguous data access.
+
+    Args:
+        user: User instance
+        org_slug: Optional explicit organization slug (from URL or parameter)
+        request: Optional request object to check/store session selection
+
+    Returns:
+        Organization instance or None
+    """
+    memberships = get_user_staff_memberships(user)
+
+    if not memberships.exists():
+        return None
+
+    # If org_slug provided, validate and use it
+    if org_slug:
+        membership = memberships.filter(organization__slug=org_slug).first()
+        if membership:
+            # Store selection in session for future requests
+            if request:
+                request.session['selected_org_slug'] = org_slug
+            return membership.organization
+        return None  # Invalid org_slug
+
+    # Check session for previously selected org
+    if request:
+        session_org_slug = request.session.get('selected_org_slug')
+        if session_org_slug:
+            membership = memberships.filter(organization__slug=session_org_slug).first()
+            if membership:
+                return membership.organization
+            # Session org no longer valid, clear it
+            del request.session['selected_org_slug']
+
+    # If only one organization, use it directly
+    if memberships.count() == 1:
+        org = memberships.first().organization
+        if request:
+            request.session['selected_org_slug'] = org.slug
+        return org
+
+    # Multiple organizations - require explicit selection
+    # Return None to trigger org selection prompt
+    return None
+
+
+def requires_org_selection(user, request=None):
+    """
+    Check if user needs to select an organization.
+
+    Returns:
+        True if user has multiple orgs and none is selected
+    """
+    memberships = get_user_staff_memberships(user)
+
+    if memberships.count() <= 1:
+        return False
+
+    # Check if valid org is already selected in session
+    if request:
+        session_org_slug = request.session.get('selected_org_slug')
+        if session_org_slug and memberships.filter(organization__slug=session_org_slug).exists():
+            return False
+
+    return True
 
 
 def vso_required(view_func):
@@ -51,14 +136,53 @@ def vso_required(view_func):
 
 
 @vso_required
+def select_organization(request):
+    """
+    Organization selection page for multi-org users.
+
+    Allows users belonging to multiple organizations to explicitly choose
+    which organization they want to work with.
+    """
+    memberships = get_user_staff_memberships(request.user)
+
+    if not memberships.exists():
+        messages.error(request, "No organization membership found.")
+        return redirect('claims:document_list')
+
+    # If only one org, redirect directly
+    if memberships.count() == 1:
+        org = memberships.first().organization
+        request.session['selected_org_slug'] = org.slug
+        return redirect('vso:dashboard')
+
+    if request.method == 'POST':
+        org_slug = request.POST.get('organization')
+        if org_slug:
+            membership = memberships.filter(organization__slug=org_slug).first()
+            if membership:
+                request.session['selected_org_slug'] = org_slug
+                messages.success(request, f"Now working with {membership.organization.name}")
+                return redirect('vso:dashboard')
+
+    context = {
+        'memberships': memberships,
+    }
+    return render(request, 'vso/select_organization.html', context)
+
+
+@vso_required
 def dashboard(request):
     """
     VSO Dashboard - Overview of all cases and metrics
     """
-    org = get_user_organization(request.user)
+    # Check if user needs to select an organization
+    if requires_org_selection(request.user, request):
+        return redirect('vso:select_organization')
+
+    org = get_user_organization(request.user, request=request)
     if not org:
-        messages.error(request, "No active organization found.")
-        return redirect('claims:document_list')
+        messages.error(request, "Please select an organization to continue.")
+        return redirect('vso:select_organization')
 
     # Get all cases for this organization
     cases = VeteranCase.objects.filter(organization=org)
@@ -115,7 +239,7 @@ def case_list(request):
     """
     List all cases with filtering and search
     """
-    org = get_user_organization(request.user)
+    org = get_user_organization(request.user, request=request)
     if not org:
         return redirect('vso:dashboard')
 
@@ -191,7 +315,7 @@ def case_detail(request, pk):
     """
     Detailed view of a single case
     """
-    org = get_user_organization(request.user)
+    org = get_user_organization(request.user, request=request)
     if not org:
         return redirect('vso:dashboard')
 
@@ -234,7 +358,7 @@ def case_update_status(request, pk):
     """
     HTMX endpoint to update case status
     """
-    org = get_user_organization(request.user)
+    org = get_user_organization(request.user, request=request)
     case = get_object_or_404(VeteranCase, pk=pk, organization=org)
 
     new_status = request.POST.get('status')
@@ -270,7 +394,7 @@ def add_case_note(request, pk):
     """
     Add a note to a case
     """
-    org = get_user_organization(request.user)
+    org = get_user_organization(request.user, request=request)
     case = get_object_or_404(VeteranCase, pk=pk, organization=org)
 
     note_type = request.POST.get('note_type', 'general')
@@ -304,7 +428,7 @@ def complete_action_item(request, pk, note_pk):
     """
     Mark an action item as complete
     """
-    org = get_user_organization(request.user)
+    org = get_user_organization(request.user, request=request)
     case = get_object_or_404(VeteranCase, pk=pk, organization=org)
     note = get_object_or_404(CaseNote, pk=note_pk, case=case, is_action_item=True)
 
@@ -319,7 +443,7 @@ def case_create(request):
     """
     Create a new case (invite a veteran or create from existing user)
     """
-    org = get_user_organization(request.user)
+    org = get_user_organization(request.user, request=request)
     if not org:
         return redirect('vso:dashboard')
 
@@ -372,6 +496,20 @@ def case_create(request):
             visible_to_veteran=True
         )
 
+        # Audit log: VSO case creation
+        AuditLog.log(
+            action='vso_case_create',
+            request=request,
+            resource_type='VeteranCase',
+            resource_id=case.pk,
+            details={
+                'organization_id': org.pk,
+                'organization_name': org.name,
+                'veteran_id': veteran.pk,
+            },
+            success=True
+        )
+
         messages.success(request, f'Case "{title}" created successfully.')
         return redirect('vso:case_detail', pk=case.pk)
 
@@ -387,7 +525,7 @@ def shared_document_review(request, pk, doc_pk):
     """
     Review a shared document with comprehensive AI analysis for VSO prep.
     """
-    org = get_user_organization(request.user)
+    org = get_user_organization(request.user, request=request)
     case = get_object_or_404(VeteranCase, pk=pk, organization=org)
     shared_doc = get_object_or_404(SharedDocument, pk=doc_pk, case=case)
 
@@ -461,7 +599,7 @@ def case_notes_partial(request, pk):
     """
     HTMX partial for case notes list
     """
-    org = get_user_organization(request.user)
+    org = get_user_organization(request.user, request=request)
     case = get_object_or_404(VeteranCase, pk=pk, organization=org)
     notes = case.notes.select_related('author').order_by('-created_at')
 
@@ -476,7 +614,7 @@ def case_documents_partial(request, pk):
     """
     HTMX partial for shared documents list
     """
-    org = get_user_organization(request.user)
+    org = get_user_organization(request.user, request=request)
     case = get_object_or_404(VeteranCase, pk=pk, organization=org)
     shared_docs = case.shared_documents.select_related('document', 'shared_by')
 
@@ -498,7 +636,7 @@ def invite_veteran(request):
     """
     from accounts.models import OrganizationInvitation
 
-    org = get_user_organization(request.user)
+    org = get_user_organization(request.user, request=request)
     if not org:
         messages.error(request, "No active organization found.")
         return redirect('vso:dashboard')
@@ -628,7 +766,7 @@ def invitations_list(request):
     """
     from accounts.models import OrganizationInvitation
 
-    org = get_user_organization(request.user)
+    org = get_user_organization(request.user, request=request)
     if not org:
         return redirect('vso:dashboard')
 
@@ -665,7 +803,7 @@ def resend_invitation(request, token):
     """
     from accounts.models import OrganizationInvitation
 
-    org = get_user_organization(request.user)
+    org = get_user_organization(request.user, request=request)
     invitation = get_object_or_404(
         OrganizationInvitation,
         token=token,
@@ -696,7 +834,7 @@ def cancel_invitation(request, token):
     """
     from accounts.models import OrganizationInvitation
 
-    org = get_user_organization(request.user)
+    org = get_user_organization(request.user, request=request)
     invitation = get_object_or_404(
         OrganizationInvitation,
         token=token,

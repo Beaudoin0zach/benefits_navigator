@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Select Organization - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto">
+    <header class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-900">Select Organization</h1>
+        <p class="text-gray-600 mt-2">
+            You belong to multiple organizations. Please select which one you'd like to work with.
+        </p>
+    </header>
+
+    <form method="post" class="bg-white rounded-lg shadow">
+        {% csrf_token %}
+
+        <div class="p-6 space-y-4">
+            {% for membership in memberships %}
+            <label class="block p-4 border rounded-lg cursor-pointer hover:bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500 transition-colors">
+                <div class="flex items-start">
+                    <input type="radio" name="organization" value="{{ membership.organization.slug }}" required
+                           class="mt-1 h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                    <div class="ml-3 flex-1">
+                        <span class="block text-base font-medium text-gray-900">
+                            {{ membership.organization.name }}
+                        </span>
+                        <span class="block text-sm text-gray-500 mt-1">
+                            {{ membership.organization.get_org_type_display }}
+                        </span>
+                        <div class="mt-2">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
+                                {% if membership.role == 'admin' %}bg-purple-100 text-purple-800
+                                {% else %}bg-blue-100 text-blue-800{% endif %}">
+                                {{ membership.get_role_display }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </label>
+            {% empty %}
+            <p class="text-gray-500 text-center py-4">No organizations found.</p>
+            {% endfor %}
+        </div>
+
+        <div class="bg-gray-50 px-6 py-4 rounded-b-lg border-t">
+            <button type="submit"
+                    class="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-medium">
+                Continue to Dashboard
+            </button>
+        </div>
+    </form>
+
+    <div class="mt-6 text-center">
+        <p class="text-sm text-gray-500">
+            You can switch organizations at any time from the dashboard.
+        </p>
+    </div>
+</div>
+{% endblock %}

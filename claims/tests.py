@@ -553,25 +553,34 @@ class TestOCRService(TestCase):
 class TestAIService(TestCase):
     """Tests for the AIService."""
 
-    @patch('claims.services.ai_service.openai')
-    def test_analyze_document_mocked(self, mock_openai):
-        """AIService analyzes documents with OpenAI."""
+    @patch('claims.services.ai_service.get_gateway')
+    def test_analyze_document_mocked(self, mock_get_gateway):
+        """AIService analyzes documents with OpenAI via gateway."""
         from claims.services.ai_service import AIService
+        from agents.ai_gateway import Result, CompletionResponse
 
-        # Mock OpenAI response
-        mock_response = MagicMock()
-        mock_response.choices = [MagicMock()]
-        mock_response.choices[0].message.content = json.dumps({
-            'summary': 'Test document summary',
-            'key_findings': ['Finding 1', 'Finding 2'],
-        })
-        mock_response.usage.total_tokens = 500
+        # Mock gateway response
+        mock_gateway = MagicMock()
+        mock_get_gateway.return_value = mock_gateway
+        mock_gateway.config.model = 'gpt-3.5-turbo'
+        mock_gateway.config.max_tokens = 4000
 
-        mock_openai.OpenAI.return_value.chat.completions.create.return_value = mock_response
+        # Mock completion result
+        mock_completion = CompletionResponse(
+            content=json.dumps({
+                'summary': 'Test document summary',
+                'key_findings': ['Finding 1', 'Finding 2'],
+            }),
+            tokens_used=500,
+            model='gpt-3.5-turbo',
+            finish_reason='stop'
+        )
+        mock_gateway.complete.return_value = Result.success(mock_completion, tokens=500)
 
         service = AIService()
         # Test service initialization
         self.assertIsNotNone(service)
+        self.assertEqual(service.model, 'gpt-3.5-turbo')
 
     def test_get_system_prompt_for_medical_records(self):
         """AIService returns appropriate prompt for medical records."""

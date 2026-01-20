@@ -3,6 +3,7 @@ GraphQL Schema for Benefits Navigator
 Uses Strawberry GraphQL with Django integration
 """
 
+import re
 import strawberry
 from strawberry import auto
 from strawberry.types import Info
@@ -11,8 +12,76 @@ from typing import Optional, List
 from datetime import date, datetime
 
 from django.contrib.auth import get_user_model
+from django.conf import settings
 
 User = get_user_model()
+
+
+# =============================================================================
+# PII REDACTION UTILITIES
+# =============================================================================
+
+# Maximum text length for GraphQL responses (prevents exfiltration)
+MAX_OCR_TEXT_LENGTH = 50000  # ~50KB
+MAX_AI_SUMMARY_LENGTH = 10000  # ~10KB
+
+# Patterns for PII redaction
+PII_PATTERNS = [
+    # SSN patterns: 123-45-6789, 123 45 6789, 123456789
+    (r'\b\d{3}[-\s]?\d{2}[-\s]?\d{4}\b', '[REDACTED:SSN]'),
+    # VA file number patterns (typically 8-9 digits, sometimes with C prefix)
+    (r'\b[Cc]?\d{8,9}\b', '[REDACTED:VA_FILE]'),
+    # VA file number with letters/dashes: C12 345 678
+    (r'\b[Cc]\s?\d{2}\s?\d{3}\s?\d{3}\b', '[REDACTED:VA_FILE]'),
+    # Credit card patterns (just in case)
+    (r'\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b', '[REDACTED:CC]'),
+    # Date of birth in common formats (when clearly labeled)
+    (r'(?i)(date\s*of\s*birth|dob|born)[\s:]*(\d{1,2}[-/]\d{1,2}[-/]\d{2,4})', r'\1: [REDACTED:DOB]'),
+    # Phone numbers: (123) 456-7890, 123-456-7890, 123.456.7890
+    (r'\b\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b', '[REDACTED:PHONE]'),
+]
+
+# Compile patterns for performance
+_COMPILED_PII_PATTERNS = [(re.compile(p), r) for p, r in PII_PATTERNS]
+
+
+def redact_pii(text: str) -> str:
+    """
+    Redact PII patterns from text.
+
+    Removes SSNs, VA file numbers, credit cards, phone numbers, and labeled DOBs.
+    """
+    if not text:
+        return text
+
+    for pattern, replacement in _COMPILED_PII_PATTERNS:
+        text = pattern.sub(replacement, text)
+
+    return text
+
+
+def truncate_text(text: str, max_length: int) -> str:
+    """
+    Truncate text to max length with indicator.
+    """
+    if not text or len(text) <= max_length:
+        return text
+
+    return text[:max_length] + f"\n\n[TRUNCATED: {len(text) - max_length} characters omitted]"
+
+
+def sanitize_graphql_text(text: str, max_length: int) -> str:
+    """
+    Sanitize text for GraphQL response: redact PII and truncate.
+    """
+    if not text:
+        return text
+
+    # First redact PII
+    sanitized = redact_pii(text)
+
+    # Then truncate if needed
+    return truncate_text(sanitized, max_length)
 
 
 # =============================================================================
@@ -372,17 +441,36 @@ class Query:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     def document_analysis(self, info: Info, id: strawberry.ID) -> Optional[DocumentAnalysisType]:
-        """Get OCR text and AI analysis for a document."""
+        """
+        Get OCR text and AI analysis for a document.
+
+        Security: PII (SSNs, VA file numbers, phone numbers) is redacted.
+        Response is truncated to prevent large data exfiltration.
+        """
         from claims.models import Document
         import json
 
         user = info.context.request.user
         try:
             d = Document.objects.get(id=id, user=user)
+
+            # Sanitize OCR text: redact PII and truncate
+            sanitized_ocr = sanitize_graphql_text(
+                d.ocr_text or '',
+                MAX_OCR_TEXT_LENGTH
+            )
+
+            # Sanitize AI summary: redact PII and truncate
+            ai_summary_str = json.dumps(d.ai_summary) if d.ai_summary else None
+            sanitized_summary = sanitize_graphql_text(
+                ai_summary_str,
+                MAX_AI_SUMMARY_LENGTH
+            ) if ai_summary_str else None
+
             return DocumentAnalysisType(
                 document_id=strawberry.ID(str(d.id)),
-                ocr_text=d.ocr_text,
-                ai_summary=json.dumps(d.ai_summary) if d.ai_summary else None,
+                ocr_text=sanitized_ocr,
+                ai_summary=sanitized_summary,
             )
         except Document.DoesNotExist:
             return None

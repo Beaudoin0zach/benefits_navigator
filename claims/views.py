@@ -631,12 +631,27 @@ def document_share(request, pk):
             return redirect('claims:document_detail', pk=pk)
 
         # Create the share
-        SharedDocument.objects.create(
+        shared_doc = SharedDocument.objects.create(
             case=case,
             document=document,
             shared_by=request.user,
             include_ai_analysis=include_ai_analysis,
             status='pending'
+        )
+
+        # Audit log: Document shared with VSO
+        AuditLog.log(
+            action='vso_document_share',
+            request=request,
+            resource_type='SharedDocument',
+            resource_id=shared_doc.pk,
+            details={
+                'document_id': document.pk,
+                'case_id': case.pk,
+                'organization_id': case.organization.pk,
+                'include_ai_analysis': include_ai_analysis,
+            },
+            success=True
         )
 
         messages.success(
