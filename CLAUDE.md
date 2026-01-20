@@ -270,16 +270,17 @@ ALLOWED_HOSTS
 # Security Hardening (implemented)
 
 ## Rate Limiting
-All rate limits use `django_ratelimit` with user-based keys:
+Rate limits use `django_ratelimit`. Auth endpoints use IP-based keys (pre-auth);
+authenticated endpoints use user-based keys.
 
-| Endpoint | Rate | File |
-|----------|------|------|
-| Login | 5/min + 20/hr (IP) | `accounts/views.py` |
-| Signup | 3/hr (IP) | `accounts/views.py` |
-| Password Reset | 3/hr (IP) | `accounts/views.py` |
-| Document Upload | 10/min | `claims/views.py` |
-| Status Polling | 60/min | `claims/views.py` |
-| AI Agent Submit | 20/hr | `agents/views.py` |
+| Endpoint | Rate | Key | File |
+|----------|------|-----|------|
+| Login | 5/min + 20/hr | IP | `accounts/views.py` |
+| Signup | 3/hr | IP | `accounts/views.py` |
+| Password Reset | 3/hr | IP | `accounts/views.py` |
+| Document Upload | 10/min | user | `claims/views.py` |
+| Status Polling | 60/min | user | `claims/views.py` |
+| AI Agent Submit | 20/hr | user | `agents/views.py` |
 
 ## Signed URLs for Media Access
 Protected file access uses time-limited cryptographically signed URLs:
