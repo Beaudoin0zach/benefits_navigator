@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django_ratelimit.decorators import ratelimit
 from decimal import Decimal
 import json
 import logging
@@ -120,8 +121,13 @@ def decision_analyzer(request):
 @login_required
 @require_POST
 @require_ai_consent_view
+@ratelimit(key='user', rate='20/h', method='POST', block=True)
 def decision_analyzer_submit(request):
-    """Process decision letter analysis"""
+    """
+    Process decision letter analysis.
+
+    Rate limited to 20/hr per user to prevent API cost abuse and prompt injection probing.
+    """
     letter_text = request.POST.get('letter_text', '').strip()
     decision_date_str = request.POST.get('decision_date', '')
 
@@ -280,8 +286,13 @@ def evidence_gap_analyzer(request):
 @login_required
 @require_POST
 @require_ai_consent_view
+@ratelimit(key='user', rate='20/h', method='POST', block=True)
 def evidence_gap_submit(request):
-    """Process evidence gap analysis"""
+    """
+    Process evidence gap analysis.
+
+    Rate limited to 20/hr per user to prevent API cost abuse.
+    """
     # Get conditions (could be multiple)
     conditions = request.POST.getlist('conditions')
     custom_conditions = request.POST.get('custom_conditions', '').strip()
@@ -414,8 +425,13 @@ def statement_generator(request):
 @login_required
 @require_POST
 @require_ai_consent_view
+@ratelimit(key='user', rate='20/h', method='POST', block=True)
 def statement_generator_submit(request):
-    """Process personal statement generation"""
+    """
+    Process personal statement generation.
+
+    Rate limited to 20/hr per user to prevent API cost abuse.
+    """
     condition = request.POST.get('condition', '').strip()
     statement_type = request.POST.get('statement_type', 'initial')
     in_service_event = request.POST.get('in_service_event', '').strip()

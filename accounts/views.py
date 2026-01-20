@@ -569,7 +569,7 @@ def _handle_checkout_completed(session):
     )
     subscription.save()
 
-    logger.info(f"Subscription created/updated for user {user.email}")
+    logger.info(f"Subscription created/updated for user_id={user.id}")
 
 
 def _handle_subscription_updated(subscription_data):
@@ -1140,6 +1140,6 @@ def _send_invitation_email(request, invitation):
             html_message=html_content,
             fail_silently=False,
         )
-        logger.info(f"Invitation email sent to {invitation.email}")
+        logger.info(f"Invitation email sent for invitation_id={invitation.id}")
     except Exception as e:
-        logger.error(f"Failed to send invitation email to {invitation.email}: {e}")
+        logger.error(f"Failed to send invitation email for invitation_id={invitation.id}: {e}")

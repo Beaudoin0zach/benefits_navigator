@@ -1,5 +1,5 @@
 <!-- HTMX partial for document processing status -->
-<!-- This updates automatically every 3 seconds while processing -->
+<!-- Polls every 5 seconds while processing; stops via HX-Refresh when complete -->
 
 {% if document.is_processing %}
     <!-- Processing state with spinner -->

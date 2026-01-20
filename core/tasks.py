@@ -245,7 +245,7 @@ def send_deadline_reminders():
                 prefs.save(update_fields=['last_email_sent', 'emails_sent_count', 'updated_at'])
 
                 reminders_sent += 1
-                logger.info(f"Sent deadline reminder to {deadline.user.email} for: {deadline.title}")
+                logger.info(f"Sent deadline reminder to user_id={deadline.user_id} for deadline_id={deadline.id}")
 
         except Exception as e:
             error_msg = f"Failed to send reminder for deadline {deadline.id}: {e}"
@@ -321,7 +321,7 @@ def send_exam_reminders():
                 prefs.save(update_fields=['last_email_sent', 'emails_sent_count', 'updated_at'])
 
                 reminders_sent += 1
-                logger.info(f"Sent exam reminder to {exam.user.email} for: {exam.condition}")
+                logger.info(f"Sent exam reminder to user_id={exam.user_id} for exam_id={exam.id}")
 
         except Exception as e:
             error_msg = f"Failed to send reminder for exam {exam.id}: {e}"
@@ -378,7 +378,7 @@ def _send_deadline_reminder_email(deadline, days_remaining: int) -> bool:
         )
         return True
     except Exception as e:
-        logger.error(f"Failed to send email to {user.email}: {e}")
+        logger.error(f"Failed to send email to user_id={user.id}: {e}")
         return False
 
 
@@ -433,7 +433,7 @@ def _send_exam_reminder_email(exam, days_until: int) -> bool:
         )
         return True
     except Exception as e:
-        logger.error(f"Failed to send email to {user.email}: {e}")
+        logger.error(f"Failed to send email to user_id={user.id}: {e}")
         return False
 
 
@@ -477,7 +477,7 @@ def send_document_analysis_complete_email(document_id: int):
 
         # Check if user wants document analysis notifications
         if not prefs.should_send_document_analysis_notification():
-            logger.info(f"User {user.email} has disabled document analysis notifications")
+            logger.info(f"User user_id={user.id} has disabled document analysis notifications")
             return "Notification disabled by user preferences"
 
         # Send the email
@@ -489,8 +489,8 @@ def send_document_analysis_complete_email(document_id: int):
             prefs.emails_sent_count += 1
             prefs.save(update_fields=['last_email_sent', 'emails_sent_count', 'updated_at'])
 
-            logger.info(f"Sent document analysis complete email to {user.email} for document {document_id}")
-            return f"Email sent to {user.email}"
+            logger.info(f"Sent document analysis complete email to user_id={user.id} for document_id={document_id}")
+            return f"Email sent to user_id={user.id}"
 
         return "Email sending failed"
 
@@ -551,7 +551,7 @@ def _send_document_analysis_email(document) -> bool:
         )
         return True
     except Exception as e:
-        logger.error(f"Failed to send email to {user.email}: {e}")
+        logger.error(f"Failed to send email to user_id={user.id}: {e}")
         return False
 
 
