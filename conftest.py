@@ -613,6 +613,52 @@ def mock_openai():
 
 
 @pytest.fixture
+def mock_ai_gateway():
+    """Mock the AI gateway for tests.
+
+    This fixture patches the OpenAI client used by the AI gateway,
+    providing a consistent mock for all tests that use AI functionality.
+    """
+    with patch('agents.ai_gateway.OpenAI') as mock:
+        mock_client = MagicMock()
+        mock.return_value = mock_client
+
+        # Default successful response
+        mock_response = MagicMock()
+        mock_response.choices = [MagicMock()]
+        mock_response.choices[0].message.content = '{"test": "data"}'
+        mock_response.choices[0].finish_reason = "stop"
+        mock_response.usage = MagicMock()
+        mock_response.usage.total_tokens = 100
+        mock_client.chat.completions.create.return_value = mock_response
+
+        yield mock_client
+
+
+@pytest.fixture
+def ai_gateway(mock_ai_gateway):
+    """Get an AI gateway instance with mocked OpenAI client.
+
+    Use this fixture when you need to test code that uses the AI gateway.
+    The OpenAI client is already mocked via the mock_ai_gateway fixture.
+    """
+    from agents.ai_gateway import AIGateway, GatewayConfig, reset_gateway
+
+    # Reset the singleton to ensure fresh instance
+    reset_gateway()
+
+    gateway = AIGateway(GatewayConfig(
+        timeout_seconds=30,
+        max_retries=2,
+        retry_base_delay=0.01,  # Fast retries for tests
+    ))
+    yield gateway
+
+    # Reset after test to avoid state leakage
+    reset_gateway()
+
+
+@pytest.fixture
 def mock_celery():
     """Mock Celery task execution to run synchronously."""
     with patch('claims.tasks.process_document_task.delay') as mock_process, \

@@ -30,57 +30,21 @@ from agents.reference_data import (
     get_musculoskeletal_guidance,
     get_service_connection_guidance,
 )
+# Use centralized sanitization from the AI gateway
+from agents.ai_gateway import sanitize_input
 
 logger = logging.getLogger(__name__)
 
 
-# ============================================================================
-# PROMPT INJECTION DEFENSES
-# ============================================================================
-
+# Backwards-compatible alias
 def sanitize_document_text(text: str) -> str:
     """
     Sanitize document text to prevent prompt injection attacks.
 
-    This removes or escapes patterns commonly used in prompt injection while
-    preserving legitimate document content.
+    DEPRECATED: Use `from agents.ai_gateway import sanitize_input` instead.
+    This function is maintained for backwards compatibility.
     """
-    if not text:
-        return ""
-
-    # Remove common prompt injection patterns
-    # These patterns are unlikely to appear in legitimate VA documents
-    injection_patterns = [
-        "ignore previous instructions",
-        "ignore all previous",
-        "disregard previous",
-        "forget previous",
-        "new instructions:",
-        "system prompt:",
-        "you are now",
-        "act as",
-        "pretend to be",
-        "roleplay as",
-        "ignore the above",
-        "ignore everything above",
-        "do not follow",
-        "override",
-        "bypass",
-    ]
-
-    text_lower = text.lower()
-    for pattern in injection_patterns:
-        if pattern in text_lower:
-            # Replace the pattern with a sanitized version
-            import re
-            text = re.sub(
-                re.escape(pattern),
-                f"[REDACTED: {pattern[:10]}...]",
-                text,
-                flags=re.IGNORECASE
-            )
-
-    return text
+    return sanitize_input(text)
 
 
 # ============================================================================

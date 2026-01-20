@@ -1,60 +1,30 @@
 """
 AI Service - Analyze documents using OpenAI GPT
+
+Uses the centralized AI Gateway for all OpenAI API calls.
 """
 
 import logging
-import re
 from datetime import datetime
-
-import openai
 from typing import Dict
+
 from django.conf import settings
+
+# Use the centralized AI gateway
+from agents.ai_gateway import get_gateway, sanitize_input
 
 logger = logging.getLogger(__name__)
 
 
+# Backwards-compatible alias
 def sanitize_document_text(text: str) -> str:
     """
     Sanitize document text to prevent prompt injection attacks.
 
-    This removes or escapes patterns commonly used in prompt injection while
-    preserving legitimate document content.
+    DEPRECATED: Use `from agents.ai_gateway import sanitize_input` instead.
+    This function is maintained for backwards compatibility.
     """
-    if not text:
-        return ""
-
-    # Remove common prompt injection patterns
-    # These patterns are unlikely to appear in legitimate VA documents
-    injection_patterns = [
-        "ignore previous instructions",
-        "ignore all previous",
-        "disregard previous",
-        "forget previous",
-        "new instructions:",
-        "system prompt:",
-        "you are now",
-        "act as",
-        "pretend to be",
-        "roleplay as",
-        "ignore the above",
-        "ignore everything above",
-        "do not follow",
-        "override",
-        "bypass",
-    ]
-
-    text_lower = text.lower()
-    for pattern in injection_patterns:
-        if pattern in text_lower:
-            # Replace the pattern with a sanitized version
-            text = re.sub(
-                re.escape(pattern),
-                f"[REDACTED: {pattern[:10]}...]",
-                text,
-                flags=re.IGNORECASE
-            )
-
-    return text
+    return sanitize_input(text)
 
 
 # ============================================================================
@@ -132,13 +102,19 @@ TODAY'S DATE: {today}"""
 
 class AIService:
     """
-    Service for analyzing document text using OpenAI GPT
+    Service for analyzing document text using OpenAI GPT.
+
+    Uses the centralized AI Gateway for all API calls, providing:
+    - Automatic retry with exponential backoff
+    - Timeout handling
+    - Consolidated input sanitization
+    - Token/cost tracking
     """
 
     def __init__(self):
-        openai.api_key = settings.OPENAI_API_KEY
-        self.model = settings.OPENAI_MODEL
-        self.max_tokens = settings.OPENAI_MAX_TOKENS
+        self._gateway = get_gateway()
+        self.model = self._gateway.config.model
+        self.max_tokens = self._gateway.config.max_tokens
 
     def analyze_document(self, text: str, document_type: str) -> Dict:
         """
@@ -155,7 +131,7 @@ class AIService:
                 - tokens_used: Number of tokens consumed
         """
         # Sanitize user-provided document text to prevent prompt injection
-        sanitized_text = sanitize_document_text(text)
+        sanitized_text = sanitize_input(text)
 
         # Truncate text if too long (leave room for response)
         max_input_tokens = self.max_tokens - 1000
@@ -170,40 +146,35 @@ class AIService:
         system_prompt = self._get_system_prompt(document_type)
         user_prompt = self._build_user_prompt(truncated_text, document_type)
 
-        try:
-            logger.info(f"Sending {len(truncated_text)} characters to OpenAI for analysis")
+        logger.info(f"Sending {len(truncated_text)} characters to OpenAI for analysis")
 
-            response = openai.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt}
-                ],
-                temperature=0.3,  # Lower temperature for more factual responses
-                max_tokens=1000,
-            )
+        # Use the gateway for the API call (includes retry, timeout, etc.)
+        result = self._gateway.complete(
+            system_prompt=system_prompt,
+            user_prompt=user_prompt,
+            temperature=0.3,
+            max_tokens=1000,
+            sanitize=False,  # Already sanitized above
+        )
 
-            # Extract response
-            analysis_text = response.choices[0].message.content
-            tokens_used = response.usage.total_tokens
+        if result.is_failure:
+            logger.error(f"OpenAI API error: {result.error.message}")
+            raise Exception(f"AI analysis failed: {result.error.message}")
 
-            # Parse structured output (expecting JSON-like format)
-            analysis = self._parse_analysis(analysis_text)
+        # Extract response
+        analysis_text = result.value.content
+        tokens_used = result.value.tokens_used
 
-            logger.info(f"Analysis complete. Used {tokens_used} tokens")
+        # Parse structured output (expecting JSON-like format)
+        analysis = self._parse_analysis(analysis_text)
 
-            return {
-                'analysis': analysis,
-                'model': self.model,
-                'tokens_used': tokens_used,
-            }
+        logger.info(f"Analysis complete. Used {tokens_used} tokens")
 
-        except openai.OpenAIError as e:
-            logger.error(f"OpenAI API error: {str(e)}")
-            raise
-        except Exception as e:
-            logger.error(f"Error analyzing document: {str(e)}")
-            raise
+        return {
+            'analysis': analysis,
+            'model': self.model,
+            'tokens_used': tokens_used,
+        }
 
     def _get_system_prompt(self, document_type: str) -> str:
         """
