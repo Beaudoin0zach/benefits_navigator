@@ -15,47 +15,26 @@ from django.conf import settings
 
 from openai import OpenAI
 
+# Import from the centralized AI gateway
+from .ai_gateway import (
+    get_gateway,
+    sanitize_input,
+    Result,
+    CompletionResponse,
+    GatewayError,
+    ErrorCode,
+)
 
+# Backwards-compatible alias for sanitize_user_input
+# New code should use sanitize_input from ai_gateway directly
 def sanitize_user_input(text: str) -> str:
     """
     Sanitize user-provided text to prevent prompt injection attacks.
 
-    This removes or escapes patterns commonly used in prompt injection while
-    preserving legitimate document content.
+    DEPRECATED: Use `from agents.ai_gateway import sanitize_input` instead.
+    This function is maintained for backwards compatibility.
     """
-    if not text:
-        return ""
-
-    # Remove common prompt injection patterns
-    injection_patterns = [
-        "ignore previous instructions",
-        "ignore all previous",
-        "disregard previous",
-        "forget previous",
-        "new instructions:",
-        "system prompt:",
-        "you are now",
-        "act as",
-        "pretend to be",
-        "roleplay as",
-        "ignore the above",
-        "ignore everything above",
-        "do not follow",
-        "override",
-        "bypass",
-    ]
-
-    text_lower = text.lower()
-    for pattern in injection_patterns:
-        if pattern in text_lower:
-            text = re.sub(
-                re.escape(pattern),
-                f"[REDACTED: {pattern[:10]}...]",
-                text,
-                flags=re.IGNORECASE
-            )
-
-    return text
+    return sanitize_input(text)
 
 from .reference_data import (
     load_appeal_guide,
@@ -82,34 +61,57 @@ class BaseAgent:
     """Base class for all AI agents"""
 
     def __init__(self):
-        self.client = OpenAI(api_key=settings.OPENAI_API_KEY)
-        self.model = settings.OPENAI_MODEL
-        self.max_tokens = settings.OPENAI_MAX_TOKENS
+        # Use the centralized AI gateway
+        self._gateway = get_gateway()
+        # Keep legacy attributes for backwards compatibility
+        self.client = self._gateway.client
+        self.model = self._gateway.config.model
+        self.max_tokens = self._gateway.config.max_tokens
 
     def _call_openai(self, system_prompt: str, user_prompt: str, temperature: float = 0.3) -> tuple[str, int]:
         """
         Make OpenAI API call and return response with token count.
         Lower temperature for more consistent, factual responses.
+
+        NOTE: This method is maintained for backwards compatibility.
+        It raises exceptions on error. For new code, use _call_openai_safe()
+        which returns Result types.
         """
-        try:
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt}
-                ],
-                temperature=temperature,
-                max_tokens=self.max_tokens,
-            )
+        result = self._call_openai_safe(system_prompt, user_prompt, temperature)
+        if result.is_failure:
+            # Preserve existing behavior: raise on error
+            raise Exception(f"OpenAI API error: {result.error.message}")
+        return result.value.content, result.value.tokens_used
 
-            content = response.choices[0].message.content
-            tokens = response.usage.total_tokens if response.usage else 0
+    def _call_openai_safe(
+        self,
+        system_prompt: str,
+        user_prompt: str,
+        temperature: float = 0.3,
+        sanitize: bool = False,  # Most callers sanitize before calling
+    ) -> Result[CompletionResponse]:
+        """
+        Make OpenAI API call with Result type (no exceptions raised).
 
-            return content, tokens
+        This is the preferred method for new code. Returns a Result that
+        either contains a CompletionResponse or a GatewayError.
 
-        except Exception as e:
-            logger.error(f"OpenAI API error: {str(e)}")
-            raise
+        Args:
+            system_prompt: System message (instructions)
+            user_prompt: User message (may contain document content)
+            temperature: Model temperature (default 0.3 for consistency)
+            sanitize: Whether to sanitize user_prompt (default False since
+                      most callers already sanitize before calling)
+
+        Returns:
+            Result containing CompletionResponse or GatewayError
+        """
+        return self._gateway.complete(
+            system_prompt=system_prompt,
+            user_prompt=user_prompt,
+            temperature=temperature,
+            sanitize=sanitize,
+        )
 
     def _parse_json_response(self, response: str) -> dict:
         """Extract JSON from response, handling markdown code blocks"""

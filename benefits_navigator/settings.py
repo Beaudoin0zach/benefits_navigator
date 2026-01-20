@@ -404,6 +404,12 @@ OPENAI_API_KEY = env('OPENAI_API_KEY', default='')
 OPENAI_MODEL = env('OPENAI_MODEL', default='gpt-3.5-turbo')
 OPENAI_MAX_TOKENS = env.int('OPENAI_MAX_TOKENS', default=4000)
 
+# AI Gateway settings (timeout, retry, backoff)
+OPENAI_TIMEOUT_SECONDS = env.int('OPENAI_TIMEOUT_SECONDS', default=60)
+OPENAI_MAX_RETRIES = env.int('OPENAI_MAX_RETRIES', default=3)
+OPENAI_RETRY_BASE_DELAY = env.float('OPENAI_RETRY_BASE_DELAY', default=1.0)
+OPENAI_RETRY_MAX_DELAY = env.float('OPENAI_RETRY_MAX_DELAY', default=60.0)
+
 # ==============================================================================
 # STRIPE CONFIGURATION
 # ==============================================================================
