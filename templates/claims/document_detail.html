@@ -38,9 +38,10 @@
     </header>
 
     <!-- Processing status with HTMX polling and ARIA live region -->
+    <!-- Polls every 5s only while processing; stops when complete/failed -->
     <div id="status-container"
          hx-get="{% url 'claims:document_status' pk=document.id %}"
-         hx-trigger="load, every 3s"
+         hx-trigger="{% if document.is_processing %}load, every 5s{% else %}load{% endif %}"
          hx-swap="innerHTML"
          role="status"
          aria-live="polite"

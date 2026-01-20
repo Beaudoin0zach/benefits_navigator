@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.http import JsonResponse, FileResponse, Http404, HttpResponseForbidden
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
+from django_ratelimit.decorators import ratelimit
 
 from core.models import AuditLog
 from .models import Document
@@ -45,10 +46,13 @@ def document_list(request):
 
 
 @login_required
+@ratelimit(key='user', rate='10/m', method='POST', block=True)
 def document_upload(request):
     """
-    Handle document upload with accessible form
-    Includes inline validation and clear error messages
+    Handle document upload with accessible form.
+    Includes inline validation and clear error messages.
+
+    Rate limited to 10/min per user to prevent upload spam and storage exhaustion.
     """
     # Get usage info for display
     from accounts.models import UsageTracking
@@ -128,10 +132,15 @@ def document_detail(request, pk):
 
 @login_required
 @require_http_methods(["GET"])
+@ratelimit(key='user', rate='60/m', method='GET', block=True)
 def document_status(request, pk):
     """
-    HTMX endpoint to check document processing status
-    Returns JSON for ARIA live region updates
+    HTMX endpoint to check document processing status.
+    Returns HTML partial for HTMX polling or JSON fallback.
+    Sends HX-Refresh header when complete to reload page and stop polling.
+
+    Rate limited to 60/min per user to prevent scraping while allowing
+    normal 5-second polling (12 requests/min) with room for multiple tabs.
     """
     document = get_object_or_404(
         Document,
@@ -142,9 +151,13 @@ def document_status(request, pk):
 
     # Return HTML fragment for HTMX
     if request.headers.get('HX-Request'):
-        return render(request, 'claims/partials/document_status.html', {
+        response = render(request, 'claims/partials/document_status.html', {
             'document': document
         })
+        # When processing completes, trigger page refresh to show results and stop polling
+        if not document.is_processing:
+            response['HX-Refresh'] = 'true'
+        return response
 
     # Fallback JSON response
     return JsonResponse({
@@ -194,10 +207,13 @@ def document_delete(request, pk):
 # =============================================================================
 
 @login_required
+@ratelimit(key='user', rate='10/m', method='POST', block=True)
 def denial_decoder_upload(request):
     """
     Upload VA denial letter for decoding.
     Extracts denial reasons, matches to M21 sections, and generates evidence guidance.
+
+    Rate limited to 10/min per user to prevent upload spam.
     """
     # Get usage info for display
     from accounts.models import UsageTracking
@@ -288,10 +304,14 @@ def denial_decoder_result(request, pk):
 
 @login_required
 @require_http_methods(["GET"])
+@ratelimit(key='user', rate='60/m', method='GET', block=True)
 def denial_decoder_status(request, pk):
     """
     HTMX endpoint to check denial decoding status.
     Returns status fragment for polling during processing.
+    Sends HX-Refresh header when complete to reload page and stop polling.
+
+    Rate limited to 60/min per user to prevent scraping.
     """
     document = get_object_or_404(
         Document,
@@ -315,7 +335,11 @@ def denial_decoder_status(request, pk):
     }
 
     if request.headers.get('HX-Request'):
-        return render(request, 'claims/partials/denial_decoder_status.html', context)
+        response = render(request, 'claims/partials/denial_decoder_status.html', context)
+        # When processing completes, trigger page refresh to show results and stop polling
+        if not document.is_processing:
+            response['HX-Refresh'] = 'true'
+        return response
 
     return JsonResponse({
         'status': document.status,
@@ -631,10 +655,13 @@ def document_view_signed(request, token):
 # =============================================================================
 
 @login_required
+@ratelimit(key='user', rate='10/m', method='POST', block=True)
 def rating_analyzer_upload(request):
     """
     Upload VA rating decision for enhanced analysis.
     Identifies increase opportunities, secondary conditions, errors, and deadlines.
+
+    Rate limited to 10/min per user to prevent upload spam.
     """
     from accounts.models import UsageTracking
     usage, _ = UsageTracking.objects.get_or_create(user=request.user)
@@ -721,10 +748,14 @@ def rating_analyzer_result(request, pk):
 
 @login_required
 @require_http_methods(["GET"])
+@ratelimit(key='user', rate='60/m', method='GET', block=True)
 def rating_analyzer_status(request, pk):
     """
     HTMX endpoint to check rating analysis status.
     Returns status fragment for polling during processing.
+    Sends HX-Refresh header when complete to reload page and stop polling.
+
+    Rate limited to 60/min per user to prevent scraping.
     """
     document = get_object_or_404(
         Document,
@@ -747,7 +778,11 @@ def rating_analyzer_status(request, pk):
     }
 
     if request.headers.get('HX-Request'):
-        return render(request, 'claims/partials/rating_analyzer_status.html', context)
+        response = render(request, 'claims/partials/rating_analyzer_status.html', context)
+        # When processing completes, trigger page refresh to show results and stop polling
+        if not document.is_processing:
+            response['HX-Refresh'] = 'true'
+        return response
 
     return JsonResponse({
         'status': document.status,
