@@ -27,6 +27,19 @@ from .permissions import (
 from .services import GapCheckerService
 
 
+def is_case_read_only(case):
+    """
+    Check if a case is read-only (archived).
+
+    Archived cases should not allow any modifications - no new notes,
+    no status changes, no document reviews, etc.
+
+    Returns:
+        True if the case is archived and should be treated as read-only.
+    """
+    return case.is_archived
+
+
 def is_vso_member(user, org_slug=None):
     """Check if user is a VSO staff member (admin or caseworker)."""
     if not user.is_authenticated:
@@ -464,6 +477,11 @@ def case_update_status(request, pk):
     org = get_user_organization(request.user, request=request)
     case = get_object_or_404(VeteranCase, pk=pk, organization=org)
 
+    # Archived cases are read-only
+    if is_case_read_only(case):
+        messages.error(request, 'Archived cases cannot be modified.')
+        return redirect('vso:case_detail', pk=pk)
+
     new_status = request.POST.get('status')
     if new_status and new_status in dict(VeteranCase.STATUS_CHOICES):
         old_status = case.status
@@ -518,6 +536,20 @@ def case_archive(request, pk):
             visible_to_veteran=False
         )
 
+        # Audit log
+        AuditLog.log(
+            action='vso_case_archive',
+            request=request,
+            resource_type='VeteranCase',
+            resource_id=case.pk,
+            details={
+                'organization_id': org.pk,
+                'organization_name': org.name,
+                'case_title': case.title,
+            },
+            success=True
+        )
+
         messages.success(request, f'Case "{case.title}" has been archived.')
     else:
         messages.error(request, 'Only closed cases can be archived.')
@@ -533,6 +565,11 @@ def add_case_note(request, pk):
     """
     org = get_user_organization(request.user, request=request)
     case = get_object_or_404(VeteranCase, pk=pk, organization=org)
+
+    # Archived cases are read-only
+    if is_case_read_only(case):
+        messages.error(request, 'Archived cases cannot be modified.')
+        return redirect('vso:case_detail', pk=pk)
 
     note_type = request.POST.get('note_type', 'general')
     subject = request.POST.get('subject', '').strip()
@@ -567,6 +604,12 @@ def complete_action_item(request, pk, note_pk):
     """
     org = get_user_organization(request.user, request=request)
     case = get_object_or_404(VeteranCase, pk=pk, organization=org)
+
+    # Archived cases are read-only
+    if is_case_read_only(case):
+        messages.error(request, 'Archived cases cannot be modified.')
+        return redirect('vso:case_detail', pk=pk)
+
     note = get_object_or_404(CaseNote, pk=note_pk, case=case, is_action_item=True)
 
     note.mark_complete(completed_by=request.user)
@@ -667,6 +710,11 @@ def shared_document_review(request, pk, doc_pk):
     shared_doc = get_object_or_404(SharedDocument, pk=doc_pk, case=case)
 
     if request.method == 'POST':
+        # Archived cases are read-only
+        if is_case_read_only(case):
+            messages.error(request, 'Archived cases cannot be modified.')
+            return redirect('vso:case_detail', pk=pk)
+
         status = request.POST.get('status', 'reviewed')
         notes = request.POST.get('review_notes', '').strip()
 

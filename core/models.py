@@ -399,9 +399,12 @@ class AuditLog(models.Model):
         ('vso_case_update', 'Case Updated'),
         ('vso_document_share', 'Document Shared'),
         ('vso_document_review', 'Document Reviewed'),
+        ('vso_analysis_share', 'Analysis Shared'),
+        ('vso_analysis_view', 'Analysis Viewed'),
         ('vso_note_add', 'Case Note Added'),
         ('vso_invitation_sent', 'Invitation Sent'),
         ('vso_invitation_accept', 'Invitation Accepted'),
+        ('vso_case_archive', 'Case Archived'),
 
         # Profile changes
         ('profile_update', 'Profile Update'),
