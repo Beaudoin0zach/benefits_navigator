@@ -68,11 +68,28 @@ class User(AbstractUser):
 
     @property
     def is_premium(self):
-        """Check if user has an active premium subscription"""
+        """
+        Check if user has premium access.
+
+        Returns True if:
+        - User has an active premium subscription, OR
+        - User is a veteran linked to an active VSO organization
+          (VSO org covers their access)
+        """
+        # Check personal subscription first
         try:
-            return self.subscription.is_active
+            if self.subscription.is_active:
+                return True
         except Subscription.DoesNotExist:
-            return False
+            pass
+
+        # Check if veteran is linked to an active VSO organization
+        # VSO-connected veterans get premium access (org covers them)
+        return self.memberships.filter(
+            role='veteran',
+            is_active=True,
+            organization__is_active=True
+        ).exists()
 
     @property
     def full_name(self):

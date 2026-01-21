@@ -1,0 +1,64 @@
+{% extends "allauth/layouts/entrance.html" %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Backup Codes" %}{% endblock %}
+
+{% block content %}
+<div class="text-center mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">{% trans "Backup Codes" %}</h1>
+    <p class="mt-2 text-gray-600">
+        {% trans "Use these codes if you lose access to your authenticator app" %}
+    </p>
+</div>
+
+{% if backup_tokens %}
+    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+        <div class="flex">
+            <svg class="h-5 w-5 text-yellow-600 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+            </svg>
+            <p class="text-sm text-yellow-800">
+                {% trans "Save these codes in a secure place. Each code can only be used once." %}
+            </p>
+        </div>
+    </div>
+
+    <div class="bg-gray-50 p-6 rounded-lg mb-6">
+        <div class="grid grid-cols-2 gap-3">
+            {% for token in backup_tokens %}
+                <code class="bg-white border border-gray-200 px-3 py-2 rounded text-center font-mono text-sm">{{ token }}</code>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="flex space-x-4">
+        <button onclick="window.print()" class="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 text-sm font-medium">
+            {% trans "Print Codes" %}
+        </button>
+        <a href="{% url 'vso:dashboard' %}" class="flex-1 py-2 px-4 bg-blue-700 text-white rounded-md hover:bg-blue-800 text-sm font-medium text-center">
+            {% trans "Done" %}
+        </a>
+    </div>
+
+{% else %}
+    <div class="text-center py-8">
+        <p class="text-gray-600 mb-6">
+            {% trans "You haven't generated any backup codes yet, or all codes have been used." %}
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit"
+                    class="py-3 px-6 bg-blue-700 text-white rounded-md hover:bg-blue-800 font-medium">
+                {% trans "Generate Backup Codes" %}
+            </button>
+        </form>
+    </div>
+{% endif %}
+
+<div class="mt-6 text-center">
+    <a href="{% url 'vso:dashboard' %}" class="text-sm text-gray-600 hover:text-gray-800">
+        {% trans "Back to Dashboard" %}
+    </a>
+</div>
+{% endblock %}
