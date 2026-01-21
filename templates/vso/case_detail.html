@@ -106,6 +106,105 @@
                 </div>
             </div>
 
+            <!-- Conditions Overview -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-900">Conditions Overview</h2>
+                        <p class="text-sm text-gray-500">Track evidence and workflow status for each condition</p>
+                    </div>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                        {% if triage_color == 'green' %}bg-green-100 text-green-800
+                        {% elif triage_color == 'yellow' %}bg-yellow-100 text-yellow-800
+                        {% elif triage_color == 'red' %}bg-red-100 text-red-800
+                        {% else %}bg-gray-100 text-gray-800{% endif %}">
+                        {{ triage_display }}
+                    </span>
+                </div>
+                <div class="divide-y divide-gray-200">
+                    {% for condition in case_conditions %}
+                    <div class="px-6 py-4">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2">
+                                    <h3 class="font-medium text-gray-900">{{ condition.condition_name }}</h3>
+                                    {% if condition.diagnostic_code %}
+                                    <span class="text-sm text-gray-500">({{ condition.diagnostic_code }})</span>
+                                    {% endif %}
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
+                                        {% if condition.workflow_status == 'granted' %}bg-green-100 text-green-800
+                                        {% elif condition.workflow_status == 'denied' %}bg-red-100 text-red-800
+                                        {% elif condition.workflow_status == 'evidence_complete' %}bg-blue-100 text-blue-800
+                                        {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                        {{ condition.get_workflow_status_display }}
+                                    </span>
+                                </div>
+                                {% if condition.current_rating %}
+                                <p class="text-sm text-gray-500 mt-1">Current rating: {{ condition.current_rating }}%</p>
+                                {% endif %}
+                            </div>
+                            <div class="flex items-center space-x-3 ml-4">
+                                <!-- Evidence Checklist -->
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs text-gray-500">Evidence:</span>
+                                    <span title="Diagnosis" class="inline-flex items-center justify-center w-6 h-6 rounded-full
+                                        {% if condition.has_diagnosis %}bg-green-100 text-green-600{% else %}bg-gray-100 text-gray-400{% endif %}">
+                                        {% if condition.has_diagnosis %}
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                        </svg>
+                                        {% else %}
+                                        <span class="text-xs">D</span>
+                                        {% endif %}
+                                    </span>
+                                    <span title="In-Service Event" class="inline-flex items-center justify-center w-6 h-6 rounded-full
+                                        {% if condition.has_in_service_event %}bg-green-100 text-green-600{% else %}bg-gray-100 text-gray-400{% endif %}">
+                                        {% if condition.has_in_service_event %}
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                        </svg>
+                                        {% else %}
+                                        <span class="text-xs">S</span>
+                                        {% endif %}
+                                    </span>
+                                    <span title="Nexus" class="inline-flex items-center justify-center w-6 h-6 rounded-full
+                                        {% if condition.has_nexus %}bg-green-100 text-green-600{% else %}bg-gray-100 text-gray-400{% endif %}">
+                                        {% if condition.has_nexus %}
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                        </svg>
+                                        {% else %}
+                                        <span class="text-xs">N</span>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <!-- Gap Status Badge -->
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
+                                    {% if condition.is_evidence_complete %}bg-green-100 text-green-800
+                                    {% elif condition.gap_count == 1 %}bg-yellow-100 text-yellow-800
+                                    {% else %}bg-red-100 text-red-800{% endif %}">
+                                    {% if condition.is_evidence_complete %}Complete
+                                    {% else %}{{ condition.gap_count }} gap{{ condition.gap_count|pluralize }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        {% if condition.notes %}
+                        <p class="text-sm text-gray-600 mt-2">{{ condition.notes }}</p>
+                        {% endif %}
+                    </div>
+                    {% empty %}
+                    <div class="px-6 py-8 text-center text-gray-500">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <p class="mt-2">No conditions tracked yet.</p>
+                        <p class="text-sm">Share a Rating Analysis or Decision Letter to auto-derive conditions.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
             <!-- Action Items -->
             {% if action_items %}
             <div class="bg-yellow-50 border border-yellow-200 rounded-lg">

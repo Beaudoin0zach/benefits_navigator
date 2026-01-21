@@ -2,10 +2,13 @@
 Views for VSO app - Case management and dashboard for Veterans Service Organizations
 """
 
+import csv
+from datetime import timedelta
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import JsonResponse, Http404, HttpResponseForbidden
+from django.http import JsonResponse, Http404, HttpResponseForbidden, HttpResponse
 from django.views.decorators.http import require_http_methods, require_POST
 from django.core.paginator import Paginator
 from django.db.models import Q, Count
@@ -15,12 +18,13 @@ from accounts.models import Organization, OrganizationMembership
 from core.models import AuditLog
 from .models import (
     VeteranCase, CaseNote, SharedDocument,
-    SharedAnalysis, CaseChecklist, ChecklistItem
+    SharedAnalysis, CaseChecklist, ChecklistItem, CaseCondition
 )
 from .permissions import (
     Roles, has_role, is_vso_staff as check_vso_staff,
     get_user_organization_membership, vso_staff_required
 )
+from .services import GapCheckerService
 
 
 def is_vso_member(user, org_slug=None):
@@ -218,6 +222,15 @@ def dashboard(request):
     total_closed = closed_cases.count()
     win_rate = (won_cases / total_closed * 100) if total_closed > 0 else 0
 
+    # Stale cases - no activity in 30+ days
+    thirty_days_ago = timezone.now() - timedelta(days=30)
+    stale_cases = cases.filter(
+        last_activity_at__lt=thirty_days_ago,
+        is_archived=False
+    ).exclude(
+        status__startswith='closed'
+    ).order_by('last_activity_at')[:10]
+
     context = {
         'organization': org,
         'total_cases': cases.count(),
@@ -229,6 +242,8 @@ def dashboard(request):
         'win_rate': win_rate,
         'won_cases': won_cases,
         'total_closed': total_closed,
+        'stale_cases': stale_cases,
+        'status_choices': VeteranCase.STATUS_CHOICES,
     }
 
     return render(request, 'vso/dashboard.html', context)
@@ -243,15 +258,26 @@ def case_list(request):
     if not org:
         return redirect('vso:dashboard')
 
+    # Base queryset - exclude archived by default
     cases = VeteranCase.objects.filter(
-        organization=org
+        organization=org,
+        is_archived=False
     ).select_related('veteran', 'assigned_to')
 
     # Filtering
     status_filter = request.GET.get('status')
     priority_filter = request.GET.get('priority')
     assigned_filter = request.GET.get('assigned_to')
+    triage_filter = request.GET.get('triage')
     search_query = request.GET.get('q')
+    show_archived = request.GET.get('archived') == '1'
+
+    # Allow showing archived cases
+    if show_archived:
+        cases = VeteranCase.objects.filter(
+            organization=org,
+            is_archived=True
+        ).select_related('veteran', 'assigned_to')
 
     if status_filter:
         cases = cases.filter(status=status_filter)
@@ -280,8 +306,21 @@ def case_list(request):
     order_by = request.GET.get('order_by', '-created_at')
     cases = cases.order_by(order_by)
 
+    # Add triage labels to cases and filter if needed
+    cases_with_triage = []
+    for case in cases:
+        case.triage_label = GapCheckerService.get_triage_label(case)
+        case.triage_color = GapCheckerService.get_triage_color(case.triage_label)
+        case.triage_display = GapCheckerService.get_triage_display(case.triage_label)
+        if not triage_filter or case.triage_label == triage_filter:
+            cases_with_triage.append(case)
+
+    # CSV Export
+    if request.GET.get('export') == 'csv':
+        return _export_cases_csv(cases_with_triage)
+
     # Pagination
-    paginator = Paginator(cases, 25)
+    paginator = Paginator(cases_with_triage, 25)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -291,23 +330,65 @@ def case_list(request):
         is_active=True
     ).select_related('user')
 
+    # Triage choices for filter
+    triage_choices = [
+        (GapCheckerService.READY_TO_FILE, 'Ready to File'),
+        (GapCheckerService.NEEDS_EVIDENCE, 'Needs Evidence'),
+        (GapCheckerService.NEEDS_NEXUS, 'Needs Nexus'),
+        (GapCheckerService.NEEDS_REVIEW, 'Needs Review'),
+    ]
+
     context = {
         'organization': org,
         'page_obj': page_obj,
         'cases': page_obj,
         'status_choices': VeteranCase.STATUS_CHOICES,
         'priority_choices': VeteranCase.PRIORITY_CHOICES,
+        'triage_choices': triage_choices,
         'caseworkers': caseworkers,
         'current_filters': {
             'status': status_filter,
             'priority': priority_filter,
             'assigned_to': assigned_filter,
+            'triage': triage_filter,
             'q': search_query,
             'order_by': order_by,
+            'archived': show_archived,
         },
     }
 
     return render(request, 'vso/case_list.html', context)
+
+
+def _export_cases_csv(cases):
+    """Export cases to CSV format."""
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="cases_export.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow([
+        'Case Title', 'Veteran Email', 'Veteran Name', 'Status', 'Priority',
+        'Assigned To', 'Triage Status', 'Days Open', 'Intake Date',
+        'Initial Rating', 'Final Rating', 'Conditions Count'
+    ])
+
+    for case in cases:
+        writer.writerow([
+            case.title,
+            case.veteran.email,
+            case.veteran.get_full_name() or '',
+            case.get_status_display(),
+            case.get_priority_display(),
+            case.assigned_to.email if case.assigned_to else 'Unassigned',
+            getattr(case, 'triage_display', ''),
+            case.days_open,
+            case.intake_date.isoformat() if case.intake_date else '',
+            case.initial_combined_rating or '',
+            case.final_combined_rating or '',
+            case.case_conditions.count(),
+        ])
+
+    return response
 
 
 @vso_required
@@ -331,6 +412,22 @@ def case_detail(request, pk):
     shared_analyses = case.shared_analyses.select_related('shared_by')
     checklists = case.checklists.prefetch_related('items')
 
+    # Case conditions with evidence status
+    case_conditions = case.case_conditions.all()
+
+    # Group documents by type
+    documents_by_type = {}
+    for shared_doc in shared_docs:
+        doc_type = getattr(shared_doc.document, 'document_type', 'other') or 'other'
+        if doc_type not in documents_by_type:
+            documents_by_type[doc_type] = []
+        documents_by_type[doc_type].append(shared_doc)
+
+    # Triage label for the case
+    triage_label = GapCheckerService.get_triage_label(case)
+    triage_color = GapCheckerService.get_triage_color(triage_label)
+    triage_display = GapCheckerService.get_triage_display(triage_label)
+
     # Action items (incomplete)
     action_items = case.notes.filter(
         is_action_item=True,
@@ -345,8 +442,14 @@ def case_detail(request, pk):
         'shared_analyses': shared_analyses,
         'checklists': checklists,
         'action_items': action_items,
+        'case_conditions': case_conditions,
+        'documents_by_type': documents_by_type,
+        'triage_label': triage_label,
+        'triage_color': triage_color,
+        'triage_display': triage_display,
         'status_choices': VeteranCase.STATUS_CHOICES,
         'priority_choices': VeteranCase.PRIORITY_CHOICES,
+        'workflow_status_choices': CaseCondition.WORKFLOW_STATUS_CHOICES,
     }
 
     return render(request, 'vso/case_detail.html', context)
@@ -386,6 +489,40 @@ def case_update_status(request, pk):
         messages.success(request, f'Case status updated to {case.get_status_display()}')
 
     return redirect('vso:case_detail', pk=pk)
+
+
+@vso_required
+@require_POST
+def case_archive(request, pk):
+    """
+    Archive a closed case.
+
+    Only closed cases can be archived. Archived cases are hidden from
+    the default case list but can still be accessed.
+    """
+    org = get_user_organization(request.user, request=request)
+    case = get_object_or_404(VeteranCase, pk=pk, organization=org)
+
+    if case.status.startswith('closed'):
+        case.is_archived = True
+        case.archived_at = timezone.now()
+        case.save()
+
+        # Create audit note
+        CaseNote.objects.create(
+            case=case,
+            author=request.user,
+            note_type='milestone',
+            subject='Case archived',
+            content='Case was archived.',
+            visible_to_veteran=False
+        )
+
+        messages.success(request, f'Case "{case.title}" has been archived.')
+    else:
+        messages.error(request, 'Only closed cases can be archived.')
+
+    return redirect('vso:case_list')
 
 
 @vso_required

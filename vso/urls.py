@@ -19,6 +19,7 @@ urlpatterns = [
     path('cases/new/', views.case_create, name='case_create'),
     path('cases/<int:pk>/', views.case_detail, name='case_detail'),
     path('cases/<int:pk>/status/', views.case_update_status, name='case_update_status'),
+    path('cases/<int:pk>/archive/', views.case_archive, name='case_archive'),
     path('cases/<int:pk>/notes/add/', views.add_case_note, name='add_case_note'),
     path('cases/<int:pk>/actions/<int:note_pk>/complete/',
          views.complete_action_item, name='complete_action_item'),

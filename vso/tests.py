@@ -419,3 +419,335 @@ class TestVSODashboardOrgScoping:
             assert 'select' not in response.url.lower()
         else:
             assert response.status_code == 200
+
+
+# =============================================================================
+# CASE CONDITION MODEL TESTS
+# =============================================================================
+
+class TestCaseConditionModel(TestCase):
+    """Tests for the CaseCondition model."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="veteran@example.com",
+            password="TestPass123!"
+        )
+        self.vso_user = User.objects.create_user(
+            email="vso@example.com",
+            password="TestPass123!"
+        )
+        self.org = Organization.objects.create(
+            name="Test VSO",
+            slug="test-vso",
+            org_type="vso",
+        )
+        OrganizationMembership.objects.create(
+            user=self.vso_user,
+            organization=self.org,
+            role='caseworker',
+            is_active=True,
+        )
+        from vso.models import VeteranCase, CaseCondition
+        self.case = VeteranCase.objects.create(
+            organization=self.org,
+            veteran=self.user,
+            assigned_to=self.vso_user,
+            title="Test Case",
+            status="gathering_evidence",
+        )
+        self.CaseCondition = CaseCondition
+
+    def test_gap_count_all_missing(self):
+        """Gap count should be 3 when all evidence is missing."""
+        condition = self.CaseCondition.objects.create(
+            case=self.case,
+            condition_name="PTSD",
+            has_diagnosis=False,
+            has_in_service_event=False,
+            has_nexus=False,
+        )
+        self.assertEqual(condition.gap_count, 3)
+
+    def test_gap_count_partial(self):
+        """Gap count should reflect partial evidence."""
+        condition = self.CaseCondition.objects.create(
+            case=self.case,
+            condition_name="Tinnitus",
+            has_diagnosis=True,
+            has_in_service_event=True,
+            has_nexus=False,
+        )
+        self.assertEqual(condition.gap_count, 1)
+
+    def test_gap_count_complete(self):
+        """Gap count should be 0 when all evidence is present."""
+        condition = self.CaseCondition.objects.create(
+            case=self.case,
+            condition_name="Hearing Loss",
+            has_diagnosis=True,
+            has_in_service_event=True,
+            has_nexus=True,
+        )
+        self.assertEqual(condition.gap_count, 0)
+
+    def test_is_evidence_complete_true(self):
+        """is_evidence_complete should be True when all evidence present."""
+        condition = self.CaseCondition.objects.create(
+            case=self.case,
+            condition_name="Back Pain",
+            has_diagnosis=True,
+            has_in_service_event=True,
+            has_nexus=True,
+        )
+        self.assertTrue(condition.is_evidence_complete)
+
+    def test_is_evidence_complete_false(self):
+        """is_evidence_complete should be False when evidence missing."""
+        condition = self.CaseCondition.objects.create(
+            case=self.case,
+            condition_name="Knee Pain",
+            has_diagnosis=True,
+            has_in_service_event=False,
+            has_nexus=True,
+        )
+        self.assertFalse(condition.is_evidence_complete)
+
+    def test_unique_together_constraint(self):
+        """Cannot create duplicate condition names for same case."""
+        from django.db import IntegrityError
+        self.CaseCondition.objects.create(
+            case=self.case,
+            condition_name="PTSD",
+        )
+        with self.assertRaises(IntegrityError):
+            self.CaseCondition.objects.create(
+                case=self.case,
+                condition_name="PTSD",
+            )
+
+
+# =============================================================================
+# GAP CHECKER SERVICE TESTS
+# =============================================================================
+
+class TestGapCheckerService(TestCase):
+    """Tests for the GapCheckerService."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="veteran2@example.com",
+            password="TestPass123!"
+        )
+        self.org = Organization.objects.create(
+            name="Gap Test VSO",
+            slug="gap-test-vso",
+            org_type="vso",
+        )
+        from vso.models import VeteranCase, CaseCondition
+        from vso.services import GapCheckerService
+        self.case = VeteranCase.objects.create(
+            organization=self.org,
+            veteran=self.user,
+            title="Gap Test Case",
+            status="gathering_evidence",
+        )
+        self.CaseCondition = CaseCondition
+        self.GapCheckerService = GapCheckerService
+
+    def test_triage_label_needs_review_no_conditions(self):
+        """Case with no conditions should return needs_review."""
+        label = self.GapCheckerService.get_triage_label(self.case)
+        self.assertEqual(label, 'needs_review')
+
+    def test_triage_label_ready_to_file(self):
+        """Case with complete evidence should return ready_to_file."""
+        self.CaseCondition.objects.create(
+            case=self.case,
+            condition_name="PTSD",
+            workflow_status="gathering_evidence",
+            has_diagnosis=True,
+            has_in_service_event=True,
+            has_nexus=True,
+        )
+        label = self.GapCheckerService.get_triage_label(self.case)
+        self.assertEqual(label, 'ready_to_file')
+
+    def test_triage_label_needs_nexus(self):
+        """Case missing only nexus should return needs_nexus."""
+        self.CaseCondition.objects.create(
+            case=self.case,
+            condition_name="PTSD",
+            workflow_status="gathering_evidence",
+            has_diagnosis=True,
+            has_in_service_event=True,
+            has_nexus=False,
+        )
+        label = self.GapCheckerService.get_triage_label(self.case)
+        self.assertEqual(label, 'needs_nexus')
+
+    def test_triage_label_needs_evidence(self):
+        """Case missing diagnosis or in-service should return needs_evidence."""
+        self.CaseCondition.objects.create(
+            case=self.case,
+            condition_name="PTSD",
+            workflow_status="gathering_evidence",
+            has_diagnosis=False,
+            has_in_service_event=True,
+            has_nexus=True,
+        )
+        label = self.GapCheckerService.get_triage_label(self.case)
+        self.assertEqual(label, 'needs_evidence')
+
+    def test_excludes_granted_conditions_from_triage(self):
+        """Granted conditions should not affect triage calculation."""
+        self.CaseCondition.objects.create(
+            case=self.case,
+            condition_name="PTSD",
+            workflow_status="granted",
+            has_diagnosis=False,
+            has_in_service_event=False,
+            has_nexus=False,
+        )
+        # With only granted condition, should return needs_review
+        label = self.GapCheckerService.get_triage_label(self.case)
+        self.assertEqual(label, 'needs_review')
+
+
+# =============================================================================
+# CASE ARCHIVE VIEW TESTS
+# =============================================================================
+
+@pytest.mark.django_db
+class TestCaseArchiveView:
+    """Tests for the case archive functionality."""
+
+    def test_can_archive_closed_case(self, client, db):
+        """Closed cases can be archived."""
+        user = User.objects.create_user(
+            email="archivetester@example.com",
+            password="TestPass123!"
+        )
+        org = Organization.objects.create(
+            name="Archive Test Org",
+            slug="archive-test-org",
+            org_type="vso",
+        )
+        OrganizationMembership.objects.create(
+            user=user,
+            organization=org,
+            role='admin',
+            is_active=True,
+        )
+        from vso.models import VeteranCase
+        case = VeteranCase.objects.create(
+            organization=org,
+            veteran=user,
+            title="Closed Case",
+            status="closed_won",
+        )
+
+        client.login(email="archivetester@example.com", password="TestPass123!")
+        response = client.post(reverse('vso:case_archive', args=[case.pk]))
+
+        case.refresh_from_db()
+        assert case.is_archived is True
+        assert case.archived_at is not None
+        assert response.status_code == 302
+
+    def test_cannot_archive_open_case(self, client, db):
+        """Open cases cannot be archived."""
+        user = User.objects.create_user(
+            email="openarchivetester@example.com",
+            password="TestPass123!"
+        )
+        org = Organization.objects.create(
+            name="Open Archive Test Org",
+            slug="open-archive-test-org",
+            org_type="vso",
+        )
+        OrganizationMembership.objects.create(
+            user=user,
+            organization=org,
+            role='admin',
+            is_active=True,
+        )
+        from vso.models import VeteranCase
+        case = VeteranCase.objects.create(
+            organization=org,
+            veteran=user,
+            title="Open Case",
+            status="gathering_evidence",
+        )
+
+        client.login(email="openarchivetester@example.com", password="TestPass123!")
+        response = client.post(reverse('vso:case_archive', args=[case.pk]))
+
+        case.refresh_from_db()
+        assert case.is_archived is False
+
+
+# =============================================================================
+# ACTIVITY TRACKING SIGNAL TESTS
+# =============================================================================
+
+class TestActivityTrackingSignals(TestCase):
+    """Tests for activity tracking signals."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="signaltest@example.com",
+            password="TestPass123!"
+        )
+        self.org = Organization.objects.create(
+            name="Signal Test VSO",
+            slug="signal-test-vso",
+            org_type="vso",
+        )
+        OrganizationMembership.objects.create(
+            user=self.user,
+            organization=self.org,
+            role='caseworker',
+            is_active=True,
+        )
+        from vso.models import VeteranCase
+        self.case = VeteranCase.objects.create(
+            organization=self.org,
+            veteran=self.user,
+            title="Signal Test Case",
+            status="intake",
+        )
+
+    def test_note_creation_updates_activity(self):
+        """Creating a note should update last_activity_at."""
+        from vso.models import CaseNote
+        from django.utils import timezone
+        initial_activity = self.case.last_activity_at
+
+        CaseNote.objects.create(
+            case=self.case,
+            author=self.user,
+            subject="Test Note",
+            content="Test content",
+        )
+
+        self.case.refresh_from_db()
+        # After note creation, last_activity_at should be updated
+        self.assertIsNotNone(self.case.last_activity_at)
+        if initial_activity:
+            self.assertGreaterEqual(self.case.last_activity_at, initial_activity)
+
+    def test_condition_creation_updates_activity(self):
+        """Creating a condition should update last_activity_at."""
+        from vso.models import CaseCondition
+        initial_activity = self.case.last_activity_at
+
+        CaseCondition.objects.create(
+            case=self.case,
+            condition_name="PTSD",
+        )
+
+        self.case.refresh_from_db()
+        self.assertIsNotNone(self.case.last_activity_at)
+        if initial_activity:
+            self.assertGreaterEqual(self.case.last_activity_at, initial_activity)

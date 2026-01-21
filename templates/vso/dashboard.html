@@ -245,6 +245,35 @@
                 </div>
             </div>
 
+            <!-- Stale Cases -->
+            {% if stale_cases %}
+            <div class="bg-orange-50 border border-orange-200 rounded-lg">
+                <div class="px-6 py-4 border-b border-orange-200">
+                    <h2 class="text-lg font-semibold text-orange-800">Stale Cases</h2>
+                    <p class="text-sm text-orange-600">No activity in 30+ days</p>
+                </div>
+                <div class="divide-y divide-orange-200">
+                    {% for case in stale_cases %}
+                    <a href="{% url 'vso:case_detail' pk=case.pk %}" class="block hover:bg-orange-100 px-6 py-3">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">{{ case.title }}</p>
+                                <p class="text-xs text-gray-500">{{ case.veteran.email }}</p>
+                            </div>
+                            <span class="text-xs text-orange-600">
+                                {% if case.last_activity_at %}
+                                {{ case.last_activity_at|timesince }} ago
+                                {% else %}
+                                No activity recorded
+                                {% endif %}
+                            </span>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
             <!-- Status Breakdown -->
             <div class="bg-white rounded-lg shadow">
                 <div class="px-6 py-4 border-b border-gray-200">
