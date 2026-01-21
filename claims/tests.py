@@ -1013,6 +1013,9 @@ class TestDocumentUploadEndToEnd(TestCase):
             email="e2e@example.com",
             password="TestPass123!"
         )
+        # Enable AI consent for upload tests (required by require_ai_consent_view)
+        self.user.profile.ai_processing_consent = True
+        self.user.profile.save()
         self.client = Client()
         self.client.login(email="e2e@example.com", password="TestPass123!")
 
@@ -1310,6 +1313,9 @@ class TestDenialDecoderEndToEnd(TestCase):
             email="denial@example.com",
             password="TestPass123!"
         )
+        # Enable AI consent for denial decoder tests (required by require_ai_consent_view)
+        self.user.profile.ai_processing_consent = True
+        self.user.profile.save()
         self.client = Client()
         self.client.login(email="denial@example.com", password="TestPass123!")
 
@@ -1521,6 +1527,9 @@ class TestDocumentCompleteWorkflow(TestCase):
             email="workflow@example.com",
             password="TestPass123!"
         )
+        # Enable AI consent for workflow tests (required by require_ai_consent_view)
+        self.user.profile.ai_processing_consent = True
+        self.user.profile.save()
         self.client = Client()
         self.client.login(email="workflow@example.com", password="TestPass123!")
 

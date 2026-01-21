@@ -13,6 +13,7 @@ from django.conf import settings
 from django_ratelimit.decorators import ratelimit
 
 from core.models import AuditLog
+from agents.views import require_ai_consent_view
 from .models import Document
 from .forms import DocumentUploadForm, DenialLetterUploadForm
 from .tasks import process_document_task, decode_denial_letter_task, analyze_rating_decision_task
@@ -46,6 +47,7 @@ def document_list(request):
 
 
 @login_required
+@require_ai_consent_view
 @ratelimit(key='user', rate='10/m', method='POST', block=True)
 def document_upload(request):
     """
@@ -53,6 +55,7 @@ def document_upload(request):
     Includes inline validation and clear error messages.
 
     Rate limited to 10/min per user to prevent upload spam and storage exhaustion.
+    Requires AI consent as uploads trigger automatic AI analysis.
     """
     # Get usage info for display
     from accounts.models import UsageTracking
@@ -207,6 +210,7 @@ def document_delete(request, pk):
 # =============================================================================
 
 @login_required
+@require_ai_consent_view
 @ratelimit(key='user', rate='10/m', method='POST', block=True)
 def denial_decoder_upload(request):
     """
@@ -214,6 +218,7 @@ def denial_decoder_upload(request):
     Extracts denial reasons, matches to M21 sections, and generates evidence guidance.
 
     Rate limited to 10/min per user to prevent upload spam.
+    Requires AI consent as this triggers AI-powered denial analysis.
     """
     # Get usage info for display
     from accounts.models import UsageTracking
@@ -655,6 +660,7 @@ def document_view_signed(request, token):
 # =============================================================================
 
 @login_required
+@require_ai_consent_view
 @ratelimit(key='user', rate='10/m', method='POST', block=True)
 def rating_analyzer_upload(request):
     """
@@ -662,6 +668,7 @@ def rating_analyzer_upload(request):
     Identifies increase opportunities, secondary conditions, errors, and deadlines.
 
     Rate limited to 10/min per user to prevent upload spam.
+    Requires AI consent as this triggers AI-powered rating analysis.
     """
     from accounts.models import UsageTracking
     usage, _ = UsageTracking.objects.get_or_create(user=request.user)
