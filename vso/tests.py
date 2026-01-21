@@ -325,7 +325,7 @@ class TestSelectOrganizationView:
         assert b"Select Org 2" in response.content
 
     def test_post_sets_session_and_redirects(self, client, db):
-        """POST with org_slug sets session and redirects."""
+        """POST with organization sets session and redirects."""
         user = User.objects.create_user(
             email="postselect@example.com",
             password="TestPass123!"
@@ -345,7 +345,7 @@ class TestSelectOrganizationView:
         client.login(email="postselect@example.com", password="TestPass123!")
         response = client.post(
             reverse('vso:select_organization'),
-            {'org_slug': 'post-org'}
+            {'organization': 'post-org'}
         )
 
         assert response.status_code == 302
