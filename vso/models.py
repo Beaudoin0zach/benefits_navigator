@@ -150,6 +150,13 @@ class VeteranCase(TimeStampedModel):
     )
     closure_notes = models.TextField('Closure notes', blank=True)
 
+    # Activity tracking for lifecycle hygiene
+    last_activity_at = models.DateTimeField('Last Activity', null=True, blank=True)
+
+    # Archive functionality
+    is_archived = models.BooleanField('Archived', default=False)
+    archived_at = models.DateTimeField('Archived At', null=True, blank=True)
+
     class Meta:
         verbose_name = 'Veteran Case'
         verbose_name_plural = 'Veteran Cases'
@@ -158,6 +165,8 @@ class VeteranCase(TimeStampedModel):
             models.Index(fields=['organization', 'status']),
             models.Index(fields=['assigned_to', 'status']),
             models.Index(fields=['veteran', 'organization']),
+            models.Index(fields=['last_activity_at']),
+            models.Index(fields=['is_archived']),
         ]
 
     def __str__(self):
@@ -541,3 +550,144 @@ class ChecklistItem(TimeStampedModel):
         if document:
             self.document = document
         self.save()
+
+
+class CaseCondition(TimeStampedModel):
+    """
+    Normalized condition-level tracking for a veteran case.
+
+    Tracks each condition being worked on, its workflow status, and evidence gaps.
+    Conditions can be auto-derived from AI analyses or manually added.
+    """
+
+    WORKFLOW_STATUS_CHOICES = [
+        ('identified', 'Identified'),
+        ('gathering_evidence', 'Gathering Evidence'),
+        ('evidence_complete', 'Evidence Complete'),
+        ('claim_filed', 'Claim Filed'),
+        ('pending_decision', 'Pending Decision'),
+        ('granted', 'Granted'),
+        ('denied', 'Denied'),
+        ('appealing', 'Appealing'),
+    ]
+
+    SERVICE_CONNECTION_TYPE_CHOICES = [
+        ('direct', 'Direct Service Connection'),
+        ('secondary', 'Secondary Service Connection'),
+        ('presumptive', 'Presumptive'),
+        ('aggravation', 'Aggravation'),
+    ]
+
+    SOURCE_CHOICES = [
+        ('manual', 'Manually Added'),
+        ('rating_analysis', 'Rating Analysis'),
+        ('decision_analysis', 'Decision Letter Analysis'),
+    ]
+
+    case = models.ForeignKey(
+        VeteranCase,
+        on_delete=models.CASCADE,
+        related_name='case_conditions'
+    )
+    condition_name = models.CharField('Condition Name', max_length=200)
+    diagnostic_code = models.CharField(
+        'Diagnostic Code',
+        max_length=20,
+        blank=True,
+        help_text='VA diagnostic code (e.g., 9411 for PTSD)'
+    )
+    workflow_status = models.CharField(
+        'Workflow Status',
+        max_length=30,
+        choices=WORKFLOW_STATUS_CHOICES,
+        default='identified'
+    )
+
+    # Rating information
+    current_rating = models.IntegerField(
+        'Current Rating',
+        null=True,
+        blank=True,
+        help_text='Current VA rating percentage (0-100)'
+    )
+    target_rating = models.IntegerField(
+        'Target Rating',
+        null=True,
+        blank=True,
+        help_text='Target rating percentage for this claim'
+    )
+    service_connection_type = models.CharField(
+        'Service Connection Type',
+        max_length=30,
+        choices=SERVICE_CONNECTION_TYPE_CHOICES,
+        blank=True
+    )
+
+    # Gap checker fields - tracks evidence completeness
+    has_diagnosis = models.BooleanField(
+        'Has Diagnosis',
+        default=False,
+        help_text='Medical diagnosis documentation exists'
+    )
+    has_in_service_event = models.BooleanField(
+        'Has In-Service Event',
+        default=False,
+        help_text='Service treatment records or incident documentation exists'
+    )
+    has_nexus = models.BooleanField(
+        'Has Nexus',
+        default=False,
+        help_text='Medical opinion linking condition to service exists'
+    )
+
+    # Source tracking
+    source = models.CharField(
+        'Source',
+        max_length=30,
+        choices=SOURCE_CHOICES,
+        default='manual'
+    )
+    source_analysis = models.ForeignKey(
+        SharedAnalysis,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='derived_conditions',
+        help_text='The analysis this condition was derived from'
+    )
+    notes = models.TextField('Notes', blank=True)
+
+    class Meta:
+        verbose_name = 'Case Condition'
+        verbose_name_plural = 'Case Conditions'
+        unique_together = ['case', 'condition_name']
+        ordering = ['condition_name']
+
+    def __str__(self):
+        return f"{self.condition_name} - {self.case.title}"
+
+    @property
+    def gap_count(self):
+        """Count of missing evidence elements (0-3)."""
+        return sum([
+            not self.has_diagnosis,
+            not self.has_in_service_event,
+            not self.has_nexus
+        ])
+
+    @property
+    def is_evidence_complete(self):
+        """Check if all evidence elements are present."""
+        return self.has_diagnosis and self.has_in_service_event and self.has_nexus
+
+    @property
+    def evidence_status(self):
+        """Return a label for evidence completeness."""
+        if self.is_evidence_complete:
+            return 'complete'
+        elif self.gap_count == 3:
+            return 'needs_all'
+        elif self.gap_count == 2:
+            return 'needs_most'
+        else:
+            return 'needs_some'
