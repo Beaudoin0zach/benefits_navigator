@@ -66,6 +66,9 @@ urlpatterns = [
     # Accounts app URLs (privacy, export, deletion)
     path('accounts/', include('accounts.urls', namespace='accounts')),
 
+    # Two-Factor Authentication (MFA) URLs
+    path('accounts/2fa/', include('allauth_2fa.urls')),
+
     # Authentication (django-allauth) - remaining URLs
     path('accounts/', include('allauth.urls')),
 

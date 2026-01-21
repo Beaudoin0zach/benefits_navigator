@@ -331,11 +331,11 @@ class SharedDocument(TimeStampedModel):
     reviewed_at = models.DateTimeField('Reviewed at', null=True, blank=True)
     review_notes = models.TextField('Review notes', blank=True)
 
-    # Include AI analysis?
+    # Include AI analysis? (opt-in for privacy)
     include_ai_analysis = models.BooleanField(
         'Include AI analysis',
-        default=True,
-        help_text='Share AI analysis results with VSO'
+        default=False,
+        help_text='Explicitly share AI analysis results with VSO (opt-in)'
     )
 
     class Meta:
@@ -368,6 +368,16 @@ class SharedAnalysis(TimeStampedModel):
         ('denial_decoding', 'Denial Decoding'),
         ('decision_analysis', 'Decision Letter Analysis'),
     ]
+
+    # Defense-in-depth: direct org FK for query validation
+    organization = models.ForeignKey(
+        'accounts.Organization',
+        on_delete=models.CASCADE,
+        related_name='shared_analyses',
+        null=True,  # Allow null for migration, will be populated from case
+        blank=True,
+        help_text='Organization (auto-populated from case for defense-in-depth)'
+    )
 
     case = models.ForeignKey(
         VeteranCase,
@@ -433,6 +443,12 @@ class SharedAnalysis(TimeStampedModel):
 
     def __str__(self):
         return f"{self.get_analysis_type_display()} - {self.case.title}"
+
+    def save(self, *args, **kwargs):
+        """Auto-populate organization from case for defense-in-depth."""
+        if self.case_id and not self.organization_id:
+            self.organization_id = self.case.organization_id
+        super().save(*args, **kwargs)
 
     @property
     def analysis_object(self):

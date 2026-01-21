@@ -102,6 +102,10 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'django_otp',
+    'django_otp.plugins.otp_totp',
+    'django_otp.plugins.otp_static',
+    'allauth_2fa',
     'django_celery_beat',
     'django_extensions',
     'viewflow',  # Workflow engine for appeals
@@ -125,10 +129,13 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',  # MFA/2FA support
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_htmx.middleware.HtmxMiddleware',  # HTMX support
     'allauth.account.middleware.AccountMiddleware',  # Django-allauth
+    'allauth_2fa.middleware.AllauthTwoFactorMiddleware',  # Allauth 2FA
+    'vso.middleware.VSOStaffMFAMiddleware',  # MFA encouragement for VSO staff
     'core.middleware.AuditMiddleware',  # Audit logging for sensitive operations
     'core.middleware.SecurityHeadersMiddleware',  # Additional security headers
     'csp.middleware.CSPMiddleware',  # Content Security Policy
@@ -379,6 +386,16 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
+
+# Use allauth-2fa adapter for MFA support
+ACCOUNT_ADAPTER = 'allauth_2fa.adapter.OTPAdapter'
+
+# ==============================================================================
+# TWO-FACTOR AUTHENTICATION (MFA) CONFIGURATION
+# ==============================================================================
+# MFA is encouraged for VSO staff (caseworkers and admins)
+# Users can set up TOTP authenticator apps (Google Authenticator, Authy, etc.)
+ALLAUTH_2FA_ALWAYS_REVEAL_BACKUP_TOKENS = False
 
 # ==============================================================================
 # EMAIL CONFIGURATION
