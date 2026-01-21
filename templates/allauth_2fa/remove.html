@@ -1,0 +1,49 @@
+{% extends "allauth/layouts/entrance.html" %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Disable Two-Factor Authentication" %}{% endblock %}
+
+{% block content %}
+<div class="text-center mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">{% trans "Disable Two-Factor Authentication" %}</h1>
+    <p class="mt-2 text-gray-600">
+        {% trans "Are you sure you want to disable 2FA?" %}
+    </p>
+</div>
+
+<div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+    <div class="flex">
+        <svg class="h-5 w-5 text-red-600 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+        </svg>
+        <div class="text-sm text-red-800">
+            <p class="font-medium">{% trans "Warning" %}</p>
+            <p>{% trans "Disabling two-factor authentication will make your account less secure. You will only need your password to sign in." %}</p>
+        </div>
+    </div>
+</div>
+
+<form method="post" class="space-y-4">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+        <div class="p-4 bg-red-50 border border-red-200 rounded-md" role="alert">
+            <ul class="list-disc list-inside text-red-700 text-sm">
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <div class="flex space-x-4">
+        <a href="{% url 'vso:dashboard' %}" class="flex-1 py-3 px-4 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 font-medium text-center">
+            {% trans "Cancel" %}
+        </a>
+        <button type="submit"
+                class="flex-1 py-3 px-4 bg-red-600 text-white rounded-md hover:bg-red-700 font-medium">
+            {% trans "Disable 2FA" %}
+        </button>
+    </div>
+</form>
+{% endblock %}
