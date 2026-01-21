@@ -666,3 +666,56 @@ def cleanup_old_health_metrics():
 
     logger.info(f"Cleaned up {deleted} old health metrics")
     return f"Deleted {deleted} old metrics"
+
+
+@shared_task
+def run_monitoring_checks():
+    """
+    Run all monitoring checks and send alerts if thresholds exceeded.
+
+    Checks:
+    - System health (database, Redis, Celery, document processing)
+    - Download anomalies (potential data exfiltration)
+    - Task age (stale/long-running tasks)
+
+    Should be scheduled via Celery Beat (e.g., every 5 minutes).
+    """
+    from core.alerting import run_all_monitoring_checks
+
+    results = run_all_monitoring_checks()
+
+    total_alerts = (
+        len(results.get('health_alerts', [])) +
+        len(results.get('download_anomalies', [])) +
+        len(results.get('stale_tasks', []))
+    )
+
+    return {
+        'total_alerts': total_alerts,
+        'results': results,
+    }
+
+
+@shared_task
+def check_download_anomalies_task(hours: int = 1):
+    """
+    Check for unusual download patterns.
+
+    Detects potential data exfiltration by monitoring:
+    - High download volume per user
+    - Multiple users from same IP
+    - Unusual download patterns
+
+    Should be scheduled via Celery Beat (e.g., hourly).
+    """
+    from core.alerting import check_download_anomalies
+
+    anomalies = check_download_anomalies(hours=hours)
+
+    if anomalies:
+        logger.warning(f"Detected {len(anomalies)} download anomalies")
+
+    return {
+        'anomalies_detected': len(anomalies),
+        'details': anomalies,
+    }

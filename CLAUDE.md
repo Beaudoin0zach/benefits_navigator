@@ -336,7 +336,41 @@ Status endpoints use 5-second polling with early-exit:
 - Templates: `hx-trigger="{% if document.is_processing %}load, every 5s{% endif %}"`
 - Views: Return `HX-Refresh: true` header when complete
 
+## MFA for VSO Staff
+MFA is supported via `django-allauth-2fa`. The `VSOStaffMFAMiddleware` warns VSO staff
+without MFA enabled. Configure in settings:
+
+```python
+INSTALLED_APPS += ['django_otp', 'django_otp.plugins.otp_totp', 'allauth_2fa']
+MIDDLEWARE += ['django_otp.middleware.OTPMiddleware', 'vso.middleware.VSOStaffMFAMiddleware']
+```
+
+## Monitoring & Alerting
+The `core/alerting.py` module provides configurable monitoring with alerts:
+
+**Alert Channels:**
+- Email (configured via `ALERT_EMAIL_RECIPIENTS`)
+- Slack (configured via `SLACK_ALERT_WEBHOOK`)
+- Sentry (automatic if configured)
+
+**Monitored Thresholds:**
+| Metric | Warning | Critical |
+|--------|---------|----------|
+| Processing success rate | < 90% | < 80% |
+| Failures per hour | > 5 | > 10 |
+| Celery workers | <= 1 | = 0 |
+| Queue length | > 50 | > 100 |
+| Task age | > 5 min | > 10 min |
+| Downloads per user/hour | > 50 | > 100 |
+
+**Periodic Tasks (Celery Beat):**
+```python
+'run-monitoring-checks': every 5 minutes
+'check-download-anomalies': hourly
+```
+
+**Incident Response:** See `docs/INCIDENT_RESPONSE.md` for runbooks and escalation procedures.
+
 ## Remaining Security TODOs
-- [ ] MFA for staff accounts (requires `django-allauth-2fa`)
 - [ ] Object storage migration (S3/DO Spaces)
 - [ ] Additional invitation verification (beyond email matching)
