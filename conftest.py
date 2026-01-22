@@ -184,7 +184,8 @@ def document(db, user, sample_pdf):
         mime_type="application/pdf",
         document_type="medical_records",
         status="completed",
-        ocr_text="Sample extracted text from document.",
+        ocr_length=37,  # Length of simulated OCR text
+        ocr_status="completed",
         ocr_confidence=95.5,
         page_count=1,
     )
@@ -587,7 +588,6 @@ def decision_analysis(db, user, agent_interaction, document):
         interaction=agent_interaction,
         user=user,
         document=document,
-        raw_text="VA Decision Letter text...",
         decision_date=date.today() - timedelta(days=30),
         conditions_granted=[
             {"condition": "Tinnitus", "rating": 10, "effective_date": "2024-01-01"}

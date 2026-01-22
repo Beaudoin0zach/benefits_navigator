@@ -74,7 +74,8 @@ class DecisionLetterAnalysis(TimeStampedModel):
         blank=True,
         help_text='Linked uploaded document'
     )
-    raw_text = models.TextField(help_text='Extracted or pasted text from decision letter')
+    # NOTE: raw_text field removed for PHI protection (Ephemeral OCR Refactor PR 6)
+    # Raw text is no longer persisted - only structured analysis is stored
     decision_date = models.DateField(null=True, blank=True)
 
     # Parsed Results (stored as JSON)
@@ -317,7 +318,8 @@ class RatingAnalysis(TimeStampedModel):
         blank=True,
         help_text='Linked uploaded document'
     )
-    raw_text = models.TextField(help_text='OCR-extracted text from rating decision')
+    # NOTE: raw_text field removed for PHI protection (Ephemeral OCR Refactor PR 6)
+    # Raw text is no longer persisted - only structured analysis is stored
     decision_date = models.DateField(null=True, blank=True)
 
     # Extracted Data (from extraction phase)

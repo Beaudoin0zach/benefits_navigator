@@ -186,24 +186,39 @@
             </div>
             {% endif %}
 
-            <!-- Raw Document Text -->
-            {% if document.ocr_text %}
+            <!-- Document Text Extraction Info -->
+            {% if document.ocr_status == 'completed' %}
             <div class="bg-white rounded-lg shadow">
-                <details class="group">
-                    <summary class="px-6 py-4 cursor-pointer list-none border-b border-gray-200">
-                        <div class="flex items-center justify-between">
-                            <h2 class="text-lg font-semibold text-gray-900">Extracted Text</h2>
-                            <svg class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </div>
-                    </summary>
-                    <div class="p-6">
-                        <div class="bg-gray-50 p-4 rounded-md max-h-96 overflow-y-auto">
-                            <pre class="whitespace-pre-wrap text-sm text-gray-700 font-mono">{{ document.ocr_text }}</pre>
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Text Extraction</h2>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-start">
+                        <svg class="w-5 h-5 text-green-500 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        <div>
+                            <p class="text-gray-700">Text was extracted and used for AI analysis.</p>
+                            <dl class="mt-2 text-sm">
+                                {% if document.ocr_length %}
+                                <div class="flex gap-1">
+                                    <dt class="text-gray-500">Characters:</dt>
+                                    <dd class="font-medium text-gray-900">{{ document.ocr_length }}</dd>
+                                </div>
+                                {% endif %}
+                                {% if document.ocr_confidence %}
+                                <div class="flex gap-1">
+                                    <dt class="text-gray-500">Confidence:</dt>
+                                    <dd class="font-medium text-gray-900">{{ document.ocr_confidence|floatformat:1 }}%</dd>
+                                </div>
+                                {% endif %}
+                            </dl>
+                            <p class="mt-2 text-xs text-gray-500">
+                                Raw document text is not stored for privacy. Request the original document from the veteran if needed.
+                            </p>
                         </div>
                     </div>
-                </details>
+                </div>
             </div>
             {% endif %}
 

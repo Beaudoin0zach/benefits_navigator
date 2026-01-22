@@ -13,7 +13,7 @@ class DocumentAdmin(admin.ModelAdmin):
     list_filter = ['status', 'document_type', 'created_at']
     search_fields = ['file_name', 'user__email']
     raw_id_fields = ['user', 'claim']
-    readonly_fields = ['created_at', 'updated_at', 'processed_at', 'file_size', 'ocr_confidence']
+    readonly_fields = ['created_at', 'updated_at', 'processed_at', 'file_size', 'ocr_status', 'ocr_length', 'ocr_confidence']
 
     fieldsets = (
         ('Basic Information', {
@@ -26,7 +26,8 @@ class DocumentAdmin(admin.ModelAdmin):
             'fields': ('status', 'processed_at', 'processing_duration', 'error_message')
         }),
         ('OCR Results', {
-            'fields': ('ocr_text', 'ocr_confidence'),
+            # ocr_text removed for PHI protection - only metadata displayed
+            'fields': ('ocr_status', 'ocr_length', 'ocr_confidence'),
             'classes': ('collapse',)
         }),
         ('AI Analysis', {

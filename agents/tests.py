@@ -127,7 +127,6 @@ class TestDecisionLetterAnalysisModel(TestCase):
         analysis = DecisionLetterAnalysis.objects.create(
             interaction=self.interaction,
             user=self.user,
-            raw_text="VA Decision Letter...",
             decision_date=date.today() - timedelta(days=30),
         )
         self.assertEqual(analysis.user, self.user)
@@ -902,7 +901,6 @@ class TestAgentWorkflow(TestCase):
         analysis = DecisionLetterAnalysis.objects.create(
             interaction=interaction,
             user=self.user,
-            raw_text="VA Decision Letter for claims...",
             decision_date=date.today() - timedelta(days=30),
             conditions_granted=[
                 {"condition": "Tinnitus", "rating": 10}
