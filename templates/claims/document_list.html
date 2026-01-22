@@ -37,7 +37,7 @@
                 <p class="text-sm text-yellow-700">
                     <strong>Free Tier:</strong> You've used {{ documents_this_month }} of {{ free_tier_limit }} documents this month.
                     {% if documents_this_month >= free_tier_limit %}
-                        <a href="/upgrade/" class="font-medium underline hover:text-yellow-600">Upgrade to Premium</a> for unlimited uploads.
+                        <a href="{% url 'accounts:upgrade' %}" class="font-medium underline hover:text-yellow-600">Upgrade to Premium</a> for unlimited uploads.
                     {% endif %}
                 </p>
             </div>

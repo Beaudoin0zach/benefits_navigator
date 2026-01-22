@@ -4,6 +4,14 @@
 
 {% block content %}
 <div class="container mx-auto px-4 py-8 max-w-5xl">
+    <!-- Back link -->
+    <a href="{% url 'appeals:appeal_list' %}" class="inline-flex items-center text-sm text-blue-700 hover:text-blue-800 mb-4">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Back to My Appeals
+    </a>
+
     <!-- Breadcrumb -->
     <nav class="mb-4 text-sm" aria-label="Breadcrumb">
         <a href="{% url 'appeals:appeal_list' %}" class="text-blue-700 hover:underline">My Appeals</a>
