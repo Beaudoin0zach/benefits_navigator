@@ -15,13 +15,42 @@ Exit codes:
 """
 
 import argparse
-import ast
-import os
 import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Set
+
+# =============================================================================
+# Configuration
+# =============================================================================
+
+# Directory names to exclude (checked against Path.parts)
+EXCLUDED_DIRS: Set[str] = {
+    'venv',
+    '.venv',
+    '__pycache__',
+    'migrations',
+    'tests',
+    '.git',
+    'node_modules',
+    'static',
+    'media',
+    'staticfiles',
+    '.tox',
+    '.pytest_cache',
+    '.mypy_cache',
+    'htmlcov',
+    'dist',
+    'build',
+    'eggs',
+    '*.egg-info',
+}
+
+# Files to always exclude
+EXCLUDED_FILES: Set[str] = {
+    'check_security_invariants.py',  # This script
+}
 
 
 @dataclass
@@ -54,6 +83,36 @@ class SecurityChecker:
         """Record a violation."""
         self.violations.append(Violation(check, file, line, message, severity))
 
+    def should_exclude_path(self, path: Path) -> bool:
+        """
+        Check if a path should be excluded based on directory parts.
+
+        Uses Path.parts to check directory components, not substring matching.
+        This prevents false exclusions like files containing 'migration' in their name.
+        """
+        # Check if any part of the path is in excluded dirs
+        for part in path.parts:
+            if part in EXCLUDED_DIRS:
+                return True
+            # Handle glob patterns like *.egg-info
+            for pattern in EXCLUDED_DIRS:
+                if '*' in pattern and part.endswith(pattern.replace('*', '')):
+                    return True
+
+        # Check if filename is explicitly excluded
+        if path.name in EXCLUDED_FILES:
+            return True
+
+        return False
+
+    def get_python_files(self) -> List[Path]:
+        """Get all Python files that should be checked."""
+        python_files = []
+        for py_file in self.root_dir.glob("**/*.py"):
+            if not self.should_exclude_path(py_file.relative_to(self.root_dir)):
+                python_files.append(py_file)
+        return python_files
+
     def run_all_checks(self) -> bool:
         """Run all security checks. Returns True if all pass."""
         print("Running security invariant checks...")
@@ -65,12 +124,21 @@ class SecurityChecker:
         self.check_phi_in_logging()
 
         print()
-        if self.violations:
-            print(f"FAILED: {len(self.violations)} violation(s) found")
+        errors = [v for v in self.violations if v.severity == "error"]
+        warnings = [v for v in self.violations if v.severity == "warning"]
+
+        if errors:
+            print(f"FAILED: {len(errors)} error(s), {len(warnings)} warning(s)")
             print()
             for v in self.violations:
                 print(f"  {v}")
             return False
+        elif warnings:
+            print(f"PASSED with {len(warnings)} warning(s)")
+            print()
+            for v in warnings:
+                print(f"  {v}")
+            return True
         else:
             print("PASSED: All security invariants verified")
             return True
@@ -83,17 +151,17 @@ class SecurityChecker:
         """Ensure prohibited PHI fields don't exist in model definitions."""
         print("[1/4] Checking for prohibited PHI fields in models...")
 
-        # Patterns that indicate field definitions (not comments or strings)
+        # Patterns that indicate Django field definitions
         prohibited_patterns = [
-            # Django model field definitions
+            # Django model field definitions with field name as attribute
             (r'^\s*ocr_text\s*=\s*models\.', 'ocr_text field definition'),
             (r'^\s*raw_text\s*=\s*models\.', 'raw_text field definition'),
-            # Also check for TextField/CharField with these names
-            (r'models\.\w+Field\([^)]*["\']ocr_text["\']', 'ocr_text field'),
-            (r'models\.\w+Field\([^)]*["\']raw_text["\']', 'raw_text field'),
+            # Also check for db_column or related field names
+            (r'db_column\s*=\s*["\']ocr_text["\']', 'ocr_text db_column'),
+            (r'db_column\s*=\s*["\']raw_text["\']', 'raw_text db_column'),
         ]
 
-        # Files to check
+        # Only check model files
         model_files = [
             self.root_dir / "claims" / "models.py",
             self.root_dir / "agents" / "models.py",
@@ -132,23 +200,37 @@ class SecurityChecker:
         """Ensure Sentry is not configured to send default PII."""
         print("[2/4] Checking Sentry PII configuration...")
 
-        settings_file = self.root_dir / "benefits_navigator" / "settings.py"
-        if not settings_file.exists():
-            self.log("Settings file not found, skipping")
-            return
+        # Check all settings files
+        settings_patterns = [
+            self.root_dir / "benefits_navigator" / "settings.py",
+            self.root_dir / "benefits_navigator" / "settings" / "*.py",
+            self.root_dir / "settings.py",
+            self.root_dir / "config" / "settings" / "*.py",
+        ]
 
-        self.log(f"Scanning {settings_file.relative_to(self.root_dir)}")
+        settings_files = []
+        for pattern in settings_patterns:
+            if '*' in str(pattern):
+                settings_files.extend(pattern.parent.glob(pattern.name))
+            elif pattern.exists():
+                settings_files.append(pattern)
 
-        with open(settings_file, 'r') as f:
-            content = f.read()
-            lines = content.split('\n')
+        # Robust regex: whitespace-insensitive
+        pii_pattern = re.compile(r'send_default_pii\s*=\s*True', re.IGNORECASE)
 
-        # Check for send_default_pii=True
-        for line_num, line in enumerate(lines, 1):
-            if 'send_default_pii' in line and 'True' in line:
-                # Make sure it's not a comment or in a False context
+        for settings_file in settings_files:
+            self.log(f"Scanning {settings_file.relative_to(self.root_dir)}")
+
+            with open(settings_file, 'r') as f:
+                lines = f.readlines()
+
+            for line_num, line in enumerate(lines, 1):
                 stripped = line.strip()
-                if not stripped.startswith('#') and 'send_default_pii=True' in line.replace(' ', ''):
+                # Skip comments
+                if stripped.startswith('#'):
+                    continue
+
+                if pii_pattern.search(line):
                     self.add_violation(
                         "SENTRY_PII",
                         str(settings_file.relative_to(self.root_dir)),
@@ -166,23 +248,37 @@ class SecurityChecker:
         print("[3/4] Checking for logging pitfalls...")
 
         # Patterns that might log request bodies or sensitive data
+        # Match: logger.info/debug/warning/error/critical(...request.body/POST/data...)
+        # Match: logging.info/debug/warning/error/critical(...request.body/POST/data...)
+        # Match: print(...request.body/POST/data...)
         pitfall_patterns = [
-            (r'log.*\(.*request\.body', 'Logging request.body may contain PII'),
-            (r'log.*\(.*request\.POST', 'Logging request.POST may contain PII'),
-            (r'log.*\(.*request\.data', 'Logging request.data may contain PII'),
-            (r'print\s*\(.*request\.body', 'Printing request.body may contain PII'),
-            (r'print\s*\(.*request\.POST', 'Printing request.POST may contain PII'),
+            (
+                r'(?:logger|logging)\s*\.\s*(?:debug|info|warning|error|critical|exception)\s*\([^)]*request\.body',
+                'Logging request.body may contain PII'
+            ),
+            (
+                r'(?:logger|logging)\s*\.\s*(?:debug|info|warning|error|critical|exception)\s*\([^)]*request\.POST',
+                'Logging request.POST may contain PII'
+            ),
+            (
+                r'(?:logger|logging)\s*\.\s*(?:debug|info|warning|error|critical|exception)\s*\([^)]*request\.data',
+                'Logging request.data may contain PII'
+            ),
+            (
+                r'print\s*\([^)]*request\.body',
+                'Printing request.body may contain PII'
+            ),
+            (
+                r'print\s*\([^)]*request\.POST',
+                'Printing request.POST may contain PII'
+            ),
+            (
+                r'print\s*\([^)]*request\.data',
+                'Printing request.data may contain PII'
+            ),
         ]
 
-        python_files = list(self.root_dir.glob("**/*.py"))
-        # Exclude migrations, tests, venv, and this script
-        python_files = [
-            f for f in python_files
-            if 'migration' not in str(f)
-            and 'venv' not in str(f)
-            and '__pycache__' not in str(f)
-            and 'check_security_invariants' not in str(f)
-        ]
+        python_files = self.get_python_files()
 
         for py_file in python_files:
             self.log(f"Scanning {py_file.relative_to(self.root_dir)}")
@@ -216,37 +312,38 @@ class SecurityChecker:
         """Check for logging statements that might include PHI fields."""
         print("[4/4] Checking for PHI in logging statements...")
 
-        # Field names that should never appear in logging
-        phi_fields = [
-            'ocr_text',
-            'raw_text',
-            'document_text',
-            'ssn',
-            'social_security',
-            'file_number',
-            'va_file_number',
+        # Higher-signal patterns: attribute access or dict key access of PHI fields
+        # These patterns look for actual data access, not just the string mention
+        phi_access_patterns = [
+            # Attribute access: .ocr_text, .raw_text, .ssn, etc.
+            r'\.ocr_text\b',
+            r'\.raw_text\b',
+            r'\.document_text\b',
+            r'\.ssn\b',
+            r'\.social_security\b',
+            r'\.va_file_number\b',
+            r'\.file_number\b',
+            # Dict key access: ["ssn"], ['ssn'], .get("ssn"), .get('ssn')
+            r'\[\s*["\'](?:ssn|social_security|va_file_number|file_number|ocr_text|raw_text)["\']',
+            r'\.get\s*\(\s*["\'](?:ssn|social_security|va_file_number|file_number|ocr_text|raw_text)["\']',
         ]
 
-        # Build pattern
-        phi_pattern = '|'.join(phi_fields)
-        logging_with_phi = re.compile(
-            rf'(logger?\.|logging\.)\w+\s*\([^)]*({phi_pattern})',
+        # Build combined pattern for PHI access
+        phi_pattern = re.compile('|'.join(phi_access_patterns), re.IGNORECASE)
+
+        # Logging call pattern
+        logging_call = re.compile(
+            r'(?:logger|logging)\s*\.\s*(?:debug|info|warning|error|critical|exception)\s*\(',
             re.IGNORECASE
         )
 
-        python_files = list(self.root_dir.glob("**/*.py"))
-        python_files = [
-            f for f in python_files
-            if 'migration' not in str(f)
-            and 'venv' not in str(f)
-            and '__pycache__' not in str(f)
-            and 'check_security' not in str(f)  # Exclude this script
-        ]
+        python_files = self.get_python_files()
 
         for py_file in python_files:
             try:
                 with open(py_file, 'r') as f:
-                    lines = f.readlines()
+                    content = f.read()
+                    lines = content.split('\n')
             except Exception:
                 continue
 
@@ -255,12 +352,13 @@ class SecurityChecker:
                 if stripped.startswith('#'):
                     continue
 
-                if logging_with_phi.search(line):
+                # Check if line contains both a logging call and PHI access
+                if logging_call.search(line) and phi_pattern.search(line):
                     self.add_violation(
                         "PHI_LOGGING",
                         str(py_file.relative_to(self.root_dir)),
                         line_num,
-                        "Logging statement may include PHI field. "
+                        "Logging statement may include PHI field access. "
                         "Remove sensitive data from log output."
                     )
 

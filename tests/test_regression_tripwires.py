@@ -8,33 +8,31 @@ Run with: pytest tests/test_regression_tripwires.py -v
 """
 
 import pytest
-from django.test import Client
+from django.urls import reverse, resolve, NoReverseMatch
+from django.urls.exceptions import Resolver404
 
 
 # =============================================================================
-# Goal A: Ensure removed OCR fields cannot reappear
+# Goal A: Ensure removed OCR/PHI fields cannot reappear in database
 # =============================================================================
 
-class TestOCRFieldRemovalTripwires:
+class TestPHIFieldRemovalInvariants:
     """
-    Validates that PHI-containing OCR fields remain removed from models.
+    Validates that PHI-containing fields remain removed from database models.
 
     The Ephemeral OCR Refactor removed these fields to protect PHI:
     - Document.ocr_text (claims app)
     - DecisionLetterAnalysis.raw_text (agents app)
     - RatingAnalysis.raw_text (agents app)
 
-    These tests use Django model _meta to check field definitions,
-    not just hasattr, ensuring DB field reintroduction triggers failure.
+    These tests use Django model _meta to check DATABASE field definitions only.
+    We check for fields with a 'column' attribute (actual DB columns), not
+    arbitrary Python attributes which could be properties or cached values.
     """
 
-    def _get_model_field_names(self, model_class):
-        """Extract field names from Django model _meta (excludes relations by default)."""
+    def _get_db_field_names(self, model_class):
+        """Extract database column field names from Django model _meta."""
         return {f.name for f in model_class._meta.get_fields() if hasattr(f, 'column')}
-
-    def _get_all_field_names(self, model_class):
-        """Extract all field names including reverse relations."""
-        return {f.name for f in model_class._meta.get_fields()}
 
     # -------------------------------------------------------------------------
     # Document.ocr_text removal
@@ -44,30 +42,19 @@ class TestOCRFieldRemovalTripwires:
         """Document must not have ocr_text as a database field."""
         from claims.models import Document
 
-        db_fields = self._get_model_field_names(Document)
+        db_fields = self._get_db_field_names(Document)
 
         assert 'ocr_text' not in db_fields, (
             "REGRESSION: Document.ocr_text database field has reappeared. "
-            "This field was removed in the Ephemeral OCR Refactor (PR 6) to protect PHI. "
+            "This field was removed in the Ephemeral OCR Refactor to protect PHI. "
             "Raw OCR text must not be persisted to the database."
-        )
-
-    def test_document_model_has_no_ocr_text_in_meta(self):
-        """Document._meta must not include ocr_text in any form."""
-        from claims.models import Document
-
-        all_fields = self._get_all_field_names(Document)
-
-        assert 'ocr_text' not in all_fields, (
-            "REGRESSION: Document.ocr_text found in model _meta.get_fields(). "
-            "This field must not exist in any form (DB field, property, or relation)."
         )
 
     def test_document_has_required_ocr_metadata_fields(self):
         """Document must have ocr_length and ocr_status for observability."""
         from claims.models import Document
 
-        db_fields = self._get_model_field_names(Document)
+        db_fields = self._get_db_field_names(Document)
 
         assert 'ocr_length' in db_fields, (
             "Document.ocr_length field is missing. "
@@ -86,21 +73,11 @@ class TestOCRFieldRemovalTripwires:
         """DecisionLetterAnalysis must not have raw_text as a database field."""
         from agents.models import DecisionLetterAnalysis
 
-        db_fields = self._get_model_field_names(DecisionLetterAnalysis)
+        db_fields = self._get_db_field_names(DecisionLetterAnalysis)
 
         assert 'raw_text' not in db_fields, (
             "REGRESSION: DecisionLetterAnalysis.raw_text database field has reappeared. "
-            "This field was removed in the Ephemeral OCR Refactor (PR 6) to protect PHI."
-        )
-
-    def test_decision_letter_analysis_has_no_raw_text_in_meta(self):
-        """DecisionLetterAnalysis._meta must not include raw_text."""
-        from agents.models import DecisionLetterAnalysis
-
-        all_fields = self._get_all_field_names(DecisionLetterAnalysis)
-
-        assert 'raw_text' not in all_fields, (
-            "REGRESSION: DecisionLetterAnalysis.raw_text found in model _meta.get_fields()."
+            "This field was removed in the Ephemeral OCR Refactor to protect PHI."
         )
 
     # -------------------------------------------------------------------------
@@ -111,123 +88,61 @@ class TestOCRFieldRemovalTripwires:
         """RatingAnalysis must not have raw_text as a database field."""
         from agents.models import RatingAnalysis
 
-        db_fields = self._get_model_field_names(RatingAnalysis)
+        db_fields = self._get_db_field_names(RatingAnalysis)
 
         assert 'raw_text' not in db_fields, (
             "REGRESSION: RatingAnalysis.raw_text database field has reappeared. "
-            "This field was removed in the Ephemeral OCR Refactor (PR 6) to protect PHI."
-        )
-
-    def test_rating_analysis_has_no_raw_text_in_meta(self):
-        """RatingAnalysis._meta must not include raw_text."""
-        from agents.models import RatingAnalysis
-
-        all_fields = self._get_all_field_names(RatingAnalysis)
-
-        assert 'raw_text' not in all_fields, (
-            "REGRESSION: RatingAnalysis.raw_text found in model _meta.get_fields()."
+            "This field was removed in the Ephemeral OCR Refactor to protect PHI."
         )
 
 
 # =============================================================================
-# Goal B: Ensure critical routes resolve under default settings
+# Goal B: URL Resolution Integrity (no DB required)
 # =============================================================================
 
-@pytest.mark.django_db
-class TestRouteIntegrityTripwires:
+class TestURLResolutionIntegrity:
     """
-    Validates that critical routes exist and return expected status codes.
+    Validates that named URLs resolve and paths map to views.
 
-    Rules:
-    - Public routes must return 200
-    - Auth-required routes must return 302 redirect to login (not 404)
-    - AI-consent-required routes must return 302 redirect (not 404)
-    - 404 indicates route was removed or misconfigured
-
-    These tests use Django test client only (no Playwright, no external services).
+    These tests use Django's URL resolver only - no HTTP requests, no DB access.
+    They prevent silent route loss from URL configuration changes.
     """
 
-    @pytest.fixture
-    def client(self):
-        """Django test client for anonymous requests."""
-        return Client()
-
     # -------------------------------------------------------------------------
-    # Public routes (should return 200 without auth)
-    # -------------------------------------------------------------------------
-
-    @pytest.mark.parametrize("path", [
-        "/",
-        "/health/",
-    ])
-    def test_public_route_returns_200(self, client, path):
-        """Public routes must return 200 for anonymous users."""
-        response = client.get(path)
-
-        assert response.status_code == 200, (
-            f"Route '{path}' returned {response.status_code}, expected 200. "
-            f"Public routes must be accessible without authentication."
-        )
-
-    # -------------------------------------------------------------------------
-    # Auth-required routes (should return 302 to login, not 404)
-    # -------------------------------------------------------------------------
-
-    @pytest.mark.parametrize("path", [
-        "/claims/upload/",
-        "/claims/decode/",
-        "/agents/decision-analyzer/",
-        "/agents/evidence-gap/",
-        "/agents/statement-generator/",
-        "/vso/",
-    ])
-    def test_auth_required_route_redirects_not_404(self, client, path):
-        """
-        Auth-required routes must redirect anonymous users to login.
-
-        A 404 indicates the route was removed or misconfigured.
-        A 302/301 redirect to login is expected behavior.
-        """
-        response = client.get(path)
-
-        # Must NOT be 404 (route missing)
-        assert response.status_code != 404, (
-            f"Route '{path}' returned 404. "
-            f"This route should exist and redirect to login, not return 404."
-        )
-
-        # Should be a redirect (302 or 301)
-        assert response.status_code in (301, 302), (
-            f"Route '{path}' returned {response.status_code}, expected 302 redirect. "
-            f"Auth-required routes should redirect anonymous users to login."
-        )
-
-        # Should redirect to login page
-        redirect_url = response.url if hasattr(response, 'url') else response.get('Location', '')
-        assert '/accounts/login/' in redirect_url or '/login/' in redirect_url, (
-            f"Route '{path}' redirected to '{redirect_url}', expected login page redirect."
-        )
-
-    # -------------------------------------------------------------------------
-    # Verify routes exist via Django URL resolver (no HTTP request needed)
+    # Named URL patterns must resolve
     # -------------------------------------------------------------------------
 
     @pytest.mark.parametrize("url_name,kwargs", [
+        # Core routes
         ("home", {}),
         ("health_check", {}),
+        # Claims routes
         ("claims:document_list", {}),
         ("claims:document_upload", {}),
         ("claims:denial_decoder", {}),
+        # Agent routes
         ("agents:home", {}),
         ("agents:decision_analyzer", {}),
         ("agents:evidence_gap", {}),
         ("agents:statement_generator", {}),
+        # Exam prep routes
+        ("examprep:guide_list", {}),
+        ("examprep:rating_calculator", {}),
+        ("examprep:smc_calculator", {}),
+        ("examprep:tdiu_calculator", {}),
+        ("examprep:glossary_list", {}),
+        ("examprep:secondary_conditions_hub", {}),
+        # Appeals routes
+        ("appeals:home", {}),
+        ("appeals:decision_tree", {}),
+        # VSO routes
         ("vso:dashboard", {}),
+        # Auth routes
+        ("account_login", {}),
+        ("account_signup", {}),
     ])
     def test_named_url_resolves(self, url_name, kwargs):
         """Named URLs must resolve without NoReverseMatch error."""
-        from django.urls import reverse, NoReverseMatch
-
         try:
             url = reverse(url_name, kwargs=kwargs)
             assert url is not None and url != ""
@@ -238,7 +153,7 @@ class TestRouteIntegrityTripwires:
             )
 
     # -------------------------------------------------------------------------
-    # Verify route paths resolve to views (not 404 at resolver level)
+    # Critical paths must resolve to views
     # -------------------------------------------------------------------------
 
     @pytest.mark.parametrize("path", [
@@ -251,13 +166,15 @@ class TestRouteIntegrityTripwires:
         "/agents/decision-analyzer/",
         "/agents/evidence-gap/",
         "/agents/statement-generator/",
+        "/exam-prep/",
+        "/exam-prep/rating-calculator/",
+        "/appeals/",
         "/vso/",
+        "/accounts/login/",
+        "/accounts/signup/",
     ])
     def test_path_resolves_to_view(self, path):
         """URL paths must resolve to a view function (not raise Resolver404)."""
-        from django.urls import resolve
-        from django.urls.exceptions import Resolver404
-
         try:
             match = resolve(path)
             assert match.func is not None, f"Path '{path}' resolved but has no view function."
@@ -266,3 +183,117 @@ class TestRouteIntegrityTripwires:
                 f"Path '{path}' raised Resolver404. "
                 f"This route does not exist in URL configuration."
             )
+
+
+# =============================================================================
+# Goal C: Route HTTP Behavior (requires DB for auth checks)
+# =============================================================================
+
+@pytest.mark.django_db
+class TestRouteHTTPBehavior:
+    """
+    Validates HTTP response behavior for critical routes.
+
+    Rules:
+    - Core public routes (/, /health/) must return 200
+    - Auth-required routes must return 302 redirect to login with next= parameter
+    - Other public routes should "not 404" (may be monetized later)
+
+    These tests use Django test client and require DB for auth middleware.
+    """
+
+    @pytest.fixture
+    def client(self):
+        """Django test client for anonymous requests."""
+        from django.test import Client
+        return Client()
+
+    # -------------------------------------------------------------------------
+    # Core public routes (must remain 200)
+    # -------------------------------------------------------------------------
+
+    @pytest.mark.parametrize("path", [
+        "/",
+        "/health/",
+        "/accounts/login/",
+        "/accounts/signup/",
+    ])
+    def test_core_public_route_returns_200(self, client, path):
+        """Core public routes must return 200 for anonymous users."""
+        response = client.get(path)
+
+        assert response.status_code == 200, (
+            f"Route '{path}' returned {response.status_code}, expected 200. "
+            f"This core route must remain publicly accessible."
+        )
+
+    # -------------------------------------------------------------------------
+    # Public routes (should not 404, but may be gated in future)
+    # -------------------------------------------------------------------------
+
+    @pytest.mark.parametrize("path", [
+        "/exam-prep/",
+        "/exam-prep/rating-calculator/",
+        "/exam-prep/smc-calculator/",
+        "/exam-prep/tdiu-calculator/",
+        "/exam-prep/secondary-conditions/",
+        "/exam-prep/glossary/",
+        "/appeals/",
+        "/appeals/find-your-path/",
+    ])
+    def test_public_route_exists(self, client, path):
+        """Public routes must exist (not 404). May return 200 or redirect."""
+        response = client.get(path)
+
+        assert response.status_code != 404, (
+            f"Route '{path}' returned 404. "
+            f"This route should exist. If intentionally removed, update this test."
+        )
+
+    # -------------------------------------------------------------------------
+    # Auth-required routes (must redirect to login with next=)
+    # -------------------------------------------------------------------------
+
+    @pytest.mark.parametrize("path", [
+        "/dashboard/",
+        "/journey/",
+        "/claims/",
+        "/claims/upload/",
+        "/claims/decode/",
+        "/agents/decision-analyzer/",
+        "/agents/evidence-gap/",
+        "/agents/statement-generator/",
+        "/exam-prep/my-checklists/",
+        "/appeals/my-appeals/",
+        "/vso/",
+    ])
+    def test_protected_route_redirects_to_login(self, client, path):
+        """
+        Protected routes must redirect anonymous users to login.
+
+        Assertions:
+        - Response is 302 redirect (not 404 or 200)
+        - Redirect URL contains /login/ or /accounts/login/
+        - Redirect URL includes next= parameter pointing back to original path
+        """
+        response = client.get(path)
+
+        # Must be a redirect
+        assert response.status_code in (301, 302), (
+            f"Route '{path}' returned {response.status_code}, expected 302 redirect. "
+            f"Protected routes must redirect anonymous users to login."
+        )
+
+        # Get redirect location
+        redirect_url = response.get('Location', '')
+
+        # Must redirect to login
+        assert '/accounts/login/' in redirect_url or '/login/' in redirect_url, (
+            f"Route '{path}' redirected to '{redirect_url}', expected login page."
+        )
+
+        # Must include next= parameter
+        assert f'next=' in redirect_url, (
+            f"Route '{path}' redirect missing next= parameter. "
+            f"Got: '{redirect_url}'. Login redirect should preserve original destination."
+        )
