@@ -31,77 +31,109 @@
       "task": "Review your VA decision letter and identify the specific denial reasons",
       "timing": "First step",
       "category": "preparation",
-      "priority": "critical"
+      "priority": "critical",
+      "how_to": "1. Find your Rating Decision letter (mailed after your claim was decided).\n2. Look for the 'Reasons for Decision' section for each condition.\n3. Common denial reasons:\n   - 'No current diagnosis' → You need recent medical records showing the condition\n   - 'No nexus to service' → You need a doctor's opinion connecting it to service\n   - 'No in-service event' → You need buddy statements or service records\n4. Write down the EXACT reason for each denied condition.\n\nYour new evidence must directly address these specific reasons.",
+      "warning": "If the denial reason isn't clear, request your C-File (VA Form 20-10206) to see exactly what evidence VA reviewed."
     },
     {
       "id": "supp-2",
       "task": "List what NEW evidence you have that addresses each denial reason",
       "timing": "First step",
       "category": "preparation",
-      "priority": "critical"
+      "priority": "critical",
+      "how_to": "Create a simple chart:\n\nDenial Reason | New Evidence I Have\n'No nexus to service' | Nexus letter from Dr. Smith dated 1/15/2026\n'No current diagnosis' | MRI results from 12/1/2025 showing disc herniation\n'No in-service event' | Buddy statement from SGT Jones\n\nIf you don't have new evidence for a denial reason, you need to GET it before filing. A Supplemental Claim without new evidence will fail.",
+      "warning": "Evidence must be NEW (not previously submitted) AND RELEVANT (directly addresses the denial reason). Submitting the same records again doesn't count."
     },
     {
       "id": "supp-3",
       "task": "Obtain a nexus letter if you were denied for lack of service connection",
       "timing": "Before filing",
       "category": "evidence",
-      "priority": "high"
+      "priority": "high",
+      "how_to": "A nexus letter is a medical opinion stating your condition is connected to your military service.\n\n1. Ask your treating doctor (VA or private) if they can write one\n2. The letter MUST include this exact language: 'at least as likely as not' (50% or greater probability)\n3. The letter should:\n   - Reference your service records and current diagnosis\n   - Explain the medical reasoning for the connection\n   - Be signed by a qualified medical professional (MD, DO, NP, PA)\n\nIf your doctor won't write one, consider:\n- An Independent Medical Opinion (IMO) from a private provider\n- Telehealth nexus services (research carefully - some are 'paper mills' VA ignores)",
+      "warning": "Weak language like 'could be related' or 'possibly connected' is NOT strong enough. Must say 'at least as likely as not' or 'more likely than not.'"
     },
     {
       "id": "supp-4",
       "task": "Gather new medical records or treatment documentation",
       "timing": "Before filing",
       "category": "evidence",
-      "priority": "high"
+      "priority": "high",
+      "how_to": "For VA medical records:\n- VA already has these - no need to submit them\n- But DO continue treatment to create a paper trail\n\nFor private medical records:\n- Option 1: Request records directly from providers and submit them yourself\n- Option 2: Submit VA Form 21-4142/21-4142a to authorize VA to request them (slower)\n\nWhat to gather:\n- Recent treatment notes showing ongoing condition\n- Diagnostic tests (MRI, X-ray, bloodwork)\n- Specialist evaluations\n- Records showing condition has worsened\n- Any records dated AFTER your original claim",
+      "url": "https://www.va.gov/find-forms/about-form-21-4142/",
+      "url_label": "Get VA Form 21-4142 (Records Authorization)"
     },
     {
       "id": "supp-5",
       "task": "Get buddy statements with specific dates, locations, and observations",
       "timing": "Before filing",
       "category": "evidence",
-      "priority": "medium"
+      "priority": "medium",
+      "how_to": "A buddy statement is a written account from someone who witnessed your condition or the event that caused it.\n\nUse VA Form 21-10210 or write a letter including:\n1. The witness's relationship to you (fellow service member, spouse, etc.)\n2. SPECIFIC dates and locations\n3. What they personally SAW or WITNESSED\n4. How it affected you then and now\n5. Witness signature and date\n\nGOOD example: 'I witnessed PFC Smith injure his back on March 15, 2012, while lifting equipment during our deployment to Afghanistan. He was taken to sick call and complained of back pain for the rest of our tour.'\n\nBAD example: 'He told me his back hurt.' (This is hearsay, not a direct observation.)",
+      "url": "https://www.va.gov/find-forms/about-form-21-10210/",
+      "url_label": "Get VA Form 21-10210 (Buddy Statement)",
+      "warning": "Buddy statements must be FACTUAL observations, not opinions or speculation. Don't include medical diagnoses or hearsay."
     },
     {
       "id": "supp-6",
       "task": "Consider getting a private DBQ from your doctor",
       "timing": "Before filing",
       "category": "evidence",
-      "priority": "medium"
+      "priority": "medium",
+      "how_to": "A DBQ (Disability Benefits Questionnaire) is the same form C&P examiners use. Your own doctor can fill one out.\n\n1. Find the correct DBQ for your condition at the VA's DBQ page\n2. Print it and bring it to your doctor appointment\n3. Ask your doctor to complete it based on their examination\n4. Submit the completed DBQ with your Supplemental Claim\n\nThis is especially helpful if:\n- Your C&P exam was inadequate or rushed\n- Your condition has worsened since the last exam\n- You want objective measurements documented by your own doctor",
+      "url": "https://www.va.gov/find-forms/?q=dbq",
+      "url_label": "Find DBQ Forms",
+      "warning": "Not all doctors will complete DBQs. Ask beforehand. The DBQ must be filled out completely - partial DBQs may not help your claim."
     },
     {
       "id": "supp-7",
       "task": "Download and complete VA Form 20-0995",
       "timing": "When evidence is ready",
       "category": "form",
-      "priority": "high"
+      "priority": "high",
+      "how_to": "Option 1 - File Online (Recommended):\n1. Go to VA.gov and sign in\n2. Search for 'File a Supplemental Claim'\n3. Follow the online form - you can upload evidence directly\n\nOption 2 - Paper Form:\n1. Download Form 20-0995 from the link below\n2. Section I: Your personal information\n3. Section II: List each condition you're appealing\n4. Section III: Describe what new evidence you're submitting\n5. Section IV: Check if you want VA to help get records (Form 21-4142)\n6. Sign and date",
+      "url": "https://www.va.gov/find-forms/about-form-20-0995/",
+      "url_label": "Get VA Form 20-0995",
+      "online_url": "https://www.va.gov/decision-reviews/supplemental-claim/file-supplemental-claim-form-20-0995/",
+      "online_url_label": "File Supplemental Claim Online",
+      "time_estimate": "30-60 minutes"
     },
     {
       "id": "supp-8",
       "task": "Make copies of all evidence for your records",
       "timing": "Before submission",
       "category": "preparation",
-      "priority": "medium"
+      "priority": "medium",
+      "how_to": "Before submitting ANYTHING:\n1. Make copies of every document (scan or photocopy)\n2. Save digital copies to your computer and cloud storage\n3. Organize by type: medical records, nexus letters, buddy statements, forms\n4. Create a simple inventory list of what you're submitting\n\nWhy this matters:\n- Documents sometimes get lost\n- You may need to reference them later\n- If you appeal again, you'll know exactly what was submitted when"
     },
     {
       "id": "supp-9",
       "task": "Submit form AND all new evidence together",
       "timing": "Submission",
       "category": "submission",
-      "priority": "critical"
+      "priority": "critical",
+      "how_to": "Submit your completed Form 20-0995 WITH all your new evidence at the same time:\n\nOnline (Fastest):\n1. Use VA.gov's Supplemental Claim tool\n2. Upload all evidence during the submission process\n3. You'll get instant confirmation\n\nBy Mail:\n1. Mail everything together to: Department of Veterans Affairs, Claims Intake Center, PO Box 4444, Janesville, WI 53547-4444\n2. Use certified mail with return receipt\n3. Include a cover letter listing all enclosed documents",
+      "url": "https://www.va.gov/decision-reviews/supplemental-claim/file-supplemental-claim-form-20-0995/",
+      "url_label": "Submit Online",
+      "warning": "Do NOT submit the form and say 'evidence coming later.' VA may decide your claim before additional evidence arrives. Submit everything together."
     },
     {
       "id": "supp-10",
       "task": "Save your confirmation number and submission date",
       "timing": "After submission",
       "category": "tracking",
-      "priority": "high"
+      "priority": "high",
+      "how_to": "Online submission: Screenshot or save the confirmation page.\n\nMail submission: Keep your certified mail receipt.\n\nRecord these details:\n- Date submitted\n- Confirmation/tracking number\n- Method (online, mail, VSO)\n- List of evidence submitted\n- Conditions appealed\n\nYou'll need this information to track your claim and prove timely filing."
     },
     {
       "id": "supp-11",
       "task": "Set reminder to check claim status in 60 days",
       "timing": "After submission",
       "category": "tracking",
-      "priority": "medium"
+      "priority": "medium",
+      "how_to": "Average processing time is ~93 days, but varies.\n\nTo check status:\n1. Sign into VA.gov\n2. Go to 'Check your claim and appeals status'\n3. Look for status updates and any requests for information\n\nIf no update after 90+ days:\n- Call VA at 1-800-827-1000\n- Ask for status of your Supplemental Claim\n- Contact your VSO if you have one\n\nWhile waiting:\n- Continue medical treatment (creates records)\n- Respond IMMEDIATELY to any VA requests\n- Don't file duplicate claims",
+      "url": "https://www.va.gov/claim-or-appeal-status/",
+      "url_label": "Check Claim Status"
     }
   ],
 

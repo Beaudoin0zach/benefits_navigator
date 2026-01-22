@@ -31,84 +31,116 @@
       "task": "Request your complete VA claim file (C-File) if you don't have it",
       "timing": "Before filing",
       "category": "preparation",
-      "priority": "high"
+      "priority": "high",
+      "how_to": "1. Download VA Form 20-10206 (FOIA/Privacy Act Request) from the link below.\n2. Fill out the form with your personal info, dates of service, and claim number.\n3. Sign in ink (use any color other than black).\n4. Submit online via VA.gov's document upload tool, or mail to the VA FOIA office (address on form).\n5. Include a copy of your government-issued ID.\n6. Wait 5-8 months for VA to mail your file on CD-ROM.",
+      "url": "https://www.va.gov/find-forms/about-form-20-10206/",
+      "url_label": "Get VA Form 20-10206",
+      "time_estimate": "5-8 months to receive",
+      "warning": "Start this EARLY - it takes months. VA requires a signed, dated form (not a digital signature). You can't identify errors without knowing what's in your file."
     },
     {
       "id": "hlr-2",
       "task": "Review your decision letter and identify SPECIFIC errors",
       "timing": "Before filing",
       "category": "preparation",
-      "priority": "critical"
+      "priority": "critical",
+      "how_to": "1. Find the 'Reasons for Decision' section in your Rating Decision letter.\n2. For each denied/low-rated condition, note the VA's stated reason.\n3. Compare against your C-File: Did VA ignore a document? Misread exam results? Use wrong rating criteria?\n4. Look for errors like: ignored nexus letters, wrong diagnostic codes, math errors in combined ratings, C&P findings not reflected in decision.\n5. Write down each error with the specific document name and date.",
+      "warning": "Don't just say 'I disagree.' You must identify a SPECIFIC factual or legal error the VA made with evidence already in your file."
     },
     {
       "id": "hlr-3",
       "task": "Confirm you have no new evidence (if you do, consider Supplemental Claim instead)",
       "timing": "Before filing",
       "category": "decision",
-      "priority": "critical"
+      "priority": "critical",
+      "how_to": "Ask yourself: Do I have ANY of these that VA hasn't seen?\n- New medical records or test results\n- A nexus letter from a doctor\n- New buddy statements\n- Updated treatment records\n- A private DBQ\n\nIf YES to any: File a Supplemental Claim (Form 20-0995) instead.\nIf NO: Higher-Level Review is correct - proceed with Form 20-0996.",
+      "warning": "HLR does NOT allow new evidence. If you submit new evidence, it will be IGNORED. Wrong choice = wasted months."
     },
     {
       "id": "hlr-4",
       "task": "Write down the specific errors with document names and dates",
       "timing": "Before filing",
       "category": "preparation",
-      "priority": "high"
+      "priority": "high",
+      "how_to": "Create a simple list like this:\n\nError 1: Decision ignored nexus letter\n- Document: Dr. Smith IMO dated 5/15/2024\n- Page 3 of decision says 'no medical opinion linking condition to service'\n- But Dr. Smith's letter states 'at least as likely as not' connection\n\nError 2: Wrong diagnostic code used\n- Decision used DC 5237 (back strain)\n- Should be DC 5243 (IVDS) based on MRI findings dated 3/10/2024\n\nBe specific. Reference exact documents, dates, and page numbers."
     },
     {
       "id": "hlr-5",
       "task": "Download and complete VA Form 20-0996",
       "timing": "When ready",
       "category": "form",
-      "priority": "high"
+      "priority": "high",
+      "how_to": "Option 1 - File Online (Recommended):\n1. Go to VA.gov and sign in with Login.gov or ID.me\n2. Search for 'Request a Higher-Level Review'\n3. Follow the online form - it's easier than paper\n\nOption 2 - Paper Form:\n1. Download Form 20-0996 from the link below\n2. Section I: Your personal info\n3. Section V: List EACH issue you're appealing with the decision date\n4. Item 16A: Check YES for Informal Conference (recommended)\n5. Sign and date the form",
+      "url": "https://www.va.gov/find-forms/about-form-20-0996/",
+      "url_label": "Get VA Form 20-0996",
+      "online_url": "https://www.va.gov/decision-reviews/higher-level-review/request-higher-level-review-form-20-0996/",
+      "online_url_label": "File HLR Online",
+      "time_estimate": "30-60 minutes"
     },
     {
       "id": "hlr-6",
       "task": "Check the box to request an Informal Conference",
       "timing": "On form",
       "category": "form",
-      "priority": "high"
+      "priority": "high",
+      "how_to": "On VA Form 20-0996:\n- Find Item 16A: 'Would you like an informal conference?'\n- Check 'YES'\n\nThe informal conference is a phone call (10-30 minutes) with the reviewer where you can explain the errors. It's FREE and your best chance to make your case directly.",
+      "warning": "This is NOT a hearing and you CANNOT submit new evidence. It's only to discuss errors in how VA applied the existing evidence."
     },
     {
       "id": "hlr-7",
       "task": "Verify your phone number is correct on the form",
       "timing": "On form",
       "category": "form",
-      "priority": "medium"
+      "priority": "medium",
+      "how_to": "Double-check the phone number in Section I of the form. The VA will call this number for your Informal Conference - usually 4-8 weeks after filing. If they can't reach you, you may lose your conference opportunity.",
+      "warning": "If you miss the call and don't have voicemail set up, VA may proceed without the conference. Make sure voicemail is working and check it daily."
     },
     {
       "id": "hlr-8",
       "task": "Submit VA Form 20-0996 (do NOT include new evidence)",
       "timing": "Submission",
       "category": "submission",
-      "priority": "critical"
+      "priority": "critical",
+      "how_to": "Online (Fastest):\n1. Use the VA.gov Higher-Level Review tool\n2. You'll get instant confirmation\n\nBy Mail:\n1. Mail to: Department of Veterans Affairs, Claims Intake Center, PO Box 4444, Janesville, WI 53547-4444\n2. Use certified mail with return receipt\n3. Keep a copy of everything\n\nThrough VSO:\n1. Your VSO can submit on your behalf\n2. Make sure they have a current VA Form 21-22",
+      "url": "https://www.va.gov/decision-reviews/higher-level-review/request-higher-level-review-form-20-0996/",
+      "url_label": "Submit HLR Online",
+      "warning": "Do NOT include any new documents, medical records, or evidence. They will be IGNORED. HLR reviews only what's already in your file."
     },
     {
       "id": "hlr-9",
       "task": "Save confirmation number and submission date",
       "timing": "After submission",
       "category": "tracking",
-      "priority": "high"
+      "priority": "high",
+      "how_to": "Online submission: Screenshot or save the confirmation page with your confirmation number.\n\nMail submission: Keep your certified mail receipt and a copy of everything you sent.\n\nRecord these details:\n- Date submitted\n- Confirmation/tracking number\n- Method (online, mail, VSO)\n- Issues appealed\n\nYou'll need this to track your claim and prove timely filing if questions arise."
     },
     {
       "id": "hlr-10",
       "task": "Prepare talking points for Informal Conference",
       "timing": "While waiting",
       "category": "preparation",
-      "priority": "high"
+      "priority": "high",
+      "how_to": "Write a script (keep it under 5 minutes of talking):\n\n1. Introduction: 'I'm calling about my HLR for [condition]. I believe the decision contained these errors...'\n\n2. Error 1: 'The decision on page X ignored [specific document] dated [date], which shows [what it proves]'\n\n3. Error 2: [Same format]\n\n4. Closing: 'Based on the evidence already in my file, I believe the decision should be [what you want]'\n\nHave your decision letter and notes in front of you during the call.",
+      "warning": "The call is usually 10-30 minutes. Be concise and factual. Don't argue or get emotional - just clearly state the errors. You cannot introduce new evidence during this call."
     },
     {
       "id": "hlr-11",
       "task": "Keep phone available for conference call (check voicemail daily)",
       "timing": "Weeks 4-8",
       "category": "conference",
-      "priority": "critical"
+      "priority": "critical",
+      "how_to": "The VA will call you for the Informal Conference, typically 4-8 weeks after filing. They may call from a blocked or unknown number.\n\n1. Answer calls from unknown numbers during this period\n2. Check voicemail daily - they may leave a callback number\n3. If you miss it, call back immediately\n4. Keep your phone charged and with you\n\nTo check claim status: Sign into VA.gov → 'Check your claim and appeals status'",
+      "url": "https://www.va.gov/claim-or-appeal-status/",
+      "url_label": "Check Claim Status",
+      "warning": "If you miss the conference call and don't return it promptly, VA may proceed without the conference. You only get ONE conference per HLR."
     },
     {
       "id": "hlr-12",
       "task": "After call, document what was discussed",
       "timing": "After conference",
       "category": "tracking",
-      "priority": "medium"
+      "priority": "medium",
+      "how_to": "Immediately after the Informal Conference call, write down:\n\n1. Date and time of call\n2. Name of the reviewer (if given)\n3. What errors you discussed\n4. Any questions the reviewer asked\n5. Anything the reviewer said about your case\n6. Any concerns or follow-up mentioned\n\nKeep this with your claim records. If there's a dispute later about what was discussed, you'll have documentation."
     }
   ],
 
