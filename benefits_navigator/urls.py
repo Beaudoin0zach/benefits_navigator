@@ -9,7 +9,7 @@ from django.conf.urls.static import static
 from django.contrib.sitemaps.views import sitemap
 from django.views.generic import TemplateView
 from django.http import JsonResponse
-from strawberry.django.views import GraphQLView
+from api.graphql import JWTAuthGraphQLView
 
 from core import views
 
@@ -52,8 +52,11 @@ urlpatterns = [
     # User dashboard
     path('dashboard/', views.dashboard, name='dashboard'),
 
-    # GraphQL API
-    path('graphql/', GraphQLView.as_view(schema=schema), name='graphql'),
+    # GraphQL API (supports both session and JWT auth)
+    path('graphql/', JWTAuthGraphQLView.as_view(schema=schema), name='graphql'),
+
+    # Mobile API (JWT auth)
+    path('api/v1/', include('api.urls', namespace='api')),
 
     # Admin
     path('admin/', admin.site.urls),
