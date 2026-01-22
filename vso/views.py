@@ -235,8 +235,35 @@ def dashboard(request):
     total_closed = closed_cases.count()
     win_rate = (won_cases / total_closed * 100) if total_closed > 0 else 0
 
+    # This month metrics
+    now = timezone.now()
+    first_of_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    cases_this_month = cases.filter(created_at__gte=first_of_month).count()
+    closed_this_month = closed_cases.filter(closed_at__gte=first_of_month).count()
+    won_this_month = closed_cases.filter(status='closed_won', closed_at__gte=first_of_month).count()
+
+    # Last month metrics for trend comparison
+    if first_of_month.month == 1:
+        first_of_last_month = first_of_month.replace(year=first_of_month.year - 1, month=12)
+    else:
+        first_of_last_month = first_of_month.replace(month=first_of_month.month - 1)
+
+    closed_last_month = closed_cases.filter(
+        closed_at__gte=first_of_last_month,
+        closed_at__lt=first_of_month
+    )
+    won_last_month = closed_last_month.filter(status='closed_won').count()
+    total_closed_last_month = closed_last_month.count()
+    win_rate_last_month = (won_last_month / total_closed_last_month * 100) if total_closed_last_month > 0 else None
+
+    # Calculate trend direction
+    if win_rate_last_month is not None and total_closed > 0:
+        win_rate_trend = 'up' if win_rate > win_rate_last_month else ('down' if win_rate < win_rate_last_month else 'flat')
+    else:
+        win_rate_trend = None
+
     # Stale cases - no activity in 30+ days
-    thirty_days_ago = timezone.now() - timedelta(days=30)
+    thirty_days_ago = now - timedelta(days=30)
     stale_cases = cases.filter(
         last_activity_at__lt=thirty_days_ago,
         is_archived=False
@@ -257,6 +284,12 @@ def dashboard(request):
         'total_closed': total_closed,
         'stale_cases': stale_cases,
         'status_choices': VeteranCase.STATUS_CHOICES,
+        # This month metrics
+        'cases_this_month': cases_this_month,
+        'closed_this_month': closed_this_month,
+        'won_this_month': won_this_month,
+        'win_rate_trend': win_rate_trend,
+        'win_rate_last_month': win_rate_last_month,
     }
 
     return render(request, 'vso/dashboard.html', context)
