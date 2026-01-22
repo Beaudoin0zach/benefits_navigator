@@ -59,14 +59,7 @@
                     </div>
 
                     <div class="text-right">
-                        <span class="inline-block px-3 py-1 text-sm rounded-full
-                            {% if appeal.status == 'deciding' %}bg-yellow-100 text-yellow-800
-                            {% elif appeal.status == 'gathering' %}bg-blue-100 text-blue-800
-                            {% elif appeal.status == 'submitted' %}bg-green-100 text-green-800
-                            {% elif appeal.status == 'in_review' %}bg-purple-100 text-purple-800
-                            {% else %}bg-gray-100 text-gray-800{% endif %}">
-                            {{ appeal.get_status_display }}
-                        </span>
+                        {% include 'components/status_badge.html' with status=appeal.status display=appeal.get_status_display %}
 
                         {% if appeal.days_until_deadline %}
                         <p class="text-sm mt-2

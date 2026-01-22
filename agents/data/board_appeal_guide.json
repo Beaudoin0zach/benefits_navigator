@@ -55,84 +55,117 @@
       "task": "Decide which lane is right for your situation",
       "timing": "Before filing",
       "category": "decision",
-      "priority": "critical"
+      "priority": "critical",
+      "how_to": "You MUST choose ONE of three lanes. Once selected, you cannot change it for this appeal.\n\n**Direct Review Lane** (~400 days)\n- Best if: You have NO new evidence and don't need a hearing\n- What happens: Judge reviews existing file only\n- Choose this for: Fastest Board decision\n\n**Evidence Submission Lane** (~550 days)\n- Best if: You have or can get new evidence within 90 days\n- What happens: You submit new evidence, then judge reviews\n- Choose this for: Adding evidence without a hearing\n\n**Hearing Request Lane** (~850 days)\n- Best if: You want to present your case to a judge\n- What happens: You testify before a Veterans Law Judge\n- Choose this for: Complex cases, chance to explain in person",
+      "warning": "You CANNOT switch lanes after filing. If you choose Direct Review, you cannot submit new evidence later. Choose carefully."
     },
     {
       "id": "board-2",
       "task": "If choosing Hearing lane, decide hearing type preference",
       "timing": "Before filing",
       "category": "decision",
-      "priority": "high"
+      "priority": "high",
+      "how_to": "If you selected Hearing Request Lane, choose your hearing type:\n\n**Virtual/Tele-hearing** (From your home)\n- You appear via video call from your computer\n- Most convenient - no travel required\n- Technology requirements: webcam, microphone, stable internet\n\n**Video Conference** (At VA office)\n- You go to your local VA Regional Office\n- Judge appears on screen from Washington, D.C.\n- Still face-to-face, but no D.C. travel\n\n**In-Person** (Travel required)\n- Travel to VA Regional Office OR Washington, D.C.\n- Longest wait time\n- Some veterans prefer the personal connection\n\nMost veterans now choose Virtual hearings for convenience."
     },
     {
       "id": "board-3",
       "task": "List ALL issues you want the judge to review",
       "timing": "Before filing",
       "category": "preparation",
-      "priority": "critical"
+      "priority": "critical",
+      "how_to": "Write down every condition/issue you want appealed to the Board. Be thorough.\n\nFor each issue, note:\n1. The specific condition (e.g., 'PTSD', 'lumbar spine strain')\n2. The decision date from your Rating Decision\n3. What the decision was (denied, low rating, etc.)\n\nExample list:\n- PTSD - denied 3/15/2025\n- Lumbar spine - rated 10%, believe should be higher - 3/15/2025\n- Tinnitus - denied 3/15/2025\n\nYou'll enter each issue separately on Form 10182.",
+      "warning": "Issues NOT listed on your form will NOT be reviewed by the judge. Don't forget any conditions you want appealed."
     },
     {
       "id": "board-4",
       "task": "Consider getting a representative (VSO, attorney, or claims agent)",
       "timing": "Before filing",
       "category": "preparation",
-      "priority": "high"
+      "priority": "high",
+      "how_to": "Board Appeals are more complex. Consider getting help:\n\n**VSO (Veterans Service Organization)** - FREE\n- DAV, VFW, American Legion, etc.\n- Can help prepare appeal and represent you at hearings\n- Find one: https://www.va.gov/vso/\n\n**VA-Accredited Attorney** - Fees apply (usually % of back pay)\n- Consider for complex legal issues\n- Can only charge fees after initial claim denial\n- Find one: https://www.va.gov/ogc/apps/accreditation/\n\n**Claims Agent** - Fees apply\n- Non-attorney representatives\n- Accredited by VA\n\nTo appoint a representative, complete VA Form 21-22 (for VSOs) or 21-22a (for attorneys/agents).",
+      "url": "https://www.va.gov/vso/",
+      "url_label": "Find a VSO"
     },
     {
       "id": "board-5",
       "task": "Download and complete VA Form 10182",
       "timing": "When ready",
       "category": "form",
-      "priority": "high"
+      "priority": "high",
+      "how_to": "Option 1 - File Online:\n1. Go to VA.gov and sign in\n2. Search for 'Request a Board Appeal'\n3. Complete the online form\n\nOption 2 - Paper Form:\n1. Download VA Form 10182 from the link below\n2. Section I: Your personal information\n3. Section II: Select your lane (Direct, Evidence, or Hearing - ONLY ONE)\n4. Section III: List each issue with the decision date\n5. If Hearing lane: Select hearing type preference\n6. Section for representative (if applicable)\n7. Sign and date",
+      "url": "https://www.va.gov/find-forms/about-form-10182/",
+      "url_label": "Get VA Form 10182",
+      "online_url": "https://www.va.gov/decision-reviews/board-appeal/request-board-appeal-form-10182/",
+      "online_url_label": "File Board Appeal Online",
+      "time_estimate": "30-60 minutes"
     },
     {
       "id": "board-6",
       "task": "Select ONLY ONE lane on the form",
       "timing": "On form",
       "category": "form",
-      "priority": "critical"
+      "priority": "critical",
+      "how_to": "On VA Form 10182, Section II asks you to select ONE option:\n\n☐ Direct Review\n☐ Evidence Submission  \n☐ Hearing Request\n\nCheck ONLY ONE box. If you check multiple boxes, your form may be returned or VA will contact you to clarify, delaying your appeal.",
+      "warning": "This is a common mistake. Checking more than one lane OR forgetting to check any lane will cause delays. Double-check before submitting."
     },
     {
       "id": "board-7",
       "task": "Submit VA Form 10182",
       "timing": "Submission",
       "category": "submission",
-      "priority": "high"
+      "priority": "high",
+      "how_to": "Online (Fastest):\n1. Use VA.gov's Board Appeal request tool\n2. You'll get instant confirmation\n\nBy Mail:\n1. Mail to: Board of Veterans' Appeals, PO Box 27063, Washington, DC 20038\n2. Use certified mail with return receipt\n3. Keep a copy of everything\n\nThrough Representative:\n1. Your VSO or attorney can submit on your behalf\n2. Confirm they have current POA (Form 21-22 or 21-22a)\n\nDeadline: Within ONE YEAR of your Rating Decision date.",
+      "url": "https://www.va.gov/decision-reviews/board-appeal/request-board-appeal-form-10182/",
+      "url_label": "Submit Board Appeal Online",
+      "warning": "Don't miss the 1-year deadline. If mailing, send early - it must be RECEIVED (not postmarked) by the deadline."
     },
     {
       "id": "board-8",
       "task": "Save confirmation and submission date",
       "timing": "After submission",
       "category": "tracking",
-      "priority": "high"
+      "priority": "high",
+      "how_to": "Online submission: Screenshot or save the confirmation page.\n\nMail submission: Keep your certified mail receipt and tracking number.\n\nRecord these details:\n- Date submitted\n- Confirmation/tracking number\n- Lane selected (Direct, Evidence, or Hearing)\n- Hearing type (if applicable)\n- Issues appealed\n\nYou'll need this to track your appeal, which can take 1-2+ years."
     },
     {
       "id": "board-9",
       "task": "If Evidence lane: Submit all new evidence within 90 days",
       "timing": "Days 1-90",
       "category": "evidence",
-      "priority": "critical"
+      "priority": "critical",
+      "how_to": "If you chose the Evidence Submission Lane, you have EXACTLY 90 DAYS from filing to submit new evidence.\n\n1. Gather all new evidence IMMEDIATELY after filing\n2. Submit via VA.gov evidence upload OR mail to the Board\n3. Track your 90-day deadline (mark it on your calendar!)\n4. Submit well before day 90 to ensure receipt\n\nWhat to submit:\n- New medical records\n- Nexus letters\n- Buddy statements\n- Private DBQs\n- Any evidence not previously in your file",
+      "warning": "The 90-day window is FIRM. After 90 days, no additional evidence will be accepted. The judge will only review what's submitted by the deadline."
     },
     {
       "id": "board-10",
       "task": "If Hearing lane: Prepare your testimony and key points",
       "timing": "Before hearing",
       "category": "preparation",
-      "priority": "high"
+      "priority": "high",
+      "how_to": "Your hearing may be scheduled 1+ year after filing. When you receive notice:\n\n**60 days before hearing:**\n1. Review your decision letter and claim file\n2. Write out your key points (3-5 main arguments)\n3. Practice explaining your case clearly and concisely\n4. Organize any documents you want to reference\n\n**Your testimony should cover:**\n- What happened during service (in-service event)\n- How the condition affects your daily life now\n- Why you believe VA made an error\n- Specific evidence supporting your claim\n\n**Tips:**\n- Be honest and factual\n- Don't exaggerate or downplay\n- Bring a written outline to reference\n- You can submit evidence at the hearing (or within 90 days after)",
+      "warning": "The judge may ask questions. If you don't know an answer, say 'I don't know' rather than guessing. Bring your representative if you have one."
     },
     {
       "id": "board-11",
       "task": "Keep contact information updated with VA",
       "timing": "Ongoing",
       "category": "tracking",
-      "priority": "high"
+      "priority": "high",
+      "how_to": "Board Appeals take 1-2+ years. Your contact info may change during this time.\n\n**Update your address/phone with VA:**\n1. Sign into VA.gov → Profile → Contact Information\n2. Call VA at 1-800-827-1000\n3. Submit VA Form 10-0998 (Change of Address)\n\n**Why this matters:**\n- Hearing notices are mailed to your address on file\n- If notice is returned undeliverable, you may miss your hearing\n- Missing a hearing can seriously hurt your appeal",
+      "url": "https://www.va.gov/change-address/",
+      "url_label": "Update Your VA Contact Info",
+      "warning": "If you move, update VA IMMEDIATELY. A missed hearing notice could mean losing your appeal."
     },
     {
       "id": "board-12",
       "task": "Respond promptly to any Board notices or scheduling requests",
       "timing": "Ongoing",
       "category": "tracking",
-      "priority": "critical"
+      "priority": "critical",
+      "how_to": "Watch your mail (and email if you've opted in) for Board correspondence:\n\n**Hearing Notice:** Comes ~60 days before your hearing\n- Confirm you can attend\n- Request rescheduling ASAP if needed (one postponement usually allowed)\n\n**Evidence Requests:** Respond within stated deadline\n\n**Scheduling Conflicts:** Contact the Board immediately at 1-800-923-8387\n\n**Check status:**\n1. Sign into VA.gov\n2. Go to 'Check your claim and appeals status'\n3. Look for your Board Appeal",
+      "url": "https://www.va.gov/claim-or-appeal-status/",
+      "url_label": "Check Appeal Status",
+      "warning": "Missing deadlines or hearings without good cause can result in your appeal being decided without your input. Respond to ALL Board correspondence immediately."
     }
   ],
 
