@@ -21,28 +21,31 @@
         <div class="lg:col-span-2 space-y-6">
             <!-- Current Stage Card -->
             {% if current_stage %}
+            {# Define color classes explicitly for Tailwind purge #}
+            {% with stage_color=current_stage.color %}
             <div class="bg-white shadow rounded-lg overflow-hidden">
-                <div class="px-6 py-4 bg-{{ current_stage.color }}-50 border-b border-{{ current_stage.color }}-100">
+                <div class="px-6 py-4 border-b {% if stage_color == 'blue' %}bg-blue-50 border-blue-100{% elif stage_color == 'green' %}bg-green-50 border-green-100{% elif stage_color == 'yellow' %}bg-yellow-50 border-yellow-100{% elif stage_color == 'red' %}bg-red-50 border-red-100{% elif stage_color == 'purple' %}bg-purple-50 border-purple-100{% else %}bg-gray-50 border-gray-100{% endif %}">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-{{ current_stage.color }}-600 font-medium">Current Stage</p>
-                            <h2 class="text-xl font-semibold text-{{ current_stage.color }}-800">
+                            <p class="text-sm font-medium {% if stage_color == 'blue' %}text-blue-600{% elif stage_color == 'green' %}text-green-600{% elif stage_color == 'yellow' %}text-yellow-600{% elif stage_color == 'red' %}text-red-600{% elif stage_color == 'purple' %}text-purple-600{% else %}text-gray-600{% endif %}">Current Stage</p>
+                            <h2 class="text-xl font-semibold {% if stage_color == 'blue' %}text-blue-800{% elif stage_color == 'green' %}text-green-800{% elif stage_color == 'yellow' %}text-yellow-800{% elif stage_color == 'red' %}text-red-800{% elif stage_color == 'purple' %}text-purple-800{% else %}text-gray-800{% endif %}">
                                 {{ current_stage.name }}
                             </h2>
                         </div>
-                        <div class="h-12 w-12 rounded-full bg-{{ current_stage.color }}-100 flex items-center justify-center">
-                            <svg class="h-6 w-6 text-{{ current_stage.color }}-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="h-12 w-12 rounded-full flex items-center justify-center {% if stage_color == 'blue' %}bg-blue-100{% elif stage_color == 'green' %}bg-green-100{% elif stage_color == 'yellow' %}bg-yellow-100{% elif stage_color == 'red' %}bg-red-100{% elif stage_color == 'purple' %}bg-purple-100{% else %}bg-gray-100{% endif %}">
+                            <svg class="h-6 w-6 {% if stage_color == 'blue' %}text-blue-600{% elif stage_color == 'green' %}text-green-600{% elif stage_color == 'yellow' %}text-yellow-600{% elif stage_color == 'red' %}text-red-600{% elif stage_color == 'purple' %}text-purple-600{% else %}text-gray-600{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                             </svg>
                         </div>
                     </div>
                     {% if current_stage.description %}
-                    <p class="mt-2 text-sm text-{{ current_stage.color }}-700">
+                    <p class="mt-2 text-sm {% if stage_color == 'blue' %}text-blue-700{% elif stage_color == 'green' %}text-green-700{% elif stage_color == 'yellow' %}text-yellow-700{% elif stage_color == 'red' %}text-red-700{% elif stage_color == 'purple' %}text-purple-700{% else %}text-gray-700{% endif %}">
                         {{ current_stage.description }}
                     </p>
                     {% endif %}
                 </div>
             </div>
+            {% endwith %}
             {% endif %}
 
             <!-- Stats Summary -->
