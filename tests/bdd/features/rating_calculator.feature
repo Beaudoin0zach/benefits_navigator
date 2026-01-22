@@ -5,26 +5,26 @@ Feature: VA Disability Rating Calculator
 
   Scenario: Rating calculator is publicly accessible
     Given I am an anonymous user
-    When I visit "/examprep/rating-calculator/"
+    When I visit "/exam-prep/rating-calculator/"
     Then I should see a 200 status
     And I should see "Rating Calculator" on the page
 
   Scenario: SMC calculator is accessible
     Given I am an anonymous user
-    When I visit "/examprep/smc-calculator/"
+    When I visit "/exam-prep/smc-calculator/"
     Then I should see a 200 status
 
   Scenario: TDIU calculator is accessible
     Given I am an anonymous user
-    When I visit "/examprep/tdiu-calculator/"
+    When I visit "/exam-prep/tdiu-calculator/"
     Then I should see a 200 status
 
   Scenario: Premium user can save calculations
     Given I am a premium user
-    When I visit "/examprep/rating-calculator/saved/"
+    When I visit "/exam-prep/rating-calculator/saved/"
     Then I should see a 200 status
 
-  Scenario: Shared calculations are viewable
+  Scenario: Shared calculations return 404 for invalid token
     Given I am an anonymous user
-    When I visit "/examprep/shared/invalid-token/"
-    Then I should see a 200 status
+    When I visit "/exam-prep/shared/invalid-token/"
+    Then I should see a 404 status

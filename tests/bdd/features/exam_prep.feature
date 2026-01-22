@@ -5,42 +5,42 @@ Feature: C&P Exam Preparation
 
   Scenario: Exam guides are publicly accessible
     Given I am an anonymous user
-    When I visit "/examprep/"
+    When I visit "/exam-prep/"
     Then I should see a 200 status
     And the page should have a main content area
 
   Scenario: Glossary is searchable
     Given I am an anonymous user
     And a glossary term "Nexus Letter" exists
-    When I visit "/examprep/glossary/"
+    When I visit "/exam-prep/glossary/"
     Then I should see a 200 status
 
   Scenario: Secondary conditions hub is accessible
     Given I am an anonymous user
-    When I visit "/examprep/secondary-conditions/"
+    When I visit "/exam-prep/secondary-conditions/"
     Then I should see a 200 status
 
   Scenario: User checklists require authentication
     Given I am an anonymous user
-    When I visit "/examprep/my-checklists/"
+    When I visit "/exam-prep/my-checklists/"
     Then I should be redirected to the login page
 
   Scenario: Logged in user can access checklists
     Given I am logged in
-    When I visit "/examprep/my-checklists/"
+    When I visit "/exam-prep/my-checklists/"
     Then I should see a 200 status
 
   Scenario: Creating a checklist requires login
     Given I am an anonymous user
-    When I visit "/examprep/my-checklists/create/"
+    When I visit "/exam-prep/my-checklists/create/"
     Then I should be redirected to the login page
 
   Scenario: Logged in user can create checklist
     Given I am logged in
-    When I visit "/examprep/my-checklists/create/"
+    When I visit "/exam-prep/my-checklists/create/"
     Then I should see a 200 status
 
   Scenario: Evidence checklist is accessible
     Given I am logged in
-    When I visit "/examprep/evidence-checklist/"
+    When I visit "/exam-prep/evidence-checklist/"
     Then I should see a 200 status

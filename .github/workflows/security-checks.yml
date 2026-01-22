@@ -1,0 +1,150 @@
+# Security Checks Workflow
+# Runs security invariant checks and dependency vulnerability scanning
+
+name: Security Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run weekly on Monday at 9 AM UTC
+    - cron: '0 9 * * 1'
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  # ===========================================================================
+  # Security Invariants Check
+  # ===========================================================================
+  security-invariants:
+    name: Security Invariants
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Run security invariant checks
+        run: |
+          python scripts/check_security_invariants.py --verbose
+
+  # ===========================================================================
+  # Dependency Vulnerability Scanning
+  # ===========================================================================
+  dependency-scan:
+    name: Dependency Vulnerabilities
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install pip-audit
+        run: |
+          pip install pip-audit
+
+      - name: Run pip-audit
+        run: |
+          pip-audit -r requirements.txt --desc on --progress-spinner off
+        continue-on-error: false
+
+  # ===========================================================================
+  # Privacy Regression Checks
+  # ===========================================================================
+  privacy-checks:
+    name: Privacy Regression Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for Sentry PII misconfiguration
+        run: |
+          echo "Checking Sentry configuration..."
+          if grep -r "send_default_pii\s*=\s*True" --include="*.py" .; then
+            echo "::error::Sentry configured with send_default_pii=True"
+            exit 1
+          fi
+          echo "OK: No send_default_pii=True found"
+
+      - name: Check for logging pitfalls
+        run: |
+          echo "Checking for dangerous logging patterns..."
+          FAILED=0
+
+          # Check for logging request bodies
+          if grep -rn "log.*request\.body\|log.*request\.POST\|log.*request\.data" --include="*.py" . \
+             | grep -v "^Binary" | grep -v "#" | grep -v "test_" | grep -v "migrations/"; then
+            echo "::warning::Found potential logging of request body/POST/data"
+            FAILED=1
+          fi
+
+          # Check for logging OCR text
+          if grep -rn "log.*ocr_text\|log.*raw_text\|log.*document_text" --include="*.py" . \
+             | grep -v "^Binary" | grep -v "#" | grep -v "test_" | grep -v "migrations/" | grep -v "check_security"; then
+            echo "::error::Found logging of OCR/document text (PHI)"
+            FAILED=1
+          fi
+
+          if [ $FAILED -eq 1 ]; then
+            echo "Privacy regression checks failed"
+            exit 1
+          fi
+
+          echo "OK: No dangerous logging patterns found"
+
+      - name: Check for prohibited PHI fields in models
+        run: |
+          echo "Checking for prohibited PHI fields..."
+
+          # Check for ocr_text field definition
+          if grep -n "^\s*ocr_text\s*=\s*models\." claims/models.py 2>/dev/null; then
+            echo "::error file=claims/models.py::Prohibited field: ocr_text must not exist in Document model"
+            exit 1
+          fi
+
+          # Check for raw_text field definition in agents
+          if grep -n "^\s*raw_text\s*=\s*models\." agents/models.py 2>/dev/null; then
+            echo "::error file=agents/models.py::Prohibited field: raw_text must not exist in analysis models"
+            exit 1
+          fi
+
+          echo "OK: No prohibited PHI fields found"
+
+  # ===========================================================================
+  # SAST with Bandit (optional security linting)
+  # ===========================================================================
+  bandit:
+    name: Bandit Security Linter
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Bandit
+        run: pip install bandit
+
+      - name: Run Bandit
+        run: |
+          bandit -r . -x ./venv,./tests,./migrations -ll -ii --format txt
+        continue-on-error: true  # Don't fail CI on warnings, just report
