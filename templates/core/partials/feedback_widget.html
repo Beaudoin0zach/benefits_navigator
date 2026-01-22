@@ -20,8 +20,9 @@ Usage: {% include 'core/partials/feedback_widget.html' with page_title="Page Nam
         <div class="flex justify-between items-start mb-3">
             <h4 class="text-sm font-semibold text-gray-900">Was this page helpful?</h4>
             <button onclick="document.getElementById('feedback-expanded').classList.add('hidden'); document.getElementById('feedback-collapsed').classList.remove('hidden');"
+                    aria-label="Close feedback widget"
                     class="text-gray-400 hover:text-gray-600">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
@@ -33,8 +34,9 @@ Usage: {% include 'core/partials/feedback_widget.html' with page_title="Page Nam
                     hx-vals='{"rating": "positive", "page_url": "{{ request.path }}", "page_title": "{{ page_title|default:'' }}"}'
                     hx-target="#feedback-expanded"
                     hx-swap="innerHTML"
+                    aria-label="Yes, this page was helpful"
                     class="flex flex-col items-center p-3 rounded-lg hover:bg-green-50 border-2 border-transparent hover:border-green-200 transition-all group">
-                <span class="text-3xl group-hover:scale-110 transition-transform">👍</span>
+                <span class="text-3xl group-hover:scale-110 transition-transform" aria-hidden="true">👍</span>
                 <span class="text-xs text-gray-600 mt-1">Yes</span>
             </button>
 
@@ -43,8 +45,9 @@ Usage: {% include 'core/partials/feedback_widget.html' with page_title="Page Nam
                     hx-vals='{"rating": "negative", "page_url": "{{ request.path }}", "page_title": "{{ page_title|default:'' }}"}'
                     hx-target="#feedback-expanded"
                     hx-swap="innerHTML"
+                    aria-label="No, this page was not helpful"
                     class="flex flex-col items-center p-3 rounded-lg hover:bg-red-50 border-2 border-transparent hover:border-red-200 transition-all group">
-                <span class="text-3xl group-hover:scale-110 transition-transform">👎</span>
+                <span class="text-3xl group-hover:scale-110 transition-transform" aria-hidden="true">👎</span>
                 <span class="text-xs text-gray-600 mt-1">No</span>
             </button>
         </div>
