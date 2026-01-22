@@ -175,11 +175,10 @@ def decision_analyzer_submit(request):
             except (ValueError, TypeError):
                 pass
 
-        # Save analysis
+        # Save analysis (raw_text removed for PHI protection)
         analysis = DecisionLetterAnalysis.objects.create(
             interaction=interaction,
             user=request.user,
-            raw_text=letter_text,
             decision_date=decision_date,
             conditions_granted=result.get('conditions_granted', []),
             conditions_denied=result.get('conditions_denied', []),

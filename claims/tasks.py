@@ -95,20 +95,27 @@ def process_document_task(self, document_id):
         ocr_service = OCRService()
         ocr_result = ocr_service.extract_text(document.file.path)
 
-        document.ocr_text = ocr_result['text']
+        # Keep OCR text in memory for passing to AI service
+        ocr_text = ocr_result['text']
+        ocr_length = len(ocr_text)
+
+        # Update document with OCR metadata (no raw text stored for PHI protection)
         document.ocr_confidence = ocr_result.get('confidence', None)
         document.page_count = ocr_result.get('page_count', 0)
-        document.save(update_fields=['ocr_text', 'ocr_confidence', 'page_count'])
+        document.ocr_status = 'completed'
+        document.ocr_length = ocr_length
+        document.save(update_fields=['ocr_confidence', 'page_count', 'ocr_status', 'ocr_length'])
 
-        logger.info(f"OCR complete for document {document_id}. Extracted {len(ocr_result['text'])} characters")
+        logger.info(f"OCR complete for document {document_id}. Extracted {ocr_length} characters")
 
         # Step 2: AI Analysis
         document.mark_analyzing()
         logger.info(f"Starting AI analysis for document {document_id}")
 
         ai_service = AIService()
+        # Pass OCR text directly from memory (not from document.ocr_text)
         ai_result = ai_service.analyze_document(
-            text=document.ocr_text,
+            text=ocr_text,
             document_type=document.document_type
         )
 
@@ -134,7 +141,7 @@ def process_document_task(self, document_id):
             'document_id': document_id,
             'status': 'completed',
             'duration': duration,
-            'ocr_length': len(document.ocr_text),
+            'ocr_length': ocr_length,
             'tokens_used': document.ai_tokens_used,
         }
 
@@ -156,11 +163,14 @@ def process_document_task(self, document_id):
     except Exception as exc:
         logger.error(f"Error processing document {document_id}: {str(exc)}", exc_info=True)
 
+        # Determine if this was an OCR failure (for ocr_status tracking)
+        is_ocr_failure = 'ocr' in str(exc).lower() or 'extract' in str(exc).lower()
+
         # Try to update document status
         try:
             document = Document.objects.get(id=document_id)
             error_message = f"Processing failed: {str(exc)}"
-            document.mark_failed(error_message)
+            document.mark_failed(error_message, ocr_failed=is_ocr_failure)
         except Exception as e:
             logger.error(f"Failed to update document status: {str(e)}")
 
@@ -169,7 +179,7 @@ def process_document_task(self, document_id):
             import traceback
             from core.models import ProcessingFailure
             ProcessingFailure.record_failure(
-                failure_type='ocr' if 'ocr' in str(exc).lower() else 'document_processing',
+                failure_type='ocr' if is_ocr_failure else 'document_processing',
                 error_message=str(exc),
                 stack_trace=traceback.format_exc(),
                 document_id=str(document_id),
@@ -208,27 +218,33 @@ def decode_denial_letter_task(self, document_id, user_id=None):
         # SECURITY: Verify AI consent before processing
         require_ai_consent(user)
 
-        # Step 1: OCR if not already done
-        if not document.ocr_text:
-            document.mark_processing()
-            logger.info(f"Starting OCR for denial letter {document_id}")
+        # Step 1: OCR extraction (ephemeral - always extract fresh from file)
+        document.mark_processing()
+        logger.info(f"Starting OCR for denial letter {document_id}")
 
-            ocr_service = OCRService()
-            ocr_result = ocr_service.extract_text(document.file.path)
+        ocr_service = OCRService()
+        ocr_result = ocr_service.extract_text(document.file.path)
 
-            document.ocr_text = ocr_result['text']
-            document.ocr_confidence = ocr_result.get('confidence', None)
-            document.page_count = ocr_result.get('page_count', 0)
-            document.save(update_fields=['ocr_text', 'ocr_confidence', 'page_count'])
+        # Keep OCR text in memory only (not persisted for PHI protection)
+        ocr_text = ocr_result['text']
+        ocr_length = len(ocr_text)
 
-            logger.info(f"OCR complete: {len(ocr_result['text'])} characters")
+        # Update document with OCR metadata (no raw text stored)
+        document.ocr_confidence = ocr_result.get('confidence', None)
+        document.page_count = ocr_result.get('page_count', 0)
+        document.ocr_status = 'completed'
+        document.ocr_length = ocr_length
+        document.save(update_fields=['ocr_confidence', 'page_count', 'ocr_status', 'ocr_length'])
+
+        logger.info(f"OCR complete: {ocr_length} characters")
 
         # Step 2: Decision Letter Analysis
         document.mark_analyzing()
         logger.info(f"Analyzing decision letter {document_id}")
 
         analyzer = DecisionLetterAnalyzer()
-        analysis_result = analyzer.analyze(document.ocr_text)
+        # Pass OCR text from memory variable
+        analysis_result = analyzer.analyze(ocr_text)
 
         # Create interaction record
         interaction = AgentInteraction.objects.create(
@@ -239,12 +255,11 @@ def decode_denial_letter_task(self, document_id, user_id=None):
             cost_estimate=analysis_result.get('_cost_estimate', 0)
         )
 
-        # Create analysis record
+        # Create analysis record (raw_text removed for PHI protection)
         analysis = DecisionLetterAnalysis.objects.create(
             interaction=interaction,
             user=user,
             document=document,
-            raw_text=document.ocr_text,
             decision_date=_parse_date(analysis_result.get('decision_date')),
             conditions_granted=analysis_result.get('conditions_granted', []),
             conditions_denied=analysis_result.get('conditions_denied', []),
@@ -332,9 +347,12 @@ def decode_denial_letter_task(self, document_id, user_id=None):
     except Exception as exc:
         logger.error(f"Error decoding denial letter {document_id}: {str(exc)}", exc_info=True)
 
+        # Determine if this was an OCR failure
+        is_ocr_failure = 'ocr' in str(exc).lower() or 'extract' in str(exc).lower()
+
         try:
             document = Document.objects.get(id=document_id)
-            document.mark_failed(f"Decoding failed: {str(exc)}")
+            document.mark_failed(f"Decoding failed: {str(exc)}", ocr_failed=is_ocr_failure)
         except Exception as e:
             logger.error(f"Failed to update document status: {str(e)}")
 
@@ -343,7 +361,7 @@ def decode_denial_letter_task(self, document_id, user_id=None):
             import traceback
             from core.models import ProcessingFailure
             ProcessingFailure.record_failure(
-                failure_type='ai_analysis',
+                failure_type='ocr' if is_ocr_failure else 'ai_analysis',
                 error_message=str(exc),
                 stack_trace=traceback.format_exc(),
                 document_id=str(document_id),
@@ -391,20 +409,25 @@ def analyze_rating_decision_task(self, document_id, user_id=None, use_simple_for
         # SECURITY: Verify AI consent before processing
         require_ai_consent(user)
 
-        # Step 1: OCR if not already done
-        if not document.ocr_text:
-            document.mark_processing()
-            logger.info(f"Starting OCR for rating decision {document_id}")
+        # Step 1: OCR extraction (ephemeral - always extract fresh from file)
+        document.mark_processing()
+        logger.info(f"Starting OCR for rating decision {document_id}")
 
-            ocr_service = OCRService()
-            ocr_result = ocr_service.extract_text(document.file.path)
+        ocr_service = OCRService()
+        ocr_result = ocr_service.extract_text(document.file.path)
 
-            document.ocr_text = ocr_result['text']
-            document.ocr_confidence = ocr_result.get('confidence', None)
-            document.page_count = ocr_result.get('page_count', 0)
-            document.save(update_fields=['ocr_text', 'ocr_confidence', 'page_count'])
+        # Keep OCR text in memory only (not persisted for PHI protection)
+        ocr_text = ocr_result['text']
+        ocr_length = len(ocr_text)
 
-            logger.info(f"OCR complete: {len(ocr_result['text'])} characters")
+        # Update document with OCR metadata (no raw text stored)
+        document.ocr_confidence = ocr_result.get('confidence', None)
+        document.page_count = ocr_result.get('page_count', 0)
+        document.ocr_status = 'completed'
+        document.ocr_length = ocr_length
+        document.save(update_fields=['ocr_confidence', 'page_count', 'ocr_status', 'ocr_length'])
+
+        logger.info(f"OCR complete: {ocr_length} characters")
 
         # Step 2: Analyze the rating decision
         document.mark_analyzing()
@@ -413,7 +436,8 @@ def analyze_rating_decision_task(self, document_id, user_id=None, use_simple_for
         if use_simple_format:
             # Simple markdown format
             analyzer = SimpleRatingAnalyzer()
-            markdown_analysis, tokens_used = analyzer.analyze(document.ocr_text)
+            # Pass OCR text from memory variable
+            markdown_analysis, tokens_used = analyzer.analyze(ocr_text)
 
             # Create interaction record
             interaction = AgentInteraction.objects.create(
@@ -424,12 +448,11 @@ def analyze_rating_decision_task(self, document_id, user_id=None, use_simple_for
                 cost_estimate=analyzer.estimate_cost(tokens_used)
             )
 
-            # Create analysis record with markdown
+            # Create analysis record with markdown (raw_text removed for PHI protection)
             analysis = RatingAnalysis.objects.create(
                 interaction=interaction,
                 user=user,
                 document=document,
-                raw_text=document.ocr_text,
                 markdown_analysis=markdown_analysis,
                 tokens_used=tokens_used,
                 cost_estimate=analyzer.estimate_cost(tokens_used),
@@ -439,7 +462,8 @@ def analyze_rating_decision_task(self, document_id, user_id=None, use_simple_for
         else:
             # Full structured analysis
             analyzer = RatingDecisionAnalyzer()
-            result = analyzer.analyze(document.ocr_text)
+            # Pass OCR text from memory variable
+            result = analyzer.analyze(ocr_text)
 
             # Create interaction record
             interaction = AgentInteraction.objects.create(
@@ -453,12 +477,11 @@ def analyze_rating_decision_task(self, document_id, user_id=None, use_simple_for
             # Parse decision date from extracted data
             decision_date = _parse_date(result.extracted_data.get('decision_date'))
 
-            # Create analysis record with full structured data
+            # Create analysis record with full structured data (raw_text removed for PHI protection)
             analysis = RatingAnalysis.objects.create(
                 interaction=interaction,
                 user=user,
                 document=document,
-                raw_text=document.ocr_text,
                 decision_date=decision_date,
                 veteran_name=result.extracted_data.get('veteran_name', ''),
                 file_number=result.extracted_data.get('file_number', ''),
@@ -521,9 +544,12 @@ def analyze_rating_decision_task(self, document_id, user_id=None, use_simple_for
     except Exception as exc:
         logger.error(f"Error analyzing rating decision {document_id}: {str(exc)}", exc_info=True)
 
+        # Determine if this was an OCR failure
+        is_ocr_failure = 'ocr' in str(exc).lower() or 'extract' in str(exc).lower()
+
         try:
             document = Document.objects.get(id=document_id)
-            document.mark_failed(f"Rating analysis failed: {str(exc)}")
+            document.mark_failed(f"Rating analysis failed: {str(exc)}", ocr_failed=is_ocr_failure)
         except Exception as e:
             logger.error(f"Failed to update document status: {str(e)}")
 
@@ -532,7 +558,7 @@ def analyze_rating_decision_task(self, document_id, user_id=None, use_simple_for
             import traceback
             from core.models import ProcessingFailure
             ProcessingFailure.record_failure(
-                failure_type='ai_analysis',
+                failure_type='ocr' if is_ocr_failure else 'ai_analysis',
                 error_message=str(exc),
                 stack_trace=traceback.format_exc(),
                 document_id=str(document_id),

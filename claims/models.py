@@ -72,11 +72,8 @@ class Document(TimeStampedModel, SoftDeleteModel):
     )
 
     # OCR Results
-    ocr_text = models.TextField(
-        'Extracted text',
-        blank=True,
-        help_text='Text extracted from document via OCR'
-    )
+    # NOTE: ocr_text field removed for PHI protection (Ephemeral OCR Refactor PR 6)
+    # Raw text is no longer persisted - only metadata is stored
     ocr_confidence = models.FloatField(
         'OCR confidence score',
         null=True,
@@ -84,6 +81,25 @@ class Document(TimeStampedModel, SoftDeleteModel):
         help_text='Average confidence score from OCR (0-100)'
     )
     page_count = models.IntegerField('Number of pages', default=0)
+
+    # OCR Metadata (for observability without storing PHI)
+    OCR_STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+    ]
+    ocr_length = models.IntegerField(
+        'Extracted text length',
+        default=0,
+        help_text='Character count of extracted text (metadata only, no PHI)'
+    )
+    ocr_status = models.CharField(
+        'OCR status',
+        max_length=20,
+        choices=OCR_STATUS_CHOICES,
+        default='pending',
+        help_text='Status of OCR extraction process'
+    )
 
     # AI Analysis Results
     ai_summary = models.JSONField(
@@ -147,26 +163,27 @@ class Document(TimeStampedModel, SoftDeleteModel):
         self.status = 'analyzing'
         self.save(update_fields=['status'])
 
-    def mark_completed(self, ocr_text=None, ocr_confidence=None, page_count=None, duration=None):
+    def mark_completed(self, ocr_confidence=None, page_count=None, duration=None, ocr_length=None):
         """
         Mark document processing as completed.
 
         Args:
-            ocr_text: Extracted text from OCR processing
             ocr_confidence: OCR confidence score (0-100)
             page_count: Number of pages in the document
             duration: Processing duration in seconds
+            ocr_length: Character count of extracted text (metadata only, no PHI)
         """
         from django.utils import timezone
 
         self.status = 'completed'
         self.processed_at = timezone.now()
+        self.ocr_status = 'completed'
 
-        update_fields = ['status', 'processed_at']
+        update_fields = ['status', 'processed_at', 'ocr_status']
 
-        if ocr_text is not None:
-            self.ocr_text = ocr_text
-            update_fields.append('ocr_text')
+        if ocr_length is not None:
+            self.ocr_length = ocr_length
+            update_fields.append('ocr_length')
 
         if ocr_confidence is not None:
             self.ocr_confidence = ocr_confidence
@@ -182,13 +199,25 @@ class Document(TimeStampedModel, SoftDeleteModel):
 
         self.save(update_fields=update_fields)
 
-    def mark_failed(self, error_message):
-        """Mark document processing as failed"""
+    def mark_failed(self, error_message, ocr_failed=False):
+        """
+        Mark document processing as failed.
+
+        Args:
+            error_message: Description of the failure
+            ocr_failed: If True, marks OCR status as failed (vs AI analysis failure)
+        """
         from django.utils import timezone
         self.status = 'failed'
         self.error_message = error_message
         self.processed_at = timezone.now()
-        self.save(update_fields=['status', 'error_message', 'processed_at'])
+        update_fields = ['status', 'error_message', 'processed_at']
+
+        if ocr_failed:
+            self.ocr_status = 'failed'
+            update_fields.append('ocr_status')
+
+        self.save(update_fields=update_fields)
 
     def get_signed_download_url(self, expires_minutes: int = 30, request=None) -> str:
         """

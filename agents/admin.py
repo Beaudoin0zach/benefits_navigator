@@ -25,7 +25,8 @@ class AgentInteractionAdmin(admin.ModelAdmin):
 class DecisionLetterAnalysisAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'decision_date', 'created_at']
     list_filter = ['created_at', 'decision_date']
-    search_fields = ['user__email', 'summary', 'raw_text']
+    # raw_text removed from search_fields for PHI protection
+    search_fields = ['user__email', 'summary']
     readonly_fields = ['created_at', 'updated_at']
     date_hierarchy = 'created_at'
 

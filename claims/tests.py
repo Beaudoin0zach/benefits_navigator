@@ -95,12 +95,12 @@ class TestDocumentModel(TestCase):
         self.assertEqual(doc.status, "analyzing")
 
         doc.mark_completed(
-            ocr_text="Extracted text",
+            ocr_length=14,  # "Extracted text" length
             ocr_confidence=95.0,
             page_count=1,
         )
         self.assertEqual(doc.status, "completed")
-        self.assertEqual(doc.ocr_text, "Extracted text")
+        self.assertEqual(doc.ocr_length, 14)
 
     def test_document_mark_failed(self):
         """Document can be marked as failed with error message."""
@@ -187,6 +187,91 @@ class TestDocumentModel(TestCase):
         doc.hard_delete()
 
         self.assertEqual(Document.all_objects.count(), 0)
+
+    # OCR Metadata Tests (PR 1 - Ephemeral OCR Refactor)
+    def test_ocr_metadata_default_values(self):
+        """OCR metadata fields have correct defaults."""
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="test.pdf",
+        )
+        self.assertEqual(doc.ocr_length, 0)
+        self.assertEqual(doc.ocr_status, "pending")
+
+    def test_mark_completed_sets_ocr_status(self):
+        """mark_completed sets ocr_status to 'completed'."""
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="test.pdf",
+            status="processing",
+        )
+        doc.mark_completed(ocr_length=20, ocr_confidence=95.0)
+        doc.refresh_from_db()
+
+        self.assertEqual(doc.ocr_status, "completed")
+
+    def test_mark_completed_sets_ocr_length(self):
+        """mark_completed sets ocr_length from parameter."""
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="test.pdf",
+            status="processing",
+        )
+        test_length = 32
+        doc.mark_completed(ocr_length=test_length, ocr_confidence=95.0)
+        doc.refresh_from_db()
+
+        self.assertEqual(doc.ocr_length, test_length)
+
+    def test_mark_completed_accepts_explicit_ocr_length(self):
+        """mark_completed accepts explicit ocr_length parameter."""
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="test.pdf",
+            status="processing",
+        )
+        doc.mark_completed(ocr_confidence=95.0, ocr_length=12345)
+        doc.refresh_from_db()
+
+        self.assertEqual(doc.ocr_length, 12345)
+
+    def test_mark_failed_with_ocr_failure(self):
+        """mark_failed with ocr_failed=True sets ocr_status to 'failed'."""
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="test.pdf",
+            status="processing",
+        )
+        doc.mark_failed("OCR engine unavailable", ocr_failed=True)
+        doc.refresh_from_db()
+
+        self.assertEqual(doc.status, "failed")
+        self.assertEqual(doc.ocr_status, "failed")
+
+    def test_mark_failed_without_ocr_failure(self):
+        """mark_failed without ocr_failed keeps ocr_status unchanged."""
+        doc = Document.objects.create(
+            user=self.user,
+            file_name="test.pdf",
+            status="processing",
+            ocr_status="completed",  # OCR succeeded, AI failed
+        )
+        doc.mark_failed("AI analysis error")
+        doc.refresh_from_db()
+
+        self.assertEqual(doc.status, "failed")
+        self.assertEqual(doc.ocr_status, "completed")  # Unchanged
+
+    def test_ocr_status_choices(self):
+        """OCR status accepts all valid choices."""
+        valid_statuses = ['pending', 'completed', 'failed']
+        for ocr_status in valid_statuses:
+            doc = Document.objects.create(
+                user=self.user,
+                file_name=f"test_{ocr_status}.pdf",
+                ocr_status=ocr_status,
+            )
+            self.assertEqual(doc.ocr_status, ocr_status)
 
 
 # =============================================================================
@@ -779,17 +864,17 @@ class TestDecodeDenialLetterTask(TestCase):
         self.assertTrue(callable(decode_denial_letter_task))
 
     @patch('claims.tasks.OCRService')
-    def test_decode_denial_letter_performs_ocr_if_needed(self, mock_ocr_service):
-        """decode_denial_letter_task performs OCR if ocr_text is empty."""
+    def test_decode_denial_letter_performs_ocr(self, mock_ocr_service):
+        """decode_denial_letter_task always performs OCR (ephemeral approach)."""
         from claims.tasks import decode_denial_letter_task
 
-        # Create document without OCR text
+        # Create document pending OCR
         doc = Document.objects.create(
             user=self.user,
             file_name="denial.pdf",
             document_type="decision_letter",
             status="uploading",
-            ocr_text="",  # No OCR text yet
+            ocr_status="pending",
         )
 
         # Mock OCR service
@@ -801,24 +886,26 @@ class TestDecodeDenialLetterTask(TestCase):
         }
         mock_ocr_service.return_value = mock_ocr_instance
 
-        # Task should call OCR when ocr_text is empty
-        # We can't fully run the task without more mocking, but verify structure
-        self.assertFalse(doc.ocr_text)  # Starts empty
+        # OCR should always be called (ephemeral approach - no persistent text)
+        self.assertEqual(doc.ocr_status, "pending")
+        self.assertEqual(doc.ocr_length, 0)
 
     @patch('claims.tasks.OCRService')
-    def test_decode_denial_letter_skips_ocr_if_exists(self, mock_ocr_service):
-        """decode_denial_letter_task skips OCR if ocr_text already exists."""
-        # Create document with OCR text already present
+    def test_decode_denial_letter_sets_ocr_metadata(self, mock_ocr_service):
+        """decode_denial_letter_task sets OCR metadata fields."""
+        # Create document
         doc = Document.objects.create(
             user=self.user,
             file_name="denial.pdf",
             document_type="decision_letter",
             status="completed",
-            ocr_text="Your claim for PTSD has been denied...",
+            ocr_status="completed",
+            ocr_length=45,
         )
 
-        # OCR text already exists
-        self.assertTrue(doc.ocr_text)
+        # OCR metadata should be set
+        self.assertEqual(doc.ocr_status, "completed")
+        self.assertEqual(doc.ocr_length, 45)
 
     def test_decode_denial_letter_handles_missing_document(self):
         """decode_denial_letter_task raises error for non-existent document."""
@@ -944,7 +1031,7 @@ class TestDocumentWorkflow(TestCase):
 
         # 4. Complete with results
         doc.mark_completed(
-            ocr_text="This is the extracted text from the medical records.",
+            ocr_length=50,  # Length of extracted text
             ocr_confidence=92.5,
             page_count=3,
         )
@@ -1128,7 +1215,8 @@ startxref
             file_size=1024000,  # ~1MB
             document_type="medical_records",
             status="completed",
-            ocr_text="Sample extracted text from document.",
+            ocr_status="completed",
+            ocr_length=36,  # Length of "Sample extracted text from document."
             ocr_confidence=95.5,
             page_count=3,
         )
@@ -1178,7 +1266,7 @@ startxref
         self.assertEqual(response.status_code, 200)
 
         # Complete
-        doc.mark_completed(ocr_text="Text", ocr_confidence=90.0, page_count=1)
+        doc.mark_completed(ocr_length=4, ocr_confidence=90.0, page_count=1)
 
         response = self.client.get(
             reverse('claims:document_status', kwargs={'pk': doc.pk}),
@@ -1241,14 +1329,14 @@ class TestDocumentProcessingIntegration(TestCase):
         self.assertTrue(doc.is_processing)
 
         doc.mark_completed(
-            ocr_text="Extracted text content",
+            ocr_length=22,  # Length of "Extracted text content"
             ocr_confidence=95.0,
             page_count=3,
         )
         self.assertEqual(doc.status, "completed")
         self.assertFalse(doc.is_processing)
         self.assertTrue(doc.is_complete)
-        self.assertEqual(doc.ocr_text, "Extracted text content")
+        self.assertEqual(doc.ocr_length, 22)
         self.assertEqual(doc.page_count, 3)
 
     def test_document_failure_workflow(self):
@@ -1282,7 +1370,7 @@ class TestDocumentProcessingIntegration(TestCase):
 
         # Complete with full results
         doc.mark_completed(
-            ocr_text="Patient: John Doe\nDiagnosis: PTSD",
+            ocr_length=35,  # Length of "Patient: John Doe\nDiagnosis: PTSD"
             ocr_confidence=92.5,
             page_count=5,
         )
@@ -1299,7 +1387,7 @@ class TestDocumentProcessingIntegration(TestCase):
         # Verify all data persisted
         doc.refresh_from_db()
         self.assertEqual(doc.status, 'completed')
-        self.assertIn('PTSD', doc.ocr_text)
+        self.assertEqual(doc.ocr_length, 35)
         self.assertIsNotNone(doc.ai_summary)
         self.assertEqual(doc.ai_model_used, 'gpt-4')
         self.assertEqual(doc.ai_tokens_used, 1500)
@@ -1347,7 +1435,8 @@ class TestDenialDecoderEndToEnd(TestCase):
             file_name="denial_letter.pdf",
             document_type="decision_letter",
             status="completed",
-            ocr_text="Your claim for PTSD has been denied...",
+            ocr_length=40,  # Simulating processed document
+            ocr_status="completed",
         )
 
         # View status - should show completed
@@ -1552,7 +1641,7 @@ class TestDocumentCompleteWorkflow(TestCase):
         doc.mark_processing()
         doc.mark_analyzing()
         doc.mark_completed(
-            ocr_text='Patient: John Doe\nCondition: PTSD diagnosed 2024-01-15',
+            ocr_length=50,  # Length of simulated OCR text
             ocr_confidence=92.0,
             page_count=5,
         )
@@ -1605,7 +1694,8 @@ class TestDocumentCompleteWorkflow(TestCase):
                 file_name=f"document_{i}.pdf",
                 document_type=doc_type,
                 status="completed",
-                ocr_text=f"Content for {doc_type}",
+                ocr_length=20 + i,  # Simulating processed document
+                ocr_status="completed",
             )
             docs.append(doc)
 

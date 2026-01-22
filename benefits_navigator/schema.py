@@ -194,7 +194,9 @@ class DocumentType:
 class DocumentAnalysisType:
     """AI analysis results for a document."""
     document_id: strawberry.ID
-    ocr_text: str
+    # ocr_text removed for PHI protection - raw text is no longer persisted
+    ocr_status: str  # 'pending', 'completed', or 'failed'
+    ocr_length: int  # Character count of extracted text (metadata only)
     ai_summary: Optional[str]  # JSON string
 
 
@@ -454,12 +456,6 @@ class Query:
         try:
             d = Document.objects.get(id=id, user=user)
 
-            # Sanitize OCR text: redact PII and truncate
-            sanitized_ocr = sanitize_graphql_text(
-                d.ocr_text or '',
-                MAX_OCR_TEXT_LENGTH
-            )
-
             # Sanitize AI summary: redact PII and truncate
             ai_summary_str = json.dumps(d.ai_summary) if d.ai_summary else None
             sanitized_summary = sanitize_graphql_text(
@@ -467,9 +463,11 @@ class Query:
                 MAX_AI_SUMMARY_LENGTH
             ) if ai_summary_str else None
 
+            # Return OCR metadata (not raw text) for PHI protection
             return DocumentAnalysisType(
                 document_id=strawberry.ID(str(d.id)),
-                ocr_text=sanitized_ocr,
+                ocr_status=d.ocr_status or 'pending',
+                ocr_length=d.ocr_length or 0,
                 ai_summary=sanitized_summary,
             )
         except Document.DoesNotExist:
