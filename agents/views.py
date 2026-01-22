@@ -107,10 +107,10 @@ def agents_home(request):
 @login_required
 def decision_analyzer(request):
     """Decision Letter Analyzer - input form"""
-    # Get user's past analyses
+    # Get user's past analyses with related data to avoid N+1 queries
     past_analyses = DecisionLetterAnalysis.objects.filter(
         user=request.user
-    ).order_by('-created_at')[:5]
+    ).select_related('interaction', 'document').order_by('-created_at')[:5]
 
     context = {
         'past_analyses': past_analyses,
@@ -250,9 +250,10 @@ def decision_analyzer_result(request, pk):
 @login_required
 def evidence_gap_analyzer(request):
     """Evidence Gap Analyzer - input form"""
+    # Get user's past analyses with related data to avoid N+1 queries
     past_analyses = EvidenceGapAnalysis.objects.filter(
         user=request.user
-    ).order_by('-created_at')[:5]
+    ).select_related('interaction').order_by('-created_at')[:5]
 
     # Common conditions for quick select
     common_conditions = [
@@ -406,9 +407,10 @@ def evidence_gap_result(request, pk):
 @login_required
 def statement_generator(request):
     """Personal Statement Generator - input form"""
+    # Get user's past statements with related data to avoid N+1 queries
     past_statements = PersonalStatement.objects.filter(
         user=request.user
-    ).order_by('-created_at')[:5]
+    ).select_related('interaction').order_by('-created_at')[:5]
 
     context = {
         'past_statements': past_statements,

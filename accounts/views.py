@@ -96,7 +96,15 @@ def data_export(request):
 def _generate_user_export(user):
     """
     Generate a complete export of user data.
+
+    PII fields (date_of_birth, va_file_number) are redacted for security.
+    Users can view these in their profile settings if needed.
+
+    Query limits applied to prevent memory exhaustion on large datasets.
     """
+    # Maximum records per category to prevent memory exhaustion
+    MAX_EXPORT_RECORDS = 1000
+
     export = {
         'export_date': timezone.now().isoformat(),
         'user': {
@@ -110,19 +118,20 @@ def _generate_user_export(user):
         },
     }
 
-    # Profile data
+    # Profile data - PII fields redacted for security
     if hasattr(user, 'profile'):
         profile = user.profile
         export['profile'] = {
             'branch_of_service': profile.branch_of_service,
-            'date_of_birth': profile.date_of_birth.isoformat() if profile.date_of_birth else None,
-            'va_file_number': profile.va_file_number,
+            'date_of_birth': '[REDACTED]' if profile.date_of_birth else None,
+            'va_file_number': '[REDACTED]' if profile.va_file_number else None,
             'disability_rating': profile.disability_rating,
             'bio': profile.bio,
         }
 
-    # Documents
+    # Documents (limited to prevent memory exhaustion)
     if hasattr(user, 'documents'):
+        docs = user.documents.filter(is_deleted=False).order_by('-created_at')[:MAX_EXPORT_RECORDS]
         export['documents'] = [
             {
                 'id': doc.id,
@@ -130,11 +139,12 @@ def _generate_user_export(user):
                 'document_type': doc.document_type,
                 'uploaded_at': doc.created_at.isoformat(),
             }
-            for doc in user.documents.filter(is_deleted=False)
+            for doc in docs
         ]
 
-    # Claims
+    # Claims (limited to prevent memory exhaustion)
     if hasattr(user, 'claims'):
+        claims = user.claims.filter(is_deleted=False).order_by('-created_at')[:MAX_EXPORT_RECORDS]
         export['claims'] = [
             {
                 'id': claim.id,
@@ -144,11 +154,12 @@ def _generate_user_export(user):
                 'filed_date': claim.filed_date.isoformat() if claim.filed_date else None,
                 'created_at': claim.created_at.isoformat(),
             }
-            for claim in user.claims.filter(is_deleted=False)
+            for claim in claims
         ]
 
-    # Appeals
+    # Appeals (limited to prevent memory exhaustion)
     if hasattr(user, 'appeals'):
+        appeals = user.appeals.all().order_by('-created_at')[:MAX_EXPORT_RECORDS]
         export['appeals'] = [
             {
                 'id': appeal.id,
@@ -158,11 +169,12 @@ def _generate_user_export(user):
                 'status': appeal.status,
                 'created_at': appeal.created_at.isoformat(),
             }
-            for appeal in user.appeals.all()
+            for appeal in appeals
         ]
 
-    # Exam checklists
+    # Exam checklists (limited to prevent memory exhaustion)
     if hasattr(user, 'exam_checklists'):
+        checklists = user.exam_checklists.all().order_by('-created_at')[:MAX_EXPORT_RECORDS]
         export['exam_checklists'] = [
             {
                 'id': checklist.id,
@@ -170,11 +182,12 @@ def _generate_user_export(user):
                 'exam_date': checklist.exam_date.isoformat() if checklist.exam_date else None,
                 'created_at': checklist.created_at.isoformat(),
             }
-            for checklist in user.exam_checklists.all()
+            for checklist in checklists
         ]
 
-    # Evidence checklists
+    # Evidence checklists (limited to prevent memory exhaustion)
     if hasattr(user, 'evidence_checklists'):
+        evidence = user.evidence_checklists.all().order_by('-created_at')[:MAX_EXPORT_RECORDS]
         export['evidence_checklists'] = [
             {
                 'id': checklist.id,
@@ -183,11 +196,12 @@ def _generate_user_export(user):
                 'completion_percentage': checklist.completion_percentage,
                 'created_at': checklist.created_at.isoformat(),
             }
-            for checklist in user.evidence_checklists.all()
+            for checklist in evidence
         ]
 
-    # Rating calculations
+    # Rating calculations (limited to prevent memory exhaustion)
     if hasattr(user, 'rating_calculations'):
+        calcs = user.rating_calculations.all().order_by('-created_at')[:MAX_EXPORT_RECORDS]
         export['rating_calculations'] = [
             {
                 'id': calc.id,
@@ -195,22 +209,24 @@ def _generate_user_export(user):
                 'combined_rounded': calc.combined_rounded,
                 'created_at': calc.created_at.isoformat(),
             }
-            for calc in user.rating_calculations.all()
+            for calc in calcs
         ]
 
-    # Journey events
+    # Journey events (limited to prevent memory exhaustion)
     if hasattr(user, 'journey_events'):
+        events = user.journey_events.all().order_by('-event_date')[:MAX_EXPORT_RECORDS]
         export['journey_events'] = [
             {
                 'id': event.id,
                 'title': event.title,
                 'event_date': event.event_date.isoformat(),
             }
-            for event in user.journey_events.all()
+            for event in events
         ]
 
-    # Milestones
+    # Milestones (limited to prevent memory exhaustion)
     if hasattr(user, 'journey_milestones'):
+        milestones = user.journey_milestones.all().order_by('-date')[:MAX_EXPORT_RECORDS]
         export['journey_milestones'] = [
             {
                 'id': milestone.id,
@@ -218,7 +234,7 @@ def _generate_user_export(user):
                 'date': milestone.date.isoformat(),
                 'milestone_type': milestone.milestone_type,
             }
-            for milestone in user.journey_milestones.all()
+            for milestone in milestones
         ]
 
     return export
