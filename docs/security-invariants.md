@@ -1,7 +1,19 @@
 # Security Invariants
 
 This document defines security invariants that must be maintained across all code changes.
-These are enforced by CI checks in `.github/workflows/security-checks.yml`.
+
+## Enforcement Locations
+
+| Invariant | Tests | Static Analysis | CI Workflow |
+|-----------|-------|-----------------|-------------|
+| No PHI in OCR fields | `tests/test_regression_tripwires.py` | `scripts/check_security_invariants.py` | `security-checks.yml` |
+| OCR metadata fields exist | `tests/test_regression_tripwires.py` | — | — |
+| Sentry PII protection | — | `scripts/check_security_invariants.py` | `security-checks.yml` |
+| No PII in logs | — | `scripts/check_security_invariants.py` | `security-checks.yml` |
+| Route integrity | `tests/test_regression_tripwires.py` | — | — |
+| Dependency vulnerabilities | — | — | `security-checks.yml` (pip-audit) |
+
+---
 
 ## PHI/PII Protection
 
@@ -16,10 +28,12 @@ These are enforced by CI checks in `.github/workflows/security-checks.yml`.
 | `agents.RatingAnalysis` | `raw_text` | — |
 
 **Rationale:** OCR text contains Protected Health Information (PHI). The Ephemeral OCR
-Refactor (PR 6) removed these fields. Text is now extracted in-memory during processing
+Refactor removed these fields. Text is now extracted in-memory during processing
 and discarded after AI analysis.
 
-**CI Check:** `scripts/check_security_invariants.py` scans for prohibited field names.
+**Enforcement:**
+- **Tripwire tests:** `tests/test_regression_tripwires.py::TestPHIFieldRemovalInvariants` uses Django model `_meta` to verify DB fields don't exist
+- **Static analysis:** `scripts/check_security_invariants.py` scans model files for prohibited field definitions
 
 ### 2. AI Outputs Must Be Schema-Validated
 
@@ -30,19 +44,24 @@ and discarded after AI analysis.
 - Schemas defined in `agents/schemas.py`
 - Returns `Result[StructuredResponse[T]]` — check `result.is_success` before use
 
-**CI Check:** Manual review required; no automated check currently.
+**Enforcement:** Manual review required; no automated check currently.
 
 ### 3. No PII in Logs
 
 **Invariant:** Logs must not contain PII (names, SSNs, file numbers, medical info).
 
-**Prohibited patterns in logging statements:**
-- `request.body`, `request.POST`, `request.data`
-- `ocr_text`, `raw_text`, `document_text`
-- `prompt`, `completion`, `response.choices`
-- `ssn`, `file_number`, `date_of_birth`
+**Prohibited patterns:**
 
-**CI Check:** `scripts/check_security_invariants.py` scans for logging pitfalls.
+| Pattern Type | Examples | Severity |
+|--------------|----------|----------|
+| Request body logging | `logger.info(...request.body...)` | Warning |
+| PHI field access in logs | `logger.info(...document.ocr_text...)` | Error |
+| PII dict access in logs | `logger.info(...data["ssn"]...)` | Error |
+
+**Enforcement:** `scripts/check_security_invariants.py` scans for:
+- Logging calls containing `request.body`, `request.POST`, `request.data`
+- Logging calls with PHI field attribute access (`.ocr_text`, `.ssn`, etc.)
+- Logging calls with PHI dict key access (`["ssn"]`, `.get("ssn")`)
 
 ### 4. Sentry PII Protection
 
@@ -56,7 +75,7 @@ sentry_sdk.init(
 )
 ```
 
-**CI Check:** `scripts/check_security_invariants.py` verifies Sentry configuration.
+**Enforcement:** `scripts/check_security_invariants.py` scans all settings files for `send_default_pii=True`.
 
 ---
 
@@ -122,21 +141,82 @@ sentry_sdk.init(
 
 ---
 
-## Verification
+## Route Integrity
 
-Run security checks locally:
+### 10. Critical Routes Must Exist
+
+**Invariant:** Named URL patterns and critical paths must resolve correctly.
+
+**Enforcement:** `tests/test_regression_tripwires.py::TestURLResolutionIntegrity` verifies:
+- Named URLs resolve without `NoReverseMatch`
+- Critical paths resolve to view functions
+
+### 11. Protected Routes Must Require Authentication
+
+**Invariant:** Auth-protected routes must redirect to login with `next=` parameter.
+
+**Enforcement:** `tests/test_regression_tripwires.py::TestRouteHTTPBehavior` verifies:
+- Protected routes return 302 redirect
+- Redirect URL contains `/login/` or `/accounts/login/`
+- Redirect URL includes `next=` parameter
+
+---
+
+## Running Checks Locally
+
+### Security Invariants Script
 
 ```bash
+# Run all checks
 python scripts/check_security_invariants.py
+
+# Verbose output (shows files scanned)
+python scripts/check_security_invariants.py --verbose
 ```
 
-CI runs these checks on every PR and push to main.
+### Regression Tripwire Tests
+
+```bash
+# Run tripwire tests only (fast, ~5s)
+pytest tests/test_regression_tripwires.py -v
+
+# Run with timing
+pytest tests/test_regression_tripwires.py -v --durations=5
+```
+
+### Full Security Suite
+
+```bash
+# Run all security-related checks
+python scripts/check_security_invariants.py && \
+pytest tests/test_regression_tripwires.py -v
+```
+
+---
+
+## CI Workflows
+
+### security-checks.yml
+
+Runs on push/PR to main and weekly:
+- **security-invariants:** Runs `scripts/check_security_invariants.py`
+- **dependency-scan:** Runs `pip-audit` for vulnerability scanning
+- **bandit:** Runs Bandit SAST (non-blocking)
+
+### benchmarks.yml
+
+Runs on push/PR to main:
+- Runs performance benchmark tests
+- Uploads results as artifacts for visibility
 
 ---
 
 ## Adding New Invariants
 
 1. Document the invariant in this file
-2. Add automated check to `scripts/check_security_invariants.py` if possible
+2. Add automated check to appropriate location:
+   - **Database/model invariants:** Add test to `tests/test_regression_tripwires.py`
+   - **Code pattern detection:** Add check to `scripts/check_security_invariants.py`
+   - **Runtime behavior:** Add integration test
 3. Update CI workflow if needed
-4. Add regression test to `tests/test_regression_tripwires.py`
+4. Consider if the check should be blocking (error) or advisory (warning)

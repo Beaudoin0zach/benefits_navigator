@@ -3,6 +3,8 @@
 Benchmark Comparison Script
 
 Compares current benchmark results against a baseline and reports regressions.
+This script is for manual/local use. CI workflows upload artifacts separately
+since cross-workflow artifact download is not straightforward in GitHub Actions.
 
 Usage:
     python scripts/compare_benchmarks.py --baseline baseline.json --current current.json --threshold 20
