@@ -184,12 +184,23 @@ pytest tests/test_regression_tripwires.py -v
 pytest tests/test_regression_tripwires.py -v --durations=5
 ```
 
+### Dependency Vulnerability Scan
+
+```bash
+# Install pip-audit if not present
+pip install pip-audit
+
+# Scan for known vulnerabilities
+pip-audit -r requirements.txt --desc on
+```
+
 ### Full Security Suite
 
 ```bash
 # Run all security-related checks
 python scripts/check_security_invariants.py && \
-pytest tests/test_regression_tripwires.py -v
+pytest tests/test_regression_tripwires.py -v && \
+pip-audit -r requirements.txt
 ```
 
 ---
@@ -199,15 +210,16 @@ pytest tests/test_regression_tripwires.py -v
 ### security-checks.yml
 
 Runs on push/PR to main and weekly:
-- **security-invariants:** Runs `scripts/check_security_invariants.py`
-- **dependency-scan:** Runs `pip-audit` for vulnerability scanning
-- **bandit:** Runs Bandit SAST (non-blocking)
+- **security-invariants:** Runs `scripts/check_security_invariants.py` (blocking)
+- **dependency-scan:** Runs `pip-audit` for vulnerability scanning (blocking)
+- **bandit:** Runs Bandit SAST (advisory only, does not block CI)
 
 ### benchmarks.yml
 
 Runs on push/PR to main:
 - Runs performance benchmark tests
 - Uploads results as artifacts for visibility
+- Does NOT gate PRs on performance regressions (manual review only)
 
 ---
 

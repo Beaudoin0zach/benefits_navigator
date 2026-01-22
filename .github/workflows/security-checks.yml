@@ -62,10 +62,12 @@ jobs:
         continue-on-error: false
 
   # ===========================================================================
-  # SAST with Bandit
+  # SAST with Bandit (Advisory Only)
   # ===========================================================================
+  # Bandit is run for visibility but does not block merges.
+  # Review output for potential issues; false positives are common.
   bandit:
-    name: Bandit Security Linter
+    name: Bandit Security Linter (Advisory)
     runs-on: ubuntu-latest
 
     steps:
@@ -82,11 +84,13 @@ jobs:
 
       - name: Run Bandit
         run: |
-          # Exclude: venv, tests, and all migration directories
+          # Exclude: venv, tests, and migration directories
+          # Skip B101 (assert usage) - acceptable in tests/non-prod code
+          # Output filtered to exclude migration noise
           bandit -r . \
             --exclude './venv,./tests,./.venv' \
             --skip B101 \
             -ll -ii \
             --format txt \
             2>&1 | grep -v "migrations" || true
-        continue-on-error: true  # Don't fail CI on warnings, just report
+        continue-on-error: true  # Advisory only - does not block CI
