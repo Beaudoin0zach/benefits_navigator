@@ -90,8 +90,14 @@ def decision_tree(request):
 
             # If user is logged in and wants to start an appeal
             if request.user.is_authenticated and request.POST.get('start_appeal'):
-                # Store recommendation in session for next step
+                # Store recommendation AND answers in session for next step
+                # This avoids asking the same questions again in appeal_decide
                 request.session['appeal_recommendation'] = recommendation
+                request.session['appeal_decision_tree_answers'] = {
+                    'has_new_evidence': form.cleaned_data.get('has_new_evidence'),
+                    'believes_va_error': form.cleaned_data.get('believes_va_error'),
+                    'wants_hearing': form.cleaned_data.get('wants_hearing'),
+                }
                 return redirect('appeals:appeal_start')
 
             context = {
@@ -144,8 +150,9 @@ def appeal_start(request):
     """
     Start a new appeal - Step 1: Basic info about the decision.
     """
-    # Check for recommendation from decision tree
-    recommendation = request.session.pop('appeal_recommendation', None)
+    # Get recommendation and answers from decision tree (don't pop yet - need them for POST)
+    recommendation = request.session.get('appeal_recommendation')
+    decision_tree_answers = request.session.get('appeal_decision_tree_answers')
 
     if request.method == 'POST':
         form = AppealStartForm(request.POST)
@@ -153,19 +160,40 @@ def appeal_start(request):
             appeal = form.save(commit=False)
             appeal.user = request.user
 
-            # Apply recommendation if available
+            # Apply recommendation and decision tree answers if available
+            # This prevents asking the same questions again in appeal_decide
             if recommendation:
                 appeal.appeal_type = recommendation.get('type', '')
+                appeal.status = 'gathering'  # Skip deciding phase, go to gathering
+
+            if decision_tree_answers:
+                appeal.has_new_evidence = decision_tree_answers.get('has_new_evidence') == 'yes'
+                appeal.believes_va_error = decision_tree_answers.get('believes_va_error') == 'yes'
+                appeal.wants_hearing = decision_tree_answers.get('wants_hearing') == 'yes'
 
             appeal.save()
 
-            messages.success(request, 'Appeal started! Now let\'s figure out the best appeal path.')
+            # Now that the appeal is saved, clear the session data
+            request.session.pop('appeal_recommendation', None)
+            request.session.pop('appeal_decision_tree_answers', None)
 
-            # If we already have a type from recommendation, go to confirm
+            # If we already have a type from recommendation, skip to detail page
             if appeal.appeal_type:
+                # Add status note
+                AppealNote.objects.create(
+                    appeal=appeal,
+                    note_type='status',
+                    content=f'Appeal started: {appeal.get_appeal_type_display()}'
+                )
+                messages.success(
+                    request,
+                    f'Appeal started! You\'re filing a {appeal.get_appeal_type_display()}. '
+                    f'Review the checklist below to prepare.'
+                )
                 return redirect('appeals:appeal_detail', pk=appeal.pk)
 
-            # Otherwise, go to decision tree
+            # Otherwise, go to decision tree to choose appeal type
+            messages.success(request, 'Appeal started! Now let\'s figure out the best appeal path.')
             return redirect('appeals:appeal_decide', pk=appeal.pk)
     else:
         form = AppealStartForm()
