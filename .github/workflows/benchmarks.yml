@@ -67,6 +67,7 @@ jobs:
           ALLOWED_HOSTS: localhost,127.0.0.1
           OPENAI_API_KEY: sk-test-fake-key
           DJANGO_SETTINGS_MODULE: benefits_navigator.settings
+          FIELD_ENCRYPTION_KEY: icYQDhc0tmgE75lYSiQfexQ-2bSFuMJBn9SsiH5xpOI=
 
       - name: Run benchmarks
         run: |
@@ -78,6 +79,7 @@ jobs:
           ALLOWED_HOSTS: localhost,127.0.0.1
           OPENAI_API_KEY: sk-test-fake-key
           DJANGO_SETTINGS_MODULE: benefits_navigator.settings
+          FIELD_ENCRYPTION_KEY: icYQDhc0tmgE75lYSiQfexQ-2bSFuMJBn9SsiH5xpOI=
 
       - name: Upload benchmark results (main branch)
         uses: actions/upload-artifact@v4
