@@ -50,8 +50,8 @@ def context():
 # =============================================================================
 
 @given('I am an anonymous user')
-def anonymous_user(client, context):
-    """Ensure the user is not logged in."""
+def anonymous_user(client, db, context):
+    """Ensure the user is not logged in. Requires db for views that query database."""
     client.logout()
     context['client'] = client
     context['authenticated'] = False
@@ -92,6 +92,15 @@ def logged_in_user(client, db, user_data, context):
     context['client'] = client
     context['user'] = user
     context['authenticated'] = True
+
+
+@given('I have granted AI consent')
+def grant_ai_consent(context):
+    """Grant AI processing consent for the logged-in user."""
+    user = context.get('user')
+    if user and hasattr(user, 'profile'):
+        user.profile.ai_processing_consent = True
+        user.profile.save()
 
 
 @given('I am a premium user')
@@ -209,14 +218,14 @@ def submit_empty_form(client, context):
 @when(parsers.parse('I search for "{query}"'))
 def search_for(client, context, query):
     """Perform a search."""
-    response = client.get('/examprep/glossary/', {'q': query})
+    response = client.get('/exam-prep/glossary/', {'q': query})
     context['response'] = response
 
 
 @when(parsers.parse('I add a disability rating of {percentage:d}% for "{condition}"'))
 def add_disability_rating(client, context, percentage, condition):
     """Add a disability rating."""
-    response = client.post('/examprep/rating-calculator/calculate/', {
+    response = client.post('/exam-prep/rating-calculator/calculate/', {
         'percentage': percentage,
         'description': condition,
     })

@@ -1,0 +1,112 @@
+# Performance Benchmarks Workflow
+# Runs performance benchmarks and compares against baseline
+
+name: Performance Benchmarks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  benchmark:
+    name: Run Benchmarks
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Set up environment
+        run: |
+          cat > .env << EOF
+          SECRET_KEY=test-secret-key-for-ci-benchmarks
+          DEBUG=False
+          DATABASE_URL=postgres://test:test@localhost:5432/test_db
+          ALLOWED_HOSTS=localhost,127.0.0.1
+          REDIS_URL=redis://localhost:6379/0
+          OPENAI_API_KEY=sk-test-fake-key
+          EOF
+
+      - name: Run migrations
+        run: |
+          python manage.py migrate --noinput
+        env:
+          DJANGO_SETTINGS_MODULE: benefits_navigator.settings
+
+      - name: Download baseline (if exists)
+        uses: actions/download-artifact@v4
+        with:
+          name: benchmark-baseline
+          path: benchmark-baseline
+        continue-on-error: true
+
+      - name: Run benchmarks
+        run: |
+          python -m pytest tests/benchmarks/ -v \
+            --benchmark-json=benchmark-results.json \
+            --benchmark-only 2>/dev/null || \
+          python -m pytest tests/benchmarks/ -v
+        env:
+          DJANGO_SETTINGS_MODULE: benefits_navigator.settings
+
+      - name: Compare with baseline
+        if: github.event_name == 'pull_request'
+        run: |
+          python scripts/compare_benchmarks.py \
+            --baseline benchmark-baseline/benchmark-results.json \
+            --current benchmark-results.json \
+            --threshold 20
+        continue-on-error: true
+
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v4
+        if: github.ref == 'refs/heads/main'
+        with:
+          name: benchmark-baseline
+          path: benchmark-results.json
+          retention-days: 30
+
+      - name: Upload PR benchmark results
+        uses: actions/upload-artifact@v4
+        if: github.event_name == 'pull_request'
+        with:
+          name: benchmark-pr-${{ github.event.pull_request.number }}
+          path: benchmark-results.json
+          retention-days: 7

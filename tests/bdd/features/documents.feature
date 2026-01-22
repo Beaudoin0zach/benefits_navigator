@@ -20,6 +20,7 @@ Feature: Document Management
 
   Scenario: Logged in user can access upload page
     Given I am logged in
+    And I have granted AI consent
     When I visit "/claims/upload/"
     Then I should see a 200 status
 
@@ -30,5 +31,6 @@ Feature: Document Management
 
   Scenario: Logged in user can access denial decoder
     Given I am logged in
+    And I have granted AI consent
     When I visit "/claims/decode/"
     Then I should see a 200 status
