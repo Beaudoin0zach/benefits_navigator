@@ -110,6 +110,10 @@ INSTALLED_APPS = [
     'django_extensions',
     'viewflow',  # Workflow engine for appeals
     'strawberry.django',  # GraphQL API
+    'rest_framework',  # Django REST Framework
+    'rest_framework_simplejwt',  # JWT authentication
+    'rest_framework_simplejwt.token_blacklist',  # Token blacklist for logout
+    'corsheaders',  # CORS support for mobile apps
 
     # Our apps
     'core.apps.CoreConfig',
@@ -125,6 +129,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # Static files
+    'corsheaders.middleware.CorsMiddleware',  # CORS - must be before CommonMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -635,3 +640,84 @@ SITE_NAME = 'VA Benefits Navigator'
 SITE_DESCRIPTION = 'AI-powered assistance for VA disability claims and appeals'
 SUPPORT_EMAIL = 'support@benefitsnavigator.com'
 SITE_URL = env('SITE_URL', default='http://localhost:8000')
+
+# ==============================================================================
+# REST FRAMEWORK & JWT AUTHENTICATION
+# ==============================================================================
+from datetime import timedelta
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',  # Keep for browsable API
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '20/hour',
+        'user': '1000/hour',
+    },
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': True,
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+}
+
+# ==============================================================================
+# CORS CONFIGURATION
+# ==============================================================================
+# Allow mobile apps and development environments to access the API
+
+# In production, set CORS_ALLOWED_ORIGINS to your mobile app domains
+CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[
+    'http://localhost:3000',  # React Native / Expo dev
+    'http://localhost:8081',  # Expo dev
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:8081',
+])
+
+# Allow credentials (cookies, authorization headers)
+CORS_ALLOW_CREDENTIALS = True
+
+# Allow all headers needed for JWT auth
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+# Expose headers to the client
+CORS_EXPOSE_HEADERS = [
+    'content-disposition',
+    'x-request-id',
+]
+
+# In DEBUG mode, allow all origins for easier development
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
