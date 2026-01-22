@@ -1,5 +1,9 @@
 # Performance Benchmarks Workflow
-# Runs performance benchmarks and uploads results as artifacts
+# Runs performance benchmarks and uploads results as artifacts.
+#
+# NOTE: This workflow does NOT gate PRs on performance regressions.
+# Artifacts are uploaded for manual review and historical tracking.
+# Cross-workflow artifact comparison is not implemented due to GitHub Actions limitations.
 
 name: Performance Benchmarks
 
