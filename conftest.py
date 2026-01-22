@@ -38,19 +38,25 @@ def user_password():
 @pytest.fixture
 def user(db, user_password):
     """Create a standard test user with profile."""
+    from accounts.models import UserProfile
+
     user = User.objects.create_user(
         email="testuser@example.com",
         password=user_password,
         first_name="Test",
         last_name="User",
     )
+    # Set AI consent on profile to avoid privacy redirect
+    profile, _ = UserProfile.objects.get_or_create(user=user)
+    profile.ai_processing_consent = True
+    profile.save()
     return user
 
 
 @pytest.fixture
 def premium_user(db, user_password):
     """Create a premium user with active subscription."""
-    from accounts.models import Subscription
+    from accounts.models import Subscription, UserProfile
 
     user = User.objects.create_user(
         email="premium@example.com",
@@ -58,6 +64,10 @@ def premium_user(db, user_password):
         first_name="Premium",
         last_name="User",
     )
+    # Set AI consent on profile to avoid privacy redirect
+    profile, _ = UserProfile.objects.get_or_create(user=user)
+    profile.ai_processing_consent = True
+    profile.save()
     Subscription.objects.create(
         user=user,
         plan_type='premium',
@@ -79,12 +89,19 @@ def admin_user(db, user_password):
 @pytest.fixture
 def other_user(db, user_password):
     """Create another user for permission testing."""
-    return User.objects.create_user(
+    from accounts.models import UserProfile
+
+    user = User.objects.create_user(
         email="other@example.com",
         password=user_password,
         first_name="Other",
         last_name="User",
     )
+    # Set AI consent on profile to avoid privacy redirect
+    profile, _ = UserProfile.objects.get_or_create(user=user)
+    profile.ai_processing_consent = True
+    profile.save()
+    return user
 
 
 @pytest.fixture
