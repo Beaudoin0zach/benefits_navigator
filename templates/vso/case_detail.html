@@ -392,6 +392,72 @@
                 </div>
             </div>
 
+            <!-- Start Appeal (for denied cases) -->
+            {% if case.status == 'closed_denied' or case.status == 'appeal_in_progress' %}
+            <div class="bg-amber-50 border border-amber-200 rounded-lg">
+                <div class="px-6 py-4 border-b border-amber-200">
+                    <h2 class="text-lg font-semibold text-amber-800">Appeal Options</h2>
+                </div>
+                <div class="p-6">
+                    {% if case.appeals.exists %}
+                    <p class="text-sm text-amber-700 mb-4">An appeal is in progress for this case.</p>
+                    <a href="{% url 'appeals:appeal_detail' pk=case.appeals.first.pk %}"
+                       class="block w-full px-4 py-2 bg-amber-600 text-white text-center rounded-md hover:bg-amber-700">
+                        View Appeal
+                    </a>
+                    {% else %}
+                    <p class="text-sm text-amber-700 mb-4">This case was denied. You can start an appeal to challenge the decision.</p>
+                    <form method="post" action="{% url 'vso:start_appeal' pk=case.pk %}">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="w-full px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700">
+                            Start Appeal
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- C&P Exam Tracking -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">C&P Exam</h2>
+                </div>
+                <div class="p-6">
+                    {% if case.c_and_p_exam_date %}
+                    <dl class="space-y-3">
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Exam Date</dt>
+                            <dd class="text-gray-900 font-medium
+                                {% if case.c_and_p_exam_date < today %}text-gray-500{% elif case.c_and_p_exam_date <= upcoming_threshold %}text-amber-600{% else %}text-gray-900{% endif %}">
+                                {{ case.c_and_p_exam_date|date:"M d, Y" }}
+                                {% if case.c_and_p_exam_date < today %}
+                                <span class="text-xs text-gray-400">(past)</span>
+                                {% elif case.c_and_p_exam_date <= upcoming_threshold %}
+                                <span class="text-xs text-amber-500">(upcoming)</span>
+                                {% endif %}
+                            </dd>
+                        </div>
+                        {% if case.c_and_p_exam_location %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Location</dt>
+                            <dd class="text-gray-900">{{ case.c_and_p_exam_location }}</dd>
+                        </div>
+                        {% endif %}
+                        {% if case.c_and_p_exam_notes %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Notes</dt>
+                            <dd class="text-gray-700 text-sm">{{ case.c_and_p_exam_notes }}</dd>
+                        </div>
+                        {% endif %}
+                    </dl>
+                    {% else %}
+                    <p class="text-sm text-gray-500">No C&P exam scheduled.</p>
+                    {% endif %}
+                </div>
+            </div>
+
             <!-- Case Info -->
             <div class="bg-white rounded-lg shadow">
                 <div class="px-6 py-4 border-b border-gray-200">

@@ -149,6 +149,16 @@ class Appeal(TimeStampedModel):
         related_name='appeals'
     )
 
+    # Link to VSO case (optional - appeals can exist without a case)
+    veteran_case = models.ForeignKey(
+        'vso.VeteranCase',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='appeals',
+        help_text='VSO case this appeal is related to'
+    )
+
     appeal_type = models.CharField(
         'Appeal type',
         max_length=20,
