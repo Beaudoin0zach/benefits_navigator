@@ -17,6 +17,51 @@ env:
 
 jobs:
   # ===========================================================================
+  # Schema Consistency Check
+  # ===========================================================================
+  schema-check:
+    name: Schema Consistency
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check for missing migrations
+        run: |
+          python manage.py makemigrations --check --dry-run
+        env:
+          SECRET_KEY: test-secret-key-for-ci
+          DEBUG: 'False'
+          DATABASE_URL: postgres://test:test@localhost:5432/test_db
+          ALLOWED_HOSTS: localhost,127.0.0.1
+          OPENAI_API_KEY: sk-test-fake-key
+          FIELD_ENCRYPTION_KEY: icYQDhc0tmgE75lYSiQfexQ-2bSFuMJBn9SsiH5xpOI=
+
+  # ===========================================================================
   # Security Invariants Check
   # ===========================================================================
   security-invariants:
