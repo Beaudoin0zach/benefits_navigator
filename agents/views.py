@@ -95,6 +95,13 @@ def agents_home(request):
                 'icon': 'pencil',
                 'color': 'green',
             },
+            {
+                'name': 'Condition Discovery',
+                'slug': 'condition_discovery',
+                'description': 'Identify conditions you may be able to claim based on your service history and existing ratings.',
+                'icon': 'search',
+                'color': 'yellow',
+            },
         ]
     }
     return render(request, 'agents/home.html', context)
@@ -594,3 +601,200 @@ def agent_history(request):
         'interactions': interactions,
     }
     return render(request, 'agents/history.html', context)
+
+
+# =============================================================================
+# CONDITION DISCOVERY TOOL
+# =============================================================================
+
+# Common conditions by service era and branch
+CONDITION_DATABASE = {
+    'hearing_loss': {
+        'name': 'Hearing Loss / Tinnitus',
+        'description': 'Noise-induced hearing damage common in military service',
+        'common_for': ['army', 'marines', 'navy', 'air_force'],
+        'service_eras': ['vietnam', 'gulf', 'oef_oif', 'peacetime'],
+        'risk_factors': ['artillery', 'aviation', 'infantry', 'vehicle crew', 'shipboard'],
+        'secondary_to': [],
+        'avg_rating': '10-50%',
+    },
+    'ptsd': {
+        'name': 'PTSD / Anxiety / Depression',
+        'description': 'Mental health conditions from combat or military stress',
+        'common_for': ['army', 'marines', 'navy', 'air_force'],
+        'service_eras': ['vietnam', 'gulf', 'oef_oif'],
+        'risk_factors': ['combat', 'mst', 'deployment', 'trauma exposure'],
+        'secondary_to': [],
+        'avg_rating': '30-100%',
+    },
+    'back_conditions': {
+        'name': 'Back / Spine Conditions',
+        'description': 'Degenerative disc disease, herniated discs, chronic pain',
+        'common_for': ['army', 'marines', 'navy', 'air_force'],
+        'service_eras': ['all'],
+        'risk_factors': ['infantry', 'parachute', 'heavy lifting', 'vehicle accidents'],
+        'secondary_to': [],
+        'avg_rating': '10-40%',
+    },
+    'knee_conditions': {
+        'name': 'Knee Conditions',
+        'description': 'Patellofemoral syndrome, meniscus tears, arthritis',
+        'common_for': ['army', 'marines'],
+        'service_eras': ['all'],
+        'risk_factors': ['infantry', 'parachute', 'running', 'ruck marches'],
+        'secondary_to': ['back_conditions'],
+        'avg_rating': '10-30%',
+    },
+    'sleep_apnea': {
+        'name': 'Sleep Apnea',
+        'description': 'Obstructive sleep apnea, often secondary to PTSD or weight gain',
+        'common_for': ['army', 'marines', 'navy', 'air_force'],
+        'service_eras': ['all'],
+        'risk_factors': ['ptsd', 'weight gain', 'neck injury'],
+        'secondary_to': ['ptsd'],
+        'avg_rating': '50%',
+    },
+    'migraines': {
+        'name': 'Migraines / Headaches',
+        'description': 'Chronic headaches, often secondary to TBI or PTSD',
+        'common_for': ['army', 'marines', 'navy', 'air_force'],
+        'service_eras': ['oef_oif', 'gulf'],
+        'risk_factors': ['tbi', 'blast exposure', 'ptsd'],
+        'secondary_to': ['ptsd', 'tbi'],
+        'avg_rating': '10-50%',
+    },
+    'tbi': {
+        'name': 'Traumatic Brain Injury (TBI)',
+        'description': 'Brain injury from blast exposure, accidents, or combat',
+        'common_for': ['army', 'marines'],
+        'service_eras': ['oef_oif', 'gulf'],
+        'risk_factors': ['blast exposure', 'vehicle accidents', 'combat'],
+        'secondary_to': [],
+        'avg_rating': '10-100%',
+    },
+    'gerd': {
+        'name': 'GERD / Acid Reflux',
+        'description': 'Gastroesophageal reflux disease, common secondary condition',
+        'common_for': ['army', 'marines', 'navy', 'air_force'],
+        'service_eras': ['all'],
+        'risk_factors': ['stress', 'medication use', 'ptsd'],
+        'secondary_to': ['ptsd'],
+        'avg_rating': '10-30%',
+    },
+    'radiculopathy': {
+        'name': 'Radiculopathy (Nerve Pain)',
+        'description': 'Nerve pain radiating from spine to extremities',
+        'common_for': ['army', 'marines', 'navy', 'air_force'],
+        'service_eras': ['all'],
+        'risk_factors': ['back injury', 'neck injury'],
+        'secondary_to': ['back_conditions'],
+        'avg_rating': '10-40%',
+    },
+    'erectile_dysfunction': {
+        'name': 'Erectile Dysfunction',
+        'description': 'Sexual dysfunction, often secondary to PTSD or medication',
+        'common_for': ['army', 'marines', 'navy', 'air_force'],
+        'service_eras': ['all'],
+        'risk_factors': ['ptsd', 'medication', 'diabetes'],
+        'secondary_to': ['ptsd', 'diabetes'],
+        'avg_rating': 'SMC-K',
+    },
+}
+
+SERVICE_ERA_LABELS = {
+    'vietnam': 'Vietnam Era (1964-1975)',
+    'gulf': 'Gulf War Era (1990-2001)',
+    'oef_oif': 'OEF/OIF/OND (2001-Present)',
+    'peacetime': 'Peacetime Service',
+}
+
+
+@login_required
+def condition_discovery(request):
+    """
+    Condition discovery tool - help veterans identify potentially claimable conditions.
+    """
+    context = {
+        'service_eras': SERVICE_ERA_LABELS,
+        'branches': [
+            ('army', 'Army'),
+            ('marines', 'Marines'),
+            ('navy', 'Navy'),
+            ('air_force', 'Air Force'),
+            ('coast_guard', 'Coast Guard'),
+        ],
+        'risk_factors': [
+            ('combat', 'Combat/Direct Fire'),
+            ('blast_exposure', 'Blast Exposure/IEDs'),
+            ('artillery', 'Artillery/Heavy Weapons'),
+            ('aviation', 'Aviation/Flight Line'),
+            ('infantry', 'Infantry/Ground Forces'),
+            ('vehicle_crew', 'Vehicle Crew/Driver'),
+            ('parachute', 'Airborne/Parachute'),
+            ('mst', 'Military Sexual Trauma'),
+            ('deployment', 'Multiple Deployments'),
+            ('tbi', 'Head Injury/Concussion'),
+        ],
+    }
+
+    if request.method == 'POST':
+        branch = request.POST.get('branch', '')
+        service_era = request.POST.get('service_era', '')
+        selected_factors = request.POST.getlist('risk_factors')
+        existing_conditions = request.POST.get('existing_conditions', '').lower()
+
+        # Find matching conditions
+        matched_conditions = []
+        secondary_conditions = []
+
+        for key, condition in CONDITION_DATABASE.items():
+            score = 0
+            reasons = []
+
+            # Check branch match
+            if branch in condition['common_for']:
+                score += 2
+                reasons.append(f"Common in {branch.replace('_', ' ').title()}")
+
+            # Check service era
+            if 'all' in condition['service_eras'] or service_era in condition['service_eras']:
+                score += 2
+                reasons.append(f"Associated with {SERVICE_ERA_LABELS.get(service_era, service_era)}")
+
+            # Check risk factors
+            for factor in selected_factors:
+                if any(factor in rf.lower() or rf.lower() in factor for rf in condition['risk_factors']):
+                    score += 3
+                    reasons.append(f"Related to {factor.replace('_', ' ')}")
+
+            if score >= 4:
+                matched_conditions.append({
+                    'key': key,
+                    'condition': condition,
+                    'score': score,
+                    'reasons': reasons,
+                })
+
+            # Check for secondary conditions
+            if condition['secondary_to']:
+                for primary in condition['secondary_to']:
+                    if primary in existing_conditions or any(
+                        mc['key'] == primary for mc in matched_conditions
+                    ):
+                        secondary_conditions.append({
+                            'key': key,
+                            'condition': condition,
+                            'secondary_to': CONDITION_DATABASE.get(primary, {}).get('name', primary),
+                        })
+
+        # Sort by score
+        matched_conditions.sort(key=lambda x: x['score'], reverse=True)
+
+        context['results'] = True
+        context['matched_conditions'] = matched_conditions[:8]
+        context['secondary_conditions'] = secondary_conditions[:5]
+        context['selected_branch'] = branch
+        context['selected_era'] = service_era
+        context['selected_factors'] = selected_factors
+
+    return render(request, 'agents/condition_discovery.html', context)

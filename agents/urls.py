@@ -27,4 +27,7 @@ urlpatterns = [
     path('statement-generator/generate/', views.statement_generator_submit, name='statement_generator_submit'),
     path('statement-generator/result/<int:pk>/', views.statement_result, name='statement_result'),
     path('statement-generator/result/<int:pk>/save/', views.statement_save_final, name='statement_save_final'),
+
+    # Condition Discovery Tool
+    path('condition-discovery/', views.condition_discovery, name='condition_discovery'),
 ]

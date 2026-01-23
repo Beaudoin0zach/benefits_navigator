@@ -14,7 +14,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q, Count, Avg, F
 from django.utils import timezone
 
-from accounts.models import Organization, OrganizationMembership
+from accounts.models import Organization, OrganizationMembership, OrganizationInvitation
 from core.models import AuditLog
 from .models import (
     VeteranCase, CaseNote, SharedDocument,
@@ -272,6 +272,10 @@ def dashboard(request):
         status__startswith='closed'
     ).order_by('last_activity_at')[:10]
 
+    # Check if user is org admin
+    membership = get_user_organization_membership(request.user, org)
+    is_org_admin = membership and membership.role == 'admin'
+
     context = {
         'organization': org,
         'total_cases': cases.count(),
@@ -291,6 +295,8 @@ def dashboard(request):
         'won_this_month': won_this_month,
         'win_rate_trend': win_rate_trend,
         'win_rate_last_month': win_rate_last_month,
+        # Admin flag
+        'is_org_admin': is_org_admin,
     }
 
     return render(request, 'vso/dashboard.html', context)
@@ -1385,3 +1391,318 @@ def reports(request):
     }
 
     return render(request, 'vso/reports.html', context)
+
+
+# =============================================================================
+# ORGANIZATION ADMIN
+# =============================================================================
+
+def org_admin_required(view_func):
+    """Decorator that requires user to be an org admin."""
+    from functools import wraps
+
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('account_login')
+
+        org = get_user_organization(request.user, request=request)
+        if not org:
+            messages.error(request, "Please select an organization.")
+            return redirect('vso:select_organization')
+
+        membership = get_user_organization_membership(request.user, org)
+        if not membership or membership.role != 'admin':
+            messages.error(request, "You must be an organization administrator to access this page.")
+            return redirect('vso:dashboard')
+
+        return view_func(request, *args, **kwargs)
+
+    return wrapper
+
+
+@org_admin_required
+def org_admin_dashboard(request):
+    """
+    Organization admin dashboard - member management and usage analytics.
+    """
+    org = get_user_organization(request.user, request=request)
+
+    # Get all memberships for this org
+    memberships = OrganizationMembership.objects.filter(
+        organization=org
+    ).select_related('user', 'invited_by').order_by('role', 'user__email')
+
+    active_members = memberships.filter(is_active=True)
+    inactive_members = memberships.filter(is_active=False)
+
+    # Pending invitations
+    pending_invitations = OrganizationInvitation.objects.filter(
+        organization=org,
+        accepted_at__isnull=True,
+        expires_at__gt=timezone.now()
+    ).order_by('-created_at')
+
+    # Usage analytics
+    cases = VeteranCase.objects.filter(organization=org)
+    total_cases = cases.count()
+    cases_this_month = cases.filter(
+        created_at__gte=timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    ).count()
+
+    # Shared documents count
+    shared_docs = SharedDocument.objects.filter(case__organization=org)
+    total_shared_docs = shared_docs.count()
+    docs_this_month = shared_docs.filter(
+        shared_at__gte=timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    ).count()
+
+    # Shared analyses count
+    shared_analyses = SharedAnalysis.objects.filter(case__organization=org)
+    total_analyses = shared_analyses.count()
+    analyses_this_month = shared_analyses.filter(
+        shared_at__gte=timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    ).count()
+
+    # Member counts by role
+    role_counts = {
+        'admin': active_members.filter(role='admin').count(),
+        'caseworker': active_members.filter(role='caseworker').count(),
+        'veteran': active_members.filter(role='veteran').count(),
+    }
+
+    context = {
+        'organization': org,
+        'active_members': active_members,
+        'inactive_members': inactive_members,
+        'pending_invitations': pending_invitations,
+        'role_counts': role_counts,
+        'total_cases': total_cases,
+        'cases_this_month': cases_this_month,
+        'total_shared_docs': total_shared_docs,
+        'docs_this_month': docs_this_month,
+        'total_analyses': total_analyses,
+        'analyses_this_month': analyses_this_month,
+        'seats_used': org.seats_used,
+        'seats_total': org.seats,
+        'seats_remaining': org.seats_remaining,
+    }
+
+    return render(request, 'vso/org_admin.html', context)
+
+
+@org_admin_required
+@require_POST
+def org_admin_change_role(request, membership_id):
+    """Change a member's role."""
+    org = get_user_organization(request.user, request=request)
+
+    membership = get_object_or_404(
+        OrganizationMembership,
+        pk=membership_id,
+        organization=org
+    )
+
+    # Can't change own role
+    if membership.user == request.user:
+        messages.error(request, "You cannot change your own role.")
+        return redirect('vso:org_admin')
+
+    new_role = request.POST.get('role')
+    if new_role not in ['admin', 'caseworker', 'veteran']:
+        messages.error(request, "Invalid role specified.")
+        return redirect('vso:org_admin')
+
+    old_role = membership.role
+    membership.role = new_role
+    membership.save(update_fields=['role', 'updated_at'])
+
+    messages.success(
+        request,
+        f"Changed {membership.user.email}'s role from {old_role} to {new_role}."
+    )
+    return redirect('vso:org_admin')
+
+
+@org_admin_required
+@require_POST
+def org_admin_deactivate_member(request, membership_id):
+    """Deactivate a member."""
+    org = get_user_organization(request.user, request=request)
+
+    membership = get_object_or_404(
+        OrganizationMembership,
+        pk=membership_id,
+        organization=org
+    )
+
+    # Can't deactivate self
+    if membership.user == request.user:
+        messages.error(request, "You cannot deactivate yourself.")
+        return redirect('vso:org_admin')
+
+    membership.deactivate(deactivated_by=request.user)
+
+    messages.success(
+        request,
+        f"Deactivated {membership.user.email}'s membership."
+    )
+    return redirect('vso:org_admin')
+
+
+@org_admin_required
+@require_POST
+def org_admin_reactivate_member(request, membership_id):
+    """Reactivate a member."""
+    org = get_user_organization(request.user, request=request)
+
+    membership = get_object_or_404(
+        OrganizationMembership,
+        pk=membership_id,
+        organization=org,
+        is_active=False
+    )
+
+    try:
+        membership.reactivate()
+        messages.success(
+            request,
+            f"Reactivated {membership.user.email}'s membership."
+        )
+    except ValueError as e:
+        messages.error(request, str(e))
+
+    return redirect('vso:org_admin')
+
+
+@org_admin_required
+def org_admin_invite_staff(request):
+    """Invite a new staff member (admin or caseworker)."""
+    org = get_user_organization(request.user, request=request)
+
+    if request.method == 'POST':
+        email = request.POST.get('email', '').strip().lower()
+        role = request.POST.get('role', 'caseworker')
+
+        if not email:
+            messages.error(request, "Email is required.")
+            return redirect('vso:org_admin_invite_staff')
+
+        if role not in ['admin', 'caseworker']:
+            messages.error(request, "Invalid role. Staff must be admin or caseworker.")
+            return redirect('vso:org_admin_invite_staff')
+
+        # Check if already a member
+        existing = OrganizationMembership.objects.filter(
+            organization=org,
+            user__email=email
+        ).first()
+        if existing:
+            messages.error(request, f"{email} is already a member of this organization.")
+            return redirect('vso:org_admin')
+
+        # Check seat limit
+        if org.is_at_seat_limit:
+            messages.error(request, "Organization has reached its seat limit.")
+            return redirect('vso:org_admin')
+
+        # Check for existing pending invitation
+        existing_invite = OrganizationInvitation.objects.filter(
+            organization=org,
+            email=email,
+            accepted_at__isnull=True,
+            expires_at__gt=timezone.now()
+        ).first()
+
+        if existing_invite:
+            messages.warning(request, f"A pending invitation already exists for {email}.")
+            return redirect('vso:org_admin')
+
+        # Create invitation
+        invitation = OrganizationInvitation.objects.create(
+            organization=org,
+            email=email,
+            role=role,
+            invited_by=request.user,
+            expires_at=timezone.now() + timedelta(days=7)
+        )
+
+        # TODO: Send email notification
+        messages.success(
+            request,
+            f"Invitation sent to {email} as {role}. They have 7 days to accept."
+        )
+        return redirect('vso:org_admin')
+
+    context = {
+        'organization': org,
+    }
+    return render(request, 'vso/org_admin_invite_staff.html', context)
+
+
+# =============================================================================
+# EVIDENCE PACKET BUILDER
+# =============================================================================
+
+@vso_required
+def evidence_packet_builder(request, pk):
+    """
+    Evidence packet builder - organize documents by condition for VA submission.
+    """
+    org = get_user_organization(request.user, request=request)
+    if not org:
+        return redirect('vso:dashboard')
+
+    case = get_object_or_404(
+        VeteranCase.objects.select_related('veteran', 'organization'),
+        pk=pk,
+        organization=org
+    )
+
+    # Get case conditions
+    conditions = case.case_conditions.all()
+
+    # Get shared documents
+    shared_docs = case.shared_documents.select_related('document').order_by('document__document_type')
+
+    # Organize documents by condition based on tags/notes
+    # For now, we'll let users manually assign documents to conditions
+    documents_list = []
+    for sd in shared_docs:
+        doc_data = {
+            'id': sd.id,
+            'document': sd.document,
+            'title': sd.document.title if sd.document else 'Untitled',
+            'document_type': sd.document.document_type if sd.document else 'other',
+            'uploaded_at': sd.document.uploaded_at if sd.document else sd.shared_at,
+            'shared_at': sd.shared_at,
+            'vso_notes': sd.vso_notes,
+            'review_status': sd.review_status,
+            # Which conditions this document supports (stored in vso_notes as JSON or comma-separated)
+            'assigned_conditions': [],
+        }
+        documents_list.append(doc_data)
+
+    # Build evidence checklist per condition
+    evidence_checklist = []
+    for condition in conditions:
+        checklist_item = {
+            'condition': condition,
+            'has_diagnosis': condition.has_diagnosis,
+            'has_nexus': condition.has_nexus,
+            'has_in_service_evidence': condition.has_in_service_evidence,
+            'is_complete': condition.is_evidence_complete,
+            'gap_count': condition.gap_count,
+        }
+        evidence_checklist.append(checklist_item)
+
+    context = {
+        'organization': org,
+        'case': case,
+        'conditions': conditions,
+        'documents': documents_list,
+        'evidence_checklist': evidence_checklist,
+        'document_types': SharedDocument.REVIEW_STATUS_CHOICES,
+    }
+
+    return render(request, 'vso/evidence_packet_builder.html', context)

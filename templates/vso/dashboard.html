@@ -301,6 +301,12 @@
                        class="block px-4 py-3 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 focus:bg-blue-100 text-sm font-medium text-blue-700">
                         View Reports
                     </a>
+                    {% if is_org_admin %}
+                    <a href="{% url 'vso:org_admin' %}"
+                       class="block px-4 py-3 rounded-lg border border-purple-200 bg-purple-50 hover:bg-purple-100 focus:bg-purple-100 text-sm font-medium text-purple-700">
+                        Organization Admin
+                    </a>
+                    {% endif %}
                     <a href="{% url 'vso:case_list' %}?status=intake"
                        class="block px-4 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 focus:bg-gray-50 text-sm font-medium text-gray-700">
                         Intake Queue ({{ status_counts.intake|default:0 }})

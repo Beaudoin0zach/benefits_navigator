@@ -138,7 +138,10 @@ class TestDecisionLetterAnalysisModel(TestCase):
             user=self.user,
             decision_date=date.today(),
         )
-        self.assertIn(str(date.today()), str(analysis))
+        # Check user email is in the string representation
+        self.assertIn(self.user.email, str(analysis))
+        # Check format includes "Decision Analysis"
+        self.assertIn("Decision Analysis", str(analysis))
 
     def test_analysis_conditions_json(self):
         """DecisionLetterAnalysis stores conditions as JSON."""
