@@ -14,6 +14,7 @@ urlpatterns = [
     path('document/<int:pk>/', views.document_detail, name='document_detail'),
     path('document/<int:pk>/status/', views.document_status, name='document_status'),
     path('document/<int:pk>/delete/', views.document_delete, name='document_delete'),
+    path('document/<int:pk>/tags/', views.document_update_tags, name='document_update_tags'),
 
     # Protected media access (authentication required)
     path('document/<int:pk>/download/', views.document_download, name='document_download'),

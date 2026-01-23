@@ -205,6 +205,51 @@ def document_delete(request, pk):
     return redirect('claims:document_list')
 
 
+@login_required
+@require_http_methods(["POST"])
+def document_update_tags(request, pk):
+    """
+    Update condition tags for a document.
+    Allows linking documents to specific conditions for organization.
+    """
+    document = get_object_or_404(
+        Document,
+        pk=pk,
+        user=request.user,
+        is_deleted=False
+    )
+
+    # Get tags from POST data
+    tags_input = request.POST.get('condition_tags', '')
+
+    # Parse tags (comma-separated or JSON array)
+    import json
+    try:
+        # Try JSON array first
+        tags = json.loads(tags_input)
+        if not isinstance(tags, list):
+            tags = [str(tags)]
+    except (json.JSONDecodeError, TypeError):
+        # Fall back to comma-separated
+        tags = [t.strip() for t in tags_input.split(',') if t.strip()]
+
+    # Clean and dedupe tags
+    tags = list(set(tag.strip()[:100] for tag in tags if tag.strip()))
+
+    document.condition_tags = tags
+    document.save(update_fields=['condition_tags'])
+
+    # HTMX response
+    if request.headers.get('HX-Request'):
+        return render(request, 'claims/partials/document_tags.html', {
+            'document': document,
+            'tags_updated': True,
+        })
+
+    messages.success(request, 'Document tags updated.')
+    return redirect('claims:document_detail', pk=document.pk)
+
+
 # =============================================================================
 # Denial Decoder Views
 # =============================================================================

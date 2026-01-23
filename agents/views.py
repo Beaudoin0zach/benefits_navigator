@@ -761,9 +761,10 @@ def condition_discovery(request):
                 score += 2
                 reasons.append(f"Associated with {SERVICE_ERA_LABELS.get(service_era, service_era)}")
 
-            # Check risk factors
+            # Check risk factors (normalize underscores to spaces for comparison)
             for factor in selected_factors:
-                if any(factor in rf.lower() or rf.lower() in factor for rf in condition['risk_factors']):
+                factor_normalized = factor.replace('_', ' ').lower()
+                if any(factor_normalized in rf.lower() or rf.lower() in factor_normalized for rf in condition['risk_factors']):
                     score += 3
                     reasons.append(f"Related to {factor.replace('_', ' ')}")
 

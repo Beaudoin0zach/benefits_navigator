@@ -61,6 +61,25 @@
         </div>
     </section>
 
+    <!-- Claim Progress CTA -->
+    <section class="mb-8" aria-label="Claim progress">
+        <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-bold mb-1">Track Your Claim Progress</h2>
+                    <p class="text-blue-100">See your readiness score and get personalized next steps to file your claim.</p>
+                </div>
+                <a href="{% url 'core:claim_progress' %}"
+                   class="inline-flex items-center px-5 py-3 bg-white text-blue-600 font-medium rounded-lg hover:bg-blue-50 transition-colors">
+                    View Progress
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
     <!-- Alerts Section -->
     {% if upcoming_exams or pending_appeals %}
     <section class="mb-8" aria-label="Important alerts">

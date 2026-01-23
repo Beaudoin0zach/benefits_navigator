@@ -84,6 +84,18 @@
                                 <a href="{% url 'claims:document_detail' pk=document.id %}" class="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline focus:underline">
                                     {{ document.file_name }}
                                 </a>
+                                {% if document.condition_tags %}
+                                <div class="flex flex-wrap gap-1 mt-1">
+                                    {% for tag in document.condition_tags|slice:":3" %}
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-blue-50 text-blue-700">
+                                        {{ tag }}
+                                    </span>
+                                    {% endfor %}
+                                    {% if document.condition_tags|length > 3 %}
+                                    <span class="text-xs text-gray-500">+{{ document.condition_tags|length|add:"-3" }} more</span>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
                     </td>

@@ -133,6 +133,189 @@ def journey_timeline_partial(request):
 
 
 @login_required
+def claim_progress(request):
+    """
+    Claim progress dashboard - shows readiness score and next steps.
+    Helps veterans understand where they are in the claims process.
+    """
+    user = request.user
+
+    # Get counts for progress calculation
+    from claims.models import Document
+    from agents.models import (
+        DecisionLetterAnalysis, EvidenceGapAnalysis,
+        PersonalStatement, RatingAnalysis
+    )
+
+    # Document uploads
+    total_documents = Document.objects.filter(user=user, is_deleted=False).count()
+    recent_documents = Document.objects.filter(
+        user=user, is_deleted=False
+    ).order_by('-created_at')[:5]
+
+    # AI Analyses completed
+    decision_analyses = DecisionLetterAnalysis.objects.filter(user=user).count()
+    rating_analyses = RatingAnalysis.objects.filter(user=user).count()
+    evidence_analyses = EvidenceGapAnalysis.objects.filter(user=user).count()
+    statements_generated = PersonalStatement.objects.filter(user=user).count()
+
+    # Get most recent evidence gap analysis for recommendations
+    latest_evidence_gap = EvidenceGapAnalysis.objects.filter(user=user).order_by('-created_at').first()
+    evidence_readiness_score = latest_evidence_gap.readiness_score if latest_evidence_gap else None
+    evidence_gaps = []
+    if latest_evidence_gap and latest_evidence_gap.missing_evidence:
+        evidence_gaps = latest_evidence_gap.missing_evidence[:5]  # Top 5 gaps
+
+    # Get exam checklists
+    exam_checklists = []
+    if hasattr(user, 'exam_checklists'):
+        exam_checklists = user.exam_checklists.all().count()
+
+    # Calculate overall readiness score (0-100)
+    # Weights: documents (20), decision analysis (20), rating analysis (15),
+    #          evidence analysis (25), statements (10), exam prep (10)
+    score_components = []
+
+    # Documents: 0-20 points (5 docs = 20 points)
+    doc_score = min(total_documents * 4, 20)
+    score_components.append({'name': 'Documents Uploaded', 'score': doc_score, 'max': 20,
+                             'complete': total_documents >= 5})
+
+    # Decision analysis: 0-20 points
+    decision_score = min(decision_analyses * 20, 20)
+    score_components.append({'name': 'Decision Letter Analyzed', 'score': decision_score, 'max': 20,
+                             'complete': decision_analyses >= 1})
+
+    # Rating analysis: 0-15 points
+    rating_score = min(rating_analyses * 15, 15)
+    score_components.append({'name': 'Rating Analysis Complete', 'score': rating_score, 'max': 15,
+                             'complete': rating_analyses >= 1})
+
+    # Evidence analysis: 0-25 points (use the readiness score if available)
+    if evidence_readiness_score:
+        evidence_score = int(evidence_readiness_score * 0.25)  # Scale to 25
+    else:
+        evidence_score = 0
+    score_components.append({'name': 'Evidence Gaps Analyzed', 'score': evidence_score, 'max': 25,
+                             'complete': evidence_analyses >= 1 and evidence_readiness_score and evidence_readiness_score >= 70})
+
+    # Statements: 0-10 points
+    statement_score = min(statements_generated * 10, 10)
+    score_components.append({'name': 'Personal Statement Drafted', 'score': statement_score, 'max': 10,
+                             'complete': statements_generated >= 1})
+
+    # Exam prep: 0-10 points
+    exam_score = min(exam_checklists * 10, 10)
+    score_components.append({'name': 'C&P Exam Prepared', 'score': exam_score, 'max': 10,
+                             'complete': exam_checklists >= 1})
+
+    total_score = sum(c['score'] for c in score_components)
+    max_score = sum(c['max'] for c in score_components)
+    readiness_percentage = int((total_score / max_score) * 100) if max_score > 0 else 0
+
+    # Generate next steps recommendations
+    next_steps = []
+
+    if total_documents == 0:
+        next_steps.append({
+            'priority': 'high',
+            'action': 'Upload your VA documents',
+            'description': 'Start by uploading your DD-214, medical records, or decision letters.',
+            'url_name': 'claims:upload',
+            'url_label': 'Upload Documents'
+        })
+
+    if decision_analyses == 0:
+        next_steps.append({
+            'priority': 'high',
+            'action': 'Analyze your decision letter',
+            'description': 'Upload and analyze your VA decision letter to understand your current status.',
+            'url_name': 'agents:decision_analyzer',
+            'url_label': 'Analyze Decision'
+        })
+
+    if rating_analyses == 0 and decision_analyses > 0:
+        next_steps.append({
+            'priority': 'medium',
+            'action': 'Get a rating analysis',
+            'description': 'Upload your rating decision to identify potential increases.',
+            'url_name': 'agents:rating_analyzer',
+            'url_label': 'Analyze Rating'
+        })
+
+    if evidence_analyses == 0:
+        next_steps.append({
+            'priority': 'high',
+            'action': 'Check your evidence gaps',
+            'description': 'Identify what evidence you need before filing your claim.',
+            'url_name': 'agents:evidence_gap',
+            'url_label': 'Check Evidence'
+        })
+    elif evidence_gaps:
+        next_steps.append({
+            'priority': 'medium',
+            'action': 'Address evidence gaps',
+            'description': f'You have {len(evidence_gaps)} evidence gaps to address.',
+            'url_name': 'agents:evidence_gap',
+            'url_label': 'View Gaps'
+        })
+
+    if statements_generated == 0 and (decision_analyses > 0 or evidence_analyses > 0):
+        next_steps.append({
+            'priority': 'medium',
+            'action': 'Draft a personal statement',
+            'description': 'Create a personal statement to support your claim.',
+            'url_name': 'agents:statement_generator',
+            'url_label': 'Generate Statement'
+        })
+
+    if exam_checklists == 0:
+        next_steps.append({
+            'priority': 'low',
+            'action': 'Prepare for your C&P exam',
+            'description': 'Review exam guides to know what to expect.',
+            'url_name': 'examprep:guide_list',
+            'url_label': 'View Exam Guides'
+        })
+
+    # Limit to top 4 next steps
+    next_steps = next_steps[:4]
+
+    # Readiness level
+    if readiness_percentage >= 80:
+        readiness_level = 'ready'
+        readiness_message = "You're well-prepared to file your claim!"
+    elif readiness_percentage >= 50:
+        readiness_level = 'almost'
+        readiness_message = "You're making good progress. Complete a few more steps."
+    elif readiness_percentage >= 25:
+        readiness_level = 'progressing'
+        readiness_message = "You've started your journey. Keep building your evidence."
+    else:
+        readiness_level = 'starting'
+        readiness_message = "Let's get started on your VA claim journey."
+
+    context = {
+        'page_title': 'Claim Progress',
+        'readiness_percentage': readiness_percentage,
+        'readiness_level': readiness_level,
+        'readiness_message': readiness_message,
+        'score_components': score_components,
+        'next_steps': next_steps,
+        'total_documents': total_documents,
+        'recent_documents': recent_documents,
+        'decision_analyses': decision_analyses,
+        'rating_analyses': rating_analyses,
+        'evidence_analyses': evidence_analyses,
+        'statements_generated': statements_generated,
+        'evidence_readiness_score': evidence_readiness_score,
+        'evidence_gaps': evidence_gaps,
+    }
+
+    return render(request, 'core/claim_progress.html', context)
+
+
+@login_required
 def add_milestone(request):
     """
     Add a new journey milestone.

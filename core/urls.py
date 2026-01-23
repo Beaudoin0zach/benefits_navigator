@@ -8,6 +8,9 @@ from . import views
 app_name = 'core'
 
 urlpatterns = [
+    # Claim Progress Dashboard
+    path('progress/', views.claim_progress, name='claim_progress'),
+
     # Journey Dashboard
     path('journey/', views.journey_dashboard, name='journey_dashboard'),
     path('journey/timeline/', views.journey_timeline_partial, name='journey_timeline'),
