@@ -371,7 +371,7 @@ def case_list(request):
 
     # CSV Export
     if request.GET.get('export') == 'csv':
-        return _export_cases_csv(cases_with_triage)
+        return _export_cases_csv(cases_with_triage, request=request, org=org)
 
     # Pagination
     paginator = Paginator(cases_with_triage, 25)
@@ -414,8 +414,8 @@ def case_list(request):
     return render(request, 'vso/case_list.html', context)
 
 
-def _export_cases_csv(cases):
-    """Export cases to CSV format."""
+def _export_cases_csv(cases, request=None, org=None):
+    """Export cases to CSV format with audit logging."""
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="cases_export.csv"'
 
@@ -426,7 +426,9 @@ def _export_cases_csv(cases):
         'Initial Rating', 'Final Rating', 'Conditions Count'
     ])
 
+    case_ids = []
     for case in cases:
+        case_ids.append(case.pk)
         writer.writerow([
             case.title,
             case.veteran.email,
@@ -441,6 +443,24 @@ def _export_cases_csv(cases):
             case.final_combined_rating or '',
             case.case_conditions.count(),
         ])
+
+    # Audit log the export
+    if request and request.user.is_authenticated:
+        AuditLog.objects.create(
+            user=request.user,
+            action='vso_case_export',
+            resource_type='VeteranCase',
+            ip_address=request.META.get('REMOTE_ADDR'),
+            user_agent=request.META.get('HTTP_USER_AGENT', '')[:500],
+            request_path=request.path,
+            request_method=request.method,
+            details={
+                'case_count': len(case_ids),
+                'case_ids': case_ids[:100],  # Limit to first 100 for storage
+                'organization': org.slug if org else None,
+                'format': 'csv',
+            }
+        )
 
     return response
 
@@ -532,7 +552,7 @@ def bulk_case_action(request):
         for case in cases_list:
             case.triage_label = GapCheckerService.get_triage_label(case)
             case.triage_display = GapCheckerService.get_triage_display(case.triage_label)
-        return _export_cases_csv(cases_list)
+        return _export_cases_csv(cases_list, request=request, org=org)
 
     else:
         messages.error(request, 'Invalid action.')
@@ -1489,17 +1509,36 @@ def reports(request):
     # Handle exports
     export_format = request.GET.get('export')
     if export_format == 'csv':
-        return _export_reports_csv(org, context)
+        return _export_reports_csv(org, context, request=request)
     elif export_format == 'pdf':
-        return _export_reports_pdf(org, context)
+        return _export_reports_pdf(org, context, request=request)
 
     return render(request, 'vso/reports.html', context)
 
 
-def _export_reports_csv(org, data):
-    """Export reports data to CSV (Excel-compatible) format."""
+def _export_reports_csv(org, data, request=None):
+    """Export reports data to CSV (Excel-compatible) format with audit logging."""
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename="{org.slug}_report_{timezone.now().strftime("%Y%m%d")}.csv"'
+
+    # Audit log the export
+    if request and request.user.is_authenticated:
+        AuditLog.objects.create(
+            user=request.user,
+            action='vso_report_export',
+            resource_type='Organization',
+            resource_id=org.pk,
+            ip_address=request.META.get('REMOTE_ADDR'),
+            user_agent=request.META.get('HTTP_USER_AGENT', '')[:500],
+            request_path=request.path,
+            request_method=request.method,
+            details={
+                'organization': org.slug,
+                'format': 'csv',
+                'total_open': data.get('total_open'),
+                'total_closed': data.get('total_closed'),
+            }
+        )
 
     writer = csv.writer(response)
 
@@ -1548,8 +1587,27 @@ def _export_reports_csv(org, data):
     return response
 
 
-def _export_reports_pdf(org, data):
-    """Export reports data to PDF format for board presentations."""
+def _export_reports_pdf(org, data, request=None):
+    """Export reports data to PDF format for board presentations with audit logging."""
+    # Audit log the export
+    if request and request.user.is_authenticated:
+        AuditLog.objects.create(
+            user=request.user,
+            action='vso_report_export',
+            resource_type='Organization',
+            resource_id=org.pk,
+            ip_address=request.META.get('REMOTE_ADDR'),
+            user_agent=request.META.get('HTTP_USER_AGENT', '')[:500],
+            request_path=request.path,
+            request_method=request.method,
+            details={
+                'organization': org.slug,
+                'format': 'pdf',
+                'total_open': data.get('total_open'),
+                'total_closed': data.get('total_closed'),
+            }
+        )
+
     from io import BytesIO
     from reportlab.lib import colors
     from reportlab.lib.pagesizes import letter
