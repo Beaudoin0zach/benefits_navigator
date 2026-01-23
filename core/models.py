@@ -405,6 +405,8 @@ class AuditLog(models.Model):
         ('vso_invitation_sent', 'Invitation Sent'),
         ('vso_invitation_accept', 'Invitation Accepted'),
         ('vso_case_archive', 'Case Archived'),
+        ('vso_case_export', 'Cases Exported'),
+        ('vso_report_export', 'Report Exported'),
 
         # Profile changes
         ('profile_update', 'Profile Update'),
