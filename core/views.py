@@ -8,6 +8,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponse
+from django_ratelimit.decorators import ratelimit
 
 from .models import UserJourneyEvent, JourneyMilestone, Deadline
 from .journey import TimelineBuilder
@@ -133,10 +134,13 @@ def journey_timeline_partial(request):
 
 
 @login_required
+@ratelimit(key='user', rate='60/m', method='GET', block=True)
 def claim_progress(request):
     """
     Claim progress dashboard - shows readiness score and next steps.
     Helps veterans understand where they are in the claims process.
+
+    Rate limited to 60/min per user to prevent resource exhaustion.
     """
     user = request.user
 
