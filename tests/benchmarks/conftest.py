@@ -14,7 +14,17 @@ from unittest.mock import MagicMock, patch
 import pytest
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import Client
+from django.test import Client, override_settings
+
+
+# Disable SSL redirect for benchmarks (CI runs with DEBUG=False)
+pytestmark = pytest.mark.usefixtures("disable_ssl_redirect")
+
+
+@pytest.fixture(autouse=True)
+def disable_ssl_redirect(settings):
+    """Disable SSL redirect for benchmark tests."""
+    settings.SECURE_SSL_REDIRECT = False
 
 User = get_user_model()
 
