@@ -42,4 +42,14 @@ urlpatterns = [
     path('invitations/<str:token>/resend/', views.resend_invitation, name='resend_invitation'),
     path('invitations/<str:token>/cancel/', views.cancel_invitation, name='cancel_invitation'),
     path('invite/<str:token>/', views.accept_invitation, name='accept_invitation'),
+
+    # Organization Admin (admin-only)
+    path('admin/', views.org_admin_dashboard, name='org_admin'),
+    path('admin/invite-staff/', views.org_admin_invite_staff, name='org_admin_invite_staff'),
+    path('admin/member/<int:membership_id>/change-role/', views.org_admin_change_role, name='org_admin_change_role'),
+    path('admin/member/<int:membership_id>/deactivate/', views.org_admin_deactivate_member, name='org_admin_deactivate'),
+    path('admin/member/<int:membership_id>/reactivate/', views.org_admin_reactivate_member, name='org_admin_reactivate'),
+
+    # Evidence Packet Builder
+    path('cases/<int:pk>/evidence-packet/', views.evidence_packet_builder, name='evidence_packet'),
 ]

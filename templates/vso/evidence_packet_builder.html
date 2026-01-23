@@ -1,0 +1,250 @@
+{% extends 'base.html' %}
+
+{% block title %}Evidence Packet - {{ case.title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <header class="mb-8">
+        <nav class="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
+            <a href="{% url 'vso:dashboard' %}" class="hover:underline">Dashboard</a>
+            <span class="mx-2 text-gray-400">/</span>
+            <a href="{% url 'vso:case_list' %}" class="hover:underline">Cases</a>
+            <span class="mx-2 text-gray-400">/</span>
+            <a href="{% url 'vso:case_detail' pk=case.pk %}" class="hover:underline">{{ case.title }}</a>
+            <span class="mx-2 text-gray-400">/</span>
+            <span>Evidence Packet</span>
+        </nav>
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Evidence Packet Builder</h1>
+                <p class="text-gray-600 mt-1">Organize documents by condition for {{ case.veteran.get_full_name|default:case.veteran.email }}</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Evidence Checklist by Condition -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Evidence Checklist</h2>
+                    <p class="text-sm text-gray-500">Required evidence for each claimed condition</p>
+                </div>
+
+                {% if evidence_checklist %}
+                <div class="divide-y divide-gray-200">
+                    {% for item in evidence_checklist %}
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="font-medium text-gray-900">{{ item.condition.condition_name }}</h3>
+                                {% if item.condition.diagnostic_code %}
+                                <p class="text-sm text-gray-500">DC {{ item.condition.diagnostic_code }}</p>
+                                {% endif %}
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                {% if item.is_complete %}bg-green-100 text-green-800
+                                {% elif item.gap_count == 1 %}bg-yellow-100 text-yellow-800
+                                {% else %}bg-red-100 text-red-800{% endif %}">
+                                {% if item.is_complete %}Complete
+                                {% else %}{{ item.gap_count }} gap{{ item.gap_count|pluralize }}
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-4">
+                            <!-- Diagnosis -->
+                            <div class="p-4 rounded-lg border {% if item.has_diagnosis %}border-green-200 bg-green-50{% else %}border-gray-200 bg-gray-50{% endif %}">
+                                <div class="flex items-center mb-2">
+                                    {% if item.has_diagnosis %}
+                                    <svg class="w-5 h-5 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                    {% else %}
+                                    <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                                    </svg>
+                                    {% endif %}
+                                    <span class="font-medium {% if item.has_diagnosis %}text-green-800{% else %}text-gray-700{% endif %}">
+                                        Diagnosis
+                                    </span>
+                                </div>
+                                <p class="text-xs {% if item.has_diagnosis %}text-green-600{% else %}text-gray-500{% endif %}">
+                                    Current medical diagnosis
+                                </p>
+                            </div>
+
+                            <!-- Nexus -->
+                            <div class="p-4 rounded-lg border {% if item.has_nexus %}border-green-200 bg-green-50{% else %}border-gray-200 bg-gray-50{% endif %}">
+                                <div class="flex items-center mb-2">
+                                    {% if item.has_nexus %}
+                                    <svg class="w-5 h-5 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                    {% else %}
+                                    <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                                    </svg>
+                                    {% endif %}
+                                    <span class="font-medium {% if item.has_nexus %}text-green-800{% else %}text-gray-700{% endif %}">
+                                        Nexus Letter
+                                    </span>
+                                </div>
+                                <p class="text-xs {% if item.has_nexus %}text-green-600{% else %}text-gray-500{% endif %}">
+                                    Medical opinion linking to service
+                                </p>
+                            </div>
+
+                            <!-- In-Service Evidence -->
+                            <div class="p-4 rounded-lg border {% if item.has_in_service_evidence %}border-green-200 bg-green-50{% else %}border-gray-200 bg-gray-50{% endif %}">
+                                <div class="flex items-center mb-2">
+                                    {% if item.has_in_service_evidence %}
+                                    <svg class="w-5 h-5 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                    {% else %}
+                                    <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                                    </svg>
+                                    {% endif %}
+                                    <span class="font-medium {% if item.has_in_service_evidence %}text-green-800{% else %}text-gray-700{% endif %}">
+                                        In-Service Evidence
+                                    </span>
+                                </div>
+                                <p class="text-xs {% if item.has_in_service_evidence %}text-green-600{% else %}text-gray-500{% endif %}">
+                                    Records from military service
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="p-8 text-center text-gray-500">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    <p class="mt-4">No conditions tracked for this case yet.</p>
+                    <p class="text-sm">Conditions are automatically added when AI analyses are shared.</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Shared Documents -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Shared Documents</h2>
+                    <p class="text-sm text-gray-500">Documents available for the evidence packet</p>
+                </div>
+
+                {% if documents %}
+                <div class="divide-y divide-gray-200">
+                    {% for doc in documents %}
+                    <div class="p-4 hover:bg-gray-50">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 p-2 bg-gray-100 rounded">
+                                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="font-medium text-gray-900">{{ doc.title }}</p>
+                                    <p class="text-sm text-gray-500">
+                                        {{ doc.document_type|title }} &middot;
+                                        Shared {{ doc.shared_at|date:"M d, Y" }}
+                                    </p>
+                                    {% if doc.vso_notes %}
+                                    <p class="text-sm text-gray-600 mt-1">{{ doc.vso_notes|truncatewords:20 }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                {% if doc.review_status == 'approved' %}bg-green-100 text-green-800
+                                {% elif doc.review_status == 'needs_info' %}bg-yellow-100 text-yellow-800
+                                {% elif doc.review_status == 'rejected' %}bg-red-100 text-red-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {{ doc.review_status|default:"Pending"|title }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="p-8 text-center text-gray-500">
+                    <p>No documents have been shared yet.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Packet Summary -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Packet Summary</h2>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div>
+                        <p class="text-sm text-gray-500">Conditions Tracked</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ conditions.count }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Documents Available</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ documents|length }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Evidence Completion</p>
+                        {% with complete=0 total=evidence_checklist|length %}
+                        {% for item in evidence_checklist %}
+                        {% if item.is_complete %}{% endif %}
+                        {% endfor %}
+                        <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                            <div class="bg-green-600 h-2 rounded-full" style="width: {% if total > 0 %}{% widthratio complete total 100 %}{% else %}0{% endif %}%"></div>
+                        </div>
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Quick Actions</h2>
+                </div>
+                <div class="p-4 space-y-2">
+                    <a href="{% url 'vso:case_detail' pk=case.pk %}"
+                       class="block px-4 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 text-sm font-medium text-gray-700">
+                        Back to Case Details
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tips -->
+            <div class="bg-blue-50 rounded-lg p-6">
+                <h3 class="font-medium text-blue-900 mb-2">Building a Strong Packet</h3>
+                <ul class="text-sm text-blue-800 space-y-2">
+                    <li class="flex items-start">
+                        <span class="mr-2">1.</span>
+                        <span>Ensure each condition has a current diagnosis</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="mr-2">2.</span>
+                        <span>Include a nexus letter linking condition to service</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="mr-2">3.</span>
+                        <span>Gather in-service records (STRs, incident reports)</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="mr-2">4.</span>
+                        <span>Add buddy statements for supporting evidence</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
