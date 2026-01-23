@@ -297,6 +297,10 @@
                        class="block px-4 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 focus:bg-gray-50 text-sm font-medium text-gray-700">
                         View All Cases
                     </a>
+                    <a href="{% url 'vso:reports' %}"
+                       class="block px-4 py-3 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 focus:bg-blue-100 text-sm font-medium text-blue-700">
+                        View Reports
+                    </a>
                     <a href="{% url 'vso:case_list' %}?status=intake"
                        class="block px-4 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 focus:bg-gray-50 text-sm font-medium text-gray-700">
                         Intake Queue ({{ status_counts.intake|default:0 }})

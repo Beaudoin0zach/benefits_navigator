@@ -11,7 +11,7 @@ from django.contrib import messages
 from django.http import JsonResponse, Http404, HttpResponseForbidden, HttpResponse
 from django.views.decorators.http import require_http_methods, require_POST
 from django.core.paginator import Paginator
-from django.db.models import Q, Count
+from django.db.models import Q, Count, Avg, F
 from django.utils import timezone
 
 from accounts.models import Organization, OrganizationMembership
@@ -25,6 +25,7 @@ from .permissions import (
     get_user_organization_membership, vso_staff_required
 )
 from .services import GapCheckerService
+from appeals.models import Appeal
 
 
 def is_case_read_only(case):
@@ -480,6 +481,10 @@ def case_detail(request, pk):
         action_completed=False
     ).order_by('action_due_date')
 
+    # For C&P exam date display
+    today = timezone.now().date()
+    upcoming_threshold = today + timedelta(days=7)
+
     context = {
         'organization': org,
         'case': case,
@@ -496,6 +501,8 @@ def case_detail(request, pk):
         'status_choices': VeteranCase.STATUS_CHOICES,
         'priority_choices': VeteranCase.PRIORITY_CHOICES,
         'workflow_status_choices': CaseCondition.WORKFLOW_STATUS_CHOICES,
+        'today': today,
+        'upcoming_threshold': upcoming_threshold,
     }
 
     return render(request, 'vso/case_detail.html', context)
@@ -1162,3 +1169,219 @@ def accept_invitation(request, token):
         'invitation': invitation,
     }
     return render(request, 'vso/accept_invitation.html', context)
+
+
+# =============================================================================
+# APPEAL INTEGRATION
+# =============================================================================
+
+@vso_required
+@require_POST
+def start_appeal_from_case(request, pk):
+    """
+    Start a new appeal linked to a VSO case.
+    Pre-populates appeal with case information.
+    """
+    if requires_org_selection(request.user, request):
+        return redirect('vso:select_organization')
+
+    org = get_user_organization(request.user, request=request)
+    if not org:
+        messages.error(request, "Please select an organization to continue.")
+        return redirect('vso:select_organization')
+
+    case = get_object_or_404(VeteranCase, pk=pk, organization=org)
+
+    # Only allow starting appeals for denied cases or cases in appeal status
+    if case.status not in ['closed_denied', 'appeal_in_progress']:
+        messages.error(
+            request,
+            "Appeals can only be started for denied cases or cases already in appeal."
+        )
+        return redirect('vso:case_detail', pk=pk)
+
+    # Check if an appeal already exists for this case
+    existing_appeal = Appeal.objects.filter(veteran_case=case).first()
+    if existing_appeal:
+        messages.info(
+            request,
+            "An appeal already exists for this case. Redirecting to the existing appeal."
+        )
+        return redirect('appeals:appeal_detail', pk=existing_appeal.pk)
+
+    # Create new appeal linked to the case
+    appeal = Appeal.objects.create(
+        user=case.veteran,
+        veteran_case=case,
+        status='deciding',
+        original_decision_date=case.decision_date,
+        conditions_appealed=', '.join([c.condition_name for c in case.conditions.all()]) if case.conditions.exists() else '',
+    )
+
+    # Update case status if not already in appeal
+    if case.status == 'closed_denied':
+        case.status = 'appeal_in_progress'
+        case.save(update_fields=['status'])
+
+    # Add case note
+    CaseNote.objects.create(
+        case=case,
+        author=request.user,
+        note_type='milestone',
+        subject='Appeal started',
+        content=f'Appeal process initiated. Appeal ID: {appeal.pk}',
+        visible_to_veteran=True
+    )
+
+    messages.success(request, "Appeal started successfully.")
+    return redirect('appeals:appeal_detail', pk=appeal.pk)
+
+
+# =============================================================================
+# REPORTING
+# =============================================================================
+
+@vso_required
+def reports(request):
+    """
+    VSO Reporting page - Cases by status, time to close, caseworker workload
+    """
+    if requires_org_selection(request.user, request):
+        return redirect('vso:select_organization')
+
+    org = get_user_organization(request.user, request=request)
+    if not org:
+        messages.error(request, "Please select an organization to continue.")
+        return redirect('vso:select_organization')
+
+    # Get all cases for this organization (excluding archived)
+    cases = VeteranCase.objects.filter(organization=org, is_archived=False)
+
+    # --- Cases by Status ---
+    status_breakdown = list(
+        cases.values('status')
+        .annotate(count=Count('id'))
+        .order_by('status')
+    )
+    # Map to display labels
+    status_labels = dict(VeteranCase.STATUS_CHOICES)
+    for item in status_breakdown:
+        item['label'] = status_labels.get(item['status'], item['status'])
+
+    # --- Time to Close (for closed cases) ---
+    closed_cases = cases.filter(status__startswith='closed', closed_at__isnull=False)
+
+    # Calculate average days to close
+    avg_days_to_close = None
+    if closed_cases.exists():
+        # Use database aggregation where possible
+        from django.db.models.functions import ExtractDay
+        # For SQLite, we need to calculate in Python
+        days_list = []
+        for case in closed_cases:
+            if case.closed_at and case.intake_date:
+                days = (case.closed_at.date() - case.intake_date).days
+                days_list.append(days)
+        if days_list:
+            avg_days_to_close = sum(days_list) / len(days_list)
+
+    # Time to close by month (last 6 months)
+    six_months_ago = timezone.now() - timedelta(days=180)
+    monthly_closures = []
+    for i in range(6):
+        month_start = (timezone.now() - timedelta(days=30 * (5 - i))).replace(day=1)
+        if i < 5:
+            next_month = (month_start + timedelta(days=32)).replace(day=1)
+        else:
+            next_month = timezone.now() + timedelta(days=1)
+
+        month_cases = closed_cases.filter(
+            closed_at__gte=month_start,
+            closed_at__lt=next_month
+        )
+        count = month_cases.count()
+        monthly_closures.append({
+            'month': month_start.strftime('%b %Y'),
+            'count': count,
+        })
+
+    # --- Caseworker Workload ---
+    caseworker_workload = list(
+        cases.exclude(status__startswith='closed')
+        .values('assigned_to__email', 'assigned_to__first_name', 'assigned_to__last_name')
+        .annotate(
+            open_cases=Count('id'),
+        )
+        .order_by('-open_cases')
+    )
+    # Add display name
+    for item in caseworker_workload:
+        if item['assigned_to__first_name'] and item['assigned_to__last_name']:
+            item['name'] = f"{item['assigned_to__first_name']} {item['assigned_to__last_name']}"
+        elif item['assigned_to__email']:
+            item['name'] = item['assigned_to__email']
+        else:
+            item['name'] = 'Unassigned'
+
+    # Add urgent/overdue count per caseworker
+    for item in caseworker_workload:
+        email = item['assigned_to__email']
+        if email:
+            urgent_count = cases.filter(
+                assigned_to__email=email,
+                priority='urgent'
+            ).exclude(status__startswith='closed').count()
+            overdue_count = cases.filter(
+                assigned_to__email=email,
+                next_action_date__lt=timezone.now().date()
+            ).exclude(status__startswith='closed').count()
+            item['urgent_count'] = urgent_count
+            item['overdue_count'] = overdue_count
+        else:
+            item['urgent_count'] = 0
+            item['overdue_count'] = 0
+
+    # --- Win Rate by Month ---
+    win_rate_by_month = []
+    for i in range(6):
+        month_start = (timezone.now() - timedelta(days=30 * (5 - i))).replace(day=1)
+        if i < 5:
+            next_month = (month_start + timedelta(days=32)).replace(day=1)
+        else:
+            next_month = timezone.now() + timedelta(days=1)
+
+        month_closed = closed_cases.filter(
+            closed_at__gte=month_start,
+            closed_at__lt=next_month
+        )
+        total = month_closed.count()
+        won = month_closed.filter(status='closed_won').count()
+        rate = (won / total * 100) if total > 0 else 0
+
+        win_rate_by_month.append({
+            'month': month_start.strftime('%b %Y'),
+            'total': total,
+            'won': won,
+            'rate': round(rate, 1),
+        })
+
+    # --- Summary Stats ---
+    total_open = cases.exclude(status__startswith='closed').count()
+    total_closed_all_time = closed_cases.count()
+    total_won = closed_cases.filter(status='closed_won').count()
+    overall_win_rate = (total_won / total_closed_all_time * 100) if total_closed_all_time > 0 else 0
+
+    context = {
+        'organization': org,
+        'status_breakdown': status_breakdown,
+        'avg_days_to_close': round(avg_days_to_close, 1) if avg_days_to_close else None,
+        'monthly_closures': monthly_closures,
+        'caseworker_workload': caseworker_workload,
+        'win_rate_by_month': win_rate_by_month,
+        'total_open': total_open,
+        'total_closed': total_closed_all_time,
+        'total_won': total_won,
+        'overall_win_rate': round(overall_win_rate, 1),
+    }
+
+    return render(request, 'vso/reports.html', context)

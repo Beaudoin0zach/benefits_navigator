@@ -153,6 +153,25 @@ class VeteranCase(TimeStampedModel):
     # Activity tracking for lifecycle hygiene
     last_activity_at = models.DateTimeField('Last Activity', null=True, blank=True)
 
+    # C&P Exam tracking
+    c_and_p_exam_date = models.DateField(
+        'C&P Exam Date',
+        null=True,
+        blank=True,
+        help_text='Scheduled Compensation & Pension exam date'
+    )
+    c_and_p_exam_location = models.CharField(
+        'C&P Exam Location',
+        max_length=255,
+        blank=True,
+        help_text='Location/facility for the exam'
+    )
+    c_and_p_exam_notes = models.TextField(
+        'C&P Exam Notes',
+        blank=True,
+        help_text='Notes about the exam (conditions being evaluated, etc.)'
+    )
+
     # Archive functionality
     is_archived = models.BooleanField('Archived', default=False)
     archived_at = models.DateTimeField('Archived At', null=True, blank=True)
