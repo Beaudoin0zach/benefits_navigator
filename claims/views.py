@@ -207,10 +207,13 @@ def document_delete(request, pk):
 
 @login_required
 @require_http_methods(["POST"])
+@ratelimit(key='user', rate='30/m', method='POST', block=True)
 def document_update_tags(request, pk):
     """
     Update condition tags for a document.
     Allows linking documents to specific conditions for organization.
+
+    Rate limited to 30/min per user to prevent spam.
     """
     document = get_object_or_404(
         Document,

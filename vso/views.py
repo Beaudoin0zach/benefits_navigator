@@ -13,6 +13,7 @@ from django.views.decorators.http import require_http_methods, require_POST
 from django.core.paginator import Paginator
 from django.db.models import Q, Count, Avg, F
 from django.utils import timezone
+from django_ratelimit.decorators import ratelimit
 
 from accounts.models import Organization, OrganizationMembership, OrganizationInvitation
 from core.models import AuditLog
@@ -446,10 +447,13 @@ def _export_cases_csv(cases):
 
 @vso_required
 @require_POST
+@ratelimit(key='user', rate='10/m', method='POST', block=True)
 def bulk_case_action(request):
     """
     Handle bulk actions on multiple cases.
     Supports: status update, reassignment, archive, export.
+
+    Rate limited to 10/min per user to prevent bulk operation abuse.
     """
     org = get_user_organization(request.user, request=request)
     if not org:
