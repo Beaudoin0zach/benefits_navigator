@@ -163,8 +163,8 @@ def claim_progress(request):
     latest_evidence_gap = EvidenceGapAnalysis.objects.filter(user=user).order_by('-created_at').first()
     evidence_readiness_score = latest_evidence_gap.readiness_score if latest_evidence_gap else None
     evidence_gaps = []
-    if latest_evidence_gap and latest_evidence_gap.missing_evidence:
-        evidence_gaps = latest_evidence_gap.missing_evidence[:5]  # Top 5 gaps
+    if latest_evidence_gap and latest_evidence_gap.evidence_gaps:
+        evidence_gaps = latest_evidence_gap.evidence_gaps[:5]  # Top 5 gaps
 
     # Get exam checklists
     exam_checklists = []
