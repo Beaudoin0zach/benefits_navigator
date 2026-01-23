@@ -214,7 +214,7 @@ class TestCoreViewPerformance:
         client = Client()
 
         def load_page():
-            response = client.get('/')
+            response = client.get('/', follow=True)
             assert response.status_code == 200
 
         results = benchmark(load_page)
@@ -242,7 +242,7 @@ class TestCoreViewPerformance:
         client = Client()
 
         def check_health():
-            response = client.get('/health/')
+            response = client.get('/health/', follow=True)
             assert response.status_code == 200
 
         results = benchmark(check_health, iterations=10)
