@@ -111,6 +111,14 @@ class Document(TimeStampedModel, SoftDeleteModel):
     ai_model_used = models.CharField('AI model', max_length=50, blank=True)
     ai_tokens_used = models.IntegerField('Tokens used', default=0)
 
+    # Condition tags (for organizing documents by claimed condition)
+    condition_tags = models.JSONField(
+        'Condition tags',
+        default=list,
+        blank=True,
+        help_text='List of condition names this document relates to'
+    )
+
     # Processing metadata
     processed_at = models.DateTimeField('Processing completed at', null=True, blank=True)
     processing_duration = models.FloatField(

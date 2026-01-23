@@ -104,9 +104,84 @@
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                 </svg>
-                Export CSV
+                Export All CSV
             </a>
         </div>
+    </div>
+
+    <!-- Bulk Actions Bar (hidden by default, shown via JS) -->
+    <div id="bulk-actions-bar" class="hidden bg-blue-50 border border-blue-200 rounded-lg shadow mb-4 p-4">
+        <form method="post" action="{% url 'vso:bulk_case_action' %}" id="bulk-action-form">
+            {% csrf_token %}
+            <div id="selected-case-ids"></div>
+            <div class="flex flex-wrap items-center gap-4">
+                <span class="text-sm font-medium text-blue-800">
+                    <span id="selected-count">0</span> case(s) selected
+                </span>
+
+                <!-- Status Update -->
+                <div class="flex items-center gap-2">
+                    <select name="new_status" class="text-sm rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="">Change Status...</option>
+                        {% for value, label in status_choices %}
+                        <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" name="action" value="update_status"
+                            class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                        Apply
+                    </button>
+                </div>
+
+                <!-- Priority Update -->
+                <div class="flex items-center gap-2">
+                    <select name="new_priority" class="text-sm rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="">Change Priority...</option>
+                        {% for value, label in priority_choices %}
+                        <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" name="action" value="update_priority"
+                            class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                        Apply
+                    </button>
+                </div>
+
+                <!-- Reassign -->
+                <div class="flex items-center gap-2">
+                    <select name="new_assignee" class="text-sm rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="">Reassign to...</option>
+                        <option value="unassigned">Unassigned</option>
+                        {% for membership in caseworkers %}
+                        <option value="{{ membership.user.id }}">
+                            {{ membership.user.get_full_name|default:membership.user.email }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" name="action" value="reassign"
+                            class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                        Reassign
+                    </button>
+                </div>
+
+                <!-- Archive & Export -->
+                <div class="flex items-center gap-2 ml-auto">
+                    <button type="submit" name="action" value="export"
+                            class="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
+                        Export Selected
+                    </button>
+                    <button type="submit" name="action" value="archive"
+                            class="px-3 py-1.5 text-sm bg-gray-600 text-white rounded-md hover:bg-gray-700"
+                            onclick="return confirm('Archive selected closed cases? This action can be undone from the archived cases view.');">
+                        Archive Closed
+                    </button>
+                </div>
+
+                <button type="button" onclick="clearSelection()" class="text-sm text-gray-600 hover:text-gray-900">
+                    Clear Selection
+                </button>
+            </div>
+        </form>
     </div>
 
     <!-- Cases Table -->
@@ -114,6 +189,12 @@
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
+                    {% if not current_filters.archived %}
+                    <th scope="col" class="px-4 py-3 text-left">
+                        <input type="checkbox" id="select-all" onclick="toggleSelectAll(this)"
+                               class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    </th>
+                    {% endif %}
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Case
                     </th>
@@ -143,6 +224,12 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 {% for case in cases %}
                 <tr class="hover:bg-gray-50">
+                    {% if not current_filters.archived %}
+                    <td class="px-4 py-4">
+                        <input type="checkbox" name="case_select" value="{{ case.pk }}" onclick="updateSelection()"
+                               class="case-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    </td>
+                    {% endif %}
                     <td class="px-6 py-4">
                         <a href="{% url 'vso:case_detail' pk=case.pk %}" class="text-blue-600 hover:text-blue-900 font-medium">
                             {{ case.title }}
@@ -203,7 +290,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="8" class="px-6 py-12 text-center text-gray-500">
+                    <td colspan="{% if current_filters.archived %}8{% else %}9{% endif %}" class="px-6 py-12 text-center text-gray-500">
                         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
@@ -246,4 +333,62 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+function updateSelection() {
+    const checkboxes = document.querySelectorAll('.case-checkbox:checked');
+    const bulkBar = document.getElementById('bulk-actions-bar');
+    const countSpan = document.getElementById('selected-count');
+    const idsContainer = document.getElementById('selected-case-ids');
+
+    // Update count
+    countSpan.textContent = checkboxes.length;
+
+    // Show/hide bulk actions bar
+    if (checkboxes.length > 0) {
+        bulkBar.classList.remove('hidden');
+    } else {
+        bulkBar.classList.add('hidden');
+    }
+
+    // Update hidden inputs with selected case IDs
+    idsContainer.innerHTML = '';
+    checkboxes.forEach(cb => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'case_ids';
+        input.value = cb.value;
+        idsContainer.appendChild(input);
+    });
+
+    // Update select-all checkbox state
+    const allCheckboxes = document.querySelectorAll('.case-checkbox');
+    const selectAll = document.getElementById('select-all');
+    if (selectAll) {
+        selectAll.checked = checkboxes.length === allCheckboxes.length && allCheckboxes.length > 0;
+        selectAll.indeterminate = checkboxes.length > 0 && checkboxes.length < allCheckboxes.length;
+    }
+}
+
+function toggleSelectAll(selectAllCheckbox) {
+    const checkboxes = document.querySelectorAll('.case-checkbox');
+    checkboxes.forEach(cb => {
+        cb.checked = selectAllCheckbox.checked;
+    });
+    updateSelection();
+}
+
+function clearSelection() {
+    const checkboxes = document.querySelectorAll('.case-checkbox');
+    checkboxes.forEach(cb => {
+        cb.checked = false;
+    });
+    const selectAll = document.getElementById('select-all');
+    if (selectAll) {
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+    }
+    updateSelection();
+}
+</script>
 {% endblock %}

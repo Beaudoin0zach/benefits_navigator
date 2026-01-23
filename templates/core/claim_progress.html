@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+
+{% block title %}Claim Progress - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+    <!-- Header -->
+    <header class="mb-8">
+        <nav class="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
+            <a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a>
+            <span class="mx-2 text-gray-400">/</span>
+            <span>Claim Progress</span>
+        </nav>
+        <h1 class="text-3xl font-bold text-gray-900">Your Claim Progress</h1>
+        <p class="text-gray-600 mt-2">{{ readiness_message }}</p>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Readiness Score Card -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold text-gray-900">Claim Readiness Score</h2>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                        {% if readiness_level == 'ready' %}bg-green-100 text-green-800
+                        {% elif readiness_level == 'almost' %}bg-blue-100 text-blue-800
+                        {% elif readiness_level == 'progressing' %}bg-yellow-100 text-yellow-800
+                        {% else %}bg-gray-100 text-gray-800{% endif %}">
+                        {% if readiness_level == 'ready' %}Ready to File
+                        {% elif readiness_level == 'almost' %}Almost Ready
+                        {% elif readiness_level == 'progressing' %}In Progress
+                        {% else %}Getting Started{% endif %}
+                    </span>
+                </div>
+
+                <!-- Big Score Display -->
+                <div class="flex items-center justify-center mb-6">
+                    <div class="relative w-40 h-40">
+                        <svg class="transform -rotate-90 w-40 h-40">
+                            <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+                            <circle cx="80" cy="80" r="70"
+                                    stroke="{% if readiness_percentage >= 80 %}#22c55e{% elif readiness_percentage >= 50 %}#3b82f6{% elif readiness_percentage >= 25 %}#eab308{% else %}#9ca3af{% endif %}"
+                                    stroke-width="12" fill="none"
+                                    stroke-dasharray="440"
+                                    stroke-dashoffset="{{ 440|add:readiness_percentage|add:-440|multiply:440|divisibleby:100|default:440 }}"
+                                    stroke-linecap="round"
+                                    style="stroke-dashoffset: calc(440 - (440 * {{ readiness_percentage }} / 100))"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-4xl font-bold text-gray-900">{{ readiness_percentage }}%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Score Breakdown -->
+                <div class="space-y-3">
+                    {% for component in score_components %}
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            {% if component.complete %}
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            {% else %}
+                            <svg class="w-5 h-5 text-gray-300 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"/>
+                            </svg>
+                            {% endif %}
+                            <span class="text-sm {% if component.complete %}text-gray-900{% else %}text-gray-500{% endif %}">
+                                {{ component.name }}
+                            </span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-24 bg-gray-200 rounded-full h-2 mr-2">
+                                <div class="{% if component.complete %}bg-green-500{% else %}bg-blue-500{% endif %} h-2 rounded-full"
+                                     style="width: {% widthratio component.score component.max 100 %}%"></div>
+                            </div>
+                            <span class="text-sm text-gray-500 w-12 text-right">{{ component.score }}/{{ component.max }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Next Steps -->
+            {% if next_steps %}
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Recommended Next Steps</h2>
+                    <p class="text-sm text-gray-500">Complete these actions to improve your claim readiness</p>
+                </div>
+                <div class="divide-y divide-gray-200">
+                    {% for step in next_steps %}
+                    <div class="p-6 flex items-start justify-between">
+                        <div class="flex items-start">
+                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full mr-4 flex-shrink-0
+                                {% if step.priority == 'high' %}bg-red-100 text-red-600
+                                {% elif step.priority == 'medium' %}bg-yellow-100 text-yellow-600
+                                {% else %}bg-gray-100 text-gray-600{% endif %}">
+                                {{ forloop.counter }}
+                            </span>
+                            <div>
+                                <h3 class="font-medium text-gray-900">{{ step.action }}</h3>
+                                <p class="text-sm text-gray-500 mt-1">{{ step.description }}</p>
+                            </div>
+                        </div>
+                        <a href="{% url step.url_name %}"
+                           class="ml-4 inline-flex items-center px-3 py-2 text-sm font-medium rounded-md
+                                  {% if step.priority == 'high' %}bg-blue-600 text-white hover:bg-blue-700
+                                  {% else %}border border-gray-300 text-gray-700 hover:bg-gray-50{% endif %}">
+                            {{ step.url_label }}
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Evidence Gaps -->
+            {% if evidence_gaps %}
+            <div class="bg-amber-50 rounded-lg shadow border border-amber-200">
+                <div class="px-6 py-4 border-b border-amber-200">
+                    <h2 class="text-lg font-semibold text-amber-900">Evidence Gaps to Address</h2>
+                    <p class="text-sm text-amber-700">Based on your most recent evidence analysis</p>
+                </div>
+                <div class="p-6">
+                    <ul class="space-y-2">
+                        {% for gap in evidence_gaps %}
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-amber-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
+                            <span class="text-amber-800">{{ gap }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <a href="{% url 'agents:evidence_gap' %}"
+                       class="mt-4 inline-flex items-center text-sm font-medium text-amber-700 hover:text-amber-900">
+                        View full evidence analysis
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Quick Stats -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="font-medium text-gray-900 mb-4">Your Activity</h3>
+                <dl class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <dt class="text-sm text-gray-500">Documents</dt>
+                        <dd class="text-lg font-semibold text-gray-900">{{ total_documents }}</dd>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <dt class="text-sm text-gray-500">Decision Analyses</dt>
+                        <dd class="text-lg font-semibold text-gray-900">{{ decision_analyses }}</dd>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <dt class="text-sm text-gray-500">Rating Analyses</dt>
+                        <dd class="text-lg font-semibold text-gray-900">{{ rating_analyses }}</dd>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <dt class="text-sm text-gray-500">Evidence Analyses</dt>
+                        <dd class="text-lg font-semibold text-gray-900">{{ evidence_analyses }}</dd>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <dt class="text-sm text-gray-500">Statements Generated</dt>
+                        <dd class="text-lg font-semibold text-gray-900">{{ statements_generated }}</dd>
+                    </div>
+                </dl>
+            </div>
+
+            <!-- AI Tools Quick Access -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="font-medium text-gray-900 mb-4">AI Tools</h3>
+                <div class="space-y-2">
+                    <a href="{% url 'agents:decision_analyzer' %}"
+                       class="block px-4 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 text-sm">
+                        <span class="font-medium text-gray-900">Decision Analyzer</span>
+                        <p class="text-gray-500 text-xs mt-0.5">Understand your VA decision</p>
+                    </a>
+                    <a href="{% url 'agents:evidence_gap' %}"
+                       class="block px-4 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 text-sm">
+                        <span class="font-medium text-gray-900">Evidence Gap Checker</span>
+                        <p class="text-gray-500 text-xs mt-0.5">Find missing evidence</p>
+                    </a>
+                    <a href="{% url 'agents:statement_generator' %}"
+                       class="block px-4 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 text-sm">
+                        <span class="font-medium text-gray-900">Statement Generator</span>
+                        <p class="text-gray-500 text-xs mt-0.5">Draft personal statements</p>
+                    </a>
+                    <a href="{% url 'agents:condition_discovery' %}"
+                       class="block px-4 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 text-sm">
+                        <span class="font-medium text-gray-900">Condition Discovery</span>
+                        <p class="text-gray-500 text-xs mt-0.5">Find claimable conditions</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tips -->
+            <div class="bg-blue-50 rounded-lg p-6">
+                <h3 class="font-medium text-blue-900 mb-2">Tips for Success</h3>
+                <ul class="text-sm text-blue-800 space-y-2">
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 mr-2 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>Upload all relevant medical records</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 mr-2 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>Get a nexus letter from your doctor</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 mr-2 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>Prepare thoroughly for your C&P exam</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 mr-2 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>Consider working with a VSO</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

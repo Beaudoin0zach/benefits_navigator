@@ -445,6 +445,98 @@ def _export_cases_csv(cases):
 
 
 @vso_required
+@require_POST
+def bulk_case_action(request):
+    """
+    Handle bulk actions on multiple cases.
+    Supports: status update, reassignment, archive, export.
+    """
+    org = get_user_organization(request.user, request=request)
+    if not org:
+        return JsonResponse({'error': 'No organization'}, status=403)
+
+    case_ids = request.POST.getlist('case_ids')
+    action = request.POST.get('action')
+
+    if not case_ids:
+        messages.error(request, 'No cases selected.')
+        return redirect('vso:case_list')
+
+    # Get cases within organization
+    cases = VeteranCase.objects.filter(
+        pk__in=case_ids,
+        organization=org,
+        is_archived=False
+    )
+
+    count = cases.count()
+    if count == 0:
+        messages.error(request, 'No valid cases found.')
+        return redirect('vso:case_list')
+
+    if action == 'update_status':
+        new_status = request.POST.get('new_status')
+        if new_status and new_status in dict(VeteranCase.STATUS_CHOICES):
+            cases.update(status=new_status, last_activity_at=timezone.now())
+            messages.success(request, f'Updated status for {count} case(s).')
+        else:
+            messages.error(request, 'Invalid status selected.')
+
+    elif action == 'reassign':
+        new_assignee_id = request.POST.get('new_assignee')
+        if new_assignee_id == 'unassigned':
+            cases.update(assigned_to=None, last_activity_at=timezone.now())
+            messages.success(request, f'Unassigned {count} case(s).')
+        elif new_assignee_id:
+            # Verify assignee is in the organization
+            membership = org.memberships.filter(
+                user_id=new_assignee_id,
+                role__in=['admin', 'caseworker'],
+                is_active=True
+            ).first()
+            if membership:
+                cases.update(assigned_to_id=new_assignee_id, last_activity_at=timezone.now())
+                messages.success(request, f'Reassigned {count} case(s) to {membership.user.get_full_name() or membership.user.email}.')
+            else:
+                messages.error(request, 'Invalid assignee selected.')
+        else:
+            messages.error(request, 'No assignee selected.')
+
+    elif action == 'archive':
+        # Only archive closed cases
+        closed_cases = cases.filter(status__startswith='closed')
+        archive_count = closed_cases.count()
+        if archive_count > 0:
+            closed_cases.update(is_archived=True, archived_at=timezone.now())
+            messages.success(request, f'Archived {archive_count} closed case(s).')
+            if archive_count < count:
+                messages.warning(request, f'{count - archive_count} case(s) were not archived because they are not closed.')
+        else:
+            messages.warning(request, 'No closed cases to archive. Only closed cases can be archived.')
+
+    elif action == 'update_priority':
+        new_priority = request.POST.get('new_priority')
+        if new_priority and new_priority in dict(VeteranCase.PRIORITY_CHOICES):
+            cases.update(priority=new_priority, last_activity_at=timezone.now())
+            messages.success(request, f'Updated priority for {count} case(s).')
+        else:
+            messages.error(request, 'Invalid priority selected.')
+
+    elif action == 'export':
+        # Export selected cases to CSV
+        cases_list = list(cases)
+        for case in cases_list:
+            case.triage_label = GapCheckerService.get_triage_label(case)
+            case.triage_display = GapCheckerService.get_triage_display(case.triage_label)
+        return _export_cases_csv(cases_list)
+
+    else:
+        messages.error(request, 'Invalid action.')
+
+    return redirect('vso:case_list')
+
+
+@vso_required
 def case_detail(request, pk):
     """
     Detailed view of a single case
@@ -1390,7 +1482,214 @@ def reports(request):
         'overall_win_rate': round(overall_win_rate, 1),
     }
 
+    # Handle exports
+    export_format = request.GET.get('export')
+    if export_format == 'csv':
+        return _export_reports_csv(org, context)
+    elif export_format == 'pdf':
+        return _export_reports_pdf(org, context)
+
     return render(request, 'vso/reports.html', context)
+
+
+def _export_reports_csv(org, data):
+    """Export reports data to CSV (Excel-compatible) format."""
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="{org.slug}_report_{timezone.now().strftime("%Y%m%d")}.csv"'
+
+    writer = csv.writer(response)
+
+    # Summary Stats
+    writer.writerow(['ORGANIZATION REPORT'])
+    writer.writerow([org.name, f'Generated: {timezone.now().strftime("%Y-%m-%d %H:%M")}'])
+    writer.writerow([])
+
+    writer.writerow(['SUMMARY STATISTICS'])
+    writer.writerow(['Metric', 'Value'])
+    writer.writerow(['Open Cases', data['total_open']])
+    writer.writerow(['Total Closed', data['total_closed']])
+    writer.writerow(['Cases Won', data['total_won']])
+    writer.writerow(['Overall Win Rate', f"{data['overall_win_rate']}%"])
+    if data['avg_days_to_close']:
+        writer.writerow(['Avg Days to Close', data['avg_days_to_close']])
+    writer.writerow([])
+
+    # Cases by Status
+    writer.writerow(['CASES BY STATUS'])
+    writer.writerow(['Status', 'Count'])
+    for item in data['status_breakdown']:
+        writer.writerow([item['label'], item['count']])
+    writer.writerow([])
+
+    # Monthly Closures
+    writer.writerow(['CLOSURES BY MONTH'])
+    writer.writerow(['Month', 'Count'])
+    for item in data['monthly_closures']:
+        writer.writerow([item['month'], item['count']])
+    writer.writerow([])
+
+    # Win Rate by Month
+    writer.writerow(['WIN RATE BY MONTH'])
+    writer.writerow(['Month', 'Won', 'Total', 'Win Rate'])
+    for item in data['win_rate_by_month']:
+        writer.writerow([item['month'], item['won'], item['total'], f"{item['rate']}%"])
+    writer.writerow([])
+
+    # Caseworker Workload
+    writer.writerow(['CASEWORKER WORKLOAD'])
+    writer.writerow(['Caseworker', 'Open Cases', 'Urgent', 'Overdue'])
+    for item in data['caseworker_workload']:
+        writer.writerow([item['name'], item['open_cases'], item['urgent_count'], item['overdue_count']])
+
+    return response
+
+
+def _export_reports_pdf(org, data):
+    """Export reports data to PDF format for board presentations."""
+    from io import BytesIO
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import letter
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import inch
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter, topMargin=0.75*inch, bottomMargin=0.75*inch)
+
+    styles = getSampleStyleSheet()
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=18,
+        spaceAfter=20,
+    )
+    heading_style = ParagraphStyle(
+        'CustomHeading',
+        parent=styles['Heading2'],
+        fontSize=14,
+        spaceBefore=20,
+        spaceAfter=10,
+    )
+
+    elements = []
+
+    # Title
+    elements.append(Paragraph(f"{org.name} - Performance Report", title_style))
+    elements.append(Paragraph(f"Generated: {timezone.now().strftime('%B %d, %Y')}", styles['Normal']))
+    elements.append(Spacer(1, 20))
+
+    # Summary Statistics Table
+    elements.append(Paragraph("Summary Statistics", heading_style))
+    summary_data = [
+        ['Metric', 'Value'],
+        ['Open Cases', str(data['total_open'])],
+        ['Total Closed', str(data['total_closed'])],
+        ['Cases Won', str(data['total_won'])],
+        ['Overall Win Rate', f"{data['overall_win_rate']}%"],
+    ]
+    if data['avg_days_to_close']:
+        summary_data.append(['Avg Days to Close', str(data['avg_days_to_close'])])
+
+    summary_table = Table(summary_data, colWidths=[3*inch, 2*inch])
+    summary_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e40af')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 11),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f8fafc')),
+        ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#e2e8f0')),
+        ('FONTSIZE', (0, 1), (-1, -1), 10),
+        ('TOPPADDING', (0, 1), (-1, -1), 8),
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 8),
+    ]))
+    elements.append(summary_table)
+    elements.append(Spacer(1, 20))
+
+    # Cases by Status
+    if data['status_breakdown']:
+        elements.append(Paragraph("Cases by Status", heading_style))
+        status_data = [['Status', 'Count']]
+        for item in data['status_breakdown']:
+            status_data.append([item['label'], str(item['count'])])
+
+        status_table = Table(status_data, colWidths=[3*inch, 1.5*inch])
+        status_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e40af')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('ALIGN', (1, 0), (1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 11),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f8fafc')),
+            ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#e2e8f0')),
+            ('FONTSIZE', (0, 1), (-1, -1), 10),
+            ('TOPPADDING', (0, 1), (-1, -1), 8),
+            ('BOTTOMPADDING', (0, 1), (-1, -1), 8),
+        ]))
+        elements.append(status_table)
+        elements.append(Spacer(1, 20))
+
+    # Win Rate by Month
+    if data['win_rate_by_month']:
+        elements.append(Paragraph("Win Rate Trend (Last 6 Months)", heading_style))
+        win_data = [['Month', 'Won', 'Total', 'Win Rate']]
+        for item in data['win_rate_by_month']:
+            win_data.append([item['month'], str(item['won']), str(item['total']), f"{item['rate']}%"])
+
+        win_table = Table(win_data, colWidths=[1.5*inch, 1*inch, 1*inch, 1.5*inch])
+        win_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e40af')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('ALIGN', (1, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 11),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f8fafc')),
+            ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#e2e8f0')),
+            ('FONTSIZE', (0, 1), (-1, -1), 10),
+            ('TOPPADDING', (0, 1), (-1, -1), 8),
+            ('BOTTOMPADDING', (0, 1), (-1, -1), 8),
+        ]))
+        elements.append(win_table)
+        elements.append(Spacer(1, 20))
+
+    # Caseworker Workload
+    if data['caseworker_workload']:
+        elements.append(Paragraph("Caseworker Workload", heading_style))
+        workload_data = [['Caseworker', 'Open Cases', 'Urgent', 'Overdue']]
+        for item in data['caseworker_workload']:
+            workload_data.append([
+                item['name'],
+                str(item['open_cases']),
+                str(item['urgent_count']),
+                str(item['overdue_count'])
+            ])
+
+        workload_table = Table(workload_data, colWidths=[2.5*inch, 1.2*inch, 1*inch, 1*inch])
+        workload_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e40af')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('ALIGN', (1, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 11),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f8fafc')),
+            ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#e2e8f0')),
+            ('FONTSIZE', (0, 1), (-1, -1), 10),
+            ('TOPPADDING', (0, 1), (-1, -1), 8),
+            ('BOTTOMPADDING', (0, 1), (-1, -1), 8),
+        ]))
+        elements.append(workload_table)
+
+    # Build PDF
+    doc.build(elements)
+    buffer.seek(0)
+
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{org.slug}_report_{timezone.now().strftime("%Y%m%d")}.pdf"'
+    return response
 
 
 # =============================================================================
@@ -1690,11 +1989,16 @@ def evidence_packet_builder(request, pk):
             'condition': condition,
             'has_diagnosis': condition.has_diagnosis,
             'has_nexus': condition.has_nexus,
-            'has_in_service_evidence': condition.has_in_service_evidence,
+            'has_in_service_event': condition.has_in_service_event,
             'is_complete': condition.is_evidence_complete,
             'gap_count': condition.gap_count,
         }
         evidence_checklist.append(checklist_item)
+
+    # Calculate completion stats
+    conditions_complete = sum(1 for item in evidence_checklist if item['is_complete'])
+    conditions_total = len(evidence_checklist)
+    completion_percentage = (conditions_complete / conditions_total * 100) if conditions_total > 0 else 0
 
     context = {
         'organization': org,
@@ -1703,6 +2007,9 @@ def evidence_packet_builder(request, pk):
         'documents': documents_list,
         'evidence_checklist': evidence_checklist,
         'document_types': SharedDocument.REVIEW_STATUS_CHOICES,
+        'conditions_complete': conditions_complete,
+        'conditions_total': conditions_total,
+        'completion_percentage': round(completion_percentage),
     }
 
     return render(request, 'vso/evidence_packet_builder.html', context)
