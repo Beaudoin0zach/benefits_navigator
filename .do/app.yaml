@@ -28,6 +28,19 @@ envs:
     type: SECRET
   - key: FIELD_ENCRYPTION_KEY
     type: SECRET
+  # Pilot mode settings (set values in DO Console)
+  - key: PILOT_MODE
+    value: "True"
+  - key: PILOT_BILLING_DISABLED
+    value: "True"
+  - key: PILOT_PREMIUM_ACCESS
+    value: "False"
+  - key: PILOT_PREMIUM_DOMAINS
+    value: ""
+  - key: PILOT_PREMIUM_EMAILS
+    value: ""
+  - key: PILOT_DATA_RETENTION_DAYS
+    value: "30"
 
 services:
   # Django Web Application
@@ -49,7 +62,7 @@ services:
     envs:
       # Explicit allowed hosts - never use wildcard in deployed environments
       - key: ALLOWED_HOSTS
-        value: "benefits-navigator-staging-3o4rq.ondigitalocean.app"
+        value: "benefits-navigator-staging-3o4rq.ondigitalocean.app,vabenefitsnavigator.org,www.vabenefitsnavigator.org"
       # Web needs explicit secrets (DO doesn't inherit app-level secrets)
       - key: SECRET_KEY
         type: SECRET
@@ -114,6 +127,17 @@ jobs:
 # - REDIS_URL / CELERY_BROKER_URL (***ROTATED_REDIS_URL***
 # - OPENAI_API_KEY
 # - SENTRY_DSN
+#
+# PILOT MODE (for beta testing):
+# - PILOT_MODE=True enables pilot-specific UI and behavior
+# - PILOT_BILLING_DISABLED=True blocks real Stripe charges
+# - PILOT_PREMIUM_ACCESS=True gives all users premium (or use PILOT_PREMIUM_EMAILS/DOMAINS)
+# - PILOT_DATA_RETENTION_DAYS=30 auto-purges pilot user data after 30 days
+#
+# DOMAIN SETUP (vabenefitsnavigator.org):
+# 1. Add domain in DO Console: Settings → Domains → Add Domain
+# 2. In Cloudflare: Add CNAME record pointing to DO app URL
+# 3. ALLOWED_HOSTS above already includes vabenefitsnavigator.org
 #
 # SECURITY NOTES:
 # - ALLOWED_HOSTS is hardcoded above - update when domain changes, never use "*"
