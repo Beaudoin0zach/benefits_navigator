@@ -577,3 +577,185 @@ def contact_success(request):
     return render(request, 'core/contact_success.html', {
         'page_title': 'Message Sent',
     })
+
+
+# =============================================================================
+# ADMIN STATS DASHBOARD
+# =============================================================================
+
+from django.contrib.admin.views.decorators import staff_member_required
+from django.db.models import Count, Sum
+from django.db.models.functions import TruncDate
+from datetime import timedelta
+from django.utils import timezone
+
+
+@staff_member_required
+def admin_stats_dashboard(request):
+    """
+    Admin dashboard showing system statistics and pilot program metrics.
+
+    Requires staff status to access.
+    """
+    from accounts.models import User, Subscription, UsageTracking
+    from claims.models import Document
+
+    now = timezone.now()
+    today = now.date()
+    week_ago = now - timedelta(days=7)
+    month_ago = now - timedelta(days=30)
+
+    # ==========================================================================
+    # USER STATS
+    # ==========================================================================
+    total_users = User.objects.count()
+
+    # Count premium users (with active subscription)
+    premium_users = Subscription.objects.filter(
+        status='active',
+        plan_type='premium'
+    ).count()
+
+    # Count pilot users
+    pilot_user_count = 0
+    pilot_premium_access = getattr(django_settings, 'PILOT_PREMIUM_ACCESS', False)
+    pilot_emails = getattr(django_settings, 'PILOT_PREMIUM_EMAILS', [])
+    pilot_domains = getattr(django_settings, 'PILOT_PREMIUM_DOMAINS', [])
+
+    if pilot_premium_access:
+        # All users are pilot users
+        pilot_user_count = total_users
+    else:
+        # Count users matching pilot emails
+        if pilot_emails:
+            pilot_user_count += User.objects.filter(
+                email__in=[e.lower() for e in pilot_emails]
+            ).count()
+
+        # Count users matching pilot domains
+        if pilot_domains:
+            for domain in pilot_domains:
+                pilot_user_count += User.objects.filter(
+                    email__iendswith=f'@{domain.lower()}'
+                ).count()
+
+    free_users = total_users - premium_users - pilot_user_count
+
+    # New users
+    new_users_today = User.objects.filter(date_joined__date=today).count()
+    new_users_week = User.objects.filter(date_joined__gte=week_ago).count()
+    new_users_month = User.objects.filter(date_joined__gte=month_ago).count()
+
+    # ==========================================================================
+    # DOCUMENT STATS
+    # ==========================================================================
+    total_documents = Document.objects.filter(is_deleted=False).count()
+    docs_today = Document.objects.filter(created_at__date=today, is_deleted=False).count()
+    docs_week = Document.objects.filter(created_at__gte=week_ago, is_deleted=False).count()
+    docs_month = Document.objects.filter(created_at__gte=month_ago, is_deleted=False).count()
+
+    # Document processing stats
+    docs_by_status = Document.objects.filter(is_deleted=False).values('status').annotate(
+        count=Count('id')
+    ).order_by('status')
+
+    # ==========================================================================
+    # AI ANALYSIS STATS
+    # ==========================================================================
+    ai_stats = {}
+    try:
+        from agents.models import AgentInteraction, DecisionLetterAnalysis, EvidenceGapAnalysis, PersonalStatement
+
+        ai_stats = {
+            'total_interactions': AgentInteraction.objects.count(),
+            'interactions_today': AgentInteraction.objects.filter(created_at__date=today).count(),
+            'interactions_week': AgentInteraction.objects.filter(created_at__gte=week_ago).count(),
+            'decision_analyses': DecisionLetterAnalysis.objects.count(),
+            'evidence_analyses': EvidenceGapAnalysis.objects.count(),
+            'statements_generated': PersonalStatement.objects.count(),
+        }
+    except ImportError:
+        ai_stats = {'error': 'agents app not available'}
+
+    # ==========================================================================
+    # STORAGE STATS
+    # ==========================================================================
+    storage_stats = UsageTracking.objects.aggregate(
+        total_storage_bytes=Sum('total_storage_bytes'),
+        total_documents=Sum('total_documents_uploaded'),
+    )
+
+    total_storage_mb = (storage_stats['total_storage_bytes'] or 0) / (1024 * 1024)
+    total_storage_gb = total_storage_mb / 1024
+
+    # ==========================================================================
+    # RECENT ACTIVITY
+    # ==========================================================================
+    recent_users = User.objects.order_by('-date_joined')[:10]
+    recent_documents = Document.objects.filter(is_deleted=False).select_related('user').order_by('-created_at')[:10]
+
+    # Recent feedback
+    recent_feedback = []
+    try:
+        from .models import Feedback
+        recent_feedback = Feedback.objects.select_related('user').order_by('-created_at')[:10]
+    except Exception:
+        pass
+
+    # Recent support requests
+    recent_support = []
+    try:
+        from .models import SupportRequest
+        recent_support = SupportRequest.objects.order_by('-created_at')[:10]
+    except Exception:
+        pass
+
+    # ==========================================================================
+    # PILOT MODE INFO
+    # ==========================================================================
+    pilot_mode = getattr(django_settings, 'PILOT_MODE', False)
+    pilot_billing_disabled = getattr(django_settings, 'PILOT_BILLING_DISABLED', False)
+    pilot_retention_days = getattr(django_settings, 'PILOT_DATA_RETENTION_DAYS', 30)
+
+    context = {
+        'page_title': 'Admin Stats Dashboard',
+
+        # User stats
+        'total_users': total_users,
+        'premium_users': premium_users,
+        'pilot_users': pilot_user_count,
+        'free_users': max(0, free_users),
+        'new_users_today': new_users_today,
+        'new_users_week': new_users_week,
+        'new_users_month': new_users_month,
+
+        # Document stats
+        'total_documents': total_documents,
+        'docs_today': docs_today,
+        'docs_week': docs_week,
+        'docs_month': docs_month,
+        'docs_by_status': list(docs_by_status),
+
+        # AI stats
+        'ai_stats': ai_stats,
+
+        # Storage stats
+        'total_storage_mb': round(total_storage_mb, 2),
+        'total_storage_gb': round(total_storage_gb, 2),
+        'total_docs_uploaded': storage_stats['total_documents'] or 0,
+
+        # Recent activity
+        'recent_users': recent_users,
+        'recent_documents': recent_documents,
+        'recent_feedback': recent_feedback,
+        'recent_support': recent_support,
+
+        # Pilot mode info
+        'pilot_mode': pilot_mode,
+        'pilot_billing_disabled': pilot_billing_disabled,
+        'pilot_retention_days': pilot_retention_days,
+        'pilot_emails': pilot_emails,
+        'pilot_domains': pilot_domains,
+    }
+
+    return render(request, 'core/admin_stats.html', context)

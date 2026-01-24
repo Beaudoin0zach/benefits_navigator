@@ -4,9 +4,51 @@
 
 {% block content %}
 <div class="max-w-4xl mx-auto">
+    {% if pilot_mode %}
+    <!-- Pilot Program Banner -->
+    <div class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg p-6 mb-8 shadow-lg">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                </svg>
+            </div>
+            <div class="ml-4">
+                <h2 class="text-xl font-bold">Pilot Program</h2>
+                <p class="text-purple-100 mt-1">
+                    {% if is_pilot_user %}
+                    You have full premium access as a pilot tester. Enjoy all features!
+                    {% elif pilot_billing_disabled %}
+                    Billing is currently disabled during the pilot phase.
+                    {% else %}
+                    Welcome to our pilot program!
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        {% if pilot_billing_disabled and not is_pilot_user %}
+        <div class="mt-4 bg-white/10 rounded-md p-4">
+            <p class="text-sm">
+                <strong>Want premium access?</strong> Contact us at
+                <a href="mailto:{{ SUPPORT_EMAIL }}" class="underline">{{ SUPPORT_EMAIL }}</a>
+                to request pilot tester access.
+            </p>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
     <header class="mb-8 text-center">
-        <h1 class="text-3xl font-bold text-gray-900">Upgrade to Premium</h1>
-        <p class="text-gray-600 mt-2">Unlock unlimited access to all features</p>
+        <h1 class="text-3xl font-bold text-gray-900">
+            {% if is_pilot_user %}Your Premium Access{% else %}Upgrade to Premium{% endif %}
+        </h1>
+        <p class="text-gray-600 mt-2">
+            {% if is_pilot_user %}
+            You have full access to all features as a pilot tester
+            {% else %}
+            Unlock unlimited access to all features
+            {% endif %}
+        </p>
     </header>
 
     {% if usage %}
@@ -72,9 +114,9 @@
         </div>
 
         <!-- Premium Plan -->
-        <div class="bg-white shadow-lg rounded-lg overflow-hidden border-2 border-blue-500 relative">
-            <div class="absolute top-0 right-0 bg-blue-500 text-white px-3 py-1 text-sm font-medium rounded-bl-lg">
-                Recommended
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden border-2 {% if is_pilot_user or usage.is_premium %}border-green-500{% else %}border-blue-500{% endif %} relative">
+            <div class="absolute top-0 right-0 {% if is_pilot_user %}bg-gradient-to-r from-purple-600 to-indigo-600{% elif usage.is_premium %}bg-green-500{% else %}bg-blue-500{% endif %} text-white px-3 py-1 text-sm font-medium rounded-bl-lg">
+                {% if is_pilot_user %}Pilot Access{% elif usage.is_premium %}Your Plan{% else %}Recommended{% endif %}
             </div>
             <div class="px-6 py-4 bg-blue-50 border-b border-blue-200">
                 <h2 class="text-xl font-bold text-gray-900">Premium</h2>
@@ -92,11 +134,24 @@
                     {% endfor %}
                 </ul>
                 <div class="mt-6">
-                    {% if usage.is_premium %}
+                    {% if is_pilot_user %}
+                    <!-- Pilot user with premium access -->
+                    <span class="block w-full text-center px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-md font-medium">
+                        Pilot Access Active
+                    </span>
+                    {% elif usage.is_premium %}
                     <a href="{% url 'accounts:customer_portal' %}"
                        class="block w-full text-center px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition">
                         Manage Subscription
                     </a>
+                    {% elif pilot_billing_disabled %}
+                    <!-- Billing disabled during pilot -->
+                    <span class="block w-full text-center px-4 py-2 bg-gray-400 text-white rounded-md cursor-not-allowed" title="Billing is disabled during pilot">
+                        Billing Disabled
+                    </span>
+                    <p class="text-xs text-gray-500 mt-2 text-center">
+                        Contact support to request pilot access
+                    </p>
                     {% else %}
                     <a href="{% url 'accounts:checkout' %}"
                        class="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition font-medium">

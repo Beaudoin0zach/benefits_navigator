@@ -117,3 +117,33 @@ def vso_access(request):
             'is_vso_staff': False,
             'user_organization': None,
         }
+
+
+def pilot_mode(request):
+    """
+    Add pilot mode settings to template context.
+
+    Available as:
+    - {{ pilot_mode }} - True if PILOT_MODE is enabled
+    - {{ pilot_billing_disabled }} - True if billing is disabled
+    - {{ is_pilot_user }} - True if current user has pilot premium access
+
+    Usage in templates:
+        {% if pilot_mode %}
+            <span class="badge">Pilot</span>
+        {% endif %}
+
+        {% if is_pilot_user %}
+            <span>Premium (Pilot)</span>
+        {% endif %}
+    """
+    context = {
+        'pilot_mode': getattr(settings, 'PILOT_MODE', False),
+        'pilot_billing_disabled': getattr(settings, 'PILOT_BILLING_DISABLED', False),
+        'is_pilot_user': False,
+    }
+
+    if request.user.is_authenticated:
+        context['is_pilot_user'] = getattr(request.user, 'is_pilot_user', False)
+
+    return context

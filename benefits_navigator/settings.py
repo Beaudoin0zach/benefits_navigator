@@ -164,6 +164,7 @@ TEMPLATES = [
                 'core.context_processors.tier_limits',  # Tier limit settings
                 'core.context_processors.feature_flags',  # Feature flags for dual-path
                 'core.context_processors.vso_access',  # VSO staff access
+                'core.context_processors.pilot_mode',  # Pilot mode settings
             ],
         },
     },
@@ -604,6 +605,36 @@ FEATURES = {
     'sso_saml': env.bool('FEATURE_SSO_SAML', default=False),
     'mfa': env.bool('FEATURE_MFA', default=False),
 }
+
+# ==============================================================================
+# PILOT MODE SETTINGS
+# ==============================================================================
+# Controls pilot/beta testing environment behavior
+# Enable these flags to run pilots without real billing
+
+# Master switch for pilot mode - enables pilot-specific behavior
+PILOT_MODE = env.bool('PILOT_MODE', default=False)
+
+# When True, blocks all real Stripe checkout sessions
+# Users see a message that billing is disabled during pilot
+PILOT_BILLING_DISABLED = env.bool('PILOT_BILLING_DISABLED', default=PILOT_MODE)
+
+# When True, all authenticated users get premium access automatically
+# Useful for pilot testing where you want testers to access all features
+PILOT_PREMIUM_ACCESS = env.bool('PILOT_PREMIUM_ACCESS', default=False)
+
+# List of email domains that automatically get pilot premium access
+# Example: ['company.com', 'partner.org'] - users with these email domains get premium
+PILOT_PREMIUM_DOMAINS = env.list('PILOT_PREMIUM_DOMAINS', default=[])
+
+# List of specific emails that get pilot premium access
+# Example: ['tester1@gmail.com', 'tester2@yahoo.com']
+PILOT_PREMIUM_EMAILS = env.list('PILOT_PREMIUM_EMAILS', default=[])
+
+# Data retention period for pilot users (days)
+# After this period, pilot user data is soft-deleted
+# Set to 0 to disable pilot-specific retention (use standard policies instead)
+PILOT_DATA_RETENTION_DAYS = env.int('PILOT_DATA_RETENTION_DAYS', default=30)
 
 
 def feature_enabled(feature_name: str) -> bool:

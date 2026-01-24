@@ -719,3 +719,256 @@ def check_download_anomalies_task(hours: int = 1):
         'anomalies_detected': len(anomalies),
         'details': anomalies,
     }
+
+
+# =============================================================================
+# PILOT USER DATA RETENTION
+# =============================================================================
+
+@shared_task
+def enforce_pilot_data_retention():
+    """
+    Enforce data retention specifically for pilot users.
+
+    Pilot users have a shorter retention period (default 30 days) to:
+    - Keep test data clean
+    - Ensure compliance during pilot phases
+    - Prevent accumulation of test data
+
+    This task:
+    1. Identifies pilot users (via is_pilot_user property)
+    2. Soft-deletes their documents older than PILOT_DATA_RETENTION_DAYS
+    3. Deletes their AI analyses older than retention period
+    4. Logs all retention actions for audit
+
+    Should be scheduled via Celery Beat (e.g., daily at 3 AM).
+    """
+    from accounts.models import User
+    from claims.models import Document
+    from .models import AuditLog
+
+    retention_days = getattr(settings, 'PILOT_DATA_RETENTION_DAYS', 30)
+
+    # Skip if retention is disabled (set to 0)
+    if retention_days <= 0:
+        logger.info("Pilot data retention disabled (PILOT_DATA_RETENTION_DAYS=0)")
+        return {'status': 'disabled', 'reason': 'PILOT_DATA_RETENTION_DAYS is 0 or negative'}
+
+    cutoff_date = timezone.now() - timedelta(days=retention_days)
+    results = {
+        'pilot_users_checked': 0,
+        'documents_soft_deleted': 0,
+        'analyses_deleted': 0,
+        'statements_deleted': 0,
+        'errors': [],
+    }
+
+    # Get all users and check if they're pilot users
+    # Note: We check is_pilot_user property which considers:
+    # - PILOT_PREMIUM_ACCESS setting
+    # - PILOT_PREMIUM_EMAILS list
+    # - PILOT_PREMIUM_DOMAINS list
+    users = User.objects.all()
+
+    for user in users:
+        try:
+            # Check if user is a pilot user
+            if not getattr(user, 'is_pilot_user', False):
+                continue
+
+            results['pilot_users_checked'] += 1
+
+            # Soft-delete old documents for this pilot user
+            old_docs = Document.objects.filter(
+                user=user,
+                is_deleted=False,
+                created_at__lt=cutoff_date
+            )
+
+            doc_count = old_docs.count()
+            if doc_count > 0:
+                for doc in old_docs:
+                    doc.soft_delete()
+
+                results['documents_soft_deleted'] += doc_count
+
+                # Log the retention action
+                AuditLog.objects.create(
+                    user=user,
+                    action='pilot_retention_documents',
+                    resource_type='document',
+                    details={
+                        'count': doc_count,
+                        'retention_days': retention_days,
+                        'reason': 'pilot_data_retention',
+                    }
+                )
+
+            # Delete old AI analyses for this pilot user
+            analysis_count = _purge_pilot_user_analyses(user, cutoff_date)
+            results['analyses_deleted'] += analysis_count
+
+            # Delete old personal statements for this pilot user
+            statement_count = _purge_pilot_user_statements(user, cutoff_date)
+            results['statements_deleted'] += statement_count
+
+        except Exception as e:
+            error_msg = f"Error processing pilot retention for user {user.id}: {e}"
+            logger.error(error_msg)
+            results['errors'].append(error_msg)
+
+    # Log summary
+    logger.info(
+        f"Pilot data retention complete: "
+        f"{results['pilot_users_checked']} users checked, "
+        f"{results['documents_soft_deleted']} documents soft-deleted, "
+        f"{results['analyses_deleted']} analyses deleted, "
+        f"{results['statements_deleted']} statements deleted"
+    )
+
+    return results
+
+
+def _purge_pilot_user_analyses(user, cutoff_date) -> int:
+    """
+    Delete AI analyses for a specific pilot user older than cutoff date.
+
+    Returns count of deleted records.
+    """
+    total_deleted = 0
+
+    try:
+        from agents.models import (
+            AgentInteraction,
+            DecisionLetterAnalysis,
+            EvidenceGapAnalysis,
+        )
+
+        # Delete decision letter analyses
+        dla_deleted, _ = DecisionLetterAnalysis.objects.filter(
+            user=user,
+            created_at__lt=cutoff_date
+        ).delete()
+        total_deleted += dla_deleted
+
+        # Delete evidence gap analyses
+        ega_deleted, _ = EvidenceGapAnalysis.objects.filter(
+            user=user,
+            created_at__lt=cutoff_date
+        ).delete()
+        total_deleted += ega_deleted
+
+        # Delete agent interactions
+        ai_deleted, _ = AgentInteraction.objects.filter(
+            user=user,
+            created_at__lt=cutoff_date
+        ).delete()
+        total_deleted += ai_deleted
+
+    except ImportError:
+        logger.warning("agents app not available for pilot analysis purge")
+
+    return total_deleted
+
+
+def _purge_pilot_user_statements(user, cutoff_date) -> int:
+    """
+    Delete personal statements for a specific pilot user older than cutoff date.
+
+    Returns count of deleted records.
+    """
+    try:
+        from agents.models import PersonalStatement
+
+        deleted, _ = PersonalStatement.objects.filter(
+            user=user,
+            created_at__lt=cutoff_date
+        ).delete()
+        return deleted
+
+    except ImportError:
+        logger.warning("agents app not available for pilot statement purge")
+        return 0
+
+
+@shared_task
+def notify_pilot_users_before_retention():
+    """
+    Send notification to pilot users before their data is deleted.
+
+    Warns users 7 days before their data reaches the retention limit.
+    This gives them time to export or save any important information.
+
+    Should be scheduled via Celery Beat (e.g., daily).
+    """
+    from accounts.models import User
+    from claims.models import Document
+    from django.core.mail import send_mail
+
+    retention_days = getattr(settings, 'PILOT_DATA_RETENTION_DAYS', 30)
+    warning_days = 7  # Warn 7 days before deletion
+
+    if retention_days <= warning_days:
+        return {'status': 'skipped', 'reason': 'retention_days too short for warning'}
+
+    # Calculate the date when data will be at risk
+    warning_cutoff = timezone.now() - timedelta(days=retention_days - warning_days)
+
+    users = User.objects.all()
+    notifications_sent = 0
+    errors = []
+
+    for user in users:
+        try:
+            if not getattr(user, 'is_pilot_user', False):
+                continue
+
+            # Check if user has documents that will be deleted soon
+            at_risk_docs = Document.objects.filter(
+                user=user,
+                is_deleted=False,
+                created_at__lt=warning_cutoff
+            ).count()
+
+            if at_risk_docs == 0:
+                continue
+
+            # Send warning email
+            subject = f"[{settings.SITE_NAME}] Your pilot data will be deleted in {warning_days} days"
+            message = f"""Hello,
+
+As part of our pilot program data retention policy, documents and analyses older than {retention_days} days are automatically removed.
+
+You have {at_risk_docs} document(s) that will be deleted in approximately {warning_days} days.
+
+If you need to keep this information, please:
+1. Download any important documents
+2. Export your rating calculations
+3. Save any AI analysis results you want to keep
+
+Thank you for participating in our pilot program!
+
+Best regards,
+The {settings.SITE_NAME} Team
+"""
+
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                fail_silently=True,
+            )
+
+            notifications_sent += 1
+            logger.info(f"Sent retention warning to pilot user {user.id}")
+
+        except Exception as e:
+            error_msg = f"Error notifying user {user.id}: {e}"
+            logger.error(error_msg)
+            errors.append(error_msg)
+
+    return {
+        'notifications_sent': notifications_sent,
+        'errors': errors,
+    }

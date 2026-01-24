@@ -149,6 +149,121 @@ class TestUserModel(TestCase):
 
 
 # =============================================================================
+# PILOT MODE TESTS
+# =============================================================================
+
+class TestPilotModePremiumAccess(TestCase):
+    """Tests for pilot mode premium access functionality."""
+
+    def test_pilot_premium_access_grants_premium_to_all_users(self):
+        """When PILOT_PREMIUM_ACCESS is True, all users get premium."""
+        user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!"
+        )
+        # Without pilot mode, user is not premium
+        self.assertFalse(user.is_premium)
+
+        # Enable pilot premium access
+        with self.settings(PILOT_PREMIUM_ACCESS=True):
+            self.assertTrue(user.is_premium)
+            self.assertTrue(user.is_pilot_user)
+
+    def test_pilot_premium_emails_grants_premium_to_specific_users(self):
+        """Users in PILOT_PREMIUM_EMAILS get premium access."""
+        user = User.objects.create_user(
+            email="pilot@tester.com",
+            password="TestPass123!"
+        )
+        other_user = User.objects.create_user(
+            email="other@example.com",
+            password="TestPass123!"
+        )
+
+        with self.settings(PILOT_PREMIUM_EMAILS=['pilot@tester.com']):
+            self.assertTrue(user.is_premium)
+            self.assertTrue(user.is_pilot_user)
+            self.assertFalse(other_user.is_premium)
+            self.assertFalse(other_user.is_pilot_user)
+
+    def test_pilot_premium_emails_case_insensitive(self):
+        """PILOT_PREMIUM_EMAILS comparison is case insensitive."""
+        user = User.objects.create_user(
+            email="Pilot@Tester.COM",
+            password="TestPass123!"
+        )
+
+        with self.settings(PILOT_PREMIUM_EMAILS=['pilot@tester.com']):
+            self.assertTrue(user.is_premium)
+
+    def test_pilot_premium_domains_grants_premium_to_domain_users(self):
+        """Users with email in PILOT_PREMIUM_DOMAINS get premium."""
+        user1 = User.objects.create_user(
+            email="user1@pilotcompany.com",
+            password="TestPass123!"
+        )
+        user2 = User.objects.create_user(
+            email="user2@pilotcompany.com",
+            password="TestPass123!"
+        )
+        other_user = User.objects.create_user(
+            email="other@example.com",
+            password="TestPass123!"
+        )
+
+        with self.settings(PILOT_PREMIUM_DOMAINS=['pilotcompany.com']):
+            self.assertTrue(user1.is_premium)
+            self.assertTrue(user1.is_pilot_user)
+            self.assertTrue(user2.is_premium)
+            self.assertFalse(other_user.is_premium)
+
+    def test_pilot_premium_domains_case_insensitive(self):
+        """PILOT_PREMIUM_DOMAINS comparison is case insensitive."""
+        user = User.objects.create_user(
+            email="user@PilotCompany.COM",
+            password="TestPass123!"
+        )
+
+        with self.settings(PILOT_PREMIUM_DOMAINS=['pilotcompany.com']):
+            self.assertTrue(user.is_premium)
+
+    def test_is_pilot_user_false_without_pilot_settings(self):
+        """is_pilot_user is False when no pilot settings are enabled."""
+        user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!"
+        )
+        self.assertFalse(user.is_pilot_user)
+
+    def test_is_pilot_user_false_for_regular_premium(self):
+        """is_pilot_user is False for users with regular premium subscription."""
+        user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!"
+        )
+        Subscription.objects.create(
+            user=user,
+            plan_type='premium',
+            status='active'
+        )
+        # User is premium via subscription, not pilot
+        self.assertTrue(user.is_premium)
+        self.assertFalse(user.is_pilot_user)
+
+    def test_pilot_mode_priority_over_subscription_check(self):
+        """Pilot mode grants premium even without checking subscription."""
+        user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!"
+        )
+        # No subscription exists
+
+        with self.settings(PILOT_PREMIUM_ACCESS=True):
+            # Should be premium via pilot, not subscription
+            self.assertTrue(user.is_premium)
+
+
+# =============================================================================
 # USER PROFILE TESTS
 # =============================================================================
 
@@ -763,3 +878,87 @@ class TestRateLimitingConfiguration(TestCase):
         """Verify RATELIMIT_ENABLE setting exists."""
         from django.conf import settings
         self.assertTrue(hasattr(settings, 'RATELIMIT_ENABLE'))
+
+
+# =============================================================================
+# PILOT MODE CHECKOUT TESTS
+# =============================================================================
+
+class TestPilotModeCheckout(TestCase):
+    """Tests for checkout behavior in pilot mode."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!"
+        )
+        self.client.login(email="test@example.com", password="TestPass123!")
+
+    def test_checkout_blocked_when_pilot_billing_disabled(self):
+        """Checkout should redirect with message when PILOT_BILLING_DISABLED is True."""
+        from django.urls import reverse
+
+        with self.settings(PILOT_BILLING_DISABLED=True):
+            response = self.client.post(reverse('accounts:checkout'))
+
+            # Should redirect to upgrade page
+            self.assertEqual(response.status_code, 302)
+            self.assertIn('/accounts/upgrade/', response.url)
+
+            # Check for info message
+            from django.contrib.messages import get_messages
+            messages = list(get_messages(response.wsgi_request))
+            self.assertEqual(len(messages), 1)
+            self.assertIn('disabled during the pilot', str(messages[0]))
+
+    def test_checkout_allowed_when_pilot_billing_not_disabled(self):
+        """Checkout should proceed normally when PILOT_BILLING_DISABLED is False."""
+        from django.urls import reverse
+
+        with self.settings(
+            PILOT_BILLING_DISABLED=False,
+            STRIPE_SECRET_KEY='',  # Empty to trigger config error
+            STRIPE_PRICE_ID=''
+        ):
+            response = self.client.post(reverse('accounts:checkout'))
+
+            # Should redirect due to missing Stripe config, not pilot mode
+            self.assertEqual(response.status_code, 302)
+
+            # Message should be about payment config, not pilot mode
+            from django.contrib.messages import get_messages
+            messages = list(get_messages(response.wsgi_request))
+            self.assertEqual(len(messages), 1)
+            self.assertIn('not configured', str(messages[0]))
+
+
+class TestPilotModeUpgradePage(TestCase):
+    """Tests for upgrade page in pilot mode."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123!"
+        )
+        self.client.login(email="test@example.com", password="TestPass123!")
+
+    def test_upgrade_page_shows_pilot_mode_context(self):
+        """Upgrade page should include pilot mode context variables."""
+        from django.urls import reverse
+
+        with self.settings(PILOT_MODE=True, PILOT_BILLING_DISABLED=True):
+            response = self.client.get(reverse('accounts:upgrade'))
+
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.context['pilot_mode'])
+            self.assertTrue(response.context['pilot_billing_disabled'])
+
+    def test_upgrade_page_shows_pilot_user_status(self):
+        """Upgrade page should show is_pilot_user when user has pilot access."""
+        from django.urls import reverse
+
+        with self.settings(PILOT_PREMIUM_ACCESS=True):
+            response = self.client.get(reverse('accounts:upgrade'))
+
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.context['is_pilot_user'])
