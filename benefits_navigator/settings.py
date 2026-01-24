@@ -371,8 +371,10 @@ if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
     # Stricter CSP in production
+    # Note: 'unsafe-inline' required for Tailwind CDN which generates inline styles
+    # TODO: Build Tailwind to static CSS file to remove 'unsafe-inline' dependency
     CSP_SCRIPT_SRC = ("'self'", "https://cdn.tailwindcss.com", "https://unpkg.com")
-    CSP_STYLE_SRC = ("'self'", "https://cdn.tailwindcss.com")
+    CSP_STYLE_SRC = ("'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com")
 
 # ==============================================================================
 # DJANGO-ALLAUTH CONFIGURATION
