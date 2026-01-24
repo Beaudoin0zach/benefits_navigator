@@ -1,0 +1,305 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Stats Dashboard - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <header class="mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Admin Stats Dashboard</h1>
+                <p class="text-gray-600">System metrics and pilot program statistics</p>
+            </div>
+            {% if pilot_mode %}
+            <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                Pilot Mode Active
+            </span>
+            {% endif %}
+        </div>
+    </header>
+
+    {% if pilot_mode %}
+    <!-- Pilot Mode Banner -->
+    <div class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg p-6 mb-8 shadow-lg">
+        <h2 class="text-xl font-bold mb-2">Pilot Configuration</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+            <div>
+                <span class="text-purple-200">Billing:</span>
+                <span class="font-medium">{% if pilot_billing_disabled %}Disabled{% else %}Enabled{% endif %}</span>
+            </div>
+            <div>
+                <span class="text-purple-200">Data Retention:</span>
+                <span class="font-medium">{{ pilot_retention_days }} days</span>
+            </div>
+            <div>
+                <span class="text-purple-200">Pilot Users:</span>
+                <span class="font-medium">{{ pilot_users }}</span>
+            </div>
+        </div>
+        {% if pilot_domains or pilot_emails %}
+        <div class="mt-4 pt-4 border-t border-purple-400">
+            {% if pilot_domains %}
+            <p class="text-sm"><span class="text-purple-200">Pilot Domains:</span> {{ pilot_domains|join:", " }}</p>
+            {% endif %}
+            {% if pilot_emails %}
+            <p class="text-sm mt-1"><span class="text-purple-200">Pilot Emails:</span> {{ pilot_emails|length }} configured</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- User Stats -->
+    <section class="mb-8">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">User Statistics</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+                <p class="text-sm font-medium text-gray-500">Total Users</p>
+                <p class="text-3xl font-bold text-gray-900">{{ total_users }}</p>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+                <p class="text-sm font-medium text-gray-500">Premium Users</p>
+                <p class="text-3xl font-bold text-gray-900">{{ premium_users }}</p>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500">
+                <p class="text-sm font-medium text-gray-500">Pilot Users</p>
+                <p class="text-3xl font-bold text-gray-900">{{ pilot_users }}</p>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-gray-400">
+                <p class="text-sm font-medium text-gray-500">Free Users</p>
+                <p class="text-3xl font-bold text-gray-900">{{ free_users }}</p>
+            </div>
+        </div>
+
+        <!-- New Users -->
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-gray-50 rounded-lg p-4">
+                <p class="text-sm text-gray-500">New Today</p>
+                <p class="text-xl font-bold text-gray-900">{{ new_users_today }}</p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4">
+                <p class="text-sm text-gray-500">New This Week</p>
+                <p class="text-xl font-bold text-gray-900">{{ new_users_week }}</p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4">
+                <p class="text-sm text-gray-500">New This Month</p>
+                <p class="text-xl font-bold text-gray-900">{{ new_users_month }}</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Document Stats -->
+    <section class="mb-8">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Document Statistics</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+                <p class="text-sm font-medium text-gray-500">Total Documents</p>
+                <p class="text-3xl font-bold text-gray-900">{{ total_documents }}</p>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+                <p class="text-sm font-medium text-gray-500">Today</p>
+                <p class="text-3xl font-bold text-gray-900">{{ docs_today }}</p>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
+                <p class="text-sm font-medium text-gray-500">This Week</p>
+                <p class="text-3xl font-bold text-gray-900">{{ docs_week }}</p>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500">
+                <p class="text-sm font-medium text-gray-500">This Month</p>
+                <p class="text-3xl font-bold text-gray-900">{{ docs_month }}</p>
+            </div>
+        </div>
+
+        {% if docs_by_status %}
+        <div class="mt-4 bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-3">Documents by Status</h3>
+            <div class="flex flex-wrap gap-4">
+                {% for item in docs_by_status %}
+                <div class="flex items-center">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                        {% if item.status == 'completed' %}bg-green-100 text-green-800
+                        {% elif item.status == 'processing' or item.status == 'analyzing' %}bg-yellow-100 text-yellow-800
+                        {% elif item.status == 'failed' %}bg-red-100 text-red-800
+                        {% else %}bg-gray-100 text-gray-800{% endif %}">
+                        {{ item.status }}: {{ item.count }}
+                    </span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- AI Stats -->
+    {% if ai_stats and not ai_stats.error %}
+    <section class="mb-8">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">AI Analysis Statistics</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-indigo-500">
+                <p class="text-sm font-medium text-gray-500">Total AI Interactions</p>
+                <p class="text-3xl font-bold text-gray-900">{{ ai_stats.total_interactions }}</p>
+                <p class="text-sm text-gray-400 mt-1">Today: {{ ai_stats.interactions_today }} | Week: {{ ai_stats.interactions_week }}</p>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+                <p class="text-sm font-medium text-gray-500">Decision Letter Analyses</p>
+                <p class="text-3xl font-bold text-gray-900">{{ ai_stats.decision_analyses }}</p>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+                <p class="text-sm font-medium text-gray-500">Evidence Gap Analyses</p>
+                <p class="text-3xl font-bold text-gray-900">{{ ai_stats.evidence_analyses }}</p>
+            </div>
+        </div>
+        <div class="mt-4">
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500">
+                <p class="text-sm font-medium text-gray-500">Personal Statements Generated</p>
+                <p class="text-3xl font-bold text-gray-900">{{ ai_stats.statements_generated }}</p>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Storage Stats -->
+    <section class="mb-8">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Storage Statistics</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-orange-500">
+                <p class="text-sm font-medium text-gray-500">Total Storage Used</p>
+                <p class="text-3xl font-bold text-gray-900">
+                    {% if total_storage_gb >= 1 %}
+                    {{ total_storage_gb }} GB
+                    {% else %}
+                    {{ total_storage_mb }} MB
+                    {% endif %}
+                </p>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-teal-500">
+                <p class="text-sm font-medium text-gray-500">Total Documents Uploaded (All Time)</p>
+                <p class="text-3xl font-bold text-gray-900">{{ total_docs_uploaded }}</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Activity -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Recent Users -->
+        <section class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Recent Signups</h2>
+            {% if recent_users %}
+            <ul class="divide-y divide-gray-200">
+                {% for user in recent_users %}
+                <li class="py-3 flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-900">{{ user.email }}</p>
+                        <p class="text-xs text-gray-500">{{ user.date_joined|timesince }} ago</p>
+                    </div>
+                    {% if user.is_premium %}
+                    <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Premium</span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-gray-500 text-sm">No recent signups</p>
+            {% endif %}
+        </section>
+
+        <!-- Recent Documents -->
+        <section class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Recent Documents</h2>
+            {% if recent_documents %}
+            <ul class="divide-y divide-gray-200">
+                {% for doc in recent_documents %}
+                <li class="py-3">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">{{ doc.file_name|truncatechars:40 }}</p>
+                            <p class="text-xs text-gray-500">{{ doc.user.email }} - {{ doc.created_at|timesince }} ago</p>
+                        </div>
+                        <span class="px-2 py-1 text-xs rounded-full
+                            {% if doc.status == 'completed' %}bg-green-100 text-green-800
+                            {% elif doc.status == 'processing' %}bg-yellow-100 text-yellow-800
+                            {% elif doc.status == 'failed' %}bg-red-100 text-red-800
+                            {% else %}bg-gray-100 text-gray-800{% endif %}">
+                            {{ doc.status }}
+                        </span>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-gray-500 text-sm">No recent documents</p>
+            {% endif %}
+        </section>
+    </div>
+
+    <!-- Recent Feedback & Support -->
+    {% if recent_feedback or recent_support %}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+        {% if recent_feedback %}
+        <section class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Recent Feedback</h2>
+            <ul class="divide-y divide-gray-200">
+                {% for fb in recent_feedback %}
+                <li class="py-3">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-900">{{ fb.message|truncatechars:60 }}</p>
+                            <p class="text-xs text-gray-500">
+                                {% if fb.user %}{{ fb.user.email }}{% else %}Anonymous{% endif %}
+                                - {{ fb.created_at|timesince }} ago
+                            </p>
+                        </div>
+                        {% if fb.rating %}
+                        <span class="text-lg">
+                            {% if fb.rating == 'positive' %}{% elif fb.rating == 'negative' %}{% endif %}
+                        </span>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+
+        {% if recent_support %}
+        <section class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Recent Support Requests</h2>
+            <ul class="divide-y divide-gray-200">
+                {% for req in recent_support %}
+                <li class="py-3">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">{{ req.subject|truncatechars:40 }}</p>
+                            <p class="text-xs text-gray-500">{{ req.email }} - {{ req.created_at|timesince }} ago</p>
+                        </div>
+                        <span class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">{{ req.category }}</span>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Quick Links -->
+    <section class="mt-8 bg-gray-50 rounded-lg p-6">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">Quick Links</h2>
+        <div class="flex flex-wrap gap-4">
+            <a href="{% url 'admin:index' %}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
+                Django Admin
+            </a>
+            <a href="{% url 'admin:accounts_user_changelist' %}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
+                Manage Users
+            </a>
+            <a href="{% url 'admin:claims_document_changelist' %}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
+                Manage Documents
+            </a>
+        </div>
+    </section>
+</div>
+{% endblock %}

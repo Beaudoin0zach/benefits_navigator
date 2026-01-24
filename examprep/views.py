@@ -397,10 +397,27 @@ def calculate_rating_htmx(request):
 @login_required
 def save_calculation(request):
     """
-    Save a rating calculation for the logged-in user
+    Save a rating calculation for the logged-in user.
+    Premium feature - requires premium subscription or pilot access.
     """
     if request.method != 'POST':
         return HttpResponse(status=405)
+
+    # Check premium access for saving calculations
+    if not request.user.is_premium:
+        if request.headers.get('HX-Request'):
+            return HttpResponse(
+                '<div class="text-amber-600 p-4 bg-amber-50 rounded-lg">'
+                'Saving calculations is a premium feature. '
+                '<a href="/accounts/upgrade/" class="underline">Upgrade</a> to unlock.</div>',
+                status=403
+            )
+        from django.contrib import messages
+        messages.warning(
+            request,
+            'Saving calculations is a premium feature. Upgrade to unlock.'
+        )
+        return redirect('accounts:upgrade')
 
     try:
         name = request.POST.get('name', 'My Calculation')

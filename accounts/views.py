@@ -367,12 +367,21 @@ def upgrade(request):
     except Subscription.DoesNotExist:
         pass
 
+    # Pilot mode flags
+    pilot_mode = getattr(settings, 'PILOT_MODE', False)
+    pilot_billing_disabled = getattr(settings, 'PILOT_BILLING_DISABLED', False)
+    is_pilot_user = getattr(user, 'is_pilot_user', False)
+
     context = {
         'page_title': 'Upgrade to Premium',
         'usage': usage_summary,
         'subscription': subscription,
         'stripe_publishable_key': settings.STRIPE_PUBLISHABLE_KEY,
         'price_id': settings.STRIPE_PRICE_ID,
+        # Pilot mode context
+        'pilot_mode': pilot_mode,
+        'pilot_billing_disabled': pilot_billing_disabled,
+        'is_pilot_user': is_pilot_user,
         # Feature comparison
         'free_features': [
             f"{settings.FREE_TIER_DOCUMENTS_PER_MONTH} document uploads/month",
@@ -400,8 +409,20 @@ def upgrade(request):
 def create_checkout_session(request):
     """
     Create a Stripe Checkout session for subscription.
+    Blocked when PILOT_BILLING_DISABLED is True.
     """
     import stripe
+
+    # Check if billing is disabled for pilot mode
+    if getattr(settings, 'PILOT_BILLING_DISABLED', False):
+        logger.info(f"Checkout blocked for user {request.user.id} - pilot billing disabled")
+        messages.info(
+            request,
+            "Billing is disabled during the pilot program. "
+            "You already have access to all premium features for testing!"
+        )
+        return redirect('accounts:upgrade')
+
     stripe.api_key = settings.STRIPE_SECRET_KEY
 
     if not settings.STRIPE_SECRET_KEY or not settings.STRIPE_PRICE_ID:

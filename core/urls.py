@@ -31,4 +31,7 @@ urlpatterns = [
     # Support/Contact
     path('contact/', views.contact, name='contact'),
     path('contact/success/', views.contact_success, name='contact_success'),
+
+    # Admin Stats Dashboard (staff only)
+    path('admin/stats/', views.admin_stats_dashboard, name='admin_stats'),
 ]

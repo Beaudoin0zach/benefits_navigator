@@ -72,11 +72,31 @@ class User(AbstractUser):
         Check if user has premium access.
 
         Returns True if:
+        - Pilot mode grants all users premium (PILOT_PREMIUM_ACCESS=True), OR
+        - User's email/domain is in pilot premium list, OR
         - User has an active premium subscription, OR
         - User is a veteran linked to an active VSO organization
           (VSO org covers their access)
         """
-        # Check personal subscription first
+        from django.conf import settings
+
+        # Check pilot mode premium access first
+        if getattr(settings, 'PILOT_PREMIUM_ACCESS', False):
+            return True
+
+        # Check if user's email is in pilot premium list
+        pilot_emails = getattr(settings, 'PILOT_PREMIUM_EMAILS', [])
+        if self.email and self.email.lower() in [e.lower() for e in pilot_emails]:
+            return True
+
+        # Check if user's email domain is in pilot premium domains
+        pilot_domains = getattr(settings, 'PILOT_PREMIUM_DOMAINS', [])
+        if self.email and pilot_domains:
+            email_domain = self.email.split('@')[-1].lower()
+            if email_domain in [d.lower() for d in pilot_domains]:
+                return True
+
+        # Check personal subscription
         try:
             if self.subscription.is_active:
                 return True
@@ -90,6 +110,29 @@ class User(AbstractUser):
             is_active=True,
             organization__is_active=True
         ).exists()
+
+    @property
+    def is_pilot_user(self):
+        """
+        Check if user has premium access specifically through pilot program.
+        Useful for displaying pilot-specific messaging.
+        """
+        from django.conf import settings
+
+        if getattr(settings, 'PILOT_PREMIUM_ACCESS', False):
+            return True
+
+        pilot_emails = getattr(settings, 'PILOT_PREMIUM_EMAILS', [])
+        if self.email and self.email.lower() in [e.lower() for e in pilot_emails]:
+            return True
+
+        pilot_domains = getattr(settings, 'PILOT_PREMIUM_DOMAINS', [])
+        if self.email and pilot_domains:
+            email_domain = self.email.split('@')[-1].lower()
+            if email_domain in [d.lower() for d in pilot_domains]:
+                return True
+
+        return False
 
     @property
     def full_name(self):
