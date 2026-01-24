@@ -27,7 +27,7 @@ envs:
   - key: SENTRY_DSN
     type: SECRET
   - key: FIELD_ENCRYPTION_KEY
-    type: SECRET
+    value: "b9c5AxhQMmoCGhEaicz-8iaen0rln_Wehs6z4XXCoz0="
   # Pilot mode settings (set values in DO Console)
   - key: PILOT_MODE
     value: "True"
@@ -76,7 +76,7 @@ services:
       - key: REDIS_URL
         type: SECRET
       - key: FIELD_ENCRYPTION_KEY
-        type: SECRET
+        value: "b9c5AxhQMmoCGhEaicz-8iaen0rln_Wehs6z4XXCoz0="
 
 workers:
   # Celery Worker (background tasks)
@@ -106,7 +106,7 @@ workers:
       - key: OPENAI_API_KEY
         type: SECRET
       - key: FIELD_ENCRYPTION_KEY
-        type: SECRET
+        value: "b9c5AxhQMmoCGhEaicz-8iaen0rln_Wehs6z4XXCoz0="
 
 jobs:
   # Run migrations before deploying new code
@@ -127,7 +127,7 @@ jobs:
       - key: DATABASE_URL
         type: SECRET
       - key: FIELD_ENCRYPTION_KEY
-        type: SECRET
+        value: "b9c5AxhQMmoCGhEaicz-8iaen0rln_Wehs6z4XXCoz0="
 
 # Secrets to set in DO Console (App-Level Environment Variables):
 # - SECRET_KEY (generate with: python -c "import secrets; print(secrets.token_urlsafe(50))")
