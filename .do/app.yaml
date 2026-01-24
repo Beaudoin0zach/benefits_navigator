@@ -19,11 +19,9 @@ envs:
   - key: DATABASE_URL
     type: SECRET
   - key: REDIS_URL
-    scope: RUN_AND_BUILD_TIME
-    value: ${redis.REDIS_URL}
+    type: SECRET
   - key: CELERY_BROKER_URL
-    scope: RUN_AND_BUILD_TIME
-    value: ${redis.REDIS_URL}
+    type: SECRET
   - key: OPENAI_API_KEY
     type: SECRET
   - key: SENTRY_DSN
@@ -71,8 +69,7 @@ services:
       - key: DATABASE_URL
         type: SECRET
       - key: REDIS_URL
-        scope: RUN_AND_BUILD_TIME
-        value: ${redis.REDIS_URL}
+        type: SECRET
       - key: FIELD_ENCRYPTION_KEY
         type: SECRET
 
@@ -94,21 +91,13 @@ workers:
       - key: DATABASE_URL
         type: SECRET
       - key: REDIS_URL
-        scope: RUN_AND_BUILD_TIME
-        value: ${redis.REDIS_URL}
+        type: SECRET
       - key: CELERY_BROKER_URL
-        scope: RUN_AND_BUILD_TIME
-        value: ${redis.REDIS_URL}
+        type: SECRET
       - key: OPENAI_API_KEY
         type: SECRET
       - key: FIELD_ENCRYPTION_KEY
         type: SECRET
-
-databases:
-  # Dev Redis (free) - for Celery broker and caching
-  - name: redis
-    engine: REDIS
-    production: false
 
 jobs:
   # Run migrations before deploying new code
