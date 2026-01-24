@@ -32,9 +32,13 @@ COPY . /app/
 # Create directories
 RUN mkdir -p /app/media/documents /app/staticfiles /app/logs
 
-# Collect static files (use dummy secrets for build, real ones at runtime)
-# DEBUG=True bypasses FIELD_ENCRYPTION_KEY requirement during build
-RUN SECRET_KEY=build-time-dummy-key DEBUG=True STAGING=False \
+# Collect static files (use dummy values for build, real ones at runtime)
+# Provide all required env vars to avoid warnings/errors during build
+RUN SECRET_KEY=build-time-dummy-key \
+    DEBUG=False \
+    STAGING=False \
+    FIELD_ENCRYPTION_KEY=dGhpcy1pcy1hLWR1bW15LWtleS1mb3ItYnVpbGQtb25seQ== \
+    ALLOWED_HOSTS=localhost \
     python manage.py collectstatic --noinput --clear || true
 
 # Create non-root user for security
