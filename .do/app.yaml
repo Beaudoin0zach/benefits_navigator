@@ -15,13 +15,13 @@ envs:
     value: "True"
   # Secrets - values must be set in DO Console after deploy
   - key: SECRET_KEY
-    type: SECRET
+    value: "***ROTATED_SECRET_KEY***"
   - key: DATABASE_URL
-    type: SECRET
+    value: "***ROTATED_DATABASE_URL***"
   - key: REDIS_URL
-    type: SECRET
+    value: "***ROTATED_REDIS_URL***"
   - key: CELERY_BROKER_URL
-    type: SECRET
+    value: "***ROTATED_REDIS_URL***"
   - key: OPENAI_API_KEY
     type: SECRET
   - key: SENTRY_DSN
@@ -70,7 +70,7 @@ services:
         value: "benefits-navigator-staging-3o4rq.ondigitalocean.app,vabenefitsnavigator.org,www.vabenefitsnavigator.org"
       # Web needs explicit secrets (DO doesn't inherit app-level secrets)
       - key: SECRET_KEY
-        type: SECRET
+        value: "***ROTATED_SECRET_KEY***"
       - key: DATABASE_URL
         type: SECRET
       - key: REDIS_URL
@@ -100,7 +100,7 @@ workers:
       - key: ALLOWED_HOSTS
         value: "benefits-navigator-staging-3o4rq.ondigitalocean.app,vabenefitsnavigator.org,www.vabenefitsnavigator.org"
       - key: SECRET_KEY
-        type: SECRET
+        value: "***ROTATED_SECRET_KEY***"
       - key: DATABASE_URL
         type: SECRET
       - key: REDIS_URL
@@ -127,7 +127,7 @@ jobs:
     # Job needs explicit secrets (DO doesn't inherit app-level secrets to jobs)
     envs:
       - key: SECRET_KEY
-        type: SECRET
+        value: "***ROTATED_SECRET_KEY***"
       - key: DATABASE_URL
         type: SECRET
       - key: FIELD_ENCRYPTION_KEY
