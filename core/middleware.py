@@ -3,9 +3,35 @@ Custom middleware for the VA Benefits Navigator.
 """
 
 import logging
+from django.http import JsonResponse
 from django.utils.deprecation import MiddlewareMixin
 
 logger = logging.getLogger(__name__)
+
+
+class HealthCheckMiddleware:
+    """
+    Middleware to handle health check requests before ALLOWED_HOSTS validation.
+
+    This must be placed BEFORE django.middleware.common.CommonMiddleware
+    in MIDDLEWARE settings to bypass the Host header check for health endpoints.
+
+    DigitalOcean App Platform uses internal IPs (e.g., 10.244.x.x) for health checks,
+    which would fail ALLOWED_HOSTS validation.
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        # Respond to health check without checking ALLOWED_HOSTS
+        if request.path == '/health/' or request.path == '/health':
+            return JsonResponse({
+                'status': 'ok',
+                'message': 'Service is running'
+            })
+
+        return self.get_response(request)
 
 
 class AuditMiddleware(MiddlewareMixin):
