@@ -253,13 +253,13 @@ CELERY_TASK_SOFT_TIME_LIMIT = 25 * 60  # 25 minutes
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True  # Retry broker connection on startup (Celery 6.0+ default)
 
 # SSL configuration for Celery when using rediss:// (SSL) connections
-# Required for DigitalOcean Managed Redis/Valkey
+# Use CERT_NONE for cloud Redis providers (Upstash, etc.) that may not have verifiable certs
 if CELERY_BROKER_URL.startswith('rediss://'):
     CELERY_BROKER_USE_SSL = {
-        'ssl_cert_reqs': ssl.CERT_REQUIRED,
+        'ssl_cert_reqs': ssl.CERT_NONE,
     }
     CELERY_REDIS_BACKEND_USE_SSL = {
-        'ssl_cert_reqs': ssl.CERT_REQUIRED,
+        'ssl_cert_reqs': ssl.CERT_NONE,
     }
 
 # Celery Beat Schedule for periodic tasks
@@ -301,10 +301,11 @@ USE_REDIS_CACHE = env.bool('USE_REDIS_CACHE', default=not DEBUG)
 
 if USE_REDIS_CACHE:
     # Configure Redis cache with SSL support for rediss:// connections
+    # Use CERT_NONE for cloud Redis providers (Upstash, etc.)
     _redis_cache_options = {}
     if REDIS_URL.startswith('rediss://'):
         _redis_cache_options = {
-            'ssl_cert_reqs': ssl.CERT_REQUIRED,
+            'ssl_cert_reqs': ssl.CERT_NONE,
         }
 
     CACHES = {
