@@ -15,13 +15,13 @@ envs:
     value: "True"
   # Secrets - values must be set in DO Console after deploy
   - key: SECRET_KEY
-    type: SECRET
+    value: "-WAK9v6CH4eNU45REU8928FmKIL32HTq45p4n3szCmyTRVKHGhj-qbc_YrnLomI5MdM"
   - key: DATABASE_URL
-    type: SECRET
+    value: "postgresql://doadmin:show-password@benefits-nav-db-do-user-29214045-0.j.db.ondigitalocean.com:25060/defaultdb?sslmode=require"
   - key: REDIS_URL
-    type: SECRET
+    value: "rediss://default:AZe1AAIncDJkNmVjMWU2OGNhZmY0Y2E2YWY2NDQ3MDhjYzBlOWE5Y3AyMzg4Mzc@uncommon-kitten-38837.upstash.io:6379"
   - key: CELERY_BROKER_URL
-    type: SECRET
+    value: "rediss://default:AZe1AAIncDJkNmVjMWU2OGNhZmY0Y2E2YWY2NDQ3MDhjYzBlOWE5Y3AyMzg4Mzc@uncommon-kitten-38837.upstash.io:6379"
   - key: OPENAI_API_KEY
     type: SECRET
   - key: SENTRY_DSN
@@ -70,7 +70,7 @@ services:
         value: "benefits-navigator-staging-3o4rq.ondigitalocean.app,vabenefitsnavigator.org,www.vabenefitsnavigator.org"
       # Web needs explicit secrets (DO doesn't inherit app-level secrets)
       - key: SECRET_KEY
-        type: SECRET
+        value: "-WAK9v6CH4eNU45REU8928FmKIL32HTq45p4n3szCmyTRVKHGhj-qbc_YrnLomI5MdM"
       - key: DATABASE_URL
         type: SECRET
       - key: REDIS_URL
@@ -100,7 +100,7 @@ workers:
       - key: ALLOWED_HOSTS
         value: "benefits-navigator-staging-3o4rq.ondigitalocean.app,vabenefitsnavigator.org,www.vabenefitsnavigator.org"
       - key: SECRET_KEY
-        type: SECRET
+        value: "-WAK9v6CH4eNU45REU8928FmKIL32HTq45p4n3szCmyTRVKHGhj-qbc_YrnLomI5MdM"
       - key: DATABASE_URL
         type: SECRET
       - key: REDIS_URL
@@ -127,7 +127,7 @@ jobs:
     # Job needs explicit secrets (DO doesn't inherit app-level secrets to jobs)
     envs:
       - key: SECRET_KEY
-        type: SECRET
+        value: "-WAK9v6CH4eNU45REU8928FmKIL32HTq45p4n3szCmyTRVKHGhj-qbc_YrnLomI5MdM"
       - key: DATABASE_URL
         type: SECRET
       - key: FIELD_ENCRYPTION_KEY
