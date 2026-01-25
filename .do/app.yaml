@@ -23,9 +23,9 @@ envs:
   - key: CELERY_BROKER_URL
     value: "rediss://default:AZe1AAIncDJkNmVjMWU2OGNhZmY0Y2E2YWY2NDQ3MDhjYzBlOWE5Y3AyMzg4Mzc@uncommon-kitten-38837.upstash.io:6379"
   - key: OPENAI_API_KEY
-    type: SECRET
+    value: ""
   - key: SENTRY_DSN
-    type: SECRET
+    value: ""
   - key: FIELD_ENCRYPTION_KEY
     value: "b9c5AxhQMmoCGhEaicz-8iaen0rln_Wehs6z4XXCoz0="
   # Pilot mode settings (set values in DO Console)
@@ -72,9 +72,9 @@ services:
       - key: SECRET_KEY
         value: "-WAK9v6CH4eNU45REU8928FmKIL32HTq45p4n3szCmyTRVKHGhj-qbc_YrnLomI5MdM"
       - key: DATABASE_URL
-        type: SECRET
+        value: "postgresql://doadmin:show-password@benefits-nav-db-do-user-29214045-0.j.db.ondigitalocean.com:25060/defaultdb?sslmode=require"
       - key: REDIS_URL
-        type: SECRET
+        value: "rediss://default:AZe1AAIncDJkNmVjMWU2OGNhZmY0Y2E2YWY2NDQ3MDhjYzBlOWE5Y3AyMzg4Mzc@uncommon-kitten-38837.upstash.io:6379"
       - key: FIELD_ENCRYPTION_KEY
         value: "b9c5AxhQMmoCGhEaicz-8iaen0rln_Wehs6z4XXCoz0="
 
@@ -102,13 +102,13 @@ workers:
       - key: SECRET_KEY
         value: "-WAK9v6CH4eNU45REU8928FmKIL32HTq45p4n3szCmyTRVKHGhj-qbc_YrnLomI5MdM"
       - key: DATABASE_URL
-        type: SECRET
+        value: "postgresql://doadmin:show-password@benefits-nav-db-do-user-29214045-0.j.db.ondigitalocean.com:25060/defaultdb?sslmode=require"
       - key: REDIS_URL
-        type: SECRET
+        value: "rediss://default:AZe1AAIncDJkNmVjMWU2OGNhZmY0Y2E2YWY2NDQ3MDhjYzBlOWE5Y3AyMzg4Mzc@uncommon-kitten-38837.upstash.io:6379"
       - key: CELERY_BROKER_URL
-        type: SECRET
+        value: "rediss://default:AZe1AAIncDJkNmVjMWU2OGNhZmY0Y2E2YWY2NDQ3MDhjYzBlOWE5Y3AyMzg4Mzc@uncommon-kitten-38837.upstash.io:6379"
       - key: OPENAI_API_KEY
-        type: SECRET
+        value: ""
       - key: FIELD_ENCRYPTION_KEY
         value: "b9c5AxhQMmoCGhEaicz-8iaen0rln_Wehs6z4XXCoz0="
 
@@ -129,7 +129,7 @@ jobs:
       - key: SECRET_KEY
         value: "-WAK9v6CH4eNU45REU8928FmKIL32HTq45p4n3szCmyTRVKHGhj-qbc_YrnLomI5MdM"
       - key: DATABASE_URL
-        type: SECRET
+        value: "postgresql://doadmin:show-password@benefits-nav-db-do-user-29214045-0.j.db.ondigitalocean.com:25060/defaultdb?sslmode=require"
       - key: FIELD_ENCRYPTION_KEY
         value: "b9c5AxhQMmoCGhEaicz-8iaen0rln_Wehs6z4XXCoz0="
 
