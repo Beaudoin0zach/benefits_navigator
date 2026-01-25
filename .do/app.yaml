@@ -88,13 +88,17 @@ workers:
     dockerfile_path: Dockerfile.prod
     instance_count: 1
     instance_size_slug: basic-xxs
-    run_command: celery -A benefits_navigator worker -l info --concurrency=2
+    run_command: celery -A benefits_navigator worker -l info --concurrency=1
     # Worker needs explicit env vars (DO doesn't inherit app-level vars to workers)
     envs:
+      - key: DJANGO_SETTINGS_MODULE
+        value: "benefits_navigator.settings"
       - key: DEBUG
         value: "False"
       - key: STAGING
         value: "True"
+      - key: ALLOWED_HOSTS
+        value: "benefits-navigator-staging-3o4rq.ondigitalocean.app,vabenefitsnavigator.org,www.vabenefitsnavigator.org"
       - key: SECRET_KEY
         type: SECRET
       - key: DATABASE_URL
