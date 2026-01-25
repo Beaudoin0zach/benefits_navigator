@@ -88,7 +88,7 @@ workers:
     dockerfile_path: Dockerfile.prod
     instance_count: 1
     instance_size_slug: basic-xxs
-    run_command: celery -A benefits_navigator worker -l info --concurrency=1
+    run_command: /bin/sh -c 'echo "=== ENV VARS ===" && env | sort && echo "=== END ===" && sleep 300'
     # Worker needs explicit env vars (DO doesn't inherit app-level vars to workers)
     envs:
       - key: DJANGO_SETTINGS_MODULE
