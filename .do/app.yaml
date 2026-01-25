@@ -23,9 +23,9 @@ envs:
   - key: CELERY_BROKER_URL
     value: "***ROTATED_REDIS_URL***"
   - key: OPENAI_API_KEY
-    type: SECRET
+    value: ""
   - key: SENTRY_DSN
-    type: SECRET
+    value: ""
   - key: FIELD_ENCRYPTION_KEY
     value: "***ROTATED_FIELD_ENCRYPTION_KEY***"
   # Pilot mode settings (set values in DO Console)
@@ -72,9 +72,9 @@ services:
       - key: SECRET_KEY
         value: "***ROTATED_SECRET_KEY***"
       - key: DATABASE_URL
-        type: SECRET
+        value: "***ROTATED_DATABASE_URL***"
       - key: REDIS_URL
-        type: SECRET
+        value: "***ROTATED_REDIS_URL***"
       - key: FIELD_ENCRYPTION_KEY
         value: "***ROTATED_FIELD_ENCRYPTION_KEY***"
 
@@ -102,13 +102,13 @@ workers:
       - key: SECRET_KEY
         value: "***ROTATED_SECRET_KEY***"
       - key: DATABASE_URL
-        type: SECRET
+        value: "***ROTATED_DATABASE_URL***"
       - key: REDIS_URL
-        type: SECRET
+        value: "***ROTATED_REDIS_URL***"
       - key: CELERY_BROKER_URL
-        type: SECRET
+        value: "***ROTATED_REDIS_URL***"
       - key: OPENAI_API_KEY
-        type: SECRET
+        value: ""
       - key: FIELD_ENCRYPTION_KEY
         value: "***ROTATED_FIELD_ENCRYPTION_KEY***"
 
@@ -129,7 +129,7 @@ jobs:
       - key: SECRET_KEY
         value: "***ROTATED_SECRET_KEY***"
       - key: DATABASE_URL
-        type: SECRET
+        value: "***ROTATED_DATABASE_URL***"
       - key: FIELD_ENCRYPTION_KEY
         value: "***ROTATED_FIELD_ENCRYPTION_KEY***"
 
