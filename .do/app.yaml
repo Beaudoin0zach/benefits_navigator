@@ -19,9 +19,9 @@ envs:
   - key: DATABASE_URL
     value: "postgresql://doadmin:show-password@benefits-nav-db-do-user-29214045-0.j.db.ondigitalocean.com:25060/defaultdb?sslmode=require"
   - key: REDIS_URL
-    value: "rediss://default:AZe1AAIncDJkNmVjMWU2OGNhZmY0Y2E2YWY2NDQ3MDhjYzBlOWE5Y3AyMzg4Mzc@uncommon-kitten-38837.upstash.io:6379"
+    value: "rediss://default:show-password@db-valkey-nyc3-98037-do-user-29214045-0.k.db.ondigitalocean.com:25061"
   - key: CELERY_BROKER_URL
-    value: "rediss://default:AZe1AAIncDJkNmVjMWU2OGNhZmY0Y2E2YWY2NDQ3MDhjYzBlOWE5Y3AyMzg4Mzc@uncommon-kitten-38837.upstash.io:6379"
+    value: "rediss://default:show-password@db-valkey-nyc3-98037-do-user-29214045-0.k.db.ondigitalocean.com:25061"
   - key: OPENAI_API_KEY
     value: ""
   - key: SENTRY_DSN
@@ -74,7 +74,7 @@ services:
       - key: DATABASE_URL
         value: "postgresql://doadmin:show-password@benefits-nav-db-do-user-29214045-0.j.db.ondigitalocean.com:25060/defaultdb?sslmode=require"
       - key: REDIS_URL
-        value: "rediss://default:AZe1AAIncDJkNmVjMWU2OGNhZmY0Y2E2YWY2NDQ3MDhjYzBlOWE5Y3AyMzg4Mzc@uncommon-kitten-38837.upstash.io:6379"
+        value: "rediss://default:show-password@db-valkey-nyc3-98037-do-user-29214045-0.k.db.ondigitalocean.com:25061"
       - key: FIELD_ENCRYPTION_KEY
         value: "b9c5AxhQMmoCGhEaicz-8iaen0rln_Wehs6z4XXCoz0="
 
@@ -104,9 +104,9 @@ workers:
       - key: DATABASE_URL
         value: "postgresql://doadmin:show-password@benefits-nav-db-do-user-29214045-0.j.db.ondigitalocean.com:25060/defaultdb?sslmode=require"
       - key: REDIS_URL
-        value: "rediss://default:AZe1AAIncDJkNmVjMWU2OGNhZmY0Y2E2YWY2NDQ3MDhjYzBlOWE5Y3AyMzg4Mzc@uncommon-kitten-38837.upstash.io:6379"
+        value: "rediss://default:show-password@db-valkey-nyc3-98037-do-user-29214045-0.k.db.ondigitalocean.com:25061"
       - key: CELERY_BROKER_URL
-        value: "rediss://default:AZe1AAIncDJkNmVjMWU2OGNhZmY0Y2E2YWY2NDQ3MDhjYzBlOWE5Y3AyMzg4Mzc@uncommon-kitten-38837.upstash.io:6379"
+        value: "rediss://default:show-password@db-valkey-nyc3-98037-do-user-29214045-0.k.db.ondigitalocean.com:25061"
       - key: OPENAI_API_KEY
         value: ""
       - key: FIELD_ENCRYPTION_KEY

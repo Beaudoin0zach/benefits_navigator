@@ -252,6 +252,7 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes
 CELERY_TASK_SOFT_TIME_LIMIT = 25 * 60  # 25 minutes
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True  # Retry broker connection on startup (Celery 6.0+ default)
+CELERY_RESULT_EXPIRES = 3600  # Task results expire after 1 hour (frees Redis memory)
 
 # SSL configuration for Celery when using rediss:// (SSL) connections
 # Use CERT_NONE for cloud Redis providers (Upstash, etc.) that may not have verifiable certs
