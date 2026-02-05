@@ -15,6 +15,8 @@ from .va_math import (
     calculate_combined_rating,
     estimate_monthly_compensation,
     VA_COMPENSATION_RATES_2024,
+    VA_COMPENSATION_RATES_BY_YEAR,
+    AVAILABLE_RATE_YEARS,
     format_currency,
 )
 from .va_special_compensation import (
@@ -320,6 +322,8 @@ def rating_calculator(request):
 
     context = {
         'compensation_rates': VA_COMPENSATION_RATES_2024,
+        'compensation_rates_by_year': VA_COMPENSATION_RATES_BY_YEAR,
+        'available_rate_years': AVAILABLE_RATE_YEARS,
         'saved_calculations': saved_calculations,
     }
     return render(request, 'examprep/rating_calculator.html', context)
@@ -343,6 +347,11 @@ def calculate_rating_htmx(request):
         children = int(request.POST.get('children_under_18', 0))
         parents = int(request.POST.get('dependent_parents', 0))
 
+        # Parse rate year (default to 2024)
+        rate_year = int(request.POST.get('rate_year', 2024))
+        if rate_year not in AVAILABLE_RATE_YEARS:
+            rate_year = 2024
+
         # Convert to DisabilityRating objects
         ratings = []
         for r in ratings_data:
@@ -364,18 +373,20 @@ def calculate_rating_htmx(request):
                 'step_by_step': [],
                 'ratings': [],
                 'has_ratings': False,
+                'rate_year': rate_year,
             }
             return render(request, 'examprep/partials/rating_result.html', context)
 
         # Calculate combined rating
         result = calculate_combined_rating(ratings)
 
-        # Calculate compensation
+        # Calculate compensation using the specified year
         monthly = estimate_monthly_compensation(
             result.combined_rounded,
             spouse=has_spouse,
             children_under_18=children,
-            dependent_parents=parents
+            dependent_parents=parents,
+            year=rate_year
         )
 
         context = {
@@ -387,11 +398,83 @@ def calculate_rating_htmx(request):
             'step_by_step': result.step_by_step,
             'ratings': ratings_data,
             'has_ratings': True,
+            'rate_year': rate_year,
         }
         return render(request, 'examprep/partials/rating_result.html', context)
 
     except (json.JSONDecodeError, ValueError, TypeError) as e:
         return HttpResponse(f"Error: {str(e)}", status=400)
+
+
+def calculate_rating_json(request):
+    """
+    JSON endpoint for rating calculation - used by Compare Scenarios feature.
+    Returns calculation results as JSON instead of HTML partial.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+    try:
+        # Parse ratings from form data
+        ratings_json = request.POST.get('ratings', '[]')
+        ratings_data = json.loads(ratings_json)
+
+        # Parse dependent info
+        has_spouse = request.POST.get('has_spouse') == 'true'
+        children = int(request.POST.get('children_under_18', 0))
+        parents = int(request.POST.get('dependent_parents', 0))
+
+        # Parse rate year (default to 2024)
+        rate_year = int(request.POST.get('rate_year', 2024))
+        if rate_year not in AVAILABLE_RATE_YEARS:
+            rate_year = 2024
+
+        # Convert to DisabilityRating objects
+        ratings = []
+        for r in ratings_data:
+            percentage = int(r.get('percentage', 0))
+            if percentage > 0:
+                ratings.append(DisabilityRating(
+                    percentage=percentage,
+                    description=r.get('description', ''),
+                    is_bilateral=r.get('is_bilateral', False)
+                ))
+
+        if not ratings:
+            return JsonResponse({
+                'combined_raw': 0,
+                'combined_rounded': 0,
+                'bilateral_factor': 0,
+                'monthly_compensation': '$0.00',
+                'annual_compensation': '$0.00',
+                'has_ratings': False,
+                'rate_year': rate_year,
+            })
+
+        # Calculate combined rating
+        result = calculate_combined_rating(ratings)
+
+        # Calculate compensation using the specified year
+        monthly = estimate_monthly_compensation(
+            result.combined_rounded,
+            spouse=has_spouse,
+            children_under_18=children,
+            dependent_parents=parents,
+            year=rate_year
+        )
+
+        return JsonResponse({
+            'combined_raw': round(result.combined_raw, 2),
+            'combined_rounded': result.combined_rounded,
+            'bilateral_factor': round(result.bilateral_factor_applied, 2),
+            'monthly_compensation': format_currency(monthly),
+            'annual_compensation': format_currency(monthly * 12),
+            'has_ratings': True,
+            'rate_year': rate_year,
+        })
+
+    except (json.JSONDecodeError, ValueError, TypeError) as e:
+        return JsonResponse({'error': str(e)}, status=400)
 
 
 @login_required
