@@ -74,6 +74,25 @@
                     </div>
                 </div>
 
+                <!-- Rate Year Selector -->
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <h3 class="font-bold text-gray-900 mb-3">Compensation Rate Year</h3>
+                    <select id="rate-year" onchange="calculate()"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                        {% for year in available_rate_years %}
+                        <option value="{{ year }}" {% if year == 2024 %}selected{% endif %}>
+                            {{ year }} Rates{% if year == 2024 %} (Current){% endif %}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1">
+                        Select a year to see historical compensation amounts.
+                        <span id="dependent-rate-note" class="hidden text-amber-600">
+                            Note: Dependent additions only available for 2024 rates.
+                        </span>
+                    </p>
+                </div>
+
                 <!-- Calculate Button -->
                 <button type="button"
                         onclick="calculate()"
@@ -159,6 +178,34 @@
                     {% endfor %}
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Compare Scenarios Section -->
+    <div class="mt-8 bg-white shadow-md rounded-lg p-6">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <h3 class="font-bold text-gray-900">Compare Scenarios</h3>
+                <p class="text-sm text-gray-600">Save your current calculation as a scenario to compare different rating combinations side-by-side.</p>
+            </div>
+            <button type="button" onclick="addScenario()"
+                    class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                + Add Scenario
+            </button>
+        </div>
+
+        <!-- Scenarios Container -->
+        <div id="scenarios-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Scenario cards will be added here by JavaScript -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="scenarios-empty" class="text-center py-8 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg">
+            <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>
+            </svg>
+            <p class="mb-2">No scenarios saved yet</p>
+            <p class="text-sm">Click "+ Add Scenario" to capture your current calculation for comparison</p>
         </div>
     </div>
 
@@ -273,6 +320,17 @@ function calculate() {
     const hasSpouse = document.getElementById('has-spouse').checked;
     const children = document.getElementById('children').value;
     const parents = document.getElementById('parents').value;
+    const rateYear = document.getElementById('rate-year').value;
+
+    // Show/hide dependent rate note based on year selection
+    const dependentNote = document.getElementById('dependent-rate-note');
+    if (dependentNote) {
+        if (rateYear !== '2024') {
+            dependentNote.classList.remove('hidden');
+        } else {
+            dependentNote.classList.add('hidden');
+        }
+    }
 
     // Make HTMX-style request
     const formData = new FormData();
@@ -280,6 +338,7 @@ function calculate() {
     formData.append('has_spouse', hasSpouse);
     formData.append('children_under_18', children);
     formData.append('dependent_parents', parents);
+    formData.append('rate_year', rateYear);
 
     fetch('{% url "examprep:calculate_rating" %}', {
         method: 'POST',
@@ -367,7 +426,203 @@ function loadCalculation(id) {
 // Add initial rating row on page load
 document.addEventListener('DOMContentLoaded', function() {
     addRating();
+    updateScenariosDisplay();
 });
+
+// =============================================================================
+// COMPARE SCENARIOS FUNCTIONALITY
+// =============================================================================
+
+let scenarios = [];
+let scenarioCount = 0;
+
+function addScenario() {
+    const ratings = getRatingsData();
+
+    if (ratings.length === 0) {
+        alert('Please add at least one disability rating before creating a scenario.');
+        return;
+    }
+
+    scenarioCount++;
+    const hasSpouse = document.getElementById('has-spouse').checked;
+    const children = parseInt(document.getElementById('children').value) || 0;
+    const parents = parseInt(document.getElementById('parents').value) || 0;
+    const rateYear = parseInt(document.getElementById('rate-year').value) || 2024;
+
+    const scenario = {
+        id: scenarioCount,
+        name: `Scenario ${scenarioCount}`,
+        ratings: JSON.parse(JSON.stringify(ratings)), // Deep copy
+        hasSpouse: hasSpouse,
+        children: children,
+        parents: parents,
+        rateYear: rateYear,
+        result: null,
+        isLoading: true
+    };
+
+    scenarios.push(scenario);
+    updateScenariosDisplay();
+    calculateScenario(scenario.id);
+}
+
+function calculateScenario(id) {
+    const scenario = scenarios.find(s => s.id === id);
+    if (!scenario) return;
+
+    const formData = new FormData();
+    formData.append('ratings', JSON.stringify(scenario.ratings));
+    formData.append('has_spouse', scenario.hasSpouse);
+    formData.append('children_under_18', scenario.children);
+    formData.append('dependent_parents', scenario.parents);
+    formData.append('rate_year', scenario.rateYear);
+
+    fetch('{% url "examprep:calculate_rating_json" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        scenario.result = data;
+        scenario.isLoading = false;
+        updateScenariosDisplay();
+    })
+    .catch(error => {
+        console.error('Error calculating scenario:', error);
+        scenario.isLoading = false;
+        scenario.error = 'Calculation failed';
+        updateScenariosDisplay();
+    });
+}
+
+function removeScenario(id) {
+    scenarios = scenarios.filter(s => s.id !== id);
+    updateScenariosDisplay();
+}
+
+function loadScenarioToCalculator(id) {
+    const scenario = scenarios.find(s => s.id === id);
+    if (!scenario) return;
+
+    // Clear existing ratings
+    document.getElementById('ratings-container').innerHTML = '';
+    ratingCount = 0;
+
+    // Add each rating from the scenario
+    scenario.ratings.forEach(r => {
+        addRating(r.percentage, r.description, r.is_bilateral);
+    });
+
+    // Set dependents
+    document.getElementById('has-spouse').checked = scenario.hasSpouse;
+    document.getElementById('children').value = scenario.children;
+    document.getElementById('parents').value = scenario.parents;
+    document.getElementById('rate-year').value = scenario.rateYear;
+
+    // Recalculate
+    calculate();
+
+    // Scroll to calculator
+    document.getElementById('ratings-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updateScenarioYear(id, newYear) {
+    const scenario = scenarios.find(s => s.id === id);
+    if (!scenario) return;
+
+    scenario.rateYear = parseInt(newYear);
+    scenario.isLoading = true;
+    updateScenariosDisplay();
+    calculateScenario(id);
+}
+
+function updateScenariosDisplay() {
+    const container = document.getElementById('scenarios-container');
+    const emptyState = document.getElementById('scenarios-empty');
+
+    if (scenarios.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+    }
+
+    emptyState.classList.add('hidden');
+
+    container.innerHTML = scenarios.map(scenario => {
+        const ratingSummary = scenario.ratings.map(r =>
+            `${r.percentage}%${r.description ? ` (${r.description})` : ''}`
+        ).join(', ');
+
+        let resultContent = '';
+        if (scenario.isLoading) {
+            resultContent = `
+                <div class="flex items-center justify-center py-4">
+                    <svg class="animate-spin h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </div>
+            `;
+        } else if (scenario.error) {
+            resultContent = `<p class="text-red-600 text-sm">${scenario.error}</p>`;
+        } else if (scenario.result) {
+            resultContent = `
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-blue-600 mb-1">${scenario.result.combined_rounded}%</div>
+                    <div class="text-sm text-gray-500 mb-2">Combined Rating</div>
+                    <div class="text-lg font-semibold text-green-600">${scenario.result.monthly_compensation}/mo</div>
+                    <div class="text-xs text-gray-500">${scenario.result.annual_compensation}/year</div>
+                </div>
+            `;
+        }
+
+        return `
+            <div class="scenario-card border border-gray-200 rounded-lg p-4 bg-gray-50" id="scenario-${scenario.id}">
+                <div class="flex items-center justify-between mb-3">
+                    <h4 class="font-bold text-gray-900">${scenario.name}</h4>
+                    <button onclick="removeScenario(${scenario.id})"
+                            class="text-gray-400 hover:text-red-600 p-1"
+                            title="Remove scenario">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="text-xs text-gray-600 mb-3">
+                    <p class="truncate" title="${ratingSummary}">${ratingSummary}</p>
+                    ${scenario.hasSpouse || scenario.children > 0 || scenario.parents > 0 ?
+                        `<p class="mt-1">Dependents: ${[
+                            scenario.hasSpouse ? 'Spouse' : '',
+                            scenario.children > 0 ? `${scenario.children} child${scenario.children > 1 ? 'ren' : ''}` : '',
+                            scenario.parents > 0 ? `${scenario.parents} parent${scenario.parents > 1 ? 's' : ''}` : ''
+                        ].filter(Boolean).join(', ')}</p>` : ''
+                    }
+                </div>
+
+                <div class="mb-3">
+                    <select onchange="updateScenarioYear(${scenario.id}, this.value)"
+                            class="w-full text-sm px-2 py-1 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500">
+                        {% for year in available_rate_years %}
+                        <option value="{{ year }}" ${scenario.rateYear === {{ year }} ? 'selected' : ''}>{{ year }} Rates</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                ${resultContent}
+
+                <button onclick="loadScenarioToCalculator(${scenario.id})"
+                        class="w-full mt-3 px-3 py-1.5 text-sm text-blue-600 border border-blue-600 rounded hover:bg-blue-50 transition-colors">
+                    Load in Calculator
+                </button>
+            </div>
+        `;
+    }).join('');
+}
 
 function shareCalculation() {
     const ratings = getRatingsData();

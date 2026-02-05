@@ -269,27 +269,117 @@ DEPENDENT_RATES_2024 = {
     }
 }
 
+# 2023 VA Compensation Rates (effective December 1, 2022)
+# 8.7% COLA increase from 2022
+VA_COMPENSATION_RATES_2023 = {
+    0: 0.00,
+    10: 165.92,
+    20: 327.99,
+    30: 508.05,
+    40: 731.86,
+    50: 1041.82,
+    60: 1319.65,
+    70: 1663.06,
+    80: 1933.15,
+    90: 2172.39,
+    100: 3621.95,
+}
+
+# 2022 VA Compensation Rates (effective December 1, 2021)
+# 5.9% COLA increase from 2021
+VA_COMPENSATION_RATES_2022 = {
+    0: 0.00,
+    10: 152.64,
+    20: 301.74,
+    30: 467.39,
+    40: 673.28,
+    50: 958.44,
+    60: 1214.03,
+    70: 1529.95,
+    80: 1778.43,
+    90: 1998.52,
+    100: 3332.06,
+}
+
+# 2021 VA Compensation Rates (effective December 1, 2020)
+# 1.3% COLA increase from 2020
+VA_COMPENSATION_RATES_2021 = {
+    0: 0.00,
+    10: 144.14,
+    20: 284.93,
+    30: 441.35,
+    40: 635.77,
+    50: 905.04,
+    60: 1146.39,
+    70: 1444.71,
+    80: 1679.35,
+    90: 1887.18,
+    100: 3146.42,
+}
+
+# 2020 VA Compensation Rates (effective December 1, 2019)
+# 1.6% COLA increase from 2019
+VA_COMPENSATION_RATES_2020 = {
+    0: 0.00,
+    10: 142.29,
+    20: 281.27,
+    30: 435.69,
+    40: 627.61,
+    50: 893.43,
+    60: 1131.68,
+    70: 1426.17,
+    80: 1657.80,
+    90: 1862.96,
+    100: 3106.04,
+}
+
+# Master lookup for all years
+VA_COMPENSATION_RATES_BY_YEAR = {
+    2024: VA_COMPENSATION_RATES_2024,
+    2023: VA_COMPENSATION_RATES_2023,
+    2022: VA_COMPENSATION_RATES_2022,
+    2021: VA_COMPENSATION_RATES_2021,
+    2020: VA_COMPENSATION_RATES_2020,
+}
+
+# Available rate years (most recent first)
+AVAILABLE_RATE_YEARS = [2024, 2023, 2022, 2021, 2020]
+
 
 def estimate_monthly_compensation(
     combined_rating: int,
     spouse: bool = False,
     children_under_18: int = 0,
-    dependent_parents: int = 0
+    dependent_parents: int = 0,
+    year: int = 2024
 ) -> float:
     """
     Estimate monthly VA disability compensation.
 
+    Args:
+        combined_rating: The combined VA disability rating (0-100, multiples of 10)
+        spouse: Whether veteran has a spouse
+        children_under_18: Number of children under 18
+        dependent_parents: Number of dependent parents (max 2)
+        year: The rate year to use (2020-2024). Defaults to 2024.
+
     Note: This is an estimate. Actual rates depend on many factors
     including effective date, special monthly compensation, etc.
+    Dependent rates are only available for 2024; for historical years,
+    only base rates are applied.
     """
-    if combined_rating not in VA_COMPENSATION_RATES_2024:
+    # Get rates for the specified year, fallback to 2024
+    rates = VA_COMPENSATION_RATES_BY_YEAR.get(year, VA_COMPENSATION_RATES_2024)
+
+    if combined_rating not in rates:
         return 0.0
 
-    base = VA_COMPENSATION_RATES_2024[combined_rating]
+    base = rates[combined_rating]
     total = base
 
     # Dependents only add to 30%+ ratings
-    if combined_rating >= 30:
+    # Note: Dependent rates are only available for 2024
+    if combined_rating >= 30 and year == 2024:
         if spouse and combined_rating in DEPENDENT_RATES_2024['spouse']:
             total += DEPENDENT_RATES_2024['spouse'][combined_rating]
 

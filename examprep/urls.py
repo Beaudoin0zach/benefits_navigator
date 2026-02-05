@@ -29,6 +29,7 @@ urlpatterns = [
     # Rating Calculator
     path('rating-calculator/', views.rating_calculator, name='rating_calculator'),
     path('rating-calculator/calculate/', views.calculate_rating_htmx, name='calculate_rating'),
+    path('rating-calculator/calculate-json/', views.calculate_rating_json, name='calculate_rating_json'),
     path('rating-calculator/save/', views.save_calculation, name='save_calculation'),
     path('rating-calculator/saved/', views.saved_calculations, name='saved_calculations'),
     path('rating-calculator/saved/<int:pk>/delete/', views.delete_calculation, name='delete_calculation'),
