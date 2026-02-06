@@ -1,7 +1,7 @@
 # VA Benefits Navigator - Comprehensive TODO List
 
-**Last Updated:** 2026-01-12
-**Updated By:** Codex Session
+**Last Updated:** 2026-02-05
+**Updated By:** Claude Code Session
 
 ---
 
@@ -79,8 +79,8 @@ A Django-based web application helping veterans navigate VA disability claims, C
 ### 4. Rating Calculator Enhancements
 - [x] Add SMC (Special Monthly Compensation) calculator ✅ (2026-01-11)
 - [x] Add TDIU eligibility checker ✅ (2026-01-11)
-- [ ] Historical compensation rates (2020-2024)
-- [ ] "Compare scenarios" side-by-side view
+- [x] Historical compensation rates (2020-2024) ✅ (2026-02-05)
+- [x] "Compare scenarios" side-by-side view ✅ (2026-02-05)
 - [ ] Import ratings from VA letter (OCR)
 
 ### 5. SEO & Marketing
@@ -154,6 +154,8 @@ A Django-based web application helping veterans navigate VA disability claims, C
 - [ ] Set up CI/CD pipeline (GitHub Actions)
 - [x] Create staging environment ✅ (2026-01-12) - DigitalOcean App Platform
 - [x] Document production deployment ✅ (2026-01-12) - docs/DEPLOYMENT_DIGITALOCEAN.md
+- [x] Switch to DO Managed Valkey (from Upstash) ✅ (2026-02-05) - fixes Redis memory issues
+- [x] Add CELERY_RESULT_EXPIRES to auto-cleanup task results ✅ (2026-02-05)
 - [ ] Set up database backups
 - [ ] Create disaster recovery plan
 
@@ -165,7 +167,8 @@ A Django-based web application helping veterans navigate VA disability claims, C
 - None currently identified
 
 ### Limitations
-- Rating calculator uses 2024 rates (need annual update process)
+- Rating calculator supports 2020-2024 rates (need annual update process for new years)
+- Dependent additions only available for 2024 rates (historical years show base rates only)
 - Bilateral factor only supports simple bilateral, not complex groupings
 - Document OCR may struggle with handwritten text
 - OpenAI costs not tracked per-user yet
@@ -290,7 +293,42 @@ docker compose build web && docker compose up -d
 
 ## SESSION HANDOFF NOTES
 
-### What Was Done This Session (2026-01-11)
+### What Was Done This Session (2026-02-05)
+**Infrastructure & Features:**
+
+1. **Switched from Upstash to DO Managed Valkey**
+   - Upstash Redis was hitting memory limits
+   - Updated `.do/app.yaml` and `app-spec-fixed.yaml` with new Valkey connection
+   - Added `CELERY_RESULT_EXPIRES = 3600` to auto-expire task results
+
+2. **Historical Compensation Rates (2020-2024)**
+   - Added VA compensation rates for 2020, 2021, 2022, 2023
+   - Rate year selector in calculator UI
+   - Note: Dependent additions only available for 2024
+
+3. **Compare Scenarios Feature**
+   - Save current calculation as a scenario
+   - Compare multiple scenarios side-by-side
+   - Change rate year per scenario
+   - Load scenario back into calculator
+   - New JSON endpoint: `/exam-prep/rating-calculator/calculate-json/`
+
+4. **SSH Configuration Fix**
+   - Generated new SSH key for Beaudoin0zach GitHub account
+   - Updated `~/.ssh/config` for multi-account support
+
+**Files Modified:**
+- `benefits_navigator/settings.py` - Added CELERY_RESULT_EXPIRES
+- `.do/app.yaml` - Switched to DO Valkey
+- `app-spec-fixed.yaml` - Switched to DO Valkey
+- `examprep/va_math.py` - Added historical rates 2020-2023
+- `examprep/views.py` - Added rate year support, JSON endpoint
+- `examprep/urls.py` - Added calculate-json route
+- `templates/examprep/rating_calculator.html` - Compare scenarios UI
+
+---
+
+### What Was Done Previously (2026-01-11)
 **Tier 2 Features Implemented:**
 
 1. **SMC/TDIU Calculators** (`examprep/va_special_compensation.py`)
