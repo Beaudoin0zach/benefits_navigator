@@ -320,11 +320,15 @@ def rating_calculator(request):
             user=request.user
         ).order_by('-updated_at')[:5]
 
+    # Check for imported ratings from session (from rating analysis import)
+    imported_ratings = request.session.pop('imported_ratings', None)
+
     context = {
         'compensation_rates': VA_COMPENSATION_RATES_2024,
         'compensation_rates_by_year': VA_COMPENSATION_RATES_BY_YEAR,
         'available_rate_years': AVAILABLE_RATE_YEARS,
         'saved_calculations': saved_calculations,
+        'imported_ratings': json.dumps(imported_ratings) if imported_ratings else None,
     }
     return render(request, 'examprep/rating_calculator.html', context)
 
@@ -1394,3 +1398,46 @@ def view_shared_calculation(request, token):
     }
 
     return render(request, 'examprep/shared_calculation.html', context)
+
+
+# =============================================================================
+# RATING IMPORT FROM ANALYSIS
+# =============================================================================
+
+@login_required
+def import_ratings_from_analysis(request, analysis_id):
+    """
+    Import ratings from a RatingAnalysis into the calculator.
+
+    Fetches the extracted conditions from a RatingAnalysis record,
+    converts them to DisabilityRating format, and stores them in
+    the session for the rating calculator to pick up.
+    """
+    from agents.models import RatingAnalysis
+    from .rating_import import convert_extracted_to_ratings
+
+    analysis = get_object_or_404(RatingAnalysis, id=analysis_id, user=request.user)
+    conditions = analysis.conditions or []
+
+    if not conditions:
+        messages.warning(request, 'No rated conditions found in this analysis to import.')
+        return redirect('examprep:rating_calculator')
+
+    ratings = convert_extracted_to_ratings(conditions)
+
+    if not ratings:
+        messages.warning(request, 'No valid ratings found to import (all conditions had 0% rating).')
+        return redirect('examprep:rating_calculator')
+
+    # Store in session for calculator to pick up
+    request.session['imported_ratings'] = [
+        {
+            'percentage': r.percentage,
+            'description': r.description,
+            'is_bilateral': r.is_bilateral
+        }
+        for r in ratings
+    ]
+
+    messages.success(request, f'Imported {len(ratings)} rating(s) into calculator')
+    return redirect('examprep:rating_calculator')
