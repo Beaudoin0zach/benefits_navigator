@@ -425,7 +425,22 @@ function loadCalculation(id) {
 
 // Add initial rating row on page load
 document.addEventListener('DOMContentLoaded', function() {
+    // Check for imported ratings from session
+    {% if imported_ratings %}
+    const importedRatings = {{ imported_ratings|safe }};
+    if (importedRatings && importedRatings.length > 0) {
+        // Add each imported rating
+        importedRatings.forEach(r => {
+            addRating(r.percentage, r.description, r.is_bilateral);
+        });
+        // Calculate immediately to show results
+        calculate();
+    } else {
+        addRating();
+    }
+    {% else %}
     addRating();
+    {% endif %}
     updateScenariosDisplay();
 });
 

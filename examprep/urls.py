@@ -62,4 +62,7 @@ urlpatterns = [
     path('rating-calculator/share/', views.share_calculation, name='share_calculation'),
     path('rating-calculator/saved/<int:pk>/share/', views.share_saved_calculation, name='share_saved_calculation'),
     path('shared/<str:token>/', views.view_shared_calculation, name='shared_calculation'),
+
+    # Import ratings from analysis
+    path('rating-calculator/import/<int:analysis_id>/', views.import_ratings_from_analysis, name='import_ratings'),
 ]

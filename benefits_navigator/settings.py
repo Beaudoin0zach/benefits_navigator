@@ -290,6 +290,24 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'claims.tasks.cleanup_old_documents',
         'schedule': crontab(hour=2, minute=0),  # daily at 2 AM
     },
+    # Pilot data retention
+    'enforce-pilot-data-retention': {
+        'task': 'core.tasks.enforce_pilot_data_retention',
+        'schedule': crontab(hour=3, minute=30),  # 3:30 AM daily (after cleanup-old-health-metrics)
+    },
+    'notify-pilot-users-before-retention': {
+        'task': 'core.tasks.notify_pilot_users_before_retention',
+        'schedule': crontab(hour=1, minute=0),  # 1 AM daily (before enforcement)
+    },
+    # Monitoring and alerting
+    'run-monitoring-checks': {
+        'task': 'core.tasks.run_monitoring_checks',
+        'schedule': 300,  # every 5 minutes
+    },
+    'check-download-anomalies': {
+        'task': 'core.tasks.check_download_anomalies_task',
+        'schedule': crontab(minute=0),  # hourly (every hour at :00)
+    },
 }
 
 # ==============================================================================
