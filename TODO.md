@@ -1,6 +1,6 @@
 # VA Benefits Navigator - Comprehensive TODO List
 
-**Last Updated:** 2026-02-05
+**Last Updated:** 2026-02-09
 **Updated By:** Claude Code Session
 
 ---
@@ -46,7 +46,7 @@ A Django-based web application helping veterans navigate VA disability claims, C
 - [x] Enable **Sentry DSN** ✅ (2026-01-12) - analytics events still TODO
 - [x] Add **in-app feedback** (thumbs/text) ✅ (2026-01-12) - widget on all pages, admin with CSV export
 - [x] Provide a visible **support channel** ✅ (2026-01-12) - contact form at /contact/, links in footer, dashboard, error pages
-- [ ] Disable real billing for pilots, gate premium-only features, and enforce a 30-day data retention policy for tester data
+- [x] Disable real billing for pilots, gate premium-only features, and enforce a 30-day data retention policy for tester data ✅ (2026-02-09) - Celery tasks scheduled for pilot data retention
 - [x] Add health checks/alerts for Celery queue backlog and document-processing failures (timeouts, OCR errors) ✅ (2026-01-12)
 
 ### 1. Testing & Quality
@@ -81,7 +81,7 @@ A Django-based web application helping veterans navigate VA disability claims, C
 - [x] Add TDIU eligibility checker ✅ (2026-01-11)
 - [x] Historical compensation rates (2020-2024) ✅ (2026-02-05)
 - [x] "Compare scenarios" side-by-side view ✅ (2026-02-05)
-- [ ] Import ratings from VA letter (OCR)
+- [x] Import ratings from VA letter (OCR) ✅ (2026-02-09) - Import from RatingAnalysis to calculator
 
 ### 5. SEO & Marketing
 - [x] Add meta descriptions to all pages ✅ (2026-01-12)
@@ -94,7 +94,7 @@ A Django-based web application helping veterans navigate VA disability claims, C
 - [x] Set up Sentry error tracking ✅ (2026-01-12)
 - [ ] Add usage analytics (privacy-respecting)
 - [ ] Create admin dashboard with stats
-- [ ] Monitor Celery task success/failure rates
+- [x] Monitor Celery task success/failure rates ✅ (2026-02-09) - run-monitoring-checks and check-download-anomalies tasks scheduled
 
 ### 7. Performance
 - [ ] Add Redis caching for glossary terms
@@ -293,7 +293,46 @@ docker compose build web && docker compose up -d
 
 ## SESSION HANDOFF NOTES
 
-### What Was Done This Session (2026-02-05)
+### What Was Done This Session (2026-02-09)
+**Pilot Mode, Rating Import, and Analytics Implementation:**
+
+1. **Pilot Data Retention Tasks Scheduled**
+   - Added `enforce-pilot-data-retention` task (3:30 AM daily) - purges old pilot user data
+   - Added `notify-pilot-users-before-retention` task (1:00 AM daily) - warns users 7 days before deletion
+   - Tasks already existed in `core/tasks.py`, just needed scheduling in CELERY_BEAT_SCHEDULE
+
+2. **Rating Import Feature (from RatingAnalysis to Calculator)**
+   - New file: `examprep/rating_import.py` - conversion utility
+   - `convert_extracted_to_ratings()` - converts RatingAnalysis.conditions to DisabilityRating objects
+   - Bilateral detection for paired extremities (left/right knee, shoulder, etc.)
+   - New view: `import_ratings_from_analysis()` - imports via session storage
+   - New URL: `/exam-prep/rating-calculator/import/<analysis_id>/`
+   - Added "Import to Calculator" button on rating analyzer result page
+   - Calculator template auto-populates imported ratings and calculates immediately
+
+3. **Monitoring Tasks Scheduled**
+   - Added `run-monitoring-checks` task (every 5 minutes) - system health checks and alerts
+   - Added `check-download-anomalies` task (hourly) - detects potential data exfiltration
+
+**Files Modified:**
+- `benefits_navigator/settings.py` - Added 4 tasks to CELERY_BEAT_SCHEDULE
+- `examprep/rating_import.py` - **NEW** - rating conversion utility
+- `examprep/views.py` - Added import view, updated calculator for imported ratings
+- `examprep/urls.py` - Added import route
+- `templates/examprep/rating_calculator.html` - JS to handle imported ratings
+- `templates/claims/rating_analyzer_result.html` - Import button in action buttons
+
+**Tests Verified:**
+- 114 unit/BDD tests passed
+- Rating import utility tests passed (bilateral detection, rounding, filtering)
+- Django system checks passed
+- Integration test confirmed full import flow works
+
+**Commit:** `66aebc6` - "Add pilot retention tasks, rating import feature, and monitoring tasks"
+
+---
+
+### What Was Done Previous Session (2026-02-05)
 **Infrastructure & Features:**
 
 1. **Switched from Upstash to DO Managed Valkey**
