@@ -490,6 +490,8 @@ def save_calculation(request):
     if request.method != 'POST':
         return HttpResponse(status=405)
 
+    from django.contrib import messages
+
     # Check premium access for saving calculations
     if not request.user.is_premium:
         if request.headers.get('HX-Request'):
@@ -499,7 +501,6 @@ def save_calculation(request):
                 '<a href="/accounts/upgrade/" class="underline">Upgrade</a> to unlock.</div>',
                 status=403
             )
-        from django.contrib import messages
         messages.warning(
             request,
             'Saving calculations is a premium feature. Upgrade to unlock.'

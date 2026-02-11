@@ -21,7 +21,7 @@ from datetime import date, timedelta
 from decimal import Decimal
 from unittest.mock import patch, MagicMock
 
-from django.test import TestCase, Client
+from django.test import TestCase, Client, override_settings
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 
@@ -455,38 +455,38 @@ class TestEstimateMonthlyCompensation(TestCase):
 
     def test_zero_rating(self):
         """0% rating = $0."""
-        result = estimate_monthly_compensation(0)
+        result = estimate_monthly_compensation(0, year=2024)
         self.assertEqual(result, 0.0)
 
     def test_10_percent_rating(self):
         """10% rating base compensation."""
-        result = estimate_monthly_compensation(10)
+        result = estimate_monthly_compensation(10, year=2024)
         self.assertEqual(result, VA_COMPENSATION_RATES_2024[10])
 
     def test_all_base_rates(self):
         """All base rates match 2024 table."""
         for rating, expected in VA_COMPENSATION_RATES_2024.items():
             with self.subTest(rating=rating):
-                result = estimate_monthly_compensation(rating)
+                result = estimate_monthly_compensation(rating, year=2024)
                 self.assertEqual(result, expected)
 
     def test_100_percent_base(self):
         """100% rating base compensation."""
-        result = estimate_monthly_compensation(100)
+        result = estimate_monthly_compensation(100, year=2024)
         self.assertEqual(result, VA_COMPENSATION_RATES_2024[100])
 
     def test_invalid_rating_returns_zero(self):
         """Invalid ratings return 0."""
-        self.assertEqual(estimate_monthly_compensation(15), 0.0)
-        self.assertEqual(estimate_monthly_compensation(55), 0.0)
-        self.assertEqual(estimate_monthly_compensation(110), 0.0)
+        self.assertEqual(estimate_monthly_compensation(15, year=2024), 0.0)
+        self.assertEqual(estimate_monthly_compensation(55, year=2024), 0.0)
+        self.assertEqual(estimate_monthly_compensation(110, year=2024), 0.0)
 
     def test_spouse_adds_at_30_percent_and_above(self):
         """Spouse adds to compensation at 30%+."""
         for rating in [30, 40, 50, 60, 70, 80, 90, 100]:
             with self.subTest(rating=rating):
-                base = estimate_monthly_compensation(rating)
-                with_spouse = estimate_monthly_compensation(rating, spouse=True)
+                base = estimate_monthly_compensation(rating, year=2024)
+                with_spouse = estimate_monthly_compensation(rating, spouse=True, year=2024)
                 self.assertGreater(with_spouse, base)
                 # Verify exact spouse addition
                 expected = base + DEPENDENT_RATES_2024['spouse'][rating]
@@ -496,46 +496,47 @@ class TestEstimateMonthlyCompensation(TestCase):
         """Spouse doesn't add below 30%."""
         for rating in [0, 10, 20]:
             with self.subTest(rating=rating):
-                base = estimate_monthly_compensation(rating)
-                with_spouse = estimate_monthly_compensation(rating, spouse=True)
+                base = estimate_monthly_compensation(rating, year=2024)
+                with_spouse = estimate_monthly_compensation(rating, spouse=True, year=2024)
                 self.assertEqual(base, with_spouse)
 
     def test_children_add_at_30_percent_and_above(self):
         """Children add to compensation at 30%+."""
-        base = estimate_monthly_compensation(50)
-        with_one = estimate_monthly_compensation(50, children_under_18=1)
-        with_two = estimate_monthly_compensation(50, children_under_18=2)
+        base = estimate_monthly_compensation(50, year=2024)
+        with_one = estimate_monthly_compensation(50, children_under_18=1, year=2024)
+        with_two = estimate_monthly_compensation(50, children_under_18=2, year=2024)
         self.assertGreater(with_one, base)
         self.assertGreater(with_two, with_one)
 
     def test_children_no_effect_below_30(self):
         """Children don't add below 30%."""
-        base = estimate_monthly_compensation(20)
-        with_children = estimate_monthly_compensation(20, children_under_18=3)
+        base = estimate_monthly_compensation(20, year=2024)
+        with_children = estimate_monthly_compensation(20, children_under_18=3, year=2024)
         self.assertEqual(base, with_children)
 
     def test_dependent_parents(self):
         """Dependent parents add to compensation at 30%+."""
-        base = estimate_monthly_compensation(50)
-        with_one_parent = estimate_monthly_compensation(50, dependent_parents=1)
-        with_two_parents = estimate_monthly_compensation(50, dependent_parents=2)
+        base = estimate_monthly_compensation(50, year=2024)
+        with_one_parent = estimate_monthly_compensation(50, dependent_parents=1, year=2024)
+        with_two_parents = estimate_monthly_compensation(50, dependent_parents=2, year=2024)
         self.assertGreater(with_one_parent, base)
         self.assertGreater(with_two_parents, with_one_parent)
 
     def test_max_two_dependent_parents(self):
         """Maximum of 2 dependent parents counted."""
-        with_two = estimate_monthly_compensation(50, dependent_parents=2)
-        with_three = estimate_monthly_compensation(50, dependent_parents=3)
+        with_two = estimate_monthly_compensation(50, dependent_parents=2, year=2024)
+        with_three = estimate_monthly_compensation(50, dependent_parents=3, year=2024)
         self.assertEqual(with_two, with_three)
 
     def test_full_family(self):
         """Full family calculation: spouse + children + parents."""
-        base = estimate_monthly_compensation(100)
+        base = estimate_monthly_compensation(100, year=2024)
         full = estimate_monthly_compensation(
             100,
             spouse=True,
             children_under_18=3,
-            dependent_parents=2
+            dependent_parents=2,
+            year=2024
         )
         expected = (
             base +
@@ -547,7 +548,7 @@ class TestEstimateMonthlyCompensation(TestCase):
 
     def test_result_is_rounded(self):
         """Result is rounded to 2 decimal places."""
-        result = estimate_monthly_compensation(100, spouse=True)
+        result = estimate_monthly_compensation(100, spouse=True, year=2024)
         # Check it's properly rounded
         self.assertEqual(result, round(result, 2))
 
@@ -1190,8 +1191,9 @@ class TestSaveCalculationViews:
         response = client.post(reverse('examprep:save_calculation'))
         assert response.status_code == 302
 
-    def test_save_calculation_creates_record(self, authenticated_client, user):
+    def test_save_calculation_creates_record(self, authenticated_client, user, settings):
         """Saving calculation creates database record."""
+        settings.PILOT_PREMIUM_ACCESS = True
         response = authenticated_client.post(
             reverse('examprep:save_calculation'),
             {
@@ -1750,6 +1752,7 @@ class TestCalculateRatingHTMXEndpoint(TestCase):
         self.assertIn('step_by_step', response.context)
 
 
+@override_settings(PILOT_PREMIUM_ACCESS=True)
 class TestSaveCalculationIntegration(TestCase):
     """Integration tests for saving rating calculations."""
 
@@ -2132,6 +2135,7 @@ class TestSavedCalculationsListIntegration(TestCase):
         self.assertEqual(calculations[0].name, "Newest")
 
 
+@override_settings(PILOT_PREMIUM_ACCESS=True)
 class TestRatingCalculatorEndToEndWorkflow(TestCase):
     """End-to-end integration tests for complete rating calculator workflows."""
 
@@ -2333,6 +2337,7 @@ class TestRatingCalculatorEndToEndWorkflow(TestCase):
             self.assertEqual(response.status_code, 200)
 
 
+@override_settings(PILOT_PREMIUM_ACCESS=True)
 class TestRatingCalculatorErrorHandling(TestCase):
     """Tests for error handling in rating calculator."""
 
