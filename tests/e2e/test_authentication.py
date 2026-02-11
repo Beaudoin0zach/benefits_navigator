@@ -19,8 +19,8 @@ class TestPublicPages:
     def test_home_page_loads(self, page: Page):
         """Home page should load for anonymous users."""
         page.goto('/')
-        expect(page).to_have_title('VA Benefits Navigator')
-        expect(page.locator('h1')).to_be_visible()
+        expect(page).to_have_title('VA Benefits Navigator - Get the VA Disability Rating You Deserve')
+        expect(page.locator('h1').first).to_be_visible()
 
     def test_login_page_loads(self, page: Page):
         """Login page should be accessible."""
@@ -38,12 +38,12 @@ class TestPublicPages:
     def test_appeals_public_page(self, page: Page):
         """Appeals overview should be public."""
         page.goto('/appeals/')
-        expect(page.locator('h1')).to_contain_text('Appeal')
+        expect(page.locator('h1').last).to_contain_text('Appeal')
 
     def test_examprep_guides_public(self, page: Page):
         """Exam prep guides list should be public."""
-        page.goto('/examprep/')
-        expect(page).to_have_url('/examprep/')
+        page.goto('/exam-prep/')
+        expect(page).to_have_url('/exam-prep/')
 
 
 class TestLogin:
@@ -107,7 +107,7 @@ class TestProtectedPages:
         '/dashboard/',
         '/journey/',
         '/claims/',
-        '/examprep/my-checklists/',
+        '/exam-prep/my-checklists/',
         '/appeals/my-appeals/',
         '/accounts/privacy/',
     ])
@@ -120,7 +120,7 @@ class TestProtectedPages:
         '/dashboard/',
         '/journey/',
         '/claims/',
-        '/examprep/my-checklists/',
+        '/exam-prep/my-checklists/',
     ])
     def test_protected_page_accessible_authenticated(self, authenticated_page: Page, url: str):
         """Protected pages should be accessible to authenticated users."""

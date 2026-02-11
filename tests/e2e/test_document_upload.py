@@ -29,7 +29,7 @@ class TestDocumentList:
         page = authenticated_page
         page.goto('/claims/')
         expect(page).to_have_url('/claims/')
-        expect(page.locator('h1')).to_be_visible()
+        expect(page.locator('h1').last).to_be_visible()
 
     def test_upload_button_visible(self, authenticated_page: Page):
         """Upload button should be visible on document list."""
@@ -100,7 +100,7 @@ class TestDocumentDetail:
     def test_document_detail_requires_auth(self, page: Page):
         """Document detail should require authentication."""
         page.goto('/claims/document/1/')
-        expect(page).to_have_url('/accounts/login/*')
+        expect(page).to_have_url('/accounts/login/?next=/claims/document/1/')
 
 
 class TestDenialDecoder:

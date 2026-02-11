@@ -18,7 +18,7 @@ class TestJourneyDashboard:
     def test_journey_requires_auth(self, page: Page):
         """Journey should require authentication."""
         page.goto('/journey/')
-        expect(page).to_have_url('/accounts/login/*')
+        expect(page).to_have_url('/accounts/login/?next=/journey/')
 
     def test_journey_loads(self, authenticated_page: Page):
         """Authenticated users can access journey."""
@@ -26,7 +26,7 @@ class TestJourneyDashboard:
         page.goto('/journey/')
 
         expect(page).to_have_url('/journey/')
-        expect(page.locator('h1')).to_be_visible()
+        expect(page.locator('h1').last).to_be_visible()
 
     def test_timeline_visible(self, authenticated_page: Page):
         """Timeline should be visible on journey page."""
