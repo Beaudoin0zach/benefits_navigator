@@ -177,7 +177,7 @@ class TestAppealModel(TestCase):
             self.assertEqual(appeal.status, status)
 
     def test_appeal_deadline_auto_calculation(self):
-        """Appeal deadline is auto-calculated from decision date."""
+        """Appeal deadline is auto-calculated from decision date for HLR."""
         decision_date = date.today() - timedelta(days=30)
         appeal = Appeal.objects.create(
             user=self.user,
@@ -185,6 +185,43 @@ class TestAppealModel(TestCase):
             original_decision_date=decision_date,
         )
         # Deadline should be 1 year from decision
+        expected_deadline = decision_date + timedelta(days=365)
+        self.assertEqual(appeal.deadline, expected_deadline)
+
+    def test_supplemental_no_deadline(self):
+        """Supplemental claims have no filing deadline (38 CFR § 20.204)."""
+        decision_date = date.today() - timedelta(days=30)
+        appeal = Appeal.objects.create(
+            user=self.user,
+            appeal_type="supplemental",
+            original_decision_date=decision_date,
+        )
+        self.assertIsNone(appeal.deadline)
+
+    def test_supplemental_clears_existing_deadline(self):
+        """Changing appeal type to supplemental clears existing deadline."""
+        decision_date = date.today() - timedelta(days=30)
+        appeal = Appeal.objects.create(
+            user=self.user,
+            appeal_type="hlr",
+            original_decision_date=decision_date,
+        )
+        # HLR should have a deadline
+        self.assertIsNotNone(appeal.deadline)
+
+        # Change to supplemental — deadline should be cleared
+        appeal.appeal_type = "supplemental"
+        appeal.save()
+        self.assertIsNone(appeal.deadline)
+
+    def test_board_appeal_gets_deadline(self):
+        """Board appeals still auto-calculate 1-year deadline."""
+        decision_date = date.today() - timedelta(days=30)
+        appeal = Appeal.objects.create(
+            user=self.user,
+            appeal_type="board_direct",
+            original_decision_date=decision_date,
+        )
         expected_deadline = decision_date + timedelta(days=365)
         self.assertEqual(appeal.deadline, expected_deadline)
 

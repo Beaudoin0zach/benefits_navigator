@@ -1,8 +1,10 @@
 # Benefits Navigator — Claude Code Guide
 
+**Last Audit:** 2026-02-11 | **Production-Readiness:** 7.0/10 | See `TODO.md` for prioritized issues
+
 ## Project Summary
-Django 5.0 app deployed on DigitalOcean App Platform, using OpenAI API (GPT-3.5-turbo default).
-Celery + Redis for async document processing. PostgreSQL database. Stripe for subscriptions.
+Django 5.1.14 app deployed on DigitalOcean App Platform, using OpenAI API (GPT-3.5-turbo default).
+Celery + Redis (DO Managed Valkey) for async document processing. PostgreSQL database. Stripe for subscriptions.
 
 **Two user flows:**
 - **Path A:** Veterans (B2C end-user flow) — document upload, AI analysis, denial decoding, statement generation
@@ -16,6 +18,9 @@ Celery + Redis for async document processing. PostgreSQL database. Stripe for su
   - Use Pydantic schemas from `agents/schemas.py` for response validation
 - Prefer small, test-backed changes. Avoid broad refactors.
 - PII fields (`va_file_number`, `date_of_birth`) use `EncryptedCharField` from `core/encryption.py`
+- **Never commit secrets** — .env, deployment YAMLs with credentials must stay out of git
+- **All Celery tasks handling user data must use `acks_late=True`** — prevents message loss on worker crash
+- **VA regulatory data must be verified against CFR** — rates, deadlines, eligibility criteria
 
 ## How to work (required workflow)
 1. Find the exact entry points for Path A and Path B (routes/views/templates).
@@ -372,5 +377,122 @@ The `core/alerting.py` module provides configurable monitoring with alerts:
 **Incident Response:** See `docs/INCIDENT_RESPONSE.md` for runbooks and escalation procedures.
 
 ## Remaining Security TODOs
+- [ ] Revoke and rotate all exposed secrets (manual — DO Console, OpenAI, Sentry dashboards)
+- [ ] Scrub git history with `git-filter-repo` or BFG (secrets were in committed files)
+- [ ] Fix VSO IDOR — add org filter to all case queries (P1)
+- [ ] Encrypt `ai_summary` field in claims/models.py (P1)
+- [ ] Build Tailwind to static CSS, remove `unsafe-inline` CSP (P2)
 - [ ] Object storage migration (S3/DO Spaces)
 - [ ] Additional invitation verification (beyond email matching)
+
+---
+
+# Celery Task Best Practices (Audit-Driven)
+
+When creating or modifying Celery tasks:
+
+```python
+@shared_task(bind=True, max_retries=3, acks_late=True)
+def my_task(self, resource_id):
+    """
+    - bind=True: enables self.retry()
+    - max_retries=3: limits retry attempts
+    - acks_late=True: CRITICAL — message requeued if worker crashes mid-execution
+    """
+    try:
+        # Use IDs only in task args, never PII
+        resource = MyModel.objects.get(pk=resource_id)
+        # ... process ...
+    except SomeExpectedError as exc:
+        self.retry(exc=exc, countdown=60 * (2 ** self.request.retries))
+    except Exception:
+        resource.mark_failed("Processing failed")
+        raise  # Let Sentry capture it
+```
+
+**Rules:**
+1. Pass only IDs as task arguments — never PII values
+2. Always set `acks_late=True` for tasks that process user data
+3. Use exponential backoff for retries: `countdown=60 * (2 ** self.request.retries)`
+4. Set document/resource to 'failed' status in exception handler
+5. Global limits: `CELERY_TASK_SOFT_TIME_LIMIT=25min`, `CELERY_TASK_TIME_LIMIT=30min`
+
+---
+
+# VA Regulatory Data Maintenance
+
+## Compensation Rates (Annual Update Required)
+
+VA compensation rates change annually with COLA, effective December 1.
+
+**Update Checklist (run each December):**
+1. Check https://www.va.gov/disability/compensation-rates/veteran-rates/ for new rates
+2. Update `examprep/va_math.py` — add new `VA_COMPENSATION_RATES_{YEAR}` and `DEPENDENT_RATES_{YEAR}`
+3. Update `examprep/va_special_compensation.py` — SMC rates
+4. Update `AVAILABLE_RATE_YEARS` list and default year
+5. Add tests for new rate year
+6. Verify bilateral factor and rounding still match 38 CFR § 4.25
+
+**Current rate coverage:** 2020-2026 (updated 2026-02-11, includes dependent rates for 2024-2026)
+
+## Appeal Deadlines
+
+| Type | Deadline | CFR |
+|------|----------|-----|
+| Higher-Level Review | 1 year from decision | 38 CFR § 20.202 |
+| Supplemental Claim | **No time limit** | 38 CFR § 20.204 |
+| Board of Veterans' Appeals | 1 year from decision | 38 CFR § 20.202 |
+
+**Fixed (2026-02-11):** `appeals/models.py:293-301` now correctly exempts supplemental claims from deadline auto-calculation.
+
+---
+
+# Accessibility Requirements (WCAG AA)
+
+Templates must follow these patterns:
+
+```html
+<!-- HTMX dynamic content: always wrap targets in aria-live -->
+<div id="my-target" aria-live="polite" aria-atomic="false">
+  <!-- HTMX will swap content here -->
+</div>
+
+<!-- Loading states: always include sr-only text -->
+<div role="status" aria-live="polite">
+  <span class="sr-only">Loading...</span>
+  <svg class="animate-spin" aria-hidden="true">...</svg>
+</div>
+
+<!-- Form inputs: always associate labels and mark required -->
+<label for="my-input">Field Name</label>
+<input id="my-input" aria-required="true" aria-describedby="my-input-error">
+<p id="my-input-error" role="alert" class="text-red-600">Error message</p>
+
+<!-- Interactive elements: use buttons, not divs with onclick -->
+<button type="button" aria-label="Descriptive action">...</button>
+```
+
+**Key rules:**
+- All heading levels must follow h1→h2→h3 hierarchy (no skipping)
+- All interactive elements must be keyboard-accessible (no `<div onclick>`)
+- All HTMX-updated regions need `aria-live="polite"`
+- All form errors must use `role="alert"` and `aria-describedby`
+- All loading spinners must have `role="status"` with sr-only text
+- Status indicators must not rely solely on color
+
+---
+
+# Known Audit Issues (2026-02-11)
+
+See `TODO.md` for full prioritized list. **All P0 code fixes completed 2026-02-11.**
+
+| Priority | Issue | Status |
+|----------|-------|--------|
+| ~~P0~~ | ~~Secrets in version control~~ | Code fix done — .gitignore + templates. **Manual rotation still needed.** |
+| ~~P0~~ | ~~Compensation rates outdated~~ | Fixed — 2020-2026 rates in `examprep/va_math.py` |
+| ~~P0~~ | ~~Supplemental claim deadline~~ | Fixed — `appeals/models.py:293-301` + tests |
+| ~~P0~~ | ~~Celery tasks missing `acks_late`~~ | Fixed — all user-data tasks |
+| ~~P0~~ | ~~No pytest in CI~~ | Fixed — `.github/workflows/tests.yml` |
+| P1 | VSO IDOR (cross-org access) | Open — `vso/views.py` |
+| P1 | `ai_summary` unencrypted | Open — `claims/models.py:105` |
+| P1 | Missing agent model indexes | Open — `agents/models.py` |

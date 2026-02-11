@@ -76,6 +76,37 @@ SMC_RATES_2024 = {
     SMCLevel.S: 4430.63,
 }
 
+# 2025 SMC rates (effective December 1, 2024 — 2.5% COLA)
+SMC_RATES_2025 = {
+    SMCLevel.K: 136.06,
+    SMCLevel.L: 4767.34,
+    SMCLevel.M: 5261.24,
+    SMCLevel.N: 5985.06,
+    SMCLevel.O: 6689.81,
+    SMCLevel.R1: 9559.22,
+    SMCLevel.R2: 10964.66,
+    SMCLevel.S: 4288.45,
+}
+
+# 2026 SMC rates (effective December 1, 2025 — 2.8% COLA)
+SMC_RATES_2026 = {
+    SMCLevel.K: 139.87,
+    SMCLevel.L: 4900.83,
+    SMCLevel.M: 5408.55,
+    SMCLevel.N: 6152.64,
+    SMCLevel.O: 6877.12,
+    SMCLevel.R1: 9826.88,
+    SMCLevel.R2: 11271.67,
+    SMCLevel.S: 4408.53,
+}
+
+# Master lookup for SMC rates by year
+SMC_RATES_BY_YEAR = {
+    2026: SMC_RATES_2026,
+    2025: SMC_RATES_2025,
+    2024: SMC_RATES_2024,
+}
+
 # Body parts that qualify for SMC(k)
 SMC_K_BODY_PARTS = {
     "hand": "Loss or loss of use of one hand",
@@ -134,7 +165,7 @@ def check_smc_eligibility(conditions: List[SMCCondition]) -> SMCEligibilityResul
         result.levels.append(SMCLevel.K)
         result.eligible_conditions.extend(smc_k_conditions)
         count = len(smc_k_conditions)
-        result.estimated_monthly_addition += SMC_RATES_2024[SMCLevel.K] * count
+        result.estimated_monthly_addition += SMC_RATES_2026[SMCLevel.K] * count
         result.explanations.append(
             f"Eligible for SMC(k) based on {count} qualifying condition(s): "
             f"{', '.join([c['condition'] for c in smc_k_conditions])}"
@@ -146,7 +177,7 @@ def check_smc_eligibility(conditions: List[SMCCondition]) -> SMCEligibilityResul
         result.levels.append(SMCLevel.S)
         result.estimated_monthly_addition = max(
             result.estimated_monthly_addition,
-            SMC_RATES_2024[SMCLevel.S]
+            SMC_RATES_2026[SMCLevel.S]
         )
         result.explanations.append(
             f"Eligible for SMC(s) - Housebound: You have one disability rated 100% "
@@ -166,10 +197,10 @@ def check_smc_eligibility(conditions: List[SMCCondition]) -> SMCEligibilityResul
             # SMC(l) rate is higher than SMC(s)
             result.estimated_monthly_addition = max(
                 result.estimated_monthly_addition,
-                SMC_RATES_2024[SMCLevel.L]
+                SMC_RATES_2026[SMCLevel.L]
             )
         else:
-            result.estimated_monthly_addition += SMC_RATES_2024[SMCLevel.L]
+            result.estimated_monthly_addition += SMC_RATES_2026[SMCLevel.L]
 
         reason = "aid and attendance" if requires_aid else "housebound status"
         result.explanations.append(
@@ -182,7 +213,7 @@ def check_smc_eligibility(conditions: List[SMCCondition]) -> SMCEligibilityResul
         result.levels.append(SMCLevel.M)
         result.estimated_monthly_addition = max(
             result.estimated_monthly_addition,
-            SMC_RATES_2024[SMCLevel.M]
+            SMC_RATES_2026[SMCLevel.M]
         )
         result.explanations.append(
             f"Potentially eligible for SMC(m) or higher with {len(conditions_100)} "
@@ -196,7 +227,7 @@ def check_smc_eligibility(conditions: List[SMCCondition]) -> SMCEligibilityResul
         result.levels.append(SMCLevel.O)
         result.estimated_monthly_addition = max(
             result.estimated_monthly_addition,
-            SMC_RATES_2024[SMCLevel.O]
+            SMC_RATES_2026[SMCLevel.O]
         )
         result.explanations.append(
             f"Potentially eligible for SMC(o) based on: {paired_losses}"
@@ -430,7 +461,7 @@ def get_smc_level_description(level: SMCLevel) -> Dict[str, str]:
                 "or complete organic aphonia (loss of voice). Can be awarded multiple times "
                 "for different qualifying conditions."
             ),
-            "rate": f"${SMC_RATES_2024[SMCLevel.K]:.2f}/month (per instance)"
+            "rate": f"${SMC_RATES_2026[SMCLevel.K]:.2f}/month (per instance)"
         },
         SMCLevel.L: {
             "name": "SMC(l)",
@@ -439,7 +470,7 @@ def get_smc_level_description(level: SMCLevel) -> Dict[str, str]:
                 "Awarded when the veteran is so helpless as to need regular aid and attendance "
                 "of another person, OR is permanently housebound due to service-connected disability."
             ),
-            "rate": f"${SMC_RATES_2024[SMCLevel.L]:.2f}/month"
+            "rate": f"${SMC_RATES_2026[SMCLevel.L]:.2f}/month"
         },
         SMCLevel.M: {
             "name": "SMC(m)",
@@ -448,7 +479,7 @@ def get_smc_level_description(level: SMCLevel) -> Dict[str, str]:
                 "Awarded when the veteran has multiple service-connected disabilities, each rated "
                 "at 100%, that result in a need for aid and attendance or create a housebound status."
             ),
-            "rate": f"${SMC_RATES_2024[SMCLevel.M]:.2f}/month"
+            "rate": f"${SMC_RATES_2026[SMCLevel.M]:.2f}/month"
         },
         SMCLevel.N: {
             "name": "SMC(n)",
@@ -456,7 +487,7 @@ def get_smc_level_description(level: SMCLevel) -> Dict[str, str]:
             "description": (
                 "Awarded for more severe combinations of 100% rated disabilities beyond SMC(m) criteria."
             ),
-            "rate": f"${SMC_RATES_2024[SMCLevel.N]:.2f}/month"
+            "rate": f"${SMC_RATES_2026[SMCLevel.N]:.2f}/month"
         },
         SMCLevel.O: {
             "name": "SMC(o)",
@@ -465,7 +496,7 @@ def get_smc_level_description(level: SMCLevel) -> Dict[str, str]:
                 "Awarded for anatomical loss or loss of use of both hands, both feet, "
                 "both arms, both legs, or one hand and one foot."
             ),
-            "rate": f"${SMC_RATES_2024[SMCLevel.O]:.2f}/month"
+            "rate": f"${SMC_RATES_2026[SMCLevel.O]:.2f}/month"
         },
         SMCLevel.R1: {
             "name": "SMC(r1)",
@@ -474,7 +505,7 @@ def get_smc_level_description(level: SMCLevel) -> Dict[str, str]:
                 "Awarded for veterans requiring a higher level of care than SMC(l), "
                 "including those with severe disabilities requiring more intensive care."
             ),
-            "rate": f"${SMC_RATES_2024[SMCLevel.R1]:.2f}/month"
+            "rate": f"${SMC_RATES_2026[SMCLevel.R1]:.2f}/month"
         },
         SMCLevel.R2: {
             "name": "SMC(r2)",
@@ -483,7 +514,7 @@ def get_smc_level_description(level: SMCLevel) -> Dict[str, str]:
                 "The highest level of SMC, awarded for the most severe disabilities "
                 "requiring the highest level of care and assistance."
             ),
-            "rate": f"${SMC_RATES_2024[SMCLevel.R2]:.2f}/month"
+            "rate": f"${SMC_RATES_2026[SMCLevel.R2]:.2f}/month"
         },
         SMCLevel.S: {
             "name": "SMC(s)",
@@ -493,7 +524,7 @@ def get_smc_level_description(level: SMCLevel) -> Dict[str, str]:
                 "additional service-connected disabilities independently ratable at 60% or more. "
                 "The veteran must be substantially confined to their home."
             ),
-            "rate": f"${SMC_RATES_2024[SMCLevel.S]:.2f}/month"
+            "rate": f"${SMC_RATES_2026[SMCLevel.S]:.2f}/month"
         },
     }
     return descriptions.get(level, {})

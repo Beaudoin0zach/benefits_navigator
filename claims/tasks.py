@@ -65,7 +65,7 @@ def require_ai_consent(user):
         )
 
 
-@shared_task(bind=True, max_retries=3)
+@shared_task(bind=True, max_retries=3, acks_late=True)
 def process_document_task(self, document_id):
     """
     Async task to process uploaded document:
@@ -192,7 +192,7 @@ def process_document_task(self, document_id):
         raise self.retry(exc=exc, countdown=60 * (2 ** self.request.retries))
 
 
-@shared_task(bind=True, max_retries=3)
+@shared_task(bind=True, max_retries=3, acks_late=True)
 def decode_denial_letter_task(self, document_id, user_id=None):
     """
     Complete denial decoding pipeline:
@@ -373,7 +373,7 @@ def decode_denial_letter_task(self, document_id, user_id=None):
         raise self.retry(exc=exc, countdown=60 * (2 ** self.request.retries))
 
 
-@shared_task(bind=True, max_retries=3)
+@shared_task(bind=True, max_retries=3, acks_late=True)
 def analyze_rating_decision_task(self, document_id, user_id=None, use_simple_format=False):
     """
     Analyze a VA rating decision document for actionable insights.

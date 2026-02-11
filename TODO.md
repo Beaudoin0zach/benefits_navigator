@@ -1,132 +1,173 @@
-# VA Benefits Navigator - Comprehensive TODO List
+# VA Benefits Navigator — TODO & Audit Tracker
 
-**Last Updated:** 2026-02-09
-**Updated By:** Claude Code Session
-
----
-
-## Project Overview
-
-A Django-based web application helping veterans navigate VA disability claims, C&P exams, and appeals. Built with accessibility (WCAG AA) as a core requirement.
+**Last Updated:** 2026-02-11
+**Updated By:** Claude Code P0 Fix Session
 
 ---
 
-## Current State Summary
+## Audit Summary (2026-02-09)
 
-### What's Working
-- Docker Compose environment (web, db, redis, celery)
-- User authentication (email-based via django-allauth)
-- Document upload with OCR and AI analysis
-- 7 C&P exam guides (General, PTSD, Musculoskeletal, Hearing, TBI, Sleep Apnea, Mental Health)
-- 86 VA glossary terms
-- Appeals workflow system
-- VA Disability Rating Calculator with accurate VA Math
-- **NEW: SMC (Special Monthly Compensation) Calculator**
-- **NEW: TDIU Eligibility Calculator**
-- **NEW: Secondary Conditions Hub with 40+ condition relationships**
-- **NEW: Email notification system (deadline/exam reminders)**
-- **NEW: Supportive messaging system**
-- User dashboard with journey tracking
-- Security hardening (CSP, rate limiting, etc.)
+Full audit performed across 7 areas. See `docs/AUDIT_2026_02_09.md` for complete findings.
 
-### Tech Stack
-- Django 5.0.1 / Python 3.11
-- PostgreSQL 15 / Redis 7
-- Celery for background tasks
-- HTMX + Tailwind CSS frontend
-- OpenAI API for document analysis
+| Area | Status | Critical | Needs Work |
+|------|--------|----------|------------|
+| Security | CRITICAL | 4 | 3 |
+| Data Integrity | CRITICAL | 2 | 1 |
+| Test Coverage | NEEDS WORK | 0 | 4 |
+| Production Readiness | NEEDS WORK | 1 | 2 |
+| Accessibility (WCAG AA) | NEEDS WORK | 3 | 4 |
+| Code Quality & Deployment | CRITICAL | 2 | 5 |
+| **Totals** | | **12** | **19** |
+
+**Production-Readiness Score: 7.0 / 10** (was 5.5 before P0 fixes on 2026-02-11)
 
 ---
 
-## HIGH PRIORITY (Should Do Next)
+## P0 — CRITICAL (Fix Before Veterans Use This)
 
-### 0. Pilot/Test User Readiness (two core paths)
-- [x] Define and script the two pilot funnels ✅ (2026-01-12) - see docs/PILOT_FUNNELS.md, scripts/test_pilot_funnels.py
-- [x] Stand up a **staging environment** ✅ (2026-01-12) - DO App Platform config ready, see docs/DEPLOYMENT_DIGITALOCEAN.md
-- [x] Enable **Sentry DSN** ✅ (2026-01-12) - analytics events still TODO
-- [x] Add **in-app feedback** (thumbs/text) ✅ (2026-01-12) - widget on all pages, admin with CSV export
-- [x] Provide a visible **support channel** ✅ (2026-01-12) - contact form at /contact/, links in footer, dashboard, error pages
-- [x] Disable real billing for pilots, gate premium-only features, and enforce a 30-day data retention policy for tester data ✅ (2026-02-09) - Celery tasks scheduled for pilot data retention
-- [x] Add health checks/alerts for Celery queue backlog and document-processing failures (timeouts, OCR errors) ✅ (2026-01-12)
+All P0 code fixes completed 2026-02-11. Manual credential rotation still required.
 
-### 1. Testing & Quality
-- [x] Write unit tests for VA Math calculator (`examprep/va_math.py`) ✅ (2026-01-11) - 80 tests
-- [x] Write integration tests for rating calculator views ✅ (2026-01-11) - 45 tests
-- [x] Test document upload flow end-to-end ✅ (2026-01-11) - 25 tests
-- [x] Run accessibility audit (Lighthouse) ✅ (2026-01-11) - 95-96% on all pages
-- [x] Test rate limiting is working correctly ✅ (2026-01-11) - 11 tests
-- [x] Verify CSP headers don't break functionality ✅ (2026-01-11) - 25 tests
+### Security: Secrets Exposure
+- [x] **Add deployment configs to .gitignore** — `.env.docker`, `app-spec-fixed.yaml`, `.do/app.yaml`, `docker-compose.yml` (2026-02-11)
+- [x] **Create deployment config templates** — `app-spec.yaml.template` and `docker-compose.yml.template` with `CHANGE_ME` placeholders (2026-02-11)
+- [ ] **Revoke all exposed credentials** — SECRET_KEY, FIELD_ENCRYPTION_KEY, DATABASE_URL, REDIS_URL, OpenAI key, Sentry DSN
+  - Action: Rotate every key in DO Console + service dashboards, re-encrypt PII with new FIELD_ENCRYPTION_KEY
+- [ ] **Scrub git history** — Use `git-filter-repo` or BFG to remove all commits containing secrets
 
-### 2. Content Additions
-- [x] Add TBI (Traumatic Brain Injury) exam guide ✅ (2026-01-11)
-- [x] Add Sleep Apnea exam guide ✅ (2026-01-11)
-- [x] Add Mental Health (non-PTSD) exam guide ✅ (2026-01-11)
-- [x] Add more glossary terms (aim for 75-100 total) ✅ (2026-01-11) - 86 terms
-- [x] Add common secondary conditions guide ✅ (2026-01-11)
+### Data Integrity: Regulatory Accuracy
+- [x] **Add 2025 & 2026 VA compensation rates** — `examprep/va_math.py` (2026-02-11)
+  - 2025: 2.5% COLA (verified against va.gov), 2026: 2.8% COLA
+  - Base rates, dependent rates (2024-2026), SMC rates all updated
+  - `AVAILABLE_RATE_YEARS` updated to [2026..2020], default year = 2026
+  - Year-aware dependent rate lookup via `DEPENDENT_RATES_BY_YEAR`
+  - SMC rates updated in `examprep/va_special_compensation.py` with `SMC_RATES_BY_YEAR`
+- [x] **Fix supplemental claim deadline** — `appeals/models.py:293-301` (2026-02-11)
+  - `save()` now checks `appeal_type == 'supplemental'` → sets `deadline = None`
+  - HLR and Board appeals still get 1-year auto-deadline
+  - Tests added: `test_supplemental_no_deadline`, `test_supplemental_clears_existing_deadline`
 
-### 3. User Experience
-- [x] Add email notifications for:
-  - [x] Document analysis complete ✅ (2026-01-11)
-  - [x] Appeal deadline reminders (7 days, 1 day before) ✅ (2026-01-11)
-  - [x] C&P exam reminders ✅ (2026-01-11)
-- [x] Add PDF export for rating calculations ✅ (2026-01-11)
-- [x] Add "share calculation" feature (generate shareable link) ✅ (2026-01-11)
+### Production Readiness: Crash Safety
+- [x] **Add `acks_late=True` to Celery tasks** — `claims/tasks.py`, `core/tasks.py` (2026-02-11)
+  - All 3 claims tasks and 6 core user-data tasks now have `acks_late=True`
+
+### Code Quality: CI Pipeline
+- [x] **Add pytest job to GitHub Actions** — `.github/workflows/tests.yml` (2026-02-11)
+  - Runs `pytest --cov=. --cov-report=xml -x -q` on push/PR to main
+  - PostgreSQL 15 service, pip caching, coverage artifact upload
 
 ---
 
-## MEDIUM PRIORITY (Nice to Have)
+## P1 — HIGH PRIORITY (Fix Within 1 Week)
 
-### 4. Rating Calculator Enhancements
-- [x] Add SMC (Special Monthly Compensation) calculator ✅ (2026-01-11)
-- [x] Add TDIU eligibility checker ✅ (2026-01-11)
-- [x] Historical compensation rates (2020-2024) ✅ (2026-02-05)
-- [x] "Compare scenarios" side-by-side view ✅ (2026-02-05)
-- [x] Import ratings from VA letter (OCR) ✅ (2026-02-09) - Import from RatingAnalysis to calculator
+### Security
+- [ ] **Fix VSO IDOR risk** — `vso/views.py`
+  - Add `organization=org` filter to all `get_object_or_404` calls
+  - Multi-org users can switch via session without per-request re-verification
+  - Add security tests for cross-organization access attempts
+- [ ] **Encrypt `ai_summary` field** — `claims/models.py:105`
+  - AI analysis results stored as plaintext JSON; may contain extracted PII
+  - Add `EncryptedJSONField` or redact PII patterns before storage
+- [ ] **Resolve conflicting deployment configs**
+  - Both `.do/app.yaml` and `app-spec-fixed.yaml` exist for same environment
+  - Delete the deprecated one, document which is canonical
 
-### 5. SEO & Marketing
-- [x] Add meta descriptions to all pages ✅ (2026-01-12)
-- [x] Create sitemap.xml ✅ (2026-01-12)
-- [x] Add structured data (JSON-LD) for guides ✅ (2026-01-12)
-- [x] Create robots.txt ✅ (2026-01-12)
-- [x] Add Open Graph tags for social sharing ✅ (2026-01-12)
+### Database
+- [ ] **Add indexes to agent models** — `agents/models.py`
+  - `AgentInteraction`, `DecisionLetterAnalysis`, `EvidenceGapAnalysis` lack composite indexes
+  - Add: `[user, created_at]`, `[user, agent_type]`
 
-### 6. Analytics & Monitoring
-- [x] Set up Sentry error tracking ✅ (2026-01-12)
-- [ ] Add usage analytics (privacy-respecting)
-- [ ] Create admin dashboard with stats
-- [x] Monitor Celery task success/failure rates ✅ (2026-02-09) - run-monitoring-checks and check-download-anomalies tasks scheduled
+### Testing
+- [ ] **Add Celery task tests** — `core/tasks.py` has 6 tasks with zero test coverage
+  - `enforce_data_retention`, `enforce_pilot_data_retention`, `notify_pilot_users_before_retention`
+  - `cleanup_old_health_metrics`, `check_processing_health`
+- [ ] **Add TDIU/SMC boundary tests** — `examprep/tests.py`
+  - Test 59% vs 60% (single), 69%+40% vs 70%+40% (combined)
+  - Test extraschedular edge cases
+  - Currently only 1 TDIU test and 1 SMC test exist
+- [x] **Add supplemental claim deadline test** — `appeals/tests.py` (2026-02-11)
 
-### 7. Performance
+### Accessibility (WCAG AA Critical)
+- [ ] **Fix rating calculator form labels** — `templates/examprep/rating_calculator.html:59-62`
+  - Spouse checkbox label not associated; screen readers won't announce it
+  - Fix: `<label for="has-spouse" ...>`
+- [ ] **Fix feedback widget keyboard access** — `templates/core/partials/feedback_widget.html:8-9`
+  - Uses `<div onclick>` instead of `<button>` — unreachable by keyboard
+- [ ] **Add aria-live to HTMX updates** — `templates/appeals/partials/checklist.html:1`
+  - Checklist updates not announced to screen readers
+  - Add `aria-live="polite"` to target containers
+- [ ] **Add accessible loading states** — `templates/examprep/rating_calculator.html:577`
+  - Loading spinners need `role="status"` and `<span class="sr-only">` labels
+
+---
+
+## P2 — MEDIUM PRIORITY (Fix Before Scaling)
+
+### Security & Infrastructure
+- [ ] **Build Tailwind to static CSS** — Remove `unsafe-inline` from CSP and CDN SPOF
+  - Settings.py:396 has TODO comment about this
+  - Use PostCSS/Tailwind CLI to generate minified CSS
+  - Include fallback styles for error pages (500.html depends on CDN)
+- [ ] **Upgrade web instance sizing** — `basic-xxs` (512MB) at 80-95% utilization
+  - Upgrade web service to `basic-xs` (1GB) in deployment config
+- [ ] **Fix hardcoded domain fallbacks**
+  - `core/tasks.py:362,411,535`: `SITE_URL` falls back to `benefitsnavigator.com` (should be `vabenefitsnavigator.org`)
+  - `settings.py:694`: `SUPPORT_EMAIL` hardcoded, make configurable via env var
+- [ ] **Consolidate Docker Compose config** — Hardcoded credentials repeated in 4 services
+  - Move all secrets to `.env.docker`, use `env_file` only
+
+### Code Quality
+- [ ] **Fix bare exception handlers** — 21 instances of `except Exception:` across views
+  - `core/views.py`, `agents/views.py`, `claims/views.py`
+  - Replace with specific exception types
+- [ ] **Standardize import style** — Mixed relative/absolute imports across apps
+- [ ] **Add code linting to CI** — black, ruff, isort checks
+
+### Accessibility (WCAG AA Improvements)
+- [ ] **Add `aria-required="true"` to required form fields** — All form templates
+- [ ] **Add `aria-describedby` for form errors** — Link errors to inputs
+- [ ] **Add focus management after HTMX swaps** — Appeals checklist, calculator
+- [ ] **Add Escape key handler to feedback widget**
+
+### Performance
 - [ ] Add Redis caching for glossary terms
 - [ ] Add Redis caching for exam guides
-- [ ] Optimize database queries (add select_related/prefetch_related)
-- [ ] Add pagination to document list
-- [ ] Lazy load images
+- [ ] Optimize database queries (select_related/prefetch_related in remaining views)
+- [ ] Lazy load images in templates
+
+### Content Accuracy
+- [ ] **Refine sleep apnea guide language** — `examprep/fixtures/exam_guides_sleep_apnea.json`
+  - Change "should receive at least 50%" to "may qualify for 50% if documented CPAP compliance"
+- [ ] **Create annual rate update process**
+  - Management command or Celery Beat task for Dec 1 annual COLA updates
+  - Include SMC and dependent rates
+
+### Monitoring
+- [ ] Add usage analytics (privacy-respecting)
+- [ ] Create admin dashboard with stats
+- [ ] Add daily alert for documents stuck in 'failed' status >24 hours
 
 ---
 
 ## LOW PRIORITY (Future Features)
 
-### 8. Premium Features
+### Premium Features
 - [ ] Implement Stripe subscription flow
 - [ ] Add premium tier limits enforcement
 - [ ] GPT-4 access for premium users
-- [ ] Priority support queue
-- [ ] Unlimited document storage
 
-### 9. AI Enhancements
+### AI Enhancements
 - [ ] Chat assistant for claims questions
 - [ ] Auto-suggest conditions based on documents
 - [ ] Generate personal statements
 - [ ] Nexus letter template generator
 
-### 10. Community Features
+### Community Features
 - [ ] Forum for veterans to share experiences
 - [ ] Success stories section
 - [ ] VSO directory/finder
 - [ ] Buddy statement templates
 
-### 11. Mobile
+### Mobile
 - [ ] Progressive Web App (PWA) support
 - [ ] Mobile-optimized views
 - [ ] Push notifications
@@ -137,301 +178,105 @@ A Django-based web application helping veterans navigate VA disability claims, C
 
 ### Code Quality
 - [ ] Add type hints to all Python files
-- [ ] Add docstrings to all functions
 - [ ] Set up pre-commit hooks (black, ruff)
-- [ ] Create API documentation
+- [ ] Create REST API documentation
 
 ### Security
-- [x] Add Content-Security-Policy headers
-- [x] Add rate limiting to auth views
-- [x] Fix SECRET_KEY handling for production
-- [x] Add file content validation (python-magic)
 - [ ] Add CAPTCHA to signup (if spam becomes issue)
 - [ ] Implement account lockout after failed logins
-- [ ] Add 2FA option
+- [ ] Object storage migration (S3/DO Spaces) for secure file serving
+- [ ] Additional VSO invitation verification (beyond email matching)
 
 ### Infrastructure
-- [ ] Set up CI/CD pipeline (GitHub Actions)
-- [x] Create staging environment ✅ (2026-01-12) - DigitalOcean App Platform
-- [x] Document production deployment ✅ (2026-01-12) - docs/DEPLOYMENT_DIGITALOCEAN.md
-- [x] Switch to DO Managed Valkey (from Upstash) ✅ (2026-02-05) - fixes Redis memory issues
-- [x] Add CELERY_RESULT_EXPIRES to auto-cleanup task results ✅ (2026-02-05)
 - [ ] Set up database backups
 - [ ] Create disaster recovery plan
+- [ ] Load test document processing pipeline
 
 ---
 
-## KNOWN ISSUES
+## COMPLETED
 
-### Bugs
-- None currently identified
+### Pilot/Test User Readiness ✅
+- [x] Define and script pilot funnels (2026-01-12)
+- [x] Stand up staging environment on DO App Platform (2026-01-12)
+- [x] Enable Sentry DSN (2026-01-12)
+- [x] Add in-app feedback widget (2026-01-12)
+- [x] Provide visible support channel (2026-01-12)
+- [x] Disable real billing, gate premium features, 30-day data retention (2026-02-09)
+- [x] Add health checks/alerts for Celery and document processing (2026-01-12)
 
-### Limitations
-- Rating calculator supports 2020-2024 rates (need annual update process for new years)
-- Dependent additions only available for 2024 rates (historical years show base rates only)
-- Bilateral factor only supports simple bilateral, not complex groupings
+### Testing & Quality ✅
+- [x] VA Math calculator unit tests — 80 tests (2026-01-11)
+- [x] Rating calculator integration tests — 45 tests (2026-01-11)
+- [x] Document upload E2E tests — 25 tests (2026-01-11)
+- [x] Lighthouse accessibility audit — 95-96% (2026-01-11)
+- [x] Rate limiting tests — 11 tests (2026-01-11)
+- [x] CSP header tests — 25 tests (2026-01-11)
+
+### Content ✅
+- [x] 7 C&P exam guides: General, PTSD, Musculoskeletal, Hearing, TBI, Sleep Apnea, Mental Health
+- [x] 86 VA glossary terms (2026-01-11)
+- [x] Secondary conditions hub — 40+ relationships (2026-01-11)
+- [x] M21 manual content — comprehensive, updated Jan 2026
+
+### Features ✅
+- [x] SMC calculator (2026-01-11)
+- [x] TDIU eligibility checker (2026-01-11)
+- [x] Historical compensation rates 2020-2026 (2026-02-11, was 2020-2024)
+- [x] Compare scenarios side-by-side (2026-02-05)
+- [x] Import ratings from VA letter OCR (2026-02-09)
+- [x] Email notifications — deadlines, exams, analysis complete (2026-01-11)
+- [x] PDF export for rating calculations (2026-01-11)
+- [x] Supportive messaging system (2026-01-11)
+
+### SEO & Marketing ✅
+- [x] Meta descriptions, sitemap.xml, robots.txt, JSON-LD, Open Graph (2026-01-12)
+
+### Security Hardening ✅
+- [x] Content-Security-Policy headers (2026-01-09)
+- [x] Rate limiting on all public endpoints (2026-01-09)
+- [x] File content validation with python-magic (2026-01-09)
+- [x] Field-level PII encryption (EncryptedCharField) (2026-01-09)
+- [x] Signed URLs for media access (2026-01-12)
+- [x] GraphQL PII redaction (2026-01-12)
+- [x] Audit logging middleware (2026-01-12)
+
+### P0 Fixes (2026-02-11) ✅
+- [x] Deployment configs added to .gitignore, templates created with CHANGE_ME placeholders
+- [x] 2025/2026 VA compensation rates added (base, dependent, SMC) — verified against va.gov
+- [x] Supplemental claim deadline bug fixed (38 CFR § 20.204) with tests
+- [x] `acks_late=True` added to all Celery tasks handling user data
+- [x] pytest CI workflow added (`.github/workflows/tests.yml`)
+- [x] Supplemental claim deadline tests added to `appeals/tests.py`
+
+### Infrastructure ✅
+- [x] Staging environment on DigitalOcean (2026-01-12)
+- [x] Switch to DO Managed Valkey (2026-02-05)
+- [x] CELERY_RESULT_EXPIRES auto-cleanup (2026-02-05)
+- [x] Celery Beat monitoring tasks scheduled (2026-02-09)
+
+---
+
+## KNOWN LIMITATIONS
+
+- Rating calculator supports 2020-2026 rates (current as of Feb 2026)
+- Dependent rate additions available for 2024-2026
+- Bilateral factor only supports simple bilateral, not complex multi-limb groupings
 - Document OCR may struggle with handwritten text
-- OpenAI costs not tracked per-user yet
-
----
-
-## FILE REFERENCE
-
-### Core Files
-```
-benefits_navigator/
-├── settings.py          # Django configuration
-├── urls.py              # Main URL routing
-├── celery.py            # Celery configuration
-└── wsgi.py              # WSGI entry point
-
-examprep/
-├── models.py            # ExamGuidance, GlossaryTerm, ExamChecklist, SavedRatingCalculation
-├── views.py             # All exam prep views including rating calculator
-├── va_math.py           # VA combined rating calculation logic (NEW)
-├── urls.py              # URL routing
-├── admin.py             # Admin configuration
-└── fixtures/            # Glossary terms, exam guides
-
-claims/
-├── models.py            # Document, Claim models
-├── views.py             # Document upload/analysis views
-├── forms.py             # Upload form with validation
-└── tasks.py             # Celery tasks for OCR/AI
-
-appeals/
-├── models.py            # Appeal, AppealGuidance, etc.
-├── views.py             # Appeals workflow views
-└── urls.py              # Appeals URL routing
-
-accounts/
-├── models.py            # User, UserProfile, Subscription
-├── views.py             # Rate-limited auth views
-└── managers.py          # Custom user manager
-
-templates/
-├── base.html            # Base template with navigation
-├── core/
-│   ├── home.html        # Homepage
-│   └── dashboard.html   # User dashboard
-├── examprep/
-│   ├── rating_calculator.html  # Rating calculator (NEW)
-│   ├── guide_list.html
-│   ├── guide_detail.html
-│   ├── glossary_list.html
-│   └── partials/
-│       └── rating_result.html  # HTMX partial (NEW)
-└── claims/
-    └── document_*.html  # Document templates
-```
-
-### Configuration Files
-```
-docker-compose.yml       # Docker services
-Dockerfile              # Web container
-requirements.txt        # Python dependencies
-.env                    # Environment variables (not in git)
-```
-
----
-
-## ENVIRONMENT VARIABLES NEEDED
-
-```bash
-# Required
-SECRET_KEY=your-secure-secret-key
-DATABASE_URL=postgres://user:pass@host:5432/dbname
-REDIS_URL=redis://localhost:6379/0
-OPENAI_API_KEY=sk-your-openai-key
-
-# Optional
-DEBUG=False
-ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
-SENTRY_DSN=https://xxx@sentry.io/xxx
-STRIPE_PUBLISHABLE_KEY=pk_live_xxx
-STRIPE_SECRET_KEY=sk_live_xxx
-
-# Email (for production)
-EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_HOST_USER=your@email.com
-EMAIL_HOST_PASSWORD=app-password
-```
-
----
-
-## QUICK COMMANDS
-
-```bash
-# Start development
-docker compose up -d
-
-# View logs
-docker compose logs -f web
-
-# Run migrations
-docker compose exec web python manage.py migrate
-
-# Create superuser
-docker compose exec web python manage.py createsuperuser
-
-# Load fixtures
-docker compose exec web python manage.py loaddata examprep/fixtures/*.json
-
-# Django shell
-docker compose exec web python manage.py shell_plus
-
-# Run tests
-docker compose exec web pytest
-
-# Rebuild after dependency changes
-docker compose build web && docker compose up -d
-```
-
----
-
-## SESSION HANDOFF NOTES
-
-### What Was Done This Session (2026-02-09)
-**Pilot Mode, Rating Import, and Analytics Implementation:**
-
-1. **Pilot Data Retention Tasks Scheduled**
-   - Added `enforce-pilot-data-retention` task (3:30 AM daily) - purges old pilot user data
-   - Added `notify-pilot-users-before-retention` task (1:00 AM daily) - warns users 7 days before deletion
-   - Tasks already existed in `core/tasks.py`, just needed scheduling in CELERY_BEAT_SCHEDULE
-
-2. **Rating Import Feature (from RatingAnalysis to Calculator)**
-   - New file: `examprep/rating_import.py` - conversion utility
-   - `convert_extracted_to_ratings()` - converts RatingAnalysis.conditions to DisabilityRating objects
-   - Bilateral detection for paired extremities (left/right knee, shoulder, etc.)
-   - New view: `import_ratings_from_analysis()` - imports via session storage
-   - New URL: `/exam-prep/rating-calculator/import/<analysis_id>/`
-   - Added "Import to Calculator" button on rating analyzer result page
-   - Calculator template auto-populates imported ratings and calculates immediately
-
-3. **Monitoring Tasks Scheduled**
-   - Added `run-monitoring-checks` task (every 5 minutes) - system health checks and alerts
-   - Added `check-download-anomalies` task (hourly) - detects potential data exfiltration
-
-**Files Modified:**
-- `benefits_navigator/settings.py` - Added 4 tasks to CELERY_BEAT_SCHEDULE
-- `examprep/rating_import.py` - **NEW** - rating conversion utility
-- `examprep/views.py` - Added import view, updated calculator for imported ratings
-- `examprep/urls.py` - Added import route
-- `templates/examprep/rating_calculator.html` - JS to handle imported ratings
-- `templates/claims/rating_analyzer_result.html` - Import button in action buttons
-
-**Tests Verified:**
-- 114 unit/BDD tests passed
-- Rating import utility tests passed (bilateral detection, rounding, filtering)
-- Django system checks passed
-- Integration test confirmed full import flow works
-
-**Commit:** `66aebc6` - "Add pilot retention tasks, rating import feature, and monitoring tasks"
-
----
-
-### What Was Done Previous Session (2026-02-05)
-**Infrastructure & Features:**
-
-1. **Switched from Upstash to DO Managed Valkey**
-   - Upstash Redis was hitting memory limits
-   - Updated `.do/app.yaml` and `app-spec-fixed.yaml` with new Valkey connection
-   - Added `CELERY_RESULT_EXPIRES = 3600` to auto-expire task results
-
-2. **Historical Compensation Rates (2020-2024)**
-   - Added VA compensation rates for 2020, 2021, 2022, 2023
-   - Rate year selector in calculator UI
-   - Note: Dependent additions only available for 2024
-
-3. **Compare Scenarios Feature**
-   - Save current calculation as a scenario
-   - Compare multiple scenarios side-by-side
-   - Change rate year per scenario
-   - Load scenario back into calculator
-   - New JSON endpoint: `/exam-prep/rating-calculator/calculate-json/`
-
-4. **SSH Configuration Fix**
-   - Generated new SSH key for Beaudoin0zach GitHub account
-   - Updated `~/.ssh/config` for multi-account support
-
-**Files Modified:**
-- `benefits_navigator/settings.py` - Added CELERY_RESULT_EXPIRES
-- `.do/app.yaml` - Switched to DO Valkey
-- `app-spec-fixed.yaml` - Switched to DO Valkey
-- `examprep/va_math.py` - Added historical rates 2020-2023
-- `examprep/views.py` - Added rate year support, JSON endpoint
-- `examprep/urls.py` - Added calculate-json route
-- `templates/examprep/rating_calculator.html` - Compare scenarios UI
-
----
-
-### What Was Done Previously (2026-01-11)
-**Tier 2 Features Implemented:**
-
-1. **SMC/TDIU Calculators** (`examprep/va_special_compensation.py`)
-   - SMC levels K through S with eligibility checks
-   - TDIU schedular vs extraschedular determination
-   - 2024 compensation rates
-   - HTMX-powered real-time calculations
-
-2. **Secondary Conditions Hub** (`examprep/secondary_conditions_data.py`)
-   - 8 primary conditions: PTSD, TBI, Back, Knee, Diabetes, Sleep Apnea, Hypertension, Tinnitus
-   - 40+ secondary condition relationships with medical rationale
-   - Search and category filtering
-   - Evidence tips and nexus letter guidance
-
-3. **New Exam Prep Guides** (fixtures):
-   - TBI Guide (`exam_guides_tbi.json`)
-   - Sleep Apnea Guide (`exam_guides_sleep_apnea.json`)
-   - Mental Health Non-PTSD Guide (`exam_guides_mental_health.json`)
-
-4. **Email Notifications** (`core/tasks.py`)
-   - Deadline reminders (7 days, 1 day before)
-   - C&P exam reminders
-   - Document analysis complete notifications
-   - User notification preferences
-   - HTML and text email templates
-
-5. **Supportive Messaging** (`core/models.py`, `core/templatetags/`)
-   - Rotating veteran-friendly messages by journey stage
-   - Template tag integration
-   - Admin management
-
-### What Was Done Previously (2026-01-09)
-1. Fixed security issues (CSP, rate limiting, SECRET_KEY)
-2. Built VA Disability Rating Calculator with:
-   - Accurate VA Math (38 CFR § 4.25)
-   - Bilateral factor support (38 CFR § 4.26)
-   - 2024 compensation rates
-   - Save/load calculations
-   - Step-by-step explanation
-3. Updated homepage with calculator feature card
-4. Fixed template URL references (appeals:home)
-
-### Recommended Next Steps
-1. Run migrations for new models: `python manage.py migrate`
-2. Import new fixtures: `python manage.py import_content --fixtures`
-3. Load supportive messages: `python manage.py loaddata core/fixtures/supportive_messages.json`
-4. Set up Celery beat for scheduled notification tasks
-5. Run test suite to verify nothing broke
-6. Plan production deployment
-
-### Things to Watch Out For
-- Compensation rates need annual update (usually December)
-- SMC rates are separate from standard compensation - verify annually
-- Celery workers must be running for email notifications
-- CSP may need adjusting if adding new external resources
-- Rate limiting is IP-based, may need adjustment for shared IPs
+- OpenAI costs not tracked per-user
+- Not HIPAA compliant — educational use only
+- Pilot mode with 30-day data retention
 
 ---
 
 ## CONTRIBUTING
 
 When working on this project:
-1. Always run tests before committing
+1. Always run `pytest` before committing
 2. Update this TODO.md when completing tasks
-3. Follow existing code patterns
+3. Follow existing code patterns (see CLAUDE.md)
 4. Maintain WCAG AA accessibility
-5. Document any new environment variables
+5. All OpenAI calls must go through AI Gateway (`agents/ai_gateway.py`)
+6. PII fields must use `EncryptedCharField` from `core/encryption.py`
+7. Never commit secrets — use environment variables only
+8. Add `acks_late=True` to any new Celery tasks handling user data

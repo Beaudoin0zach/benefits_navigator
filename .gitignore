@@ -74,3 +74,9 @@ package-lock.json
 *.key
 *.cert
 benchmark-results.json
+
+# Deployment configs with credentials
+.env.docker
+.do/app.yaml
+app-spec-fixed.yaml
+docker-compose.yml

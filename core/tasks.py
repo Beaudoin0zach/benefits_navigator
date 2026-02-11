@@ -190,7 +190,7 @@ def create_default_retention_policies():
 # EMAIL NOTIFICATION TASKS
 # =============================================================================
 
-@shared_task
+@shared_task(acks_late=True)
 def send_deadline_reminders():
     """
     Send email reminders for upcoming deadlines.
@@ -260,7 +260,7 @@ def send_deadline_reminders():
     return result
 
 
-@shared_task
+@shared_task(acks_late=True)
 def send_exam_reminders():
     """
     Send email reminders for upcoming C&P exams.
@@ -437,7 +437,7 @@ def _send_exam_reminder_email(exam, days_until: int) -> bool:
         return False
 
 
-@shared_task
+@shared_task(acks_late=True)
 def send_all_reminders():
     """
     Master task that sends all types of reminders.
@@ -454,7 +454,7 @@ def send_all_reminders():
     }
 
 
-@shared_task
+@shared_task(acks_late=True)
 def send_document_analysis_complete_email(document_id: int):
     """
     Send email notification when document analysis is complete.
@@ -725,7 +725,7 @@ def check_download_anomalies_task(hours: int = 1):
 # PILOT USER DATA RETENTION
 # =============================================================================
 
-@shared_task
+@shared_task(acks_late=True)
 def enforce_pilot_data_retention():
     """
     Enforce data retention specifically for pilot users.
@@ -891,7 +891,7 @@ def _purge_pilot_user_statements(user, cutoff_date) -> int:
         return 0
 
 
-@shared_task
+@shared_task(acks_late=True)
 def notify_pilot_users_before_retention():
     """
     Send notification to pilot users before their data is deleted.

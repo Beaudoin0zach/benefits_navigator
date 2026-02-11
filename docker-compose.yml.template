@@ -5,8 +5,8 @@ services:
     container_name: benefits_nav_db
     environment:
       POSTGRES_DB: benefits_navigator
-      POSTGRES_USER: benefits_user
-      POSTGRES_PASSWORD: ***ROTATED_DEV_DB_PASSWORD***
+      POSTGRES_USER: CHANGE_ME
+      POSTGRES_PASSWORD: CHANGE_ME
     ports:
       - "5432:5432"
     volumes:
@@ -47,11 +47,11 @@ services:
       - .env
     environment:
       - DEBUG=True
-      - DATABASE_URL=postgresql://benefits_user:***ROTATED_DEV_DB_PASSWORD***@db:5432/benefits_navigator
+      - DATABASE_URL=postgresql://CHANGE_ME:CHANGE_ME@db:5432/benefits_navigator
       - REDIS_URL=redis://redis:6379/0
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
-      - SECRET_KEY=***ROTATED_DEV_SECRET_KEY***
+      - SECRET_KEY=CHANGE_ME
       - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
     depends_on:
       db:
@@ -73,11 +73,11 @@ services:
       - .env
     environment:
       - DEBUG=True
-      - DATABASE_URL=postgresql://benefits_user:***ROTATED_DEV_DB_PASSWORD***@db:5432/benefits_navigator
+      - DATABASE_URL=postgresql://CHANGE_ME:CHANGE_ME@db:5432/benefits_navigator
       - REDIS_URL=redis://redis:6379/0
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
-      - SECRET_KEY=***ROTATED_DEV_SECRET_KEY***
+      - SECRET_KEY=CHANGE_ME
     depends_on:
       db:
         condition: service_healthy
@@ -95,11 +95,11 @@ services:
       - .:/app
     environment:
       - DEBUG=True
-      - DATABASE_URL=postgresql://benefits_user:***ROTATED_DEV_DB_PASSWORD***@db:5432/benefits_navigator
+      - DATABASE_URL=postgresql://CHANGE_ME:CHANGE_ME@db:5432/benefits_navigator
       - REDIS_URL=redis://redis:6379/0
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
-      - SECRET_KEY=***ROTATED_DEV_SECRET_KEY***
+      - SECRET_KEY=CHANGE_ME
     depends_on:
       db:
         condition: service_healthy
@@ -117,11 +117,11 @@ services:
       - "5555:5555"
     environment:
       - DEBUG=True
-      - DATABASE_URL=postgresql://benefits_user:***ROTATED_DEV_DB_PASSWORD***@db:5432/benefits_navigator
+      - DATABASE_URL=postgresql://CHANGE_ME:CHANGE_ME@db:5432/benefits_navigator
       - REDIS_URL=redis://redis:6379/0
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
-      - SECRET_KEY=***ROTATED_DEV_SECRET_KEY***
+      - SECRET_KEY=CHANGE_ME
     depends_on:
       - celery
       - redis

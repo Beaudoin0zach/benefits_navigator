@@ -291,8 +291,12 @@ class Appeal(TimeStampedModel):
         return reverse('appeals:appeal_detail', kwargs={'pk': self.pk})
 
     def save(self, *args, **kwargs):
-        # Auto-calculate deadline (1 year from decision for most appeals)
-        if self.original_decision_date and not self.deadline:
+        # Auto-calculate deadline based on appeal type
+        if self.appeal_type == 'supplemental':
+            # Supplemental claims have no filing deadline (38 CFR § 20.204)
+            self.deadline = None
+        elif self.original_decision_date and not self.deadline:
+            # HLR and Board appeals: 1 year from decision (38 CFR § 20.202)
             self.deadline = self.original_decision_date + timedelta(days=365)
         super().save(*args, **kwargs)
 

@@ -15,19 +15,19 @@ envs:
     value: "True"
   # Secrets - values must be set in DO Console after deploy
   - key: SECRET_KEY
-    value: "***ROTATED_SECRET_KEY***"
+    value: "CHANGE_ME"
   - key: DATABASE_URL
-    value: "***ROTATED_DATABASE_URL***"
+    value: "CHANGE_ME"
   - key: REDIS_URL
-    value: "***ROTATED_REDIS_URL***"
+    value: "CHANGE_ME"
   - key: CELERY_BROKER_URL
-    value: "***ROTATED_REDIS_URL***"
+    value: "CHANGE_ME"
   - key: OPENAI_API_KEY
-    value: ""
+    value: "CHANGE_ME"
   - key: SENTRY_DSN
-    value: ""
+    value: "CHANGE_ME"
   - key: FIELD_ENCRYPTION_KEY
-    value: "***ROTATED_FIELD_ENCRYPTION_KEY***"
+    value: "CHANGE_ME"
   # Pilot mode settings (set values in DO Console)
   - key: PILOT_MODE
     value: "True"
@@ -60,23 +60,20 @@ services:
       initial_delay_seconds: 30
       period_seconds: 10
     envs:
-      # Explicit settings (DO doesn't reliably inherit app-level vars)
       - key: DEBUG
         value: "False"
       - key: STAGING
         value: "True"
-      # Explicit allowed hosts - never use wildcard in deployed environments
       - key: ALLOWED_HOSTS
-        value: "benefits-navigator-staging-3o4rq.ondigitalocean.app,vabenefitsnavigator.org,www.vabenefitsnavigator.org"
-      # Web needs explicit secrets (DO doesn't inherit app-level secrets)
+        value: "CHANGE_ME"
       - key: SECRET_KEY
-        value: "***ROTATED_SECRET_KEY***"
+        value: "CHANGE_ME"
       - key: DATABASE_URL
-        value: "***ROTATED_DATABASE_URL***"
+        value: "CHANGE_ME"
       - key: REDIS_URL
-        value: "***ROTATED_REDIS_URL***"
+        value: "CHANGE_ME"
       - key: FIELD_ENCRYPTION_KEY
-        value: "***ROTATED_FIELD_ENCRYPTION_KEY***"
+        value: "CHANGE_ME"
 
 workers:
   # Celery Worker (background tasks)
@@ -88,8 +85,7 @@ workers:
     dockerfile_path: Dockerfile.prod
     instance_count: 1
     instance_size_slug: basic-xxs
-    run_command: /bin/sh -c 'echo "=== ENV VARS ===" && env | sort && echo "=== END ===" && sleep 300'
-    # Worker needs explicit env vars (DO doesn't inherit app-level vars to workers)
+    run_command: celery -A benefits_navigator worker -l info --concurrency=2
     envs:
       - key: DJANGO_SETTINGS_MODULE
         value: "benefits_navigator.settings"
@@ -98,19 +94,19 @@ workers:
       - key: STAGING
         value: "True"
       - key: ALLOWED_HOSTS
-        value: "benefits-navigator-staging-3o4rq.ondigitalocean.app,vabenefitsnavigator.org,www.vabenefitsnavigator.org"
+        value: "CHANGE_ME"
       - key: SECRET_KEY
-        value: "***ROTATED_SECRET_KEY***"
+        value: "CHANGE_ME"
       - key: DATABASE_URL
-        value: "***ROTATED_DATABASE_URL***"
+        value: "CHANGE_ME"
       - key: REDIS_URL
-        value: "***ROTATED_REDIS_URL***"
+        value: "CHANGE_ME"
       - key: CELERY_BROKER_URL
-        value: "***ROTATED_REDIS_URL***"
+        value: "CHANGE_ME"
       - key: OPENAI_API_KEY
-        value: ""
+        value: "CHANGE_ME"
       - key: FIELD_ENCRYPTION_KEY
-        value: "***ROTATED_FIELD_ENCRYPTION_KEY***"
+        value: "CHANGE_ME"
 
 jobs:
   # Run migrations before deploying new code
@@ -124,14 +120,13 @@ jobs:
     instance_count: 1
     instance_size_slug: basic-xxs
     run_command: /bin/sh -c "python manage.py migrate --noinput; exit 0"
-    # Job needs explicit secrets (DO doesn't inherit app-level secrets to jobs)
     envs:
       - key: SECRET_KEY
-        value: "***ROTATED_SECRET_KEY***"
+        value: "CHANGE_ME"
       - key: DATABASE_URL
-        value: "***ROTATED_DATABASE_URL***"
+        value: "CHANGE_ME"
       - key: FIELD_ENCRYPTION_KEY
-        value: "***ROTATED_FIELD_ENCRYPTION_KEY***"
+        value: "CHANGE_ME"
 
 # Secrets to set in DO Console (App-Level Environment Variables):
 # - SECRET_KEY (generate with: python -c "import secrets; print(secrets.token_urlsafe(50))")
@@ -140,18 +135,4 @@ jobs:
 # - REDIS_URL / CELERY_BROKER_URL (***ROTATED_REDIS_URL***
 # - OPENAI_API_KEY
 # - SENTRY_DSN
-#
-# PILOT MODE (for beta testing):
-# - PILOT_MODE=True enables pilot-specific UI and behavior
-# - PILOT_BILLING_DISABLED=True blocks real Stripe charges
-# - PILOT_PREMIUM_ACCESS=True gives all users premium (or use PILOT_PREMIUM_EMAILS/DOMAINS)
-# - PILOT_DATA_RETENTION_DAYS=30 auto-purges pilot user data after 30 days
-#
-# DOMAIN SETUP (vabenefitsnavigator.org):
-# 1. Add domain in DO Console: Settings → Domains → Add Domain
-# 2. In Cloudflare: Add CNAME record pointing to DO app URL
-# 3. ALLOWED_HOSTS above already includes vabenefitsnavigator.org
-#
-# SECURITY NOTES:
-# - ALLOWED_HOSTS is hardcoded above - update when domain changes, never use "*"
-# - FIELD_ENCRYPTION_KEY is separate from SECRET_KEY for defense in depth
+# - ALLOWED_HOSTS (comma-separated list of domains)

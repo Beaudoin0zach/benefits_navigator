@@ -237,6 +237,70 @@ def calculate_combined_rating(ratings: List[DisabilityRating]) -> CalculationRes
     )
 
 
+# 2026 VA Compensation Rates (effective December 1, 2025)
+# 2.8% COLA increase from 2025
+VA_COMPENSATION_RATES_2026 = {
+    0: 0.00,
+    10: 180.42,
+    20: 356.66,
+    30: 552.47,
+    40: 795.84,
+    50: 1132.90,
+    60: 1435.02,
+    70: 1808.45,
+    80: 2102.15,
+    90: 2362.30,
+    100: 3938.58,
+}
+
+# Additional amounts for dependents at 30%+ rating (2026)
+DEPENDENT_RATES_2026 = {
+    'spouse': {
+        30: 63.74, 40: 85.33, 50: 106.91, 60: 128.50,
+        70: 150.09, 80: 170.65, 90: 192.24, 100: 214.21
+    },
+    'child_under_18': {
+        30: 31.87, 40: 42.15, 50: 53.46, 60: 63.74,
+        70: 74.02, 80: 85.33, 90: 95.61, 100: 106.45
+    },
+    'parent_one': {
+        30: 55.51, 40: 73.00, 50: 91.51, 60: 110.00,
+        70: 128.50, 80: 147.00, 90: 165.51, 100: 183.64
+    }
+}
+
+# 2025 VA Compensation Rates (effective December 1, 2024)
+# 2.5% COLA increase from 2024
+VA_COMPENSATION_RATES_2025 = {
+    0: 0.00,
+    10: 175.51,
+    20: 346.95,
+    30: 537.42,
+    40: 774.16,
+    50: 1102.04,
+    60: 1395.93,
+    70: 1759.19,
+    80: 2044.89,
+    90: 2297.96,
+    100: 3831.30,
+}
+
+# Additional amounts for dependents at 30%+ rating (2025)
+DEPENDENT_RATES_2025 = {
+    'spouse': {
+        30: 63.55, 40: 85.08, 50: 106.60, 60: 128.13,
+        70: 149.65, 80: 170.15, 90: 191.68, 100: 213.59
+    },
+    'child_under_18': {
+        30: 31.78, 40: 42.03, 50: 53.30, 60: 63.55,
+        70: 73.80, 80: 85.08, 90: 95.33, 100: 106.14
+    },
+    'parent_one': {
+        30: 55.35, 40: 72.78, 50: 91.23, 60: 109.68,
+        70: 128.13, 80: 146.58, 90: 165.03, 100: 183.10
+    }
+}
+
 # 2024 VA Compensation Rates (effective December 1, 2023)
 # These are monthly rates for veterans with no dependents
 VA_COMPENSATION_RATES_2024 = {
@@ -335,6 +399,8 @@ VA_COMPENSATION_RATES_2020 = {
 
 # Master lookup for all years
 VA_COMPENSATION_RATES_BY_YEAR = {
+    2026: VA_COMPENSATION_RATES_2026,
+    2025: VA_COMPENSATION_RATES_2025,
     2024: VA_COMPENSATION_RATES_2024,
     2023: VA_COMPENSATION_RATES_2023,
     2022: VA_COMPENSATION_RATES_2022,
@@ -342,8 +408,15 @@ VA_COMPENSATION_RATES_BY_YEAR = {
     2020: VA_COMPENSATION_RATES_2020,
 }
 
+# Dependent rates by year
+DEPENDENT_RATES_BY_YEAR = {
+    2026: DEPENDENT_RATES_2026,
+    2025: DEPENDENT_RATES_2025,
+    2024: DEPENDENT_RATES_2024,
+}
+
 # Available rate years (most recent first)
-AVAILABLE_RATE_YEARS = [2024, 2023, 2022, 2021, 2020]
+AVAILABLE_RATE_YEARS = [2026, 2025, 2024, 2023, 2022, 2021, 2020]
 
 
 def estimate_monthly_compensation(
@@ -351,7 +424,7 @@ def estimate_monthly_compensation(
     spouse: bool = False,
     children_under_18: int = 0,
     dependent_parents: int = 0,
-    year: int = 2024
+    year: int = 2026
 ) -> float:
     """
     Estimate monthly VA disability compensation.
@@ -361,15 +434,15 @@ def estimate_monthly_compensation(
         spouse: Whether veteran has a spouse
         children_under_18: Number of children under 18
         dependent_parents: Number of dependent parents (max 2)
-        year: The rate year to use (2020-2024). Defaults to 2024.
+        year: The rate year to use (2020-2026). Defaults to 2026.
 
     Note: This is an estimate. Actual rates depend on many factors
     including effective date, special monthly compensation, etc.
-    Dependent rates are only available for 2024; for historical years,
+    Dependent rates are available for 2024-2026; for earlier years,
     only base rates are applied.
     """
-    # Get rates for the specified year, fallback to 2024
-    rates = VA_COMPENSATION_RATES_BY_YEAR.get(year, VA_COMPENSATION_RATES_2024)
+    # Get rates for the specified year, fallback to 2026
+    rates = VA_COMPENSATION_RATES_BY_YEAR.get(year, VA_COMPENSATION_RATES_2026)
 
     if combined_rating not in rates:
         return 0.0
@@ -378,18 +451,18 @@ def estimate_monthly_compensation(
     total = base
 
     # Dependents only add to 30%+ ratings
-    # Note: Dependent rates are only available for 2024
-    if combined_rating >= 30 and year == 2024:
-        if spouse and combined_rating in DEPENDENT_RATES_2024['spouse']:
-            total += DEPENDENT_RATES_2024['spouse'][combined_rating]
+    dep_rates = DEPENDENT_RATES_BY_YEAR.get(year)
+    if combined_rating >= 30 and dep_rates:
+        if spouse and combined_rating in dep_rates['spouse']:
+            total += dep_rates['spouse'][combined_rating]
 
         for _ in range(children_under_18):
-            if combined_rating in DEPENDENT_RATES_2024['child_under_18']:
-                total += DEPENDENT_RATES_2024['child_under_18'][combined_rating]
+            if combined_rating in dep_rates['child_under_18']:
+                total += dep_rates['child_under_18'][combined_rating]
 
         for _ in range(min(2, dependent_parents)):  # Max 2 parents
-            if combined_rating in DEPENDENT_RATES_2024['parent_one']:
-                total += DEPENDENT_RATES_2024['parent_one'][combined_rating]
+            if combined_rating in dep_rates['parent_one']:
+                total += dep_rates['parent_one'][combined_rating]
 
     return round(total, 2)
 
