@@ -139,7 +139,7 @@ def premium_page(context) -> Page:
 # =============================================================================
 
 @pytest.fixture(scope='session', autouse=True)
-def setup_e2e_test_users():
+def setup_e2e_test_users(django_db_blocker):
     """Ensure test users exist in the database before running E2E tests."""
     import django
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'benefits_navigator.settings')
@@ -151,34 +151,36 @@ def setup_e2e_test_users():
 
     User = get_user_model()
 
-    # Create standard test user
-    if not User.objects.filter(email=TEST_USER_EMAIL).exists():
-        User.objects.create_user(
-            email=TEST_USER_EMAIL,
-            password=TEST_USER_PASSWORD,
-            first_name='E2E',
-            last_name='Tester',
-        )
+    with django_db_blocker.unblock():
+        # Create standard test user
+        if not User.objects.filter(email=TEST_USER_EMAIL).exists():
+            User.objects.create_user(
+                email=TEST_USER_EMAIL,
+                password=TEST_USER_PASSWORD,
+                first_name='E2E',
+                last_name='Tester',
+            )
 
-    # Create premium test user
-    if not User.objects.filter(email=TEST_PREMIUM_EMAIL).exists():
-        premium_user = User.objects.create_user(
-            email=TEST_PREMIUM_EMAIL,
-            password=TEST_PREMIUM_PASSWORD,
-            first_name='Premium',
-            last_name='Tester',
-        )
-        Subscription.objects.create(
-            user=premium_user,
-            plan_type='premium',
-            status='active',
-            current_period_end=datetime.now() + timedelta(days=365),
-        )
+        # Create premium test user
+        if not User.objects.filter(email=TEST_PREMIUM_EMAIL).exists():
+            premium_user = User.objects.create_user(
+                email=TEST_PREMIUM_EMAIL,
+                password=TEST_PREMIUM_PASSWORD,
+                first_name='Premium',
+                last_name='Tester',
+            )
+            Subscription.objects.create(
+                user=premium_user,
+                plan_type='premium',
+                status='active',
+                current_period_end=datetime.now() + timedelta(days=365),
+            )
 
     yield
 
     # Cleanup after all tests (optional)
-    # User.objects.filter(email__in=[TEST_USER_EMAIL, TEST_PREMIUM_EMAIL]).delete()
+    # with django_db_blocker.unblock():
+    #     User.objects.filter(email__in=[TEST_USER_EMAIL, TEST_PREMIUM_EMAIL]).delete()
 
 
 # =============================================================================
