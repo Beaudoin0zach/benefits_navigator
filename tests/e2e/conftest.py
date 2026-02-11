@@ -99,22 +99,30 @@ def page(context) -> Page:
 # FIXTURES - AUTHENTICATION
 # =============================================================================
 
+def _login_with_retry(context, email, password, max_attempts=3):
+    """Login with retry logic for flaky single-threaded dev server."""
+    from playwright.sync_api import TimeoutError as PlaywrightTimeout
+
+    last_error = None
+    for attempt in range(max_attempts):
+        page = context.new_page()
+        try:
+            page.goto('/accounts/login/', timeout=30000)
+            page.fill('input[name="login"]', email)
+            page.fill('input[name="password"]', password)
+            page.click('button[type="submit"]')
+            page.wait_for_url('**/dashboard/**', timeout=30000)
+            return page
+        except PlaywrightTimeout as exc:
+            last_error = exc
+            page.close()
+    raise last_error
+
+
 @pytest.fixture
 def authenticated_page(context) -> Page:
     """Create a page with an authenticated user session."""
-    page = context.new_page()
-
-    # Navigate to login page
-    page.goto('/accounts/login/')
-
-    # Fill in credentials
-    page.fill('input[name="login"]', TEST_USER_EMAIL)
-    page.fill('input[name="password"]', TEST_USER_PASSWORD)
-    page.click('button[type="submit"]')
-
-    # Wait for redirect
-    page.wait_for_url('**/dashboard/**', timeout=10000)
-
+    page = _login_with_retry(context, TEST_USER_EMAIL, TEST_USER_PASSWORD)
     yield page
     page.close()
 
@@ -122,14 +130,7 @@ def authenticated_page(context) -> Page:
 @pytest.fixture
 def premium_page(context) -> Page:
     """Create a page with a premium user session."""
-    page = context.new_page()
-
-    page.goto('/accounts/login/')
-    page.fill('input[name="login"]', TEST_PREMIUM_EMAIL)
-    page.fill('input[name="password"]', TEST_PREMIUM_PASSWORD)
-    page.click('button[type="submit"]')
-    page.wait_for_url('**/dashboard/**', timeout=10000)
-
+    page = _login_with_retry(context, TEST_PREMIUM_EMAIL, TEST_PREMIUM_PASSWORD)
     yield page
     page.close()
 
