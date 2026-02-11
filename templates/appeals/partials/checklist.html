@@ -1,4 +1,4 @@
-<div class="space-y-3" id="checklist">
+<div class="space-y-3" id="checklist" aria-live="polite" aria-atomic="false">
     {% for item in checklist_items %}
     <div class="rounded border {% if item.completed %}bg-green-50 border-green-200{% else %}bg-white border-gray-200{% endif %}">
         <!-- Main checklist row -->

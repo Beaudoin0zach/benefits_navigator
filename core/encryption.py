@@ -209,6 +209,74 @@ class EncryptedTextField(models.TextField):
         return value
 
 
+class EncryptedJSONField(models.TextField):
+    """
+    TextField that transparently encrypts/decrypts JSON values.
+
+    Stores JSON data as encrypted text. On read, decrypts and deserializes
+    back to Python dict/list. Preserves the Python dict/list interface
+    while encrypting at rest.
+
+    Usage:
+        ai_summary = EncryptedJSONField('AI summary', null=True, blank=True)
+
+    Trade-off: Loses database-level JSON querying (PostgreSQL -> operator).
+    Only use when you read ai_summary after fetching the object — no
+    JSON path queries in WHERE clauses.
+    """
+
+    description = "An encrypted JSON field"
+
+    def get_prep_value(self, value):
+        """Serialize to JSON string, then encrypt before saving."""
+        import json
+
+        if value is None:
+            return None
+        try:
+            json_str = json.dumps(value)
+        except (TypeError, ValueError):
+            json_str = str(value)
+        return FieldEncryption.encrypt(json_str)
+
+    def from_db_value(self, value, expression, connection):
+        """Decrypt, then deserialize JSON when reading from database."""
+        import json
+
+        if value is None or value == '':
+            return None
+        decrypted = FieldEncryption.decrypt(value)
+        if not decrypted:
+            return None
+        try:
+            return json.loads(decrypted)
+        except (json.JSONDecodeError, ValueError):
+            return None
+
+    def to_python(self, value):
+        """Handle value conversion from form input or already-parsed values."""
+        import json
+
+        if value is None:
+            return None
+        if isinstance(value, (dict, list)):
+            return value
+        if isinstance(value, str) and value:
+            # Try JSON parse first (form input)
+            try:
+                return json.loads(value)
+            except (json.JSONDecodeError, ValueError):
+                pass
+            # Try decrypt then parse (encrypted value)
+            decrypted = FieldEncryption.decrypt(value)
+            if decrypted:
+                try:
+                    return json.loads(decrypted)
+                except (json.JSONDecodeError, ValueError):
+                    pass
+        return value
+
+
 class EncryptedDateField(models.CharField):
     """
     A date field that stores encrypted date strings.

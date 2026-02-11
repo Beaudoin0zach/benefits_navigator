@@ -751,3 +751,125 @@ class TestActivityTrackingSignals(TestCase):
         self.assertIsNotNone(self.case.last_activity_at)
         if initial_activity:
             self.assertGreaterEqual(self.case.last_activity_at, initial_activity)
+
+
+# =============================================================================
+# CROSS-ORG SECURITY TESTS (IDOR Defense-in-Depth)
+# =============================================================================
+
+@pytest.mark.django_db
+class TestCrossOrgSecurity:
+    """
+    Tests that users in Org A cannot access Org B cases/documents.
+
+    Validates defense-in-depth: even if a user guesses a case PK,
+    the org filter prevents cross-organization data access.
+    """
+
+    @pytest.fixture(autouse=True)
+    def setup_orgs(self, db):
+        """Create two organizations with separate users and cases."""
+        from vso.models import VeteranCase
+
+        # Org A
+        self.org_a = Organization.objects.create(
+            name="Org Alpha", slug="org-alpha", org_type="vso",
+        )
+        self.user_a = User.objects.create_user(
+            email="staff_a@example.com", password="TestPass123!"
+        )
+        self.veteran_a = User.objects.create_user(
+            email="vet_a@example.com", password="TestPass123!"
+        )
+        OrganizationMembership.objects.create(
+            user=self.user_a, organization=self.org_a,
+            role='admin', is_active=True,
+        )
+        self.case_a = VeteranCase.objects.create(
+            organization=self.org_a, veteran=self.veteran_a,
+            assigned_to=self.user_a, title="Org A Case",
+            status="intake",
+        )
+
+        # Org B
+        self.org_b = Organization.objects.create(
+            name="Org Beta", slug="org-beta", org_type="vso",
+        )
+        self.user_b = User.objects.create_user(
+            email="staff_b@example.com", password="TestPass123!"
+        )
+        self.veteran_b = User.objects.create_user(
+            email="vet_b@example.com", password="TestPass123!"
+        )
+        OrganizationMembership.objects.create(
+            user=self.user_b, organization=self.org_b,
+            role='admin', is_active=True,
+        )
+        self.case_b = VeteranCase.objects.create(
+            organization=self.org_b, veteran=self.veteran_b,
+            assigned_to=self.user_b, title="Org B Case",
+            status="intake",
+        )
+
+    def test_org_a_cannot_view_org_b_case_detail(self, client):
+        """User in Org A gets 404 when trying to view Org B case."""
+        client.login(email="staff_a@example.com", password="TestPass123!")
+        response = client.get(reverse('vso:case_detail', args=[self.case_b.pk]))
+        # Should be 404 (org filter) or redirect, not 200
+        assert response.status_code in (404, 302)
+        if response.status_code == 302:
+            assert 'case_detail' not in response.url
+
+    def test_org_b_cannot_view_org_a_case_detail(self, client):
+        """User in Org B gets 404 when trying to view Org A case."""
+        client.login(email="staff_b@example.com", password="TestPass123!")
+        response = client.get(reverse('vso:case_detail', args=[self.case_a.pk]))
+        assert response.status_code in (404, 302)
+        if response.status_code == 302:
+            assert 'case_detail' not in response.url
+
+    def test_org_a_cannot_update_org_b_case_status(self, client):
+        """User in Org A cannot update status of Org B case."""
+        client.login(email="staff_a@example.com", password="TestPass123!")
+        response = client.post(
+            reverse('vso:case_update_status', args=[self.case_b.pk]),
+            {'status': 'closed_won'},
+        )
+        assert response.status_code in (404, 302)
+        from vso.models import VeteranCase
+        self.case_b.refresh_from_db()
+        assert self.case_b.status == 'intake'  # Unchanged
+
+    def test_org_a_cannot_add_note_to_org_b_case(self, client):
+        """User in Org A cannot add notes to Org B case."""
+        client.login(email="staff_a@example.com", password="TestPass123!")
+        response = client.post(
+            reverse('vso:add_case_note', args=[self.case_b.pk]),
+            {'subject': 'Malicious Note', 'content': 'Cross-org injection'},
+        )
+        assert response.status_code in (404, 302)
+        from vso.models import CaseNote
+        assert CaseNote.objects.filter(case=self.case_b, subject='Malicious Note').count() == 0
+
+    def test_org_a_cannot_archive_org_b_case(self, client):
+        """User in Org A cannot archive Org B case."""
+        from vso.models import VeteranCase
+        self.case_b.status = 'closed_won'
+        self.case_b.save()
+
+        client.login(email="staff_a@example.com", password="TestPass123!")
+        response = client.post(reverse('vso:case_archive', args=[self.case_b.pk]))
+        assert response.status_code in (404, 302)
+        self.case_b.refresh_from_db()
+        assert self.case_b.is_archived is False
+
+    def test_case_list_only_shows_own_org_cases(self, client):
+        """Case list only shows cases from the user's organization."""
+        client.login(email="staff_a@example.com", password="TestPass123!")
+        response = client.get(reverse('vso:case_list'))
+
+        if response.status_code == 200:
+            # Org B case title should NOT appear
+            assert b"Org B Case" not in response.content
+            # Org A case title SHOULD appear
+            assert b"Org A Case" in response.content

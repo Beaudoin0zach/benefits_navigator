@@ -1,6 +1,6 @@
 # Benefits Navigator — Claude Code Guide
 
-**Last Audit:** 2026-02-11 | **Production-Readiness:** 7.0/10 | See `TODO.md` for prioritized issues
+**Last Audit:** 2026-02-11 | **Production-Readiness:** 8.0/10 | See `TODO.md` for prioritized issues
 
 ## Project Summary
 Django 5.1.14 app deployed on DigitalOcean App Platform, using OpenAI API (GPT-3.5-turbo default).
@@ -379,8 +379,8 @@ The `core/alerting.py` module provides configurable monitoring with alerts:
 ## Remaining Security TODOs
 - [ ] Revoke and rotate all exposed secrets (manual — DO Console, OpenAI, Sentry dashboards)
 - [ ] Scrub git history with `git-filter-repo` or BFG (secrets were in committed files)
-- [ ] Fix VSO IDOR — add org filter to all case queries (P1)
-- [ ] Encrypt `ai_summary` field in claims/models.py (P1)
+- [x] Fix VSO IDOR — added org validation + `user=case.veteran` filter to analysis queries (2026-02-11)
+- [x] Encrypt `ai_summary` field — `EncryptedJSONField` with Fernet AES-256 (2026-02-11)
 - [ ] Build Tailwind to static CSS, remove `unsafe-inline` CSP (P2)
 - [ ] Object storage migration (S3/DO Spaces)
 - [ ] Additional invitation verification (beyond email matching)
@@ -493,6 +493,6 @@ See `TODO.md` for full prioritized list. **All P0 code fixes completed 2026-02-1
 | ~~P0~~ | ~~Supplemental claim deadline~~ | Fixed — `appeals/models.py:293-301` + tests |
 | ~~P0~~ | ~~Celery tasks missing `acks_late`~~ | Fixed — all user-data tasks |
 | ~~P0~~ | ~~No pytest in CI~~ | Fixed — `.github/workflows/tests.yml` |
-| P1 | VSO IDOR (cross-org access) | Open — `vso/views.py` |
-| P1 | `ai_summary` unencrypted | Open — `claims/models.py:105` |
-| P1 | Missing agent model indexes | Open — `agents/models.py` |
+| ~~P1~~ | ~~VSO IDOR (cross-org access)~~ | Fixed — org validation + security tests (2026-02-11) |
+| ~~P1~~ | ~~`ai_summary` unencrypted~~ | Fixed — `EncryptedJSONField` + data migration (2026-02-11) |
+| ~~P1~~ | ~~Missing agent model indexes~~ | Fixed — 5 composite indexes added (2026-02-11) |

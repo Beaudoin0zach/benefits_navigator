@@ -8,6 +8,7 @@ from django.conf import settings
 from django.core.validators import FileExtensionValidator
 
 from core.models import TimeStampedModel, SoftDeleteModel
+from core.encryption import EncryptedJSONField
 
 
 def document_upload_path(instance, filename):
@@ -101,12 +102,12 @@ class Document(TimeStampedModel, SoftDeleteModel):
         help_text='Status of OCR extraction process'
     )
 
-    # AI Analysis Results
-    ai_summary = models.JSONField(
+    # AI Analysis Results (encrypted at rest — may contain PII from documents)
+    ai_summary = EncryptedJSONField(
         'AI analysis summary',
         null=True,
         blank=True,
-        help_text='Structured analysis results from OpenAI'
+        help_text='Structured analysis results from OpenAI (encrypted)'
     )
     ai_model_used = models.CharField('AI model', max_length=50, blank=True)
     ai_tokens_used = models.IntegerField('Tokens used', default=0)

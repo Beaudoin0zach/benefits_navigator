@@ -46,6 +46,11 @@ class AgentInteraction(TimeStampedModel):
 
     class Meta:
         ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user', 'created_at']),
+            models.Index(fields=['user', 'agent_type']),
+            models.Index(fields=['user', 'status']),
+        ]
 
     def __str__(self):
         return f"{self.get_agent_type_display()} - {self.user.email} - {self.created_at}"
@@ -96,6 +101,9 @@ class DecisionLetterAnalysis(TimeStampedModel):
         verbose_name = 'Decision Letter Analysis'
         verbose_name_plural = 'Decision Letter Analyses'
         ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user', 'created_at']),
+        ]
 
     def __str__(self):
         return f"Decision Analysis - {self.user.email} - {self.created_at.date()}"
@@ -225,6 +233,9 @@ class EvidenceGapAnalysis(TimeStampedModel):
         verbose_name = 'Evidence Gap Analysis'
         verbose_name_plural = 'Evidence Gap Analyses'
         ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user', 'created_at']),
+        ]
 
     def __str__(self):
         return f"Evidence Analysis - {self.user.email} - {self.created_at.date()}"

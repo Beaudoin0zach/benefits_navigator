@@ -5,15 +5,16 @@ Usage: {% include 'core/partials/feedback_widget.html' with page_title="Page Nam
 
 <div id="feedback-widget" class="fixed bottom-4 right-4 z-50">
     <!-- Collapsed State - Floating Button -->
-    <div id="feedback-collapsed" class="bg-white rounded-full shadow-lg border border-gray-200 p-2 cursor-pointer hover:shadow-xl transition-shadow"
-         onclick="document.getElementById('feedback-collapsed').classList.add('hidden'); document.getElementById('feedback-expanded').classList.remove('hidden');">
+    <button id="feedback-collapsed" type="button" class="bg-white rounded-full shadow-lg border border-gray-200 p-2 cursor-pointer hover:shadow-xl transition-shadow"
+            aria-label="Open feedback form"
+            onclick="document.getElementById('feedback-collapsed').classList.add('hidden'); document.getElementById('feedback-expanded').classList.remove('hidden');">
         <div class="flex items-center gap-2 px-3 py-1">
-            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
             </svg>
             <span class="text-sm font-medium text-gray-700">Feedback</span>
         </div>
-    </div>
+    </button>
 
     <!-- Expanded State - Quick Rating -->
     <div id="feedback-expanded" class="hidden bg-white rounded-lg shadow-xl border border-gray-200 p-4 w-72">

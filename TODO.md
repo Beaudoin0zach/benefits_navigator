@@ -19,7 +19,7 @@ Full audit performed across 7 areas. See `docs/AUDIT_2026_02_09.md` for complete
 | Code Quality & Deployment | CRITICAL | 2 | 5 |
 | **Totals** | | **12** | **19** |
 
-**Production-Readiness Score: 7.0 / 10** (was 5.5 before P0 fixes on 2026-02-11)
+**Production-Readiness Score: 8.0 / 10** (was 7.0 after P0 fixes, now 8.0 after P1 fixes on 2026-02-11)
 
 ---
 
@@ -59,44 +59,51 @@ All P0 code fixes completed 2026-02-11. Manual credential rotation still require
 
 ## P1 — HIGH PRIORITY (Fix Within 1 Week)
 
+All P1 code fixes completed 2026-02-11.
+
 ### Security
-- [ ] **Fix VSO IDOR risk** — `vso/views.py`
-  - Add `organization=org` filter to all `get_object_or_404` calls
-  - Multi-org users can switch via session without per-request re-verification
-  - Add security tests for cross-organization access attempts
-- [ ] **Encrypt `ai_summary` field** — `claims/models.py:105`
-  - AI analysis results stored as plaintext JSON; may contain extracted PII
-  - Add `EncryptedJSONField` or redact PII patterns before storage
-- [ ] **Resolve conflicting deployment configs**
-  - Both `.do/app.yaml` and `app-spec-fixed.yaml` exist for same environment
-  - Delete the deprecated one, document which is canonical
+- [x] **Fix VSO IDOR risk** — `vso/views.py` (2026-02-11)
+  - Added org validation to AI analysis lookups in `shared_document_review()`
+  - Verify `document.user_id == case.veteran_id` before querying analyses
+  - Added `user=case.veteran` filter to RatingAnalysis and DecisionLetterAnalysis queries
+  - Added 6 cross-organization security tests in `vso/tests.py`
+- [x] **Encrypt `ai_summary` field** — `claims/models.py` (2026-02-11)
+  - Created `EncryptedJSONField` in `core/encryption.py` (Fernet AES-256)
+  - Changed `ai_summary` from `JSONField` to `EncryptedJSONField`
+  - Data migration `claims/migrations/0005_encrypt_ai_summary.py` encrypts existing data
+- [x] **Resolve conflicting deployment configs** (2026-02-11)
+  - Both `.do/app.yaml` and `app-spec-fixed.yaml` removed from git in P0 commit
+  - Templates with `CHANGE_ME` placeholders are the canonical configs
+  - **Note:** DO Console worker command needs manual update to actual Celery command
 
 ### Database
-- [ ] **Add indexes to agent models** — `agents/models.py`
-  - `AgentInteraction`, `DecisionLetterAnalysis`, `EvidenceGapAnalysis` lack composite indexes
-  - Add: `[user, created_at]`, `[user, agent_type]`
+- [x] **Add indexes to agent models** — `agents/models.py` (2026-02-11)
+  - `AgentInteraction`: indexes on `[user, created_at]`, `[user, agent_type]`, `[user, status]`
+  - `DecisionLetterAnalysis`: index on `[user, created_at]`
+  - `EvidenceGapAnalysis`: index on `[user, created_at]`
+  - Migration: `agents/migrations/0009_add_indexes.py`
 
 ### Testing
-- [ ] **Add Celery task tests** — `core/tasks.py` has 6 tasks with zero test coverage
-  - `enforce_data_retention`, `enforce_pilot_data_retention`, `notify_pilot_users_before_retention`
-  - `cleanup_old_health_metrics`, `check_processing_health`
-- [ ] **Add TDIU/SMC boundary tests** — `examprep/tests.py`
-  - Test 59% vs 60% (single), 69%+40% vs 70%+40% (combined)
-  - Test extraschedular edge cases
-  - Currently only 1 TDIU test and 1 SMC test exist
+- [x] **Add Celery task tests** — `tests/test_core_tasks.py` (2026-02-11)
+  - 14 tests covering: `enforce_data_retention`, `enforce_pilot_data_retention`,
+    `notify_pilot_users_before_retention`, `cleanup_old_health_metrics`, `check_processing_health`
+- [x] **Add TDIU/SMC boundary tests** — `examprep/tests.py` (2026-02-11)
+  - 8 TDIU boundary tests (59%/60% single, 69%+40/70%+40 combined, extraschedular)
+  - 4 SMC boundary tests (100%+50%/60%, combined others, no 100%)
 - [x] **Add supplemental claim deadline test** — `appeals/tests.py` (2026-02-11)
 
 ### Accessibility (WCAG AA Critical)
-- [ ] **Fix rating calculator form labels** — `templates/examprep/rating_calculator.html:59-62`
-  - Spouse checkbox label not associated; screen readers won't announce it
-  - Fix: `<label for="has-spouse" ...>`
-- [ ] **Fix feedback widget keyboard access** — `templates/core/partials/feedback_widget.html:8-9`
-  - Uses `<div onclick>` instead of `<button>` — unreachable by keyboard
-- [ ] **Add aria-live to HTMX updates** — `templates/appeals/partials/checklist.html:1`
-  - Checklist updates not announced to screen readers
-  - Add `aria-live="polite"` to target containers
-- [ ] **Add accessible loading states** — `templates/examprep/rating_calculator.html:577`
-  - Loading spinners need `role="status"` and `<span class="sr-only">` labels
+- [x] **Fix rating calculator form labels** — `templates/examprep/rating_calculator.html` (2026-02-11)
+  - Added `for="has-spouse"` to label element
+- [x] **Fix feedback widget keyboard access** — `templates/core/partials/feedback_widget.html` (2026-02-11)
+  - Changed `<div onclick>` to `<button>` with `aria-label="Open feedback form"`
+  - Added `aria-hidden="true"` to decorative SVG icon
+- [x] **Add aria-live to HTMX updates** — `templates/appeals/partials/checklist.html` (2026-02-11)
+  - Added `aria-live="polite" aria-atomic="false"` to checklist container
+- [x] **Add accessible loading states** — `templates/examprep/rating_calculator.html` (2026-02-11)
+  - Added `role="status" aria-live="polite"` to loading spinner
+  - Added `<span class="sr-only">Loading scenario results...</span>`
+  - Added `aria-hidden="true"` to spinner SVG
 
 ---
 

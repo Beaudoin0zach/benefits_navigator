@@ -906,26 +906,30 @@ def shared_document_review(request, pk, doc_pk):
     if shared_doc.include_ai_analysis:
         from agents.models import RatingAnalysis, DecisionLetterAnalysis, DenialDecoding
 
-        # Get rating analysis if available
-        rating_analysis = RatingAnalysis.objects.filter(
-            document=document
-        ).first()
-        if rating_analysis:
-            analysis_data['rating'] = rating_analysis
+        # Defense-in-depth: verify the document belongs to the case veteran
+        # before querying analyses, preventing cross-org data leakage
+        if document.user_id == case.veteran_id:
+            # Get rating analysis if available
+            rating_analysis = RatingAnalysis.objects.filter(
+                document=document, user=case.veteran
+            ).first()
+            if rating_analysis:
+                analysis_data['rating'] = rating_analysis
 
-        # Get decision letter analysis
-        decision_analysis = DecisionLetterAnalysis.objects.filter(
-            document=document
-        ).first()
-        if decision_analysis:
-            analysis_data['decision'] = decision_analysis
+            # Get decision letter analysis
+            decision_analysis = DecisionLetterAnalysis.objects.filter(
+                document=document, user=case.veteran
+            ).first()
+            if decision_analysis:
+                analysis_data['decision'] = decision_analysis
 
-        # Get denial decoding
-        denial_decoding = DenialDecoding.objects.filter(
-            decision_analysis__document=document
-        ).first()
-        if denial_decoding:
-            analysis_data['denial'] = denial_decoding
+            # Get denial decoding
+            if decision_analysis:
+                denial_decoding = DenialDecoding.objects.filter(
+                    analysis=decision_analysis
+                ).first()
+                if denial_decoding:
+                    analysis_data['denial'] = denial_decoding
 
     context = {
         'organization': org,

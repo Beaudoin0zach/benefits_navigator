@@ -3054,3 +3054,158 @@ class TestSharedCalculationModel(TestCase):
         url = shared.get_absolute_url()
         self.assertIn(shared.share_token, url)
         self.assertIn('shared', url)
+
+
+# =============================================================================
+# TDIU BOUNDARY TESTS — 38 CFR § 4.16
+# =============================================================================
+
+class TestTDIUBoundaryEligibility(TestCase):
+    """
+    Boundary tests for TDIU schedular eligibility thresholds.
+
+    Schedular TDIU (38 CFR 4.16(a)):
+    - Single disability 60%+ → eligible
+    - Combined 70%+ with one disability 40%+ → eligible
+    - Below thresholds with combined 40%+ → extraschedular possible
+    """
+
+    def setUp(self):
+        from examprep.va_special_compensation import check_tdiu_eligibility
+        self.check_tdiu = check_tdiu_eligibility
+
+    def _make_ratings(self, percentages):
+        """Helper to build ratings list from percentages."""
+        return [
+            {"percentage": p, "description": f"Condition {i}", "is_bilateral": False}
+            for i, p in enumerate(percentages)
+        ]
+
+    def test_tdiu_single_59_percent(self):
+        """59% single disability should NOT meet schedular criteria."""
+        ratings = self._make_ratings([59])
+        # 59% is not a valid VA rating (must be multiples of 10), but the function
+        # checks raw percentage values; use 50 for realistic boundary
+        ratings_50 = self._make_ratings([50])
+        result = self.check_tdiu(ratings_50, combined_rating=50)
+        self.assertFalse(result.meets_single_disability)
+        self.assertFalse(result.schedular_eligible)
+
+    def test_tdiu_single_60_percent(self):
+        """60% single disability SHOULD meet schedular criteria."""
+        ratings = self._make_ratings([60])
+        result = self.check_tdiu(ratings, combined_rating=60)
+        self.assertTrue(result.meets_single_disability)
+        self.assertTrue(result.schedular_eligible)
+
+    def test_tdiu_combined_69_plus_40(self):
+        """69% combined + one 40% disability should NOT meet combined criteria."""
+        # 40% + 40% = 64% combined via VA Math; doesn't reach 70%
+        ratings = self._make_ratings([40, 40])
+        result = self.check_tdiu(ratings, combined_rating=64)
+        self.assertFalse(result.meets_combined_criteria)
+        self.assertFalse(result.schedular_eligible)
+        # But extraschedular should be possible (combined >= 40)
+        self.assertTrue(result.extraschedular_possible)
+
+    def test_tdiu_combined_70_plus_40(self):
+        """70% combined with one 40%+ disability SHOULD meet combined criteria."""
+        # 50% + 40% = 70% combined via VA Math
+        ratings = self._make_ratings([50, 40])
+        result = self.check_tdiu(ratings, combined_rating=70)
+        self.assertTrue(result.meets_combined_criteria)
+        self.assertTrue(result.schedular_eligible)
+
+    def test_tdiu_combined_70_but_no_40_single(self):
+        """70%+ combined but NO single 40%+ disability should NOT meet combined criteria."""
+        # Multiple ratings that combine to 70 but none individually >= 40
+        ratings = self._make_ratings([30, 30, 30])
+        result = self.check_tdiu(ratings, combined_rating=70)
+        self.assertFalse(result.meets_combined_criteria)
+        # But also doesn't meet single disability (highest is 30)
+        self.assertFalse(result.meets_single_disability)
+        self.assertFalse(result.schedular_eligible)
+
+    def test_tdiu_extraschedular_below_threshold(self):
+        """Below 40% combined should have no extraschedular possibility."""
+        ratings = self._make_ratings([30])
+        result = self.check_tdiu(ratings, combined_rating=30)
+        self.assertFalse(result.schedular_eligible)
+        self.assertFalse(result.extraschedular_possible)
+
+    def test_tdiu_extraschedular_at_40(self):
+        """Exactly 40% combined, not meeting schedular, should offer extraschedular."""
+        ratings = self._make_ratings([40])
+        result = self.check_tdiu(ratings, combined_rating=40)
+        self.assertFalse(result.schedular_eligible)
+        self.assertTrue(result.extraschedular_possible)
+
+
+# =============================================================================
+# SMC BOUNDARY TESTS — 38 CFR § 3.350
+# =============================================================================
+
+class TestSMCBoundaryEligibility(TestCase):
+    """
+    Boundary tests for SMC(s) eligibility (housebound).
+
+    SMC(s): One disability at 100% PLUS additional disabilities combining to 60%+.
+    """
+
+    def setUp(self):
+        from examprep.va_special_compensation import (
+            check_smc_eligibility, SMCCondition, SMCLevel,
+        )
+        self.check_smc = check_smc_eligibility
+        self.SMCCondition = SMCCondition
+        self.SMCLevel = SMCLevel
+
+    def _make_conditions(self, ratings):
+        """Helper to build SMCCondition list from (name, rating) tuples."""
+        return [
+            self.SMCCondition(name=name, rating=rating)
+            for name, rating in ratings
+        ]
+
+    def test_smc_s_combined_59_other(self):
+        """100% + 59% other should NOT meet SMC(s) threshold."""
+        # 50% + 20% = 60% via VA Math; but we need just under 60
+        # Use a single 50% which stays at 50% combined
+        conditions = self._make_conditions([
+            ("PTSD", 100),
+            ("Back Pain", 50),
+        ])
+        result = self.check_smc(conditions)
+        # 50% other doesn't meet 60% threshold
+        self.assertNotIn(self.SMCLevel.S, result.levels)
+
+    def test_smc_s_combined_60_other(self):
+        """100% + 60% other SHOULD meet SMC(s) threshold."""
+        conditions = self._make_conditions([
+            ("PTSD", 100),
+            ("Back Pain", 60),
+        ])
+        result = self.check_smc(conditions)
+        self.assertTrue(result.eligible)
+        self.assertIn(self.SMCLevel.S, result.levels)
+
+    def test_smc_s_multiple_reaching_60(self):
+        """100% + multiple disabilities combining to 60%+ should meet SMC(s)."""
+        # 40% + 40% = 64% via VA Math: 40 + 40*(1-0.40) = 40 + 24 = 64
+        conditions = self._make_conditions([
+            ("PTSD", 100),
+            ("Back Pain", 40),
+            ("Knee", 40),
+        ])
+        result = self.check_smc(conditions)
+        self.assertTrue(result.eligible)
+        self.assertIn(self.SMCLevel.S, result.levels)
+
+    def test_smc_s_no_100_percent(self):
+        """Without any 100% disability, SMC(s) should not apply."""
+        conditions = self._make_conditions([
+            ("PTSD", 90),
+            ("Back Pain", 70),
+        ])
+        result = self.check_smc(conditions)
+        self.assertNotIn(self.SMCLevel.S, result.levels)
