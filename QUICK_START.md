@@ -50,7 +50,7 @@ docker-compose exec web python manage.py shell -c "from django.contrib.sites.mod
 - **Main App**: http://localhost:8000
 - **Django Admin**: http://localhost:8000/admin (use superuser credentials)
 - **Celery Monitor (Flower)**: http://localhost:5555
-- **Database**: localhost:5432 (user: benefits_user, password: ***ROTATED_DEV_DB_PASSWORD***)
+- **Database**: localhost:5432 (user: benefits_user, password: your-db-password-here)
 - **Redis**: localhost:6379
 
 ## What's Working Now

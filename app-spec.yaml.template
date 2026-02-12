@@ -131,8 +131,8 @@ jobs:
 # Secrets to set in DO Console (App-Level Environment Variables):
 # - SECRET_KEY (generate with: python -c "import secrets; print(secrets.token_urlsafe(50))")
 # - FIELD_ENCRYPTION_KEY (generate with: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())")
-# - DATABASE_URL (***ROTATED_DATABASE_URL***
-# - REDIS_URL / CELERY_BROKER_URL (***ROTATED_REDIS_URL***
+# - DATABASE_URL (postgresql://user:password@host:port/dbname)
+# - REDIS_URL / CELERY_BROKER_URL (rediss://user:password@host:port)
 # - OPENAI_API_KEY
 # - SENTRY_DSN
 # - ALLOWED_HOSTS (comma-separated list of domains)

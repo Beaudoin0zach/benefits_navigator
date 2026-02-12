@@ -89,19 +89,19 @@ workers:
     value: "*"
   - key: SECRET_KEY
     scope: RUN_AND_BUILD_TIME
-    value: "***ROTATED_SECRET_KEY***"
+    value: "your-secret-key-here"
   - key: DATABASE_URL
     scope: RUN_AND_BUILD_TIME
-    value: "***ROTATED_DATABASE_URL***"
+    value: "postgresql://user:password@host:port/dbname"
   - key: REDIS_URL
     scope: RUN_AND_BUILD_TIME
-    value: "***ROTATED_REDIS_URL***"
+    value: "rediss://user:password@host:port"
   - key: CELERY_BROKER_URL
     scope: RUN_AND_BUILD_TIME
-    value: "***ROTATED_REDIS_URL***"
+    value: "rediss://user:password@host:port"
   - key: FIELD_ENCRYPTION_KEY
     scope: RUN_AND_BUILD_TIME
-    value: "***ROTATED_FIELD_ENCRYPTION_KEY***"
+    value: "your-fernet-encryption-key-here"
   - key: OPENAI_API_KEY
     scope: RUN_AND_BUILD_TIME
     value: ""
