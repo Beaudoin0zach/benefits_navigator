@@ -19,20 +19,22 @@ Full audit performed across 7 areas. See `docs/AUDIT_2026_02_09.md` for complete
 | Code Quality & Deployment | CRITICAL | 2 | 5 |
 | **Totals** | | **12** | **19** |
 
-**Production-Readiness Score: 8.0 / 10** (was 7.0 after P0 fixes, now 8.0 after P1 fixes on 2026-02-11)
+**Production-Readiness Score: 8.5 / 10** (8.0 after P1 fixes, 8.5 after git history scrub on 2026-02-12; reaches 9.0 after manual credential rotation)
 
 ---
 
 ## P0 — CRITICAL (Fix Before Veterans Use This)
 
-All P0 code fixes completed 2026-02-11. Manual credential rotation still required.
+All P0 code fixes completed 2026-02-11. Git history scrubbed 2026-02-12. Manual credential rotation in DO Console still required.
 
 ### Security: Secrets Exposure
 - [x] **Add deployment configs to .gitignore** — `.env.docker`, `app-spec-fixed.yaml`, `.do/app.yaml`, `docker-compose.yml` (2026-02-11)
 - [x] **Create deployment config templates** — `app-spec.yaml.template` and `docker-compose.yml.template` with `CHANGE_ME` placeholders (2026-02-11)
-- [ ] **Revoke all exposed credentials** — SECRET_KEY, FIELD_ENCRYPTION_KEY, DATABASE_URL, REDIS_URL, OpenAI key, Sentry DSN
-  - Action: Rotate every key in DO Console + service dashboards, re-encrypt PII with new FIELD_ENCRYPTION_KEY
-- [ ] **Scrub git history** — Use `git-filter-repo` or BFG to remove all commits containing secrets
+- [x] **Scrub git history** — `git-filter-repo --replace-text` removed 12 secret values from all 141 commits, force-pushed (2026-02-12)
+- [x] **Add key rotation command** — `python manage.py rotate_encryption_key --old-key X --new-key Y --execute` (2026-02-12)
+- [ ] **Revoke all exposed credentials** — SECRET_KEY, FIELD_ENCRYPTION_KEY, DATABASE_URL, REDIS_URL
+  - Action: Rotate in DO Console, run `rotate_encryption_key` to re-encrypt PII, then deploy
+  - Note: OpenAI key and Sentry DSN were never committed (placeholder only)
 
 ### Data Integrity: Regulatory Accuracy
 - [x] **Add 2025 & 2026 VA compensation rates** — `examprep/va_math.py` (2026-02-11)
